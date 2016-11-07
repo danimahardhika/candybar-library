@@ -29,6 +29,8 @@ dependencies {
 # How to Use
 Take a look inside <a href="https://github.com/danimahardhika/candybar-library/wiki" target="_blank">Wiki Site</a>
 
+# Features
+
 # License
 ```
 Copyright (c) 2014-present Dani Mahardhika
