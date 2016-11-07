@@ -1,0 +1,3 @@
+include ':core'
+include ':library:GoogleLicensing'
+include ':library:PreLollipopTransitions'
