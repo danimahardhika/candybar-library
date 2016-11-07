@@ -13,7 +13,7 @@ Add the dependency
 ```groovy
 dependencies {
     //...
-    compile 'com.github.danimahardhika.candybar-library:core:1.0.0'
+    compile 'com.github.danimahardhika.candybar-library:core:1.0.1'
 }
 ```
 # How to Use
