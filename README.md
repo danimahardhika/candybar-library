@@ -11,6 +11,7 @@
 <li>Android-SDK Build tools v25</li>
 <li>API 25 SDK Platform</li>
 <li>Latest version of Android Support Library</li>
+<li>Java SE Development Kit 8</li>
 </ul>
 <p>The minimum API level supported by this library is API 15</p>
 Add JitPack repository to root ```build.gradle```
