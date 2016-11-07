@@ -6,10 +6,12 @@
 </a></p>
 
 # Gradle Dependency
-Requirements
-<br>&bull; Android-SDK Build tools v25
-<br>&bull; API 25 SDK Platform
-<br>&bull; Latest version of Android Support Library
+**Requirements**
+<ul>
+<li>Android-SDK Build tools v25</li>
+<li>API 25 SDK Platform</li>
+<li>Latest version of Android Support Library</li>
+</ul>
 <p>The minimum API level supported by this library is API 15</p>
 Add JitPack repository to root ```build.gradle```
 ```groovy
