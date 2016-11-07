@@ -29,6 +29,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 public class CandyBarApplication extends Application {
 
     public void initApplication() {
+        super.onCreate();
         if (!ImageLoader.getInstance().isInited())
             ImageLoader.getInstance().init(ImageConfig.getImageLoaderConfiguration(this));
 
