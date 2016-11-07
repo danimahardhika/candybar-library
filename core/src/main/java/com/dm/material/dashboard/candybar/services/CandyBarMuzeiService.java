@@ -53,6 +53,7 @@ public abstract class CandyBarMuzeiService extends RemoteMuzeiArtSource {
     }
 
     public void initMuzeiService() {
+        super.onCreate();
         mMuzeiHelper = new MuzeiHelper(this,
                 WallpaperHelper.getDefaultWallpapersDirectory(this).toString());
         setUserCommands(BUILTIN_COMMAND_ID_NEXT_ARTWORK);
