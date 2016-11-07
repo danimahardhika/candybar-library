@@ -183,9 +183,12 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
         }
 
         if (Preferences.getPreferences(this).isFirstRun()) {
-            if (licenseChecker) LicenseHelper.getLicenseChecker(this)
-                    .checkLicense(mLicenseKey, salt);
-            return;
+            if (licenseChecker) {
+                LicenseHelper.getLicenseChecker(this)
+                        .checkLicense(mLicenseKey, salt);
+                return;
+            }
+            Preferences.getPreferences(this).setFirstRun(false);
         }
 
         if (Preferences.getPreferences(this).isNewVersion())
