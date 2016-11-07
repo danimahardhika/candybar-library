@@ -67,7 +67,7 @@ Take a look inside <a href="https://github.com/danimahardhika/candybar-library/w
 <li>Muzei Live Wallpaper: smart art source loader</li>
 </ul>
 
-**NOTE: THIS IS JUST THE DASHBOARD, NOT ICON PACK TEMPLATE. YOU NEED TO ADD REQUIRED XML FOR ICON PACK BY YOURSELF**
+**NOTE: THIS IS JUST THE DASHBOARD, NOT ICON PACK TEMPLATE. YOU NEED TO ADD REQUIRED XML FOR ICON PACK BY YOURSELF.**
 
 
 # License
