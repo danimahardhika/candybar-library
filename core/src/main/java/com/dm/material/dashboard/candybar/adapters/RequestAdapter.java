@@ -48,11 +48,14 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
 
     private int mTextColorSecondary;
     private int mTextColorAccent;
+    private boolean mIsPremiumRequestEnabled;
 
     private static final int TYPE_PREMIUM = 0;
     private static final int TYPE_REGULAR = 1;
 
     public RequestAdapter(@NonNull Context context, @NonNull List<Request> requests) {
+        mIsPremiumRequestEnabled = context.getResources().getBoolean(
+                R.bool.enable_premium_request);
         mContext = context;
         mRequests = requests;
         mTextColorSecondary = ColorHelper.getAttributeColor(mContext,
@@ -86,9 +89,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         if (holder.holderId == TYPE_PREMIUM) {
-            boolean isPremiumRequestEnabled = mContext.getResources().getBoolean(
-                    R.bool.enable_premium_request);
-            if (!isPremiumRequestEnabled) holder.premiumRequest.setVisibility(View.GONE);
+            if (!mIsPremiumRequestEnabled) holder.premiumRequest.setVisibility(View.GONE);
             else {
                 if (Preferences.getPreferences(mContext).isPremiumRequest()) {
                     String count = mContext.getResources().getString(R.string.premium_request_count)
@@ -98,7 +99,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
                 } else holder.count.setVisibility(View.GONE);
             }
         } else if (holder.holderId == TYPE_REGULAR) {
-            int finalPosition = position - 1;
+            int finalPosition = mIsPremiumRequestEnabled ? position - 1 : position;
 
             holder.icon.setImageBitmap(mRequests.get(finalPosition).getIcon());
 
@@ -120,12 +121,12 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
 
     @Override
     public int getItemCount() {
-        return mRequests.size() + 1;
+        return mIsPremiumRequestEnabled ? mRequests.size() + 1 : mRequests.size();
     }
 
     @Override
     public int getItemViewType(int position) {
-        return position == 0 ? TYPE_PREMIUM : TYPE_REGULAR;
+        return position == 0 && mIsPremiumRequestEnabled ? TYPE_PREMIUM : TYPE_REGULAR;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
@@ -174,7 +175,8 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         public void onClick(View view) {
             int id = view.getId();
             if (id == R.id.container) {
-                int position = getAdapterPosition();
+                int position = mIsPremiumRequestEnabled ?
+                        getAdapterPosition() - 1 : getAdapterPosition();
                 toggleSelection(position);
             } else if (id == R.id.buy_package) {
                 try {
@@ -188,7 +190,8 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         public boolean onLongClick(View view) {
             int id = view.getId();
             if (id == R.id.container) {
-                int position = getAdapterPosition();
+                int position = mIsPremiumRequestEnabled ?
+                        getAdapterPosition() - 1 : getAdapterPosition();
                 toggleSelection(position);
                 return true;
             }
@@ -197,10 +200,9 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
     }
 
     private void toggleSelection(int position) {
-        int finalPosition = position - 1;
-        if (mSelectedItems.get(finalPosition, false))
-            mSelectedItems.delete(finalPosition);
-        else mSelectedItems.put(finalPosition, true);
+        if (mSelectedItems.get(position, false))
+            mSelectedItems.delete(position);
+        else mSelectedItems.put(position, true);
         notifyItemChanged(position);
         try {
             RequestListener listener = (RequestListener) mContext;
