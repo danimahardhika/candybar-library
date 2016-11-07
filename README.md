@@ -70,6 +70,9 @@ Take a look inside <a href="https://github.com/danimahardhika/candybar-library/w
 
 **NOTE: THIS IS JUST ICON PACK DASHBOARD, NOT ICON PACK TEMPLATE OR ICON PACK TUTORIAL. YOU NEED TO ADD REQUIRED XML FOR ICON PACK BY YOURSELF.**
 
+# Support Development
+Support development by making donation through demo app at Google Play
+
 
 # License
 ```
