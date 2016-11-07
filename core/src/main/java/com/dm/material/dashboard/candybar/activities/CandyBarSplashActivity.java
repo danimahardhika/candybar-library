@@ -2,6 +2,7 @@ package com.dm.material.dashboard.candybar.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -34,7 +35,8 @@ public class CandyBarSplashActivity extends AppCompatActivity {
     private Handler mHandler;
     private Runnable mRunnable;
 
-    public void initSplashActivity(Class<?> mainActivity, int duration) {
+    public void initSplashActivity(Bundle savedInstanceState, Class<?> mainActivity, int duration) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         int color = ColorHelper.getDarkerColor(
                 ContextCompat.getColor(this, R.color.splashColor), 0.8f);
