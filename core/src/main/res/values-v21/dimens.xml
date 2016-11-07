@@ -1,0 +1,19 @@
+<resources>
+
+    <!-- Home -->
+    <dimen name="card_home_corner_radius">2dp</dimen>
+
+    <!-- Card Global -->
+    <dimen name="card_margin_right">3dp</dimen>
+    <dimen name="card_margin_left">3dp</dimen>
+    <dimen name="card_margin_top">3dp</dimen>
+    <dimen name="card_margin_bottom">3dp</dimen>
+    <dimen name="card_elevation">2.5dp</dimen>
+    <dimen name="card_corner_radius">2dp</dimen>
+
+    <dimen name="card_padding_bottom">3dp</dimen>
+
+    <!-- FAB -->
+    <dimen name="fab_margin">20dp</dimen>
+
+</resources>

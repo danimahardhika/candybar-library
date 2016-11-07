@@ -1,0 +1,134 @@
+<resources>
+
+    <!-- Base Application Theme -->
+    <style name="AppBaseTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="windowActionModeOverlay">true</item>
+    </style>
+
+    <!-- Base Application Theme -->
+    <style name="AppBaseThemeDark" parent="@style/Theme.AppCompat">
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="windowActionModeOverlay">true</item>
+    </style>
+
+    <!-- App Theme-->
+    <style name="AppTheme" parent="AppBaseTheme">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+        <item name="android:textColorPrimary">@color/primaryText</item>
+        <item name="android:textColorSecondary">@color/secondaryText</item>
+        <item name="card_background">@color/cardBackground</item>
+        <item name="card_ripple">@color/cardRipple</item>
+        <item name="ripple_accent">@color/rippleAccent</item>
+        <item name="main_background">@color/mainBackground</item>
+        <item name="toolbar_icon">@color/toolbarIcon</item>
+        <item name="divider_list">@color/dividerList</item>
+        <item name="search_view_cursor">@color/colorAccent</item>
+        <item name="hint_text">@color/hintText</item>
+        <item name="tab_indicator">@color/tabIndicator</item>
+        <item name="tab_text">@color/tabText</item>
+        <item name="tab_text_selected">@color/tabTextSelected</item>
+        <item name="md_positive_color">@color/colorAccent</item>
+        <item name="md_neutral_color">@color/primaryText</item>
+        <item name="md_negative_color">@color/primaryText</item>
+        <item name="md_content_color">@color/primaryText</item>
+        <item name="md_link_color">@color/colorAccent</item>
+        <item name="md_widget_color">@color/colorAccent</item>
+        <item name="md_item_color">@color/primaryText</item>
+    </style>
+
+    <!-- App Theme Dark -->
+    <style name="AppThemeDark" parent="AppBaseThemeDark">
+        <item name="colorPrimary">@color/darkColorPrimary</item>
+        <item name="colorPrimaryDark">@color/darkColorPrimaryDark</item>
+        <item name="colorAccent">@color/darkColorAccent</item>
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+        <item name="android:textColorPrimary">@color/primaryTextDark</item>
+        <item name="android:textColorSecondary">@color/secondaryTextDark</item>
+        <item name="card_background">@color/cardBackgroundDark</item>
+        <item name="card_ripple">@color/cardRippleDark</item>
+        <item name="main_background">@color/mainBackgroundDark</item>
+        <item name="ripple_accent">@color/rippleAccentDark</item>
+        <item name="toolbar_icon">@color/toolbarIconDark</item>
+        <item name="divider_list">@color/dividerListDark</item>
+        <item name="search_view_cursor">@color/darkColorAccent</item>
+        <item name="hint_text">@color/hintTextDark</item>
+        <item name="tab_indicator">@color/tabIndicatorDark</item>
+        <item name="tab_text">@color/tabTextDark</item>
+        <item name="tab_text_selected">@color/tabTextSelectedDark</item>
+        <item name="md_background_color">@color/cardBackgroundDark</item>
+        <item name="md_positive_color">@color/darkColorAccent</item>
+        <item name="md_neutral_color">@color/primaryTextDark</item>
+        <item name="md_negative_color">@color/primaryTextDark</item>
+        <item name="md_content_color">@color/primaryTextDark</item>
+        <item name="md_link_color">@color/darkColorAccent</item>
+        <item name="md_widget_color">@color/darkColorAccent</item>
+        <item name="md_item_color">@color/primaryTextDark</item>
+    </style>
+
+    <!-- Splash Screen Theme -->
+    <style name="SplashTheme" parent="@style/Theme.AppCompat.Light">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <!-- Translucent Theme -->
+    <style name="TranslucentTheme" parent="@style/Theme.AppCompat.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+    <!-- Wallpaper Theme -->
+    <style name="WallpaperTheme" parent="AppTheme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <!-- Wallpaper Theme Dark -->
+    <style name="WallpaperThemeDark" parent="AppThemeDark">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">true</item>
+        <item name="color">?attr/toolbar_icon</item>
+    </style>
+
+    <style name="NavigationViewStyle">
+        <item name="android:textSize">15sp</item>
+        <item name="android:listPreferredItemHeightSmall">48dp</item>
+    </style>
+
+    <style name="TabsTextStyle" parent="@android:style/TextAppearance.Widget.TabWidget">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="fontPath">fonts/Font-Regular.ttf</item>
+    </style>
+
+    <style name="ToolbarStyle" parent="@style/Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorAccent">?attr/search_view_cursor</item>
+        <item name="colorControlNormal">?attr/toolbar_icon</item>
+    </style>
+
+</resources>

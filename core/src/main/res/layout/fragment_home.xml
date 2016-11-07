@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingPrefix"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/home_content_padding">
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/card_desc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="?attr/card_background"
+                    app:cardUseCompatPadding="true"
+                    app:cardElevation="@dimen/card_home_elevation"
+                    app:cardCornerRadius="@dimen/card_home_corner_radius"
+                    app:contentPadding="@dimen/card_home_content_padding">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="?android:attr/textColorPrimary"
+                        android:textSize="14sp"
+                        android:text="@string/home_description"
+                        fontPath="fonts/Font-Regular.ttf"/>
+
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="?attr/card_background"
+                    app:cardUseCompatPadding="true"
+                    app:cardElevation="@dimen/card_home_elevation"
+                    app:cardCornerRadius="@dimen/card_home_corner_radius">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/home_feature_list"
+                        android:layout_height="match_parent"
+                        android:layout_width="match_parent"
+                        android:paddingBottom="@dimen/home_content_padding"
+                        android:paddingTop="@dimen/home_content_padding"
+                        android:clipToPadding="false" />
+
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/card_more_apps"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="?attr/card_background"
+                    app:cardUseCompatPadding="true"
+                    app:cardElevation="@dimen/card_home_elevation"
+                    app:cardCornerRadius="@dimen/card_home_corner_radius">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/home_more_apps_header"
+                            android:textSize="16sp"
+                            android:textColor="?android:attr/textColorPrimary"
+                            android:padding="@dimen/home_content_padding"
+                            fontPath="fonts/Font-Bold.ttf"/>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="?attr/divider_list" />
+
+                        <com.balysv.materialripple.MaterialRippleLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:mrl_rippleAlpha="0.15"
+                            app:mrl_rippleColor="?attr/card_ripple"
+                            app:mrl_rippleDelayClick="true"
+                            app:mrl_rippleOverlay="true"
+                            app:mrl_rippleDuration="500"
+                            app:mrl_rippleDimension="4dp" >
+
+                            <LinearLayout
+                                android:id="@+id/more_apps"
+                                android:orientation="horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:padding="@dimen/home_content_padding">
+
+                                <ImageView
+                                    android:id="@+id/more_apps_icon"
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/home_more_apps"
+                                    android:textSize="14sp"
+                                    android:layout_marginLeft="@dimen/home_content_padding"
+                                    android:layout_marginStart="@dimen/home_content_padding"
+                                    android:textColor="?android:attr/textColorSecondary"
+                                    fontPath="fonts/Font-Regular.ttf"/>
+
+                            </LinearLayout>
+
+                        </com.balysv.materialripple.MaterialRippleLayout>
+
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+
+            </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <View
+        android:id="@+id/shadow"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_shadow"
+        android:background="@drawable/toolbar_shadow" />
+
+</FrameLayout>

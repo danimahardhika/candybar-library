@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="launcher_names">
+        <item>Action Launcher</item>
+        <item>ADW Launcher</item>
+        <item>Apex Launcher</item>
+        <item>ZenUI Launcher</item>
+        <item>Atom Launcher</item>
+        <item>Aviate Launcher</item>
+        <item>CM Theme Engine</item>
+        <item>GO Launcher EX</item>
+        <item>Holo Launcher</item>
+        <item>Holo Launcher HD</item>
+        <item>KK Launcher</item>
+        <item>LG Home</item>
+        <item>Lucid Launcher</item>
+        <item>Mini Launcher</item>
+        <item>Next Launcher</item>
+        <item>Nova Launcher</item>
+        <item>S Launcher</item>
+        <item>Smart Launcher</item>
+        <item>Solo Launcher</item>
+    </string-array>
+
+    <array name="launcher_icons">
+        <item>@drawable/ic_launcher_action</item>
+        <item>@drawable/ic_launcher_adw</item>
+        <item>@drawable/ic_launcher_apex</item>
+        <item>@drawable/ic_launcher_zenui</item>
+        <item>@drawable/ic_launcher_atom</item>
+        <item>@drawable/ic_launcher_aviate</item>
+        <item>@drawable/ic_launcher_cm</item>
+        <item>@drawable/ic_launcher_go</item>
+        <item>@drawable/ic_launcher_holo</item>
+        <item>@drawable/ic_launcher_holohd</item>
+        <item>@drawable/ic_launcher_kk</item>
+        <item>@drawable/ic_launcher_lg</item>
+        <item>@drawable/ic_launcher_lucid</item>
+        <item>@drawable/ic_launcher_mini</item>
+        <item>@drawable/ic_launcher_next</item>
+        <item>@drawable/ic_launcher_nova</item>
+        <item>@drawable/ic_launcher_s</item>
+        <item>@drawable/ic_launcher_smart</item>
+        <item>@drawable/ic_launcher_solo</item>
+    </array>
+
+    <!-- Launcher Packages -->
+    <string-array name="launcher_packages_1">
+        <item>com.actionlauncher.playstore</item>		<!-- 0 -->
+        <item>org.adw.launcher</item>					<!-- 1 -->
+        <item>com.anddoes.launcher</item>				<!-- 2 -->
+        <item>com.asus.launcher</item>                  <!-- 3 -->
+        <item>com.dlto.atom.launcher</item>				<!-- 4 -->
+        <item>com.tul.aviate</item>						<!-- 5 -->
+        <item>org.cyanogenmod.theme.chooser</item>      <!-- 6 -->
+        <item>com.gau.go.launcherex</item>				<!-- 7 -->
+        <item>com.mobint.hololauncher</item>			<!-- 8 -->
+        <item>com.mobint.hololauncher.hd</item>			<!-- 9 -->
+        <item>com.kk.launcher</item>					<!-- 10 -->
+        <item>com.lge.launcher2</item>                  <!-- 11 -->
+        <item>com.powerpoint45.launcher</item>          <!-- 12 -->
+        <item>com.jiubang.go.mini.launcher</item>		<!-- 13 -->
+        <item>com.gtp.nextlauncher</item>				<!-- 14 -->
+        <item>com.teslacoilsw.launcher</item>			<!-- 15 -->
+        <item>com.s.launcher</item>						<!-- 16 -->
+        <item>ginlemon.flowerfree</item>				<!-- 17 -->
+        <item>home.solo.launcher.free</item>			<!-- 18 -->
+    </string-array>
+
+    <string-array name="launcher_packages_2">
+        <item>com.chrislacy.actionlauncher.pro</item>	<!-- 0 -->
+        <item>org.adwfreak.launcher</item>				<!-- 1 -->
+        <item>com.anddoes.launcher.pro</item>			<!-- 2 -->
+        <item>none</item>								<!-- 3 -->
+        <item>none</item>								<!-- 4 -->
+        <item>none</item>								<!-- 5 -->
+        <item>none</item>								<!-- 6 -->
+        <item>none</item>								<!-- 7 -->
+        <item>none</item>								<!-- 8 -->
+        <item>none</item>								<!-- 9 -->
+        <item>none</item>								<!-- 10 -->
+        <item>com.lge.launcher3</item>                  <!-- 11 -->
+        <item>none</item>								<!-- 12 -->
+        <item>none</item>								<!-- 13 -->
+        <item>com.gtp.nextlauncher.trial</item>			<!-- 14 -->
+        <item>com.teslacoilsw.launcher.prime</item>		<!-- 15 -->
+        <item>none</item>								<!-- 16 -->
+        <item>ginlemon.flowerpro</item>					<!-- 17 -->
+        <item>none</item>								<!-- 18 -->
+    </string-array>
+
+    <string-array name="launcher_packages_3">
+        <item>none</item>								<!-- 0 -->
+        <item>none</item>								<!-- 1 -->
+        <item>none</item>								<!-- 2 -->
+        <item>none</item>								<!-- 3 -->
+        <item>none</item>								<!-- 4 -->
+        <item>none</item>								<!-- 5 -->
+        <item>none</item>								<!-- 6 -->
+        <item>none</item>								<!-- 7 -->
+        <item>none</item>								<!-- 8 -->
+        <item>none</item>								<!-- 9 -->
+        <item>none</item>								<!-- 10 -->
+        <item>none</item>								<!-- 11 -->
+        <item>none</item>								<!-- 12 -->
+        <item>none</item>								<!-- 13 -->
+        <item>none</item>								<!-- 14 -->
+        <item>none</item>								<!-- 15 -->
+        <item>none</item>								<!-- 16 -->
+        <item>ginlemon.flowerpro.special</item>			<!-- 17 -->
+        <item>none</item>								<!-- 18 -->
+    </string-array>
+
+</resources>

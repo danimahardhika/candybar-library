@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <attr name="card_background" format="color"/>
+    <attr name="card_ripple" format="color"/>
+    <attr name="ripple_accent" format="color"/>
+    <attr name="main_background" format="color"/>
+    <attr name="toolbar_icon" format="color"/>
+    <attr name="divider_list" format="color"/>
+    <attr name="hint_text" format="color"/>
+    <attr name="search_view_cursor" format="color"/>
+    <attr name="tab_indicator" format="color"/>
+    <attr name="tab_text" format="color"/>
+    <attr name="tab_text_selected" format="color"/>
+
+</resources>
