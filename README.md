@@ -9,7 +9,7 @@
 
 # Gradle Dependency
 The minimum API level supported by this library is API 15
-<p>Add JitPack repository to root ```build.gradle```</p>
+<p>Add JitPack repository to root</p> ```build.gradle```
 ```groovy
 allprojects {
     repositories {
