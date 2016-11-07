@@ -1,0 +1,36 @@
+<!--
+  *
+  * CandyBar - Material Dashboard
+  *
+  * Copyright (c) 2014-present Dani Mahardhika
+  *
+  * Licensed under the Apache LicenseHelper, Version 2.0 (the "LicenseHelper");
+  * you may not use this file except in compliance with the LicenseHelper.
+  * You may obtain a copy of the LicenseHelper at
+  *
+  *      http://www.apache.org/licenses/LICENSE-2.0
+  *
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the LicenseHelper is distributed on an "AS IS" BASIS,
+  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  * See the LicenseHelper for the specific language governing permissions and
+  * limitations under the LicenseHelper.
+  *
+  -->
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.dm.material.dashboard.candybar">
+
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER_HINTS" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <application />
+
+</manifest>
