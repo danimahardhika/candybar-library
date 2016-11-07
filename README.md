@@ -27,7 +27,7 @@ dependencies {
 <img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/about.jpg" width="215">
 
 # How to Use
-Take a look inside [Wiki Site](https://github.com/danimahardhika/candybar-library/wiki){:target="_blank"}
+Take a look inside <a href="https://github.com/danimahardhika/candybar-library/wiki" target="_blank">Wiki Site</a>
 
 # License
 ```
