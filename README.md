@@ -16,5 +16,32 @@ dependencies {
     compile 'com.github.danimahardhika.candybar-library:core:1.0.1'
 }
 ```
+# Previews
+<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/home.jpg" width="215">
+<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/navigation_drawer.jpg" width="215">
+<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/changelog.jpg" width="215">
+<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/icon_request.jpg" width="215">
+<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/cloud_wallpapers.jpg" width="215">
+<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/icons.jpg" width="215">
+<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/settings.jpg" width="215">
+<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/about.jpg" width="215">
+
 # How to Use
 Take a look inside <a href="https://github.com/danimahardhika/candybar-library/wiki" target="_blank">Wiki Site</a>
+
+# License
+```
+Copyright (c) 2014-present Dani Mahardhika
+
+Licensed under the Apache LicenseHelper, Version 2.0 (the "LicenseHelper");
+you may not use this file except in compliance with the LicenseHelper.
+You may obtain a copy of the LicenseHelper at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the LicenseHelper is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the LicenseHelper for the specific language governing permissions and
+limitations under the LicenseHelper.
+```
