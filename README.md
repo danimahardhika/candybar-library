@@ -1,4 +1,4 @@
-# CandyBar
+# CandyBar <img src="https://drive.google.com/uc?id=0B0f4ypHfNKm5b0w5SklmMldvajg" width="30">
 [![](https://jitpack.io/v/danimahardhika/candybar-library.svg)](https://jitpack.io/#danimahardhika/candybar-library) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 <br>Android Icon Pack Material Dashboard
 <p><a href="https://play.google.com/store/apps/details?id=com.material.dashboard.candybar.demo">
