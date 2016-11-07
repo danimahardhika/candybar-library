@@ -73,6 +73,19 @@ Take a look inside <a href="https://github.com/danimahardhika/candybar-library/w
 # Support Development
 Support development by making donation through demo app at Google Play
 
+# Open Source Libraries Used
+<ul>
+<li><a href="https://github.com/evant/gradle-retrolambda">Retrolambda</a></li>
+<li><a href="https://github.com/bluelinelabs/LoganSquare">LoganSquare</a></li>
+<li><a href="https://github.com/nostra13/Android-Universal-Image-Loader">Universal Image Loader</a></li>
+<li><a href="https://github.com/afollestad/material-dialogs">Material Dialog</a></li>
+<li><a href="https://github.com/takahirom/PreLollipopTransition">PreLollipopTransition</a></li>
+<li><a href="https://github.com/chrisjenx/Calligraphy">Calligraphy</a></li>
+<li><a href="https://github.com/anjlab/android-inapp-billing-v3">Android In-App Billing v3</a></li>
+<li><a href="https://github.com/lopspower/CircularImageView">Circular ImageView</a></li>
+<li><a href="https://github.com/plusCubed/recycler-fast-scroll">Recycler Fast Scroll </a></li>
+<li><a href="https://github.com/balysv/material-ripple">Material Ripple Layout</a></li>
+</ul>
 
 # License
 ```
