@@ -30,6 +30,28 @@ dependencies {
 Take a look inside <a href="https://github.com/danimahardhika/candybar-library/wiki" target="_blank">Wiki Site</a>
 
 # Features
+<ul>
+<li>Apply: 19 launcher cards</li>
+<li>Icon Picker: see all icons included with sections and search</li>
+<li>Icon Request</li>
+    <ul>
+    <li>Regular Request: free to request</li>
+    <li>Premium Request: pay to request</li>
+    </ul>
+<li>Cloud Based Wallpaper</li>
+<li>Settings</li>
+    <ul>
+    <li>Clear Cache</li>
+    <li>Swith to Dark Theme</li>
+    <li>Restore Purchases: restore premium request after reinstalling</li>
+    </ul>
+<li>Frequently Asked Questions: with search</li>
+<li>About</li>
+<li>Donation</li>
+<li>Changelog: show changelog every update</li>
+<li>Muzei Live Wallpaper: smart art source loader</li>
+</ul>
+
 
 # License
 ```
