@@ -4,6 +4,7 @@
 ```groovy
 allprojects {
     repositories {
+        //...
         maven { url "https://jitpack.io" }
     }
 }
@@ -11,6 +12,7 @@ allprojects {
 Add the dependency
 ```groovy
 dependencies {
+    //...
     compile 'com.github.danimahardhika.candybar-library:core:1.0.0'
 }
 ```
