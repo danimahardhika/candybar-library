@@ -14,3 +14,5 @@ dependencies {
     compile 'com.github.danimahardhika.candybar-library:core:1.0.0'
 }
 ```
+# How to Use
+Take a look inside <a href="https://github.com/danimahardhika/candybar-library/wiki" target="_blank">Wiki Site</a>
