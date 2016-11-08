@@ -13,7 +13,7 @@
 <li>Latest version of Android Support Library</li>
 <li>Java SE Development Kit 8</li>
 </ul>
-<p>Take a look on this <a href="https://drive.google.com/uc?id=0B0f4ypHfNKm5Ujc4OHVPWUpfdkk">screenshot</a> for requirements
+<p>Take a look on this <a href="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/requirements.jpg">screenshot</a> for requirements
 <p>The minimum API level supported by this library is API 15</p>
 Add JitPack repository to root ```build.gradle```
 ```groovy
