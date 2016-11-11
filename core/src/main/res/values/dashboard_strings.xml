@@ -11,7 +11,7 @@
     <string name="navigation_view_about">About</string>
     <string name="navigation_view_donate">Support Development</string>
 
-    <!-- Muzei Settings -->
+    <!-- Muzei -->
     <string name="muzei_settings">Muzei Settings</string>
     <string name="minute">Minute</string>
     <string name="hour">Hour</string>
@@ -21,6 +21,7 @@
     <string name="muzei_downloaded_only">Load Downloaded Wallpaper Only</string>
     <string name="muzei_settings_ignored">Icon Pack doesn\'t contains wallpaper, settings ignored</string>
     <string name="muzei_settings_saved">Settings Saved</string>
+    <string name="muzei_apply_no_wallpapers">Unable to apply, Icon Pack doesn\'t contains wallpapers</string>
 
     <!-- Menu -->
     <string name="menu_changelog">Changelog</string>

@@ -15,10 +15,6 @@
 
     <!-- Card Global -->
     <dimen name="card_padding">14dp</dimen>
-    <dimen name="card_margin_right">3dp</dimen>
-    <dimen name="card_margin_left">3dp</dimen>
-    <dimen name="card_margin_top">4dp</dimen>
-    <dimen name="card_margin_bottom">1dp</dimen>
     <dimen name="card_elevation">2.5dp</dimen>
     <dimen name="card_corner_radius">0dp</dimen>
 
