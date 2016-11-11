@@ -5,8 +5,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -14,6 +15,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
+import android.transition.Transition;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,7 +36,6 @@ import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -66,8 +67,12 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
 
     private String mUrl;
     private String mName;
-    private boolean mIsShowMenu = false;
     private int mColor;
+    private boolean mIsShowMenu = false;
+    private boolean mIsEnter;
+
+    private Runnable mRunnable;
+    private Handler mHandler;
     private ExitActivityTransition mExitTransition;
 
     public void initWallpaperActivity(Bundle savedInstanceState, Intent intent) {
@@ -75,12 +80,13 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
                 R.style.WallpaperThemeDark : R.style.WallpaperTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wallpaper);
+        mIsEnter = true;
 
         mWallpaper = (ImageView) findViewById(R.id.wallpaper);
         mFab = (FloatingActionButton) findViewById(R.id.fab);
         mProgress = (ProgressBar) findViewById(R.id.progress);
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        TextView mToolbarTitle = (TextView) findViewById(R.id.toolbar_title);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        TextView toolbarTitle = (TextView) findViewById(R.id.toolbar_title);
 
         ViewHelper.resetNavigationBarTranslucent(this, getResources().getConfiguration().orientation);
 
@@ -101,11 +107,10 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
             }
         }
 
-        mToolbarTitle.setText(mName);
-        mToolbarTitle.setTextColor(Color.WHITE);
-        mToolbar.setTitle("");
-        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
-        setSupportActionBar(mToolbar);
+        toolbarTitle.setText(mName);
+        toolbar.setTitle("");
+        toolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+        setSupportActionBar(toolbar);
 
         mFab.setOnClickListener(this);
 
@@ -114,7 +119,49 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
                 .duration(300)
                 .start(savedInstanceState);
 
-        loadWallpaper(mUrl);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Transition transition = getWindow().getSharedElementEnterTransition();
+            if (transition != null) {
+                transition.addListener(new Transition.TransitionListener() {
+                    @Override
+                    public void onTransitionStart(Transition transition) {
+
+                    }
+
+                    @Override
+                    public void onTransitionEnd(Transition transition) {
+                        if (mIsEnter) {
+                            mIsEnter = false;
+                            loadWallpaper(mUrl);
+                        }
+                    }
+
+                    @Override
+                    public void onTransitionCancel(Transition transition) {
+
+                    }
+
+                    @Override
+                    public void onTransitionPause(Transition transition) {
+
+                    }
+
+                    @Override
+                    public void onTransitionResume(Transition transition) {
+
+                    }
+                });
+                return;
+            }
+        }
+
+        mRunnable = () -> {
+            mRunnable = null;
+            mHandler = null;
+            loadWallpaper(mUrl);
+        };
+        mHandler = new Handler();
+        mHandler.postDelayed(mRunnable, 700);
     }
 
     @Override
@@ -146,8 +193,9 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
     @Override
     public void onBackPressed() {
         WallpapersAdapter.sIsClickable = true;
+        if (mHandler != null && mRunnable != null)
+            mHandler.removeCallbacks(mRunnable);
         if (mExitTransition != null) mExitTransition.exit(this);
-        ImageLoader.getInstance().clearMemoryCache();
         super.onBackPressed();
     }
 
@@ -191,9 +239,13 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
         }
     }
 
+    private void start(int duration) {
+
+    }
+
     private void loadWallpaper(String url) {
-        ImageLoader.getInstance().displayImage(url, mWallpaper, ImageConfig
-                .getImageOptions(ImageScaleType.NONE), new SimpleImageLoadingListener() {
+        ImageLoader.getInstance().displayImage(url, mWallpaper, ImageConfig.getImageOptions(
+                Preferences.getPreferences(this).isCacheAllowed()), new SimpleImageLoadingListener() {
 
             @Override
             public void onLoadingStarted(String imageUri, View view) {

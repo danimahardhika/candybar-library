@@ -24,7 +24,6 @@ import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
 import com.dm.material.dashboard.candybar.utils.Tag;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 
 import java.io.BufferedInputStream;
@@ -254,7 +253,7 @@ public class WallpaperHelper {
                         Thread.sleep(1);
                         Bitmap bitmap = ImageLoader.getInstance().loadImageSync(
                                 getWallpaperUri(context, url, name + FileHelper.IMAGE_EXTENSION),
-                                ImageConfig.getImageOptions(ImageScaleType.NONE));
+                                ImageConfig.getImageOptions());
                         if (bitmap != null) {
                             final int height, width;
                             height = orientation == Configuration.ORIENTATION_PORTRAIT ?

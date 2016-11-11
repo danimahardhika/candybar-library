@@ -3,7 +3,10 @@ package com.dm.material.dashboard.candybar.services;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.webkit.URLUtil;
+import android.widget.Toast;
 
+import com.dm.material.dashboard.candybar.R;
 import com.google.android.apps.muzei.api.Artwork;
 import com.google.android.apps.muzei.api.RemoteMuzeiArtSource;
 import com.dm.material.dashboard.candybar.helpers.FileHelper;
@@ -60,6 +63,11 @@ public abstract class CandyBarMuzeiService extends RemoteMuzeiArtSource {
     }
 
     public void tryUpdate(String wallpaperUrl) {
+        if (!URLUtil.isValidUrl(wallpaperUrl)) {
+            Toast.makeText(this, R.string.muzei_apply_no_wallpapers, Toast.LENGTH_LONG).show();
+            return;
+        }
+
         try {
             Wallpaper wallpaper = null;
             if (Preferences.getPreferences(this).isDownloadedOnly())

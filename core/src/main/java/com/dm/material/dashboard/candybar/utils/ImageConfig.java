@@ -53,13 +53,23 @@ public class ImageConfig {
         return options.build();
     }
 
-    public static DisplayImageOptions getImageOptions(ImageScaleType scaleType) {
+    public static DisplayImageOptions getImageOptions() {
         DisplayImageOptions.Builder options = new DisplayImageOptions.Builder();
         options.delayBeforeLoading(10)
                 .bitmapConfig(Bitmap.Config.ARGB_8888)
-                .imageScaleType(scaleType)
+                .imageScaleType(ImageScaleType.NONE)
                 .cacheOnDisk(false)
                 .cacheInMemory(true);
+        return options.build();
+    }
+
+    public static DisplayImageOptions getImageOptions(boolean isCacheAllowed) {
+        DisplayImageOptions.Builder options = new DisplayImageOptions.Builder();
+        options.delayBeforeLoading(10)
+                .bitmapConfig(Bitmap.Config.ARGB_8888)
+                .imageScaleType(ImageScaleType.NONE)
+                .cacheOnDisk(isCacheAllowed)
+                .cacheInMemory(false);
         return options.build();
     }
 

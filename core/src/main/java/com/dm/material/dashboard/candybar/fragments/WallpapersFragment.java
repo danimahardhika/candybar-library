@@ -67,7 +67,6 @@ public class WallpapersFragment extends Fragment {
     private HttpURLConnection mConnection;
     private Database mDatabase;
     private WallpapersAdapter mAdapter;
-    private AsyncTask<Void, Void, Boolean> mGetCloudWallpapers;
     private AsyncTask<Void, Void, Boolean> mGetWallpapers;
 
     @Nullable
@@ -105,19 +104,17 @@ public class WallpapersFragment extends Fragment {
 
         mSwipe.setOnRefreshListener(() -> {
             if (mProgress.getVisibility() == View.GONE)
-                getCloudWallpapers(true);
+                getWallpapers(true);
             else mSwipe.setRefreshing(false);
         });
 
-        if (mDatabase.isWallpapersEmpty()) getCloudWallpapers(false);
-        else {
-            if (Preferences.getPreferences(getActivity()).isTimeToUpdateWallpaper()) {
-                getCloudWallpapers(true);
-                return;
-            }
-
-            getWallpapers();
+        boolean isTimeToUpdate = Preferences.getPreferences(getActivity()).isTimeToUpdateWallpaper();
+        if (!mDatabase.isWallpapersEmpty() && isTimeToUpdate) {
+            getWallpapers(true);
+            return;
         }
+
+        getWallpapers(false);
     }
 
     @Override
@@ -133,25 +130,22 @@ public class WallpapersFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mGetCloudWallpapers != null) {
+        if (mGetWallpapers != null) {
             try {
                 if (mConnection != null) mConnection.disconnect();
             } catch (Exception ignored){}
-            mGetCloudWallpapers.cancel(true);
+            mGetWallpapers.cancel(true);
         }
-        if (mGetWallpapers != null) mGetWallpapers.cancel(true);
     }
 
     private void resetNavigationBarMargin() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int left = getActivity().getResources().getDimensionPixelSize(R.dimen.card_margin_left);
-            int top = getActivity().getResources().getDimensionPixelSize(R.dimen.card_margin_top);
-            int bottom = getActivity().getResources().getDimensionPixelSize(R.dimen.card_margin_bottom);
+            int padding = getActivity().getResources().getDimensionPixelSize(R.dimen.content_padding);
             if (getActivity().getResources().getConfiguration().orientation
                     == Configuration.ORIENTATION_PORTRAIT) {
                 int navbar = ViewHelper.getNavigationBarHeight(getActivity());
-                mWallpapersGrid.setPadding(left, top, 0, (bottom + navbar));
-            } else mWallpapersGrid.setPadding(left, top, 0, bottom);
+                mWallpapersGrid.setPadding(padding, padding, 0, (padding + navbar));
+            } else mWallpapersGrid.setPadding(padding, padding, 0, padding);
         }
     }
 
@@ -167,11 +161,12 @@ public class WallpapersFragment extends Fragment {
         });
     }
 
-    private void getCloudWallpapers(boolean refreshing) {
+    private void getWallpapers(boolean refreshing) {
         final String wallpaperUrl = getActivity().getResources().getString(R.string.wallpaper_json);
-        mGetCloudWallpapers = new AsyncTask<Void, Void, Boolean>() {
+        mGetWallpapers = new AsyncTask<Void, Void, Boolean>() {
 
-            WallpaperJSON wallpapers;
+            WallpaperJSON wallpapersJSON;
+            List<Wallpaper> wallpapers;
 
             @Override
             protected void onPreExecute() {
@@ -185,29 +180,35 @@ public class WallpapersFragment extends Fragment {
                 while (!isCancelled()) {
                     try {
                         Thread.sleep(1);
+                        if (!refreshing && !mDatabase.isWallpapersEmpty()) {
+                            wallpapers = mDatabase.getWallpapers();
+                            return true;
+                        }
+
                         URL url = new URL(wallpaperUrl);
                         mConnection = (HttpURLConnection) url.openConnection();
                         mConnection.setConnectTimeout(15000);
 
                         if (mConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                             InputStream stream = new BufferedInputStream(mConnection.getInputStream());
-                            wallpapers = LoganSquare.parse(stream, WallpaperJSON.class);
+                            wallpapersJSON = LoganSquare.parse(stream, WallpaperJSON.class);
 
-                            if (wallpapers == null) return false;
+                            if (wallpapersJSON == null) return false;
                             if (refreshing) {
                                 List<Wallpaper> dates = mDatabase.getWallpaperAddedOn();
 
                                 mDatabase.deleteAllWalls();
-                                mDatabase.addAllWallpapers(wallpapers);
+                                mDatabase.addAllWallpapers(wallpapersJSON);
 
                                 for (Wallpaper date : dates) {
                                     mDatabase.setWallpaperAddedOn(date.getURL(), date.getDate());
                                 }
-                                return true;
+                            } else {
+                                if (!mDatabase.isWallpapersEmpty()) mDatabase.deleteAllWalls();
+                                mDatabase.addAllWallpapers(wallpapersJSON);
                             }
 
-                            if (!mDatabase.isWallpapersEmpty()) mDatabase.deleteAllWalls();
-                            mDatabase.addAllWallpapers(wallpapers);
+                            wallpapers = mDatabase.getWallpapers();
                             return true;
                         }
                     } catch (Exception e) {
@@ -225,47 +226,19 @@ public class WallpapersFragment extends Fragment {
                 else mSwipe.setRefreshing(false);
                 if (aBoolean) {
                     Preferences.getPreferences(getActivity()).setWallpaperLastUpdate();
-                    getWallpapers();
-                } else {
-                    Toast.makeText(getActivity(), R.string.connection_failed,
-                            Toast.LENGTH_LONG).show();
-                }
-                mConnection = null;
-                mGetCloudWallpapers = null;
-            }
-
-        }.execute();
-    }
-
-    private void getWallpapers() {
-        mGetWallpapers = new AsyncTask<Void, Void, Boolean>() {
-
-            List<Wallpaper> wallpapers;
-
-            @Override
-            protected Boolean doInBackground(Void... voids) {
-                while(!isCancelled()) {
-                    try {
-                        Thread.sleep(1);
-                        wallpapers = mDatabase.getWallpapers();
-                        return true;
-                    } catch (Exception e) {
-                        Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
-                        return false;
-                    }
-                }
-                return false;
-            }
-
-            @Override
-            protected void onPostExecute(Boolean aBoolean) {
-                super.onPostExecute(aBoolean);
-                if (aBoolean) {
                     resetSpanSizeLookUp(getActivity().getResources().getConfiguration().orientation);
                     mAdapter = new WallpapersAdapter(getActivity(), wallpapers);
                     mWallpapersGrid.setAdapter(mAdapter);
+                } else {
+                    if (refreshing) {
+                        Toast.makeText(getActivity(), R.string.connection_failed,
+                                Toast.LENGTH_LONG).show();
+                    }
                 }
+                mConnection = null;
+                mGetWallpapers = null;
             }
+
         }.execute();
     }
 

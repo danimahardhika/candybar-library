@@ -18,8 +18,8 @@ import android.widget.TextView;
 
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.fragments.dialog.IconPreviewFragment;
+import com.dm.material.dashboard.candybar.helpers.FileHelper;
 import com.dm.material.dashboard.candybar.helpers.IntentHelper;
-import com.dm.material.dashboard.candybar.helpers.PermissionHelper;
 import com.dm.material.dashboard.candybar.items.Icon;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
@@ -28,7 +28,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -126,11 +125,7 @@ public class IconsAdapter extends RecyclerView.Adapter<IconsAdapter.ViewHolder> 
                     Bitmap bitmap = ImageLoader.getInstance().loadImageSync("drawable://" +
                             mIcons.get(position).getRes());
                     if (bitmap != null) {
-                        File folder = new File(mContext.getCacheDir().toString());
-                        if (PermissionHelper.isPermissionStorageGranted(mContext)) {
-                            File external = mContext.getExternalCacheDir();
-                            if (external != null) folder = new File(external.toString());
-                        }
+                        File folder = FileHelper.getCacheDirectory(mContext);
 
                         boolean createFolder = true;
                         if (!folder.exists())
@@ -144,7 +139,7 @@ public class IconsAdapter extends RecyclerView.Adapter<IconsAdapter.ViewHolder> 
                                 outStream.flush();
                                 outStream.close();
                                 intent.setData(Uri.fromFile(file));
-                            } catch (IOException e) {
+                            } catch (Exception | OutOfMemoryError e) {
                                 Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
                             }
                         }
