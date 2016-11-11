@@ -36,6 +36,12 @@
 
     <!-- CONFIG: HOME -->
 
+    <!-- Quick Apply for default launcher
+    * Enable or disable quick apply Icon Pack for default launcher if supported
+    * Enable -> true
+    * Disable -> false -->
+    <bool name="enable_quick_apply">false</bool>
+
     <!-- Text on home image
     * Leave empty if you don't want to show any text -->
     <string name="home_title">CandyBar</string>

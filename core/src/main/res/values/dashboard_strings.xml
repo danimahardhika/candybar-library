@@ -30,6 +30,7 @@
     <string name="menu_rebuild_premium">Rebuild Premium Request</string>
     <string name="menu_search">Search</string>
     <string name="menu_save">Save to Device</string>
+    <string name="menu_details">Wallpaper Details</string>
 
     <!-- Dialog -->
     <string name="open">Open</string>
@@ -65,6 +66,11 @@
     <string name="home_features_header">Features</string>
     <string name="home_more_apps_header">More Apps</string>
     <string name="home_more_apps">Check other apps published on Google Play Store</string>
+
+    <!-- Quick Apply -->
+    <string name="quick_apply">Quick Apply</string>
+    <string name="quick_apply_desc">Tap to apply</string>
+    <string name="quick_apply_desc_1">to default launcher</string>
 
     <!-- Apply -->
     <string name="apply">Apply</string>
