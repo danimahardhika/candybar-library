@@ -337,6 +337,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
     public void previewWallpaper(View view, Wallpaper wallpaper, Bitmap bitmap) {
         final Intent intent = new Intent(this, mWallpaperActivity);
         intent.putExtra("url", wallpaper.getURL());
+        intent.putExtra("author", wallpaper.getAuthor());
         intent.putExtra("name", wallpaper.getName());
 
         ActivityTransitionLauncher.with(this)

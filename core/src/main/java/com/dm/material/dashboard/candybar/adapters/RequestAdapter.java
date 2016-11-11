@@ -175,9 +175,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         public void onClick(View view) {
             int id = view.getId();
             if (id == R.id.container) {
-                int position = mIsPremiumRequestEnabled ?
-                        getAdapterPosition() - 1 : getAdapterPosition();
-                toggleSelection(position);
+                toggleSelection(getAdapterPosition());
             } else if (id == R.id.buy_package) {
                 try {
                     RequestListener listener = (RequestListener) mContext;
@@ -190,9 +188,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         public boolean onLongClick(View view) {
             int id = view.getId();
             if (id == R.id.container) {
-                int position = mIsPremiumRequestEnabled ?
-                        getAdapterPosition() - 1 : getAdapterPosition();
-                toggleSelection(position);
+                toggleSelection(getAdapterPosition());
                 return true;
             }
             return false;
@@ -200,9 +196,11 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
     }
 
     private void toggleSelection(int position) {
-        if (mSelectedItems.get(position, false))
-            mSelectedItems.delete(position);
-        else mSelectedItems.put(position, true);
+        int finalPos = mIsPremiumRequestEnabled ?
+                position - 1 : position;
+        if (mSelectedItems.get(finalPos, false))
+            mSelectedItems.delete(finalPos);
+        else mSelectedItems.put(finalPos, true);
         notifyItemChanged(position);
         try {
             RequestListener listener = (RequestListener) mContext;

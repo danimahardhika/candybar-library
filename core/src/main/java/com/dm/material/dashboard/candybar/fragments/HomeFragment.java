@@ -19,11 +19,13 @@ import android.view.ViewGroup;
 import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.HomeFeaturesAdapter;
 import com.dm.material.dashboard.candybar.helpers.ColorHelper;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
+import com.dm.material.dashboard.candybar.helpers.LauncherHelper;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.items.Feature;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
@@ -54,8 +56,12 @@ public class HomeFragment extends Fragment {
     private RecyclerView mFeatureList;
     private CardView mCardDesc;
     private CardView mCardApps;
+    private CardView mCardQuickApply;
     private LinearLayout mMoreApps;
+    private LinearLayout mQuickApply;
     private ImageView mAppsIcon;
+    private ImageView mQuickApplyIcon;
+    private TextView mQuickApplyText;
     private NestedScrollView mScrollView;
     private View mShadow;
 
@@ -67,8 +73,12 @@ public class HomeFragment extends Fragment {
         mFeatureList = (RecyclerView) view.findViewById(R.id.home_feature_list);
         mCardDesc = (CardView) view.findViewById(R.id.card_desc);
         mCardApps = (CardView) view.findViewById(R.id.card_more_apps);
+        mCardQuickApply = (CardView) view.findViewById(R.id.card_quick_apply);
         mMoreApps = (LinearLayout) view.findViewById(R.id.more_apps);
+        mQuickApply = (LinearLayout) view.findViewById(R.id.quick_apply);
         mAppsIcon = (ImageView) view.findViewById(R.id.more_apps_icon);
+        mQuickApplyIcon = (ImageView) view.findViewById(R.id.quick_apply_icon);
+        mQuickApplyText = (TextView) view.findViewById(R.id.quick_apply_text);
         mScrollView = (NestedScrollView) view.findViewById(R.id.scrollview);
         mShadow = view.findViewById(R.id.shadow);
         return view;
@@ -92,6 +102,12 @@ public class HomeFragment extends Fragment {
                 mScrollView, newConfig.orientation);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        initQuickApply();
+    }
+
     public void showToolbarShadow(boolean isTimeToShow) {
         mShadow.setVisibility(isTimeToShow ? View.VISIBLE : View.GONE);
     }
@@ -100,6 +116,33 @@ public class HomeFragment extends Fragment {
         String desc = getActivity().getResources().getString(R.string.home_description);
         if (desc.length() == 0) mCardDesc.setVisibility(View.GONE);
         else mCardDesc.setVisibility(View.VISIBLE);
+    }
+
+    private void initQuickApply() {
+        boolean quickApply = getActivity().getResources().getBoolean(R.bool.enable_quick_apply);
+        if (quickApply) {
+            String[] packageInfo = LauncherHelper.getDefaultLauncher(getActivity());
+            if (packageInfo == null) return;
+            int id = LauncherHelper.getLauncherId(packageInfo[0]);
+            if (id == LauncherHelper.UNKNOWN) return;
+
+            mCardQuickApply.setVisibility(View.VISIBLE);
+            int color = ColorHelper.getAttributeColor(getActivity(),
+                    android.R.attr.textColorSecondary);
+            Drawable drawable = DrawableHelper.getTintedDrawable(
+                    getActivity(), R.drawable.ic_home_quick_apply, color);
+            mQuickApplyIcon.setImageDrawable(drawable);
+
+            mQuickApply.setBackgroundResource(Preferences.getPreferences(getActivity()).isDarkTheme() ?
+                    R.drawable.card_item_list_dark : R.drawable.card_item_list);
+            mQuickApply.setOnClickListener(view ->
+                    LauncherHelper.apply(getActivity(), packageInfo[0], packageInfo[1]));
+
+            String text = getActivity().getResources().getString(R.string.quick_apply_desc) +" "+
+                    getActivity().getResources().getString(R.string.app_name) +" "+
+                    getActivity().getResources().getString(R.string.quick_apply_desc_1);
+            mQuickApplyText.setText(text);
+        }
     }
 
     private void initFeatures() {

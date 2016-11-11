@@ -5,8 +5,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
@@ -34,7 +36,7 @@ import com.dm.material.dashboard.candybar.R;
 
 public class LauncherHelper {
 
-    private static final int UNKNOWN = -1;
+    public static final int UNKNOWN = -1;
     private static final int ACTION = 1;
     private static final int ADW = 2;
     private static final int APEX = 3;
@@ -77,7 +79,7 @@ public class LauncherHelper {
     private static final String CMTHEME_INTENT = "org.cyanogenmod.theme.chooser.ChooserActivity";
     private static final String ASUS_APPLY_ICON_PACK = "com.asus.launcher.intent.action.APPLY_ICONPACK";
 
-    private static int getLauncherId(String packageName) {
+    public static int getLauncherId(String packageName) {
         if (packageName == null) return UNKNOWN;
         switch (packageName) {
             case "com.actionlauncher.playstore":
@@ -425,12 +427,19 @@ public class LauncherHelper {
                 .show();
     }
 
-    public static String getDefaultLauncher(Context context) {
-        PackageManager packageManager = context.getPackageManager();
-        Intent intent = new Intent("android.intent.action.MAIN");
-        intent.addCategory("android.intent.category.HOME");
-        return packageManager.resolveActivity(intent,
-                PackageManager.MATCH_DEFAULT_ONLY).activityInfo.packageName;
+    @Nullable
+    public static String[] getDefaultLauncher(Context context) {
+        try {
+            PackageManager packageManager = context.getPackageManager();
+            Intent intent = new Intent("android.intent.action.MAIN");
+            intent.addCategory("android.intent.category.HOME");
+            ResolveInfo resolveInfo = packageManager.resolveActivity(
+                    intent, PackageManager.MATCH_DEFAULT_ONLY);
+            return new String[]{resolveInfo.activityInfo.packageName,
+                    resolveInfo.activityInfo.loadLabel(packageManager).toString()};
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 }

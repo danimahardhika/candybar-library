@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,6 +24,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.dm.material.dashboard.candybar.helpers.FileHelper;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.kogitune.activitytransition.ActivityTransition;
 import com.kogitune.activitytransition.ExitActivityTransition;
@@ -67,19 +70,25 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
 
     private String mUrl;
     private String mName;
+    private String mAuthor;
     private int mColor;
-    private boolean mIsShowMenu = false;
+    private boolean mIsShowMenu;
     private boolean mIsEnter;
 
     private Runnable mRunnable;
     private Handler mHandler;
     private ExitActivityTransition mExitTransition;
 
+    private static final String URL = "url";
+    private static final String NAME = "name";
+    private static final String AUTHOR = "author";
+
     public void initWallpaperActivity(Bundle savedInstanceState, Intent intent) {
         super.setTheme(Preferences.getPreferences(this).isDarkTheme() ?
                 R.style.WallpaperThemeDark : R.style.WallpaperTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wallpaper);
+        mIsShowMenu = false;
         mIsEnter = true;
 
         mWallpaper = (ImageView) findViewById(R.id.wallpaper);
@@ -95,15 +104,17 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
         mColor = ColorHelper.getAttributeColor(this, R.attr.colorAccent);
 
         if (savedInstanceState != null) {
-            mUrl = savedInstanceState.getString("url");
-            mName = savedInstanceState.getString("name");
+            mUrl = savedInstanceState.getString(URL);
+            mName = savedInstanceState.getString(NAME);
+            mAuthor = savedInstanceState.getString(AUTHOR);
         }
 
         if (intent != null) {
             Bundle bundle = intent.getExtras();
             if (bundle != null) {
-                mUrl = bundle.getString("url");
-                mName = bundle.getString("name");
+                mUrl = bundle.getString(URL);
+                mName = bundle.getString(NAME);
+                mAuthor = bundle.getString(AUTHOR);
             }
         }
 
@@ -119,8 +130,9 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
                 .duration(300)
                 .start(savedInstanceState);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && savedInstanceState == null) {
             Transition transition = getWindow().getSharedElementEnterTransition();
+
             if (transition != null) {
                 transition.addListener(new Transition.TransitionListener() {
                     @Override
@@ -155,11 +167,7 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
             }
         }
 
-        mRunnable = () -> {
-            mRunnable = null;
-            mHandler = null;
-            loadWallpaper(mUrl);
-        };
+        mRunnable = () -> loadWallpaper(mUrl);
         mHandler = new Handler();
         mHandler.postDelayed(mRunnable, 700);
     }
@@ -174,7 +182,9 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_wallpaper, menu);
         MenuItem save = menu.findItem(R.id.menu_save);
+        MenuItem details = menu.findItem(R.id.menu_details);
         save.setVisible(mIsShowMenu);
+        details.setVisible(mIsShowMenu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -185,8 +195,9 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putString("name", mName);
-        outState.putString("url", mUrl);
+        outState.putString(NAME, mName);
+        outState.putString(AUTHOR, mAuthor);
+        outState.putString(URL, mUrl);
         super.onSaveInstanceState(outState);
     }
 
@@ -210,6 +221,24 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
                 WallpaperHelper.downloadWallpaper(this, mColor, mUrl, mName, R.id.coordinator_layout);
             } else {
                 PermissionHelper.requestStoragePermission(this, PermissionHelper.PERMISSION_STORAGE);
+            }
+            return true;
+        } else if (id == R.id.menu_details) {
+            Bitmap bitmap = ((BitmapDrawable) mWallpaper.getDrawable()).getBitmap();
+            if (bitmap != null) {
+                String details = "Name : " +mName +"\n"+
+                        "Author : " +mAuthor +"\n"+
+                        "Dimensions : " +bitmap.getWidth() +" x "+ bitmap.getHeight() +" pixels";
+                if (Preferences.getPreferences(this).isWallpaperSaved(
+                        mName + FileHelper.IMAGE_EXTENSION)){
+                    details += "\n" + "Location : " + Preferences.getPreferences(this).getWallsDirectory()
+                            +"/"+ mName + FileHelper.IMAGE_EXTENSION;
+                }
+                new MaterialDialog.Builder(this)
+                        .title(R.string.menu_details)
+                        .content(details)
+                        .positiveText(R.string.close)
+                        .show();
             }
             return true;
         }
@@ -239,10 +268,6 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
         }
     }
 
-    private void start(int duration) {
-
-    }
-
     private void loadWallpaper(String url) {
         ImageLoader.getInstance().displayImage(url, mWallpaper, ImageConfig.getImageOptions(
                 Preferences.getPreferences(this).isCacheAllowed()), new SimpleImageLoadingListener() {
@@ -262,6 +287,8 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                 super.onLoadingComplete(imageUri, view, loadedImage);
+                mRunnable = null;
+                mHandler = null;
                 mProgress.setVisibility(View.GONE);
                 if (loadedImage != null) {
                     Palette.from(loadedImage).generate(palette -> {

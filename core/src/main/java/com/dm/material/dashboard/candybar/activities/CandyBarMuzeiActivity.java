@@ -2,6 +2,7 @@ package com.dm.material.dashboard.candybar.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.helpers.ColorHelper;
+import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.Tag;
 
@@ -59,6 +61,7 @@ public class CandyBarMuzeiActivity extends AppCompatActivity implements View.OnC
         getWindow().getDecorView().setBackgroundColor(
                 ColorHelper.getAttributeColor(this, R.attr.main_background));
         ColorHelper.setStatusBarColor(this, ColorHelper.getAttributeColor(this, R.attr.colorPrimaryDark));
+        ViewHelper.resetNavigationBarTranslucent(this, getResources().getConfiguration().orientation);
 
         mMinute = (RadioButton) findViewById(R.id.minute);
         mHour = (RadioButton) findViewById(R.id.hour);
@@ -90,6 +93,12 @@ public class CandyBarMuzeiActivity extends AppCompatActivity implements View.OnC
     }
 
     @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        ViewHelper.resetNavigationBarTranslucent(this, newConfig.orientation);
+    }
+
+    @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
@@ -109,6 +118,7 @@ public class CandyBarMuzeiActivity extends AppCompatActivity implements View.OnC
             if (!URLUtil.isValidUrl(url)) {
                 Toast.makeText(this, R.string.muzei_settings_ignored,
                         Toast.LENGTH_SHORT).show();
+                finish();
                 return true;
             }
 

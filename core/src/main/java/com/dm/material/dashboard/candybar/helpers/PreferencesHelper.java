@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 
 import com.dm.material.dashboard.candybar.R;
 
+import java.io.File;
 import java.util.Calendar;
 
 /*
@@ -143,6 +144,10 @@ public class PreferencesHelper {
 
     public String getWallsDirectory() {
         return getSharedPreferences().getString(KEY_WALLS_DIRECTORY, "");
+    }
+
+    public boolean isWallpaperSaved (String filename) {
+        return new File(getWallsDirectory() + "/" + filename).exists();
     }
 
     public boolean isPremiumRequest() {
