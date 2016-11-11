@@ -42,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:minHeight="?attr/actionBarSize"
-            android:background="@color/wallpaperToolbar" >
+            android:background="@color/wallpaperToolbar">
 
             <TextView
                 android:id="@+id/toolbar_title"
@@ -53,8 +53,8 @@
                 android:textColor="@android:color/white"
                 android:singleLine="true"
                 android:ellipsize="end"
-                android:textSize="20sp"
-                fontPath="fonts/Font-Medium.ttf"/>
+                android:textSize="16sp"
+                fontPath="fonts/Font-Regular.ttf"/>
 
         </android.support.v7.widget.Toolbar>
 
