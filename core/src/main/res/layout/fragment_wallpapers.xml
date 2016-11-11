@@ -16,10 +16,7 @@
             android:id="@+id/wallpapers_grid"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingTop="@dimen/card_margin_top"
-            android:paddingLeft="@dimen/card_margin_left"
-            android:paddingStart="@dimen/card_margin_left"
-            android:paddingBottom="@dimen/card_padding_bottom"
+            android:padding="@dimen/content_padding"
             android:clipToPadding="false"/>
 
     </android.support.v4.widget.SwipeRefreshLayout>

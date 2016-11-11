@@ -7,12 +7,9 @@
     android:id="@+id/wallpaper_tips"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginRight="@dimen/card_margin_right"
-    android:layout_marginEnd="@dimen/card_margin_right"
-    android:layout_marginBottom="@dimen/card_margin_bottom"
     app:cardBackgroundColor="?attr/card_background"
     app:cardElevation="@dimen/card_elevation"
-    app:cardUseCompatPadding="@bool/card_use_compat_padding"
+    app:cardUseCompatPadding="true"
     app:cardCornerRadius="@dimen/card_corner_radius">
 
     <LinearLayout
