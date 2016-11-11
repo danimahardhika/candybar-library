@@ -28,7 +28,7 @@ Add the dependency
 ```groovy
 dependencies {
     //...
-    compile 'com.github.danimahardhika.candybar-library:core:1.0.3'
+    compile 'com.github.danimahardhika.candybar-library:core:1.0.4'
 }
 ```
 # Previews
