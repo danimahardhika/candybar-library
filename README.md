@@ -8,6 +8,7 @@
 # Gradle Dependency
 **Requirements**
 <ul>
+<li>Latest version of Android Studio</li>
 <li>Android-SDK Build tools v25</li>
 <li>API 25 SDK Platform</li>
 <li>Latest version of Android Support Library</li>
