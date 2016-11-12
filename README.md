@@ -56,7 +56,7 @@ Take a look inside <a href="https://github.com/danimahardhika/candybar-library/w
 <ul>
 <li>Very Light: only 2 MB</li>
 <li>License Checker</li>
-<li>Apply: 19 launcher cards</li>
+<li>Apply: 19 launchers</li>
 <li>Icon Picker: see all icons included with sections and search</li>
 <li>Icon Request</li>
     <ul>
