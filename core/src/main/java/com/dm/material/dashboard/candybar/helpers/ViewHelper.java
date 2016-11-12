@@ -89,6 +89,7 @@ public class ViewHelper {
                         toolbarTitle, ALPHA_ANIMATIONS_DURATION, View.VISIBLE);
                 isToolbarTitleVisible = true;
                 ColorHelper.setTransparentStatusBar(context, Color.TRANSPARENT);
+                ColorHelper.setStatusBarIconColor(context);
             }
         } else {
             if (isToolbarTitleVisible) {
@@ -96,6 +97,7 @@ public class ViewHelper {
                         toolbarTitle, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE);
                 isToolbarTitleVisible = false;
                 ColorHelper.setTransparentStatusBar(context, Color.parseColor("#22000000"));
+                ColorHelper.setStatusBarIconColor(context);
             }
         }
         return isToolbarTitleVisible;

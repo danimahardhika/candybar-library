@@ -9,8 +9,12 @@ import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
+import android.view.View;
 import android.view.WindowManager;
+
+import com.dm.material.dashboard.candybar.R;
 
 /*
  * CandyBar - Material Dashboard
@@ -69,7 +73,7 @@ public class ColorHelper {
 
     public static int getTitleTextColor(@NonNull Context context, @ColorInt int color) {
         double darkness = 1-(0.299*Color.red(color) + 0.587*Color.green(color) + 0.114*Color.blue(color))/255;
-        return (darkness < 0.35) ? getDarkerColor(color, 0.2f) :
+        return (darkness < 0.35) ? getDarkerColor(color, 0.25f) :
                 ContextCompat.getColor(context, android.R.color.white);
     }
 
@@ -83,6 +87,34 @@ public class ColorHelper {
                 color2
         };
         return new ColorStateList(states, colors);
+    }
+
+    public static boolean isLightToolbar(@NonNull Context context) {
+        int color = getAttributeColor(context, R.attr.colorPrimaryDark);
+        int red = Color.red(color);
+        int green = Color.green(color);
+        int blue = Color.blue(color);
+        return red >= 192 && green >= 192 && blue >= 192;
+    }
+
+    public static void setStatusBarIconColor(@NonNull Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            View view = ((AppCompatActivity) context).getWindow().getDecorView();
+            if (view != null) {
+                String homeImage = context.getResources().getString(R.string.home_image);
+                if (homeImage.length() > 0) {
+                    view.setSystemUiVisibility(0);
+                    return;
+                }
+
+                if (isLightToolbar(context)){
+                    view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                    return;
+                }
+
+                view.setSystemUiVisibility(0);
+            }
+        }
     }
 
 }

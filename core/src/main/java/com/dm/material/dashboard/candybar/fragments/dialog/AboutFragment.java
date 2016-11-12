@@ -170,7 +170,7 @@ public class AboutFragment extends DialogFragment implements View.OnClickListene
                             .isCacheAllowed()));
         } else {
             int res = DrawableHelper.getResourceId(getActivity(), url);
-            mImageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), res));
+            if (res > 0) mImageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), res));
         }
     }
 
@@ -182,7 +182,7 @@ public class AboutFragment extends DialogFragment implements View.OnClickListene
                     .isCacheAllowed()));
         } else {
             int res = DrawableHelper.getResourceId(getActivity(), url);
-            mProfile.setImageDrawable(ContextCompat.getDrawable(getActivity(), res));
+            if (res > 0) mProfile.setImageDrawable(ContextCompat.getDrawable(getActivity(), res));
         }
     }
 

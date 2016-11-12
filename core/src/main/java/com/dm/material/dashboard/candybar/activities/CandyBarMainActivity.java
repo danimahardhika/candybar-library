@@ -502,6 +502,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
     private void initTheme() {
         if (mPosition == 0)
             ColorHelper.setTransparentStatusBar(this, Color.parseColor("#22000000"));
+        ColorHelper.setStatusBarIconColor(this);
         getWindow().getDecorView().setBackgroundColor(
                 ColorHelper.getAttributeColor(this, R.attr.main_background));
     }
@@ -602,7 +603,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
                     true, Preferences.getPreferences(this).isCacheAllowed()));
         } else {
             int res = DrawableHelper.getResourceId(this, imageUrl);
-            image.setImageDrawable(ContextCompat.getDrawable(this, res));
+            if (res > 0) image.setImageDrawable(ContextCompat.getDrawable(this, res));
         }
 
         if (titleText.length() == 0) {
@@ -625,7 +626,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
                             Preferences.getPreferences(this).isCacheAllowed()));
         } else {
             int res = DrawableHelper.getResourceId(this, image);
-            mHomeImage.setImageDrawable(ContextCompat.getDrawable(this, res));
+            if (res > 0) mHomeImage.setImageDrawable(ContextCompat.getDrawable(this, res));
         }
     }
 
