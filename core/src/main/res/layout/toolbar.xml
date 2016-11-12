@@ -54,20 +54,28 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/home_title"
-                        android:textSize="26sp"
+                        android:textSize="22sp"
                         android:gravity="center"
                         android:textColor="?attr/toolbar_icon"
-                        fontPath="fonts/Font-Bold.ttf"/>
+                        android:paddingLeft="@dimen/home_content_padding"
+                        android:paddingStart="@dimen/home_content_padding"
+                        android:paddingRight="@dimen/home_content_padding"
+                        android:paddingEnd="@dimen/home_content_padding"
+                        fontPath="fonts/Font-Medium.ttf"/>
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/home_subtitle"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:gravity="center"
                         android:textColor="?attr/toolbar_icon"
                         android:shadowColor="#66000000"
-                        fontPath="fonts/Font-Medium.ttf"/>
+                        android:paddingLeft="@dimen/home_content_padding"
+                        android:paddingStart="@dimen/home_content_padding"
+                        android:paddingRight="@dimen/home_content_padding"
+                        android:paddingEnd="@dimen/home_content_padding"
+                        fontPath="fonts/Font-Light.ttf"/>
 
                 </LinearLayout>
 
