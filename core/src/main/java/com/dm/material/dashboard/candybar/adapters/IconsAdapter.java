@@ -1,14 +1,8 @@
 package com.dm.material.dashboard.candybar.adapters;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,17 +11,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dm.material.dashboard.candybar.R;
-import com.dm.material.dashboard.candybar.fragments.dialog.IconPreviewFragment;
-import com.dm.material.dashboard.candybar.helpers.FileHelper;
+import com.dm.material.dashboard.candybar.helpers.IconsHelper;
 import com.dm.material.dashboard.candybar.helpers.IntentHelper;
 import com.dm.material.dashboard.candybar.items.Icon;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
-import com.dm.material.dashboard.candybar.utils.Tag;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -81,8 +71,7 @@ public class IconsAdapter extends RecyclerView.Adapter<IconsAdapter.ViewHolder> 
         }
 
         ImageLoader.getInstance().displayImage("drawable://" + mIcons.get(position).getRes(),
-                holder.icon, ImageConfig.getImageOptions(
-                        false, Preferences.getPreferences(mContext).isCacheAllowed()));
+                holder.icon, ImageConfig.getIconOptions());
     }
 
     @Override
@@ -111,49 +100,7 @@ public class IconsAdapter extends RecyclerView.Adapter<IconsAdapter.ViewHolder> 
             int id = view.getId();
             int position = getAdapterPosition();
             if (id == R.id.container) {
-                if (IntentHelper.sAction == IntentHelper.ICON_PICKER) {
-                    Intent intent = new Intent();
-                    Bitmap bitmap = ImageLoader.getInstance().loadImageSync(
-                            "drawable://" + mIcons.get(position).getRes());
-
-                    intent.putExtra("icon", bitmap);
-                    ((AppCompatActivity) mContext).setResult(bitmap != null ?
-                            Activity.RESULT_OK : Activity.RESULT_CANCELED, intent);
-                    ((AppCompatActivity) mContext).finish();
-                } else if (IntentHelper.sAction == IntentHelper.IMAGE_PICKER) {
-                    Intent intent = new Intent();
-                    Bitmap bitmap = ImageLoader.getInstance().loadImageSync("drawable://" +
-                            mIcons.get(position).getRes());
-                    if (bitmap != null) {
-                        File folder = FileHelper.getCacheDirectory(mContext);
-
-                        boolean createFolder = true;
-                        if (!folder.exists())
-                            createFolder = folder.mkdirs();
-                        if (createFolder) {
-                            File file = new File(folder, mIcons.get(position).getTitle() + ".png");
-                            FileOutputStream outStream;
-                            try {
-                                outStream = new FileOutputStream(file);
-                                bitmap.compress(Bitmap.CompressFormat.PNG, 100, outStream);
-                                outStream.flush();
-                                outStream.close();
-                                intent.setData(Uri.fromFile(file));
-                            } catch (Exception | OutOfMemoryError e) {
-                                Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
-                            }
-                        }
-                        intent.putExtra("return-data", false);
-                    }
-                    ((AppCompatActivity) mContext).setResult(bitmap != null ?
-                            Activity.RESULT_OK : Activity.RESULT_CANCELED, intent);
-                    ((AppCompatActivity) mContext).finish();
-                } else {
-                    IconPreviewFragment.showIconPreview(((AppCompatActivity) mContext)
-                                    .getSupportFragmentManager(),
-                            mIcons.get(position).getTitle(),
-                            mIcons.get(position).getRes());
-                }
+                IconsHelper.selectIcon(mContext, IntentHelper.sAction, mIcons.get(position));
             }
         }
     }

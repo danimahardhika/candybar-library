@@ -195,6 +195,11 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         }
     }
 
+    public void addRequest(Request request) {
+        mRequests.add(request);
+        notifyItemInserted(getItemCount() - 1);
+    }
+
     private void toggleSelection(int position) {
         int finalPos = mIsPremiumRequestEnabled ?
                 position - 1 : position;

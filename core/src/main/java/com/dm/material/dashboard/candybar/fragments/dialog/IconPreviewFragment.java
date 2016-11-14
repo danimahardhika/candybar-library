@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.dm.material.dashboard.candybar.R;
-import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -100,8 +99,7 @@ public class IconPreviewFragment extends DialogFragment {
 
         mName.setText(mIconName);
         ImageLoader.getInstance().displayImage("drawable://" + mIconId, mIcon,
-                ImageConfig.getImageOptions(false, Preferences.getPreferences(getActivity())
-                        .isCacheAllowed()));
+                ImageConfig.getIconOptions());
     }
 
     @Override

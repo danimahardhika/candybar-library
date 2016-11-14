@@ -2,6 +2,7 @@ package com.dm.material.dashboard.candybar.fragments;
 
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.content.res.XmlResourceParser;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -25,11 +26,14 @@ import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.IconsAdapter;
 import com.dm.material.dashboard.candybar.helpers.ColorHelper;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
+import com.dm.material.dashboard.candybar.helpers.IconsHelper;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.items.Icon;
 import com.dm.material.dashboard.candybar.utils.Tag;
 import com.dm.material.dashboard.candybar.utils.views.AutoFitRecyclerView;
 import com.pluscubed.recyclerfastscroll.RecyclerFastScroller;
+
+import org.xmlpull.v1.XmlPullParser;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -60,10 +64,10 @@ public class IconsFragment extends Fragment {
     private TextView mSearchResult;
 
     private IconsAdapter mAdapter;
-    private int mResource;
+    private String mTitle;
     private AsyncTask<Void, Void, Boolean> mGetIcons;
 
-    private static final String RES = "res";
+    private static final String TITLE = "title";
 
     @Nullable
     @Override
@@ -76,10 +80,10 @@ public class IconsFragment extends Fragment {
         return view;
     }
 
-    public static IconsFragment newInstance(int res) {
+    public static IconsFragment newInstance(String title) {
         IconsFragment fragment = new IconsFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(RES, res);
+        bundle.putString(TITLE, title);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -87,7 +91,7 @@ public class IconsFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mResource = getArguments().getInt(RES, -1);
+        mTitle = getArguments().getString(TITLE);
     }
 
     @Override
@@ -111,14 +115,14 @@ public class IconsFragment extends Fragment {
         int color = ColorHelper.getAttributeColor(getActivity(), R.attr.toolbar_icon);
         search.setIcon(DrawableHelper.getTintedDrawable(getActivity(),
                 R.drawable.ic_toolbar_search, color));
-        SearchView mSearchView = (SearchView) MenuItemCompat.getActionView(search);
-        mSearchView.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
-        mSearchView.setQueryHint(getActivity().getResources().getString(R.string.search_icon));
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(search);
+        searchView.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI | EditorInfo.IME_ACTION_SEARCH);
+        searchView.setQueryHint(getActivity().getResources().getString(R.string.search_icon));
 
-        ViewHelper.changeSearchViewTextColor(mSearchView,
+        ViewHelper.changeSearchViewTextColor(searchView,
                 ColorHelper.getAttributeColor(getActivity(), R.attr.toolbar_icon),
                 ColorHelper.getAttributeColor(getActivity(), R.attr.hint_text));
-        View view = mSearchView.findViewById(android.support.v7.appcompat.R.id.search_plate);
+        View view = searchView.findViewById(android.support.v7.appcompat.R.id.search_plate);
         if (view != null) view.setBackgroundColor(Color.TRANSPARENT);
 
         MenuItemCompat.setOnActionExpandListener(search, new MenuItemCompat.OnActionExpandListener() {
@@ -133,7 +137,7 @@ public class IconsFragment extends Fragment {
                 return true;
             }
         });
-        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             @Override
             public boolean onQueryTextChange(String string) {
@@ -143,7 +147,7 @@ public class IconsFragment extends Fragment {
 
             @Override
             public boolean onQueryTextSubmit(String string) {
-                mSearchView.clearFocus();
+                searchView.clearFocus();
                 return true;
             }
         });
@@ -168,12 +172,6 @@ public class IconsFragment extends Fragment {
         if (mAdapter != null) mAdapter.resetSearch();
         setHasOptionsMenu(false);
         super.onDetach();
-    }
-
-    private String replaceIconName (String string) {
-        char character = Character.toUpperCase(string.charAt(0));
-        String finalString = character + string.substring(1);
-        return finalString.replace("_", " ");
     }
 
     private void filterSearch(String query) {
@@ -208,16 +206,32 @@ public class IconsFragment extends Fragment {
                 while (!isCancelled()) {
                     try {
                         Thread.sleep(1);
-                        typedArray = getActivity().getResources().obtainTypedArray(mResource);
+                        XmlResourceParser parser = getActivity().getResources().getXml(R.xml.drawable);
+                        int eventType = parser.getEventType();
+                        String title = "";
+                        boolean filled = false;
 
-                        for (int i = 0; i < typedArray.length(); i++) {
-                            int id = typedArray.getResourceId(i, -1);
-                            if (id != -1) {
-                                String name = getActivity().getResources().getResourceEntryName(id);
-                                name = replaceIconName(name);
-                                Icon icon = new Icon(name, id);
-                                icons.add(icon);
+                        while (eventType != XmlPullParser.END_DOCUMENT) {
+                            if (eventType == XmlPullParser.START_TAG) {
+                                if (parser.getName().equals("category")) {
+                                    title = parser.getAttributeValue(null, "title");
+                                } else if (parser.getName().equals("item")) {
+                                    if (title.equals(mTitle)) {
+                                        String name = parser.getAttributeValue(null, "drawable");
+                                        int id = DrawableHelper.getResourceId(getActivity(), name);
+                                        if (id > 0) {
+                                            name = IconsHelper.replaceIconName(name);
+                                            Icon icon = new Icon(name, id);
+                                            icons.add(icon);
+                                        }
+                                        filled = true;
+                                    } else {
+                                        if (filled) break;
+                                    }
+                                }
                             }
+
+                            eventType = parser.next();
                         }
 
                         try {
@@ -241,7 +255,10 @@ public class IconsFragment extends Fragment {
             protected void onPostExecute(Boolean aBoolean) {
                 super.onPostExecute(aBoolean);
                 if (aBoolean) {
-                    setHasOptionsMenu(true);
+                    boolean globalSearch = getActivity().getResources().getBoolean(
+                            R.bool.enable_global_icon_search);
+                    setHasOptionsMenu(!globalSearch);
+
                     mAdapter = new IconsAdapter(getActivity(), icons);
                     mIconsGrid.setAdapter(mAdapter);
                 }

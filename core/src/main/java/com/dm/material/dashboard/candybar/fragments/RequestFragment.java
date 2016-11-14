@@ -91,7 +91,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     private Database mDatabase;
     private File mDirectory;
     private List<String> mFiles;
-    private AsyncTask<Void, Void, Boolean> mGetMissingApps;
+    private AsyncTask<Void, Request, Boolean> mGetMissingApps;
 
     @Nullable
     @Override
@@ -250,20 +250,19 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     }
 
     private void getMissingApps() {
-        mGetMissingApps = new AsyncTask<Void, Void, Boolean>() {
+        mGetMissingApps = new AsyncTask<Void, Request, Boolean>() {
 
-            List<Request> requests;
-            List<ResolveInfo> apps;
             Intent intent;
 
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
                 mProgress.setVisibility(View.VISIBLE);
-                requests = new ArrayList<>();
-                apps = new ArrayList<>();
                 intent = new Intent(Intent.ACTION_MAIN);
                 intent.addCategory(Intent.CATEGORY_LAUNCHER);
+
+                mAdapter = new RequestAdapter(getActivity(), new ArrayList<>());
+                mRequestList.setAdapter(mAdapter);
             }
 
             @Override
@@ -274,7 +273,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 
                         StringBuilder activities = AppFilterHelper.loadAppFilter(getActivity());
 
-                        apps = getActivity().getPackageManager().queryIntentActivities(
+                        List<ResolveInfo> apps = getActivity().getPackageManager().queryIntentActivities(
                                 intent, PackageManager.GET_RESOLVED_FILTER);
                         Collections.sort(apps, new ResolveInfo.DisplayNameComparator(
                                 getActivity().getPackageManager()));
@@ -293,7 +292,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                                         app.activityInfo.packageName,
                                         activity,
                                         requested);
-                                requests.add(request);
+                                publishProgress(request);
                             }
                         }
                         return true;
@@ -306,6 +305,13 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
             }
 
             @Override
+            protected void onProgressUpdate(Request... values) {
+                super.onProgressUpdate(values);
+                Request request = values[0];
+                mAdapter.addRequest(request);
+            }
+
+            @Override
             protected void onPostExecute(Boolean aBoolean) {
                 super.onPostExecute(aBoolean);
                 mProgress.setVisibility(View.GONE);
@@ -313,13 +319,12 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                     setHasOptionsMenu(true);
                     mFab.show();
                     mFab.setVisibility(View.VISIBLE);
-                    mAdapter = new RequestAdapter(getActivity(), requests);
-                    mRequestList.setAdapter(mAdapter);
 
                     if (!PermissionHelper.isPermissionStorageGranted(getActivity()))
                         PermissionHelper.requestStoragePermission(getActivity(),
                                 PermissionHelper.PERMISSION_STORAGE);
                 } else {
+                    mRequestList.setAdapter(null);
                     Toast.makeText(getActivity(), getActivity().getResources().getString(
                             R.string.request_appfilter_failed), Toast.LENGTH_LONG).show();
                 }

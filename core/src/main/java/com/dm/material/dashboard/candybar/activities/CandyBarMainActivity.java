@@ -194,8 +194,10 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
         if (Preferences.getPreferences(this).isNewVersion())
             ChangelogFragment.showChangelog(mFragManager);
 
-        if (licenseChecker)
-            if (!Preferences.getPreferences(this).isLicensed()) finish();
+        if (licenseChecker) {
+            if (!Preferences.getPreferences(this).isLicensed())
+                finish();
+        }
     }
 
     @Override
@@ -489,6 +491,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
     @Override
     public void OnLicenseChecked(int reason) {
         Preferences.getPreferences(this).setFirstRun(false);
+
         if (reason == Policy.LICENSED) {
             Preferences.getPreferences(this).setLicensed(true);
             if (Preferences.getPreferences(this).isNewVersion())

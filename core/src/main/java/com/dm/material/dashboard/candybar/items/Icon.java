@@ -20,19 +20,23 @@ package com.dm.material.dashboard.candybar.items;
 
 public class Icon {
 
+    private String mSection;
     private String mTitle;
     private int mRes;
-    private int mCount;
 
     public Icon(String title, int res) {
         mTitle = title;
         mRes = res;
     }
 
-    public Icon(String title, int res, int count) {
+    public Icon(String section, String title, int res) {
+        mSection = section;
         mTitle = title;
         mRes = res;
-        mCount = count;
+    }
+
+    public String getSection() {
+        return mSection;
     }
 
     public String getTitle() {
@@ -41,10 +45,6 @@ public class Icon {
 
     public int getRes() {
         return mRes;
-    }
-
-    public int getCount() {
-        return mCount;
     }
 
 }

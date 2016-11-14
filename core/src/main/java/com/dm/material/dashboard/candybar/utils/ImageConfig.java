@@ -53,6 +53,18 @@ public class ImageConfig {
         return options.build();
     }
 
+    public static DisplayImageOptions getIconOptions() {
+        DisplayImageOptions.Builder options = new DisplayImageOptions.Builder();
+        options.delayBeforeLoading(10)
+                .resetViewBeforeLoading(true)
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .imageScaleType(ImageScaleType.EXACTLY)
+                .displayer(new FadeInBitmapDisplayer(650))
+                .cacheOnDisk(false)
+                .cacheInMemory(false);
+        return options.build();
+    }
+
     public static DisplayImageOptions getImageOptions() {
         DisplayImageOptions.Builder options = new DisplayImageOptions.Builder();
         options.delayBeforeLoading(10)
