@@ -3,6 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation">
 
+    <!-- Global icon search
+    * Use global icon search instead icon search inside each section
+    * Enable -> true
+    * Disable -> false -->
+    <bool name="enable_global_icon_search">false</bool>
+
     <!-- Icon picker thumbnail size
     * default: 58dp -->
     <dimen name="icon_thumb_size">58dp</dimen>
@@ -20,38 +26,7 @@
     * Change to false to disable it -->
     <bool name="show_icon_name">true</bool>
 
-    <string-array name="icon_sections">
-
-    </string-array>
-
-    <!-- HOW TO CREATE SECTION
-    * 1. Add your section name above
-    * 2. Create another <array> named the same as your section name you just created,
-    * but in lowercase, replace space with "_"
-    * 3. Done
-    *
-    * Example: I want to create another section named "Alternate Icon"
-    *
-    * First, add section name
-    * <string-array name="icons_section">
-    *   <item>Newly Added</item>
-    *   <item>Apps</item>
-    *   <item>Games</item>
-    *   <item>Alternate Icon</item> -> THIS ONE
-    * </string-array>
-    *
-    * Second, add <array> below
-    * <array name="alternate_icon">
-    *   <item>@drawable/your_icon_name</item>
-    *   <item>@drawable/another_icon_name</item>
-    * </array>
-    -->
-
-    <!-- HOW TO DELETE SECTION
-    * Just remove section name from icons_section and icons <array> -->
-
-    <!-- Can I separate section name and icons <array> inside different xml file?
-    * YES, YOU CAN
-    * Create another xml file inside values folder move icons <array> to there -->
+    <!-- Icons section will read icons from drawable.xml same as Nova Launcher
+    * Put drawable.xml inside xml folder -->
 
 </resources>

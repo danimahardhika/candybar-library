@@ -27,6 +27,10 @@
     <color name="toolbarIcon">#FFFFFFFF</color>
     <color name="toolbarIconDark">#FFFFFFFF</color>
 
+    <!-- Home -->
+    <color name="homeTitle">#FFFFFF</color>
+    <color name="homeTitleDark">#FFFFFF</color>
+
     <!-- Tab -->
     <color name="tabIndicator">#43C0FF</color>
     <color name="tabIndicatorDark">#43C0FF</color>

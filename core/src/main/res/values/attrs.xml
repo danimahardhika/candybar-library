@@ -12,5 +12,6 @@
     <attr name="tab_indicator" format="color"/>
     <attr name="tab_text" format="color"/>
     <attr name="tab_text_selected" format="color"/>
+    <attr name="home_title" format="color"/>
 
 </resources>

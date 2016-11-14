@@ -7,8 +7,6 @@
     <dimen name="card_elevation">2.5dp</dimen>
     <dimen name="card_corner_radius">2dp</dimen>
 
-    <dimen name="card_padding_bottom">3dp</dimen>
-
     <!-- FAB -->
     <dimen name="fab_margin">20dp</dimen>
 

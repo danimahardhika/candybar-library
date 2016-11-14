@@ -33,12 +33,12 @@
                 android:fitsSystemWindows="true"
                 android:background="?attr/colorPrimary"
                 app:layout_collapseMode="parallax"
-                app:layout_collapseParallaxMultiplier="0.3">
+                app:layout_collapseParallaxMultiplier="0.5">
 
                 <ImageView
                     android:id="@+id/home_image"
                     android:layout_width="match_parent"
-                    android:layout_height="256dp"
+                    android:layout_height="@dimen/home_image_height"
                     android:scaleType="centerCrop"
                     android:fitsSystemWindows="true"/>
 
@@ -56,7 +56,7 @@
                         android:text="@string/home_title"
                         android:textSize="22sp"
                         android:gravity="center"
-                        android:textColor="?attr/toolbar_icon"
+                        android:textColor="?attr/home_title"
                         android:paddingLeft="@dimen/home_content_padding"
                         android:paddingStart="@dimen/home_content_padding"
                         android:paddingRight="@dimen/home_content_padding"
@@ -69,8 +69,7 @@
                         android:text="@string/home_subtitle"
                         android:textSize="16sp"
                         android:gravity="center"
-                        android:textColor="?attr/toolbar_icon"
-                        android:shadowColor="#66000000"
+                        android:textColor="?attr/home_title"
                         android:paddingLeft="@dimen/home_content_padding"
                         android:paddingStart="@dimen/home_content_padding"
                         android:paddingRight="@dimen/home_content_padding"

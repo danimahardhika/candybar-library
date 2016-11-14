@@ -56,6 +56,10 @@
     * just put image name here without the extension (ex: home_image.png -> home_image) -->
     <string name="home_image">https://drive.google.com/uc?id=0B0f4ypHfNKm5UFhmaTB0TGJLRDA</string>
 
+    <!-- Home image height
+    * default: 256dp -->
+    <dimen name="home_image_height">256dp</dimen>
+
     <!-- Home description
     - If you don't want to show description, just leave this empty -->
     <string name="home_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
@@ -163,6 +167,12 @@
     * default: true
     * change to false to disable it -->
     <bool name="card_wallpaper_auto_generated_color">true</bool>
+
+    <!-- Wallpaper name and author below wallpaper
+    * Show or hide name and author below wallpaper
+    * Show -> true
+    * Hide -> false -->
+    <bool name="wallpaper_show_name_author">true</bool>
 
     <!-- CONFIG: ABOUT -->
 

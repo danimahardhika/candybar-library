@@ -93,6 +93,9 @@
 
     <string name="apply_cmtheme_not_available">CM Theme not available on this device</string>
 
+    <!-- Icons -->
+    <string name="icons_load_failed">Unable to read drawable.xml</string>
+
     <!-- Request -->
     <string name="request_title">Icon Request</string>
     <string name="request_not_selected">Select app to request</string>

@@ -18,8 +18,6 @@
     <dimen name="card_elevation">2.5dp</dimen>
     <dimen name="card_corner_radius">0dp</dimen>
 
-    <dimen name="card_padding_bottom">4dp</dimen>
-
     <dimen name="content_margin">16dp</dimen>
 
     <!-- FAB -->
