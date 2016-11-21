@@ -366,7 +366,17 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
                 if (mBillingProcessor.loadOwnedPurchasesFromGoogle()) {
                     List<String> products = mBillingProcessor.listOwnedProducts();
                     if (products != null) {
-                        if (products.size() > 0) {
+                        boolean isProductIdExist = false;
+                        for (String product : products) {
+                            for (String premiumRequestProductId : mPremiumRequestProductsId) {
+                                if (premiumRequestProductId.equals(product)) {
+                                    isProductIdExist = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (isProductIdExist) {
                             RequestHelper.showPremiumRequestExist(this);
                             return;
                         }
@@ -431,8 +441,8 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
             if (mBillingProcessor.loadOwnedPurchasesFromGoogle()) {
                 List<String> productsId = mBillingProcessor.listOwnedProducts();
                 if (productsId != null) {
+                    int index = -1;
                     for (String productId : productsId) {
-                        int index = -1;
                         for (int i = 0; i < mPremiumRequestProductsId.length; i ++) {
                             if (mPremiumRequestProductsId[i].equals(productId)) {
                                 index = i;
@@ -448,7 +458,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
                             }
                         }
                     }
-                    message = productsId.size() > 0 ?
+                    message = index > -1 ?
                             R.string.pref_restore_purchases_success :
                             R.string.pref_restore_purchases_empty;
                 }
