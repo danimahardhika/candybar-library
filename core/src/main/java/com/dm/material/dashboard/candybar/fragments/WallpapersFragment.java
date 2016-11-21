@@ -144,8 +144,8 @@ public class WallpapersFragment extends Fragment {
             if (getActivity().getResources().getConfiguration().orientation
                     == Configuration.ORIENTATION_PORTRAIT) {
                 int navbar = ViewHelper.getNavigationBarHeight(getActivity());
-                mWallpapersGrid.setPadding(padding, padding, 0, (padding + navbar));
-            } else mWallpapersGrid.setPadding(padding, padding, 0, padding);
+                mWallpapersGrid.setPadding(padding, padding, padding, (padding + navbar));
+            } else mWallpapersGrid.setPadding(padding, padding, padding, padding);
         }
     }
 

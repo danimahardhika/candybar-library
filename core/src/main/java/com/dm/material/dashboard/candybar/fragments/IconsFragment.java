@@ -194,11 +194,14 @@ public class IconsFragment extends Fragment {
 
             TypedArray typedArray;
             List<Icon> icons;
+            boolean iconReplacer;
 
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
                 icons = new ArrayList<>();
+                iconReplacer = getActivity().getResources().getBoolean(
+                        R.bool.enable_icon_name_replacer);
             }
 
             @Override
@@ -220,7 +223,8 @@ public class IconsFragment extends Fragment {
                                         String name = parser.getAttributeValue(null, "drawable");
                                         int id = DrawableHelper.getResourceId(getActivity(), name);
                                         if (id > 0) {
-                                            name = IconsHelper.replaceIconName(name);
+                                            name = IconsHelper.replaceIconName(
+                                                    getActivity(), iconReplacer, name);
                                             Icon icon = new Icon(name, id);
                                             icons.add(icon);
                                         }

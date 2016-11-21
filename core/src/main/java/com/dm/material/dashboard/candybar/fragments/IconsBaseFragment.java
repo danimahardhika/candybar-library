@@ -115,7 +115,7 @@ public class IconsBaseFragment extends Fragment {
         SearchView.SearchAutoComplete autoComplete = (SearchView.SearchAutoComplete)
                 searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         if (autoComplete != null) {
-            autoComplete.setThreshold(0);
+            autoComplete.setThreshold(1);
             autoComplete.setAdapter(new IconsSuggestionAdapter(getActivity(),
                     R.layout.fragment_icons_suggestion_item_list, mIcons));
         }
@@ -145,12 +145,15 @@ public class IconsBaseFragment extends Fragment {
 
             List<Icon> icons;
             List<Icon> sections;
+            boolean iconReplacer;
 
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
                 icons = new ArrayList<>();
                 sections = new ArrayList<>();
+                iconReplacer = getActivity().getResources().getBoolean(
+                        R.bool.enable_icon_name_replacer);
                 mProgress.setVisibility(View.VISIBLE);
             }
 
@@ -180,7 +183,8 @@ public class IconsBaseFragment extends Fragment {
                                     if (id > 0) count += 1;
                                     if (globalSearch) {
                                         if (id > 0) {
-                                            name = IconsHelper.replaceIconName(name);
+                                            name = IconsHelper.replaceIconName(
+                                                    getActivity(), iconReplacer, name);
                                             Icon icon = new Icon(category, name, id);
                                             icons.add(icon);
                                         }
@@ -229,7 +233,7 @@ public class IconsBaseFragment extends Fragment {
                             Toast.LENGTH_LONG).show();
                 }
 
-                icons.clear();
+                icons = null;
                 mGetIcons = null;
             }
 
