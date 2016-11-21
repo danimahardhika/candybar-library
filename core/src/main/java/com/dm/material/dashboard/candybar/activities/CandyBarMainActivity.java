@@ -109,7 +109,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
 
     private String mFragmentTag;
     private int mPosition, mLastPosition;
-    private BillingProcessor mBillingProcessor;
+    public BillingProcessor mBillingProcessor;
     private ActionBarDrawerToggle mDrawerToggle;
     private FragmentManager mFragManager;
     private Class<?> mWallpaperActivity;
