@@ -46,8 +46,8 @@ android {
     defaultConfig {
         minSdkVersion rootProject.ext.MinSdk
         targetSdkVersion rootProject.ext.TargetSdk
-        versionCode 107
-        versionName "1.0.7"
+        versionCode 120
+        versionName "1.2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -96,7 +96,8 @@ dependencies {
     compile 'com.afollestad.material-dialogs:core:0.9.1.0'
     compile 'com.github.pluscubed:recycler-fast-scroll:0.3.2@aar'
     compile 'com.mikhaellopez:circularimageview:3.0.2'
-    compile 'com.anjlab.android.iab.v3:library:1.0.34'
+    compile 'com.anjlab.android.iab.v3:library:1.0.36'
+    compile 'com.github.chrisbanes:PhotoView:1.3.1'
     compile 'com.google.android.apps.muzei:muzei-api:2.0'
 
     testCompile 'junit:junit:4.12'

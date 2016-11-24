@@ -6,6 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -25,8 +28,10 @@ import com.dm.material.dashboard.candybar.utils.ImageConfig;
 import com.dm.material.dashboard.candybar.utils.Tag;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -37,7 +42,7 @@ import java.net.URL;
 /*
  * CandyBar - Material Dashboard
  *
- * Copyright (c) 2014-present Dani Mahardhika
+ * Copyright (c) 2014-2016 Dani Mahardhika
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,7 +76,9 @@ public class WallpaperHelper {
     private static String getWallpaperUri(@NonNull Context context, String url, String filename) {
         File directory = getDefaultWallpapersDirectory(context);
         if (new File(directory + File.separator + filename).exists()) {
-            return "file://" + directory + File.separator + filename;
+            if (PermissionHelper.isPermissionStorageGranted(context)) {
+                return "file://" + directory + File.separator + filename;
+            }
         }
         return url;
     }
@@ -115,7 +122,6 @@ public class WallpaperHelper {
                         if (!output.exists())
                             if (!output.mkdirs())
                                 return false;
-                        if (file.exists()) return true;
 
                         URL url = new URL(link);
                         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
@@ -123,7 +129,7 @@ public class WallpaperHelper {
 
                         if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                             fileLength = urlConnection.getContentLength();
-                            InputStream stream = new BufferedInputStream(url.openStream());
+                            InputStream stream = urlConnection.getInputStream();
                             OutputStream output = new FileOutputStream(file.toString());
 
                             byte data[] = new byte[1024];
@@ -158,7 +164,7 @@ public class WallpaperHelper {
                         String.valueOf(fileLength == 0 ? "" : "/" + downloaded + " KB");
                 String downloading = context.getResources().getString(
                         R.string.wallpaper_downloading);
-                String text = downloading +" ("+ size + ")";
+                String text = downloading +"\n"+ size + "";
                 dialog.setContent(text);
             }
 
@@ -212,70 +218,108 @@ public class WallpaperHelper {
                                 downloaded +" "+ file.toString(),
                                 Toast.LENGTH_LONG).show();
                     }
+                } else {
+                    Toast.makeText(context,
+                            context.getResources().getString(R.string.wallpaper_download_failed),
+                            Toast.LENGTH_LONG).show();
                 }
             }
 
         }.execute();
     }
 
-    public static void applyWallpaper(@NonNull Context context, @ColorInt int color, String url, String name) {
-        new AsyncTask<Void, Void, Boolean>() {
+    public static void applyWallpaper(@NonNull Context context, RectF rectF, @ColorInt int color,
+                                      String url, String name) {
+        final DisplayMetrics displaymetrics = context.getResources().getDisplayMetrics();
+        final int orientation = context.getResources().getConfiguration().orientation;
+        final int height = orientation == Configuration.ORIENTATION_PORTRAIT ?
+                displaymetrics.heightPixels : displaymetrics.widthPixels;
+        final int width = orientation == Configuration.ORIENTATION_PORTRAIT ?
+                displaymetrics.widthPixels : displaymetrics.heightPixels;
 
-            MaterialDialog dialog;
-            WallpaperManager manager;
-            DisplayMetrics displaymetrics;
-            int orientation;
+        final MaterialDialog.Builder builder = new MaterialDialog.Builder(context);
+        builder.widgetColor(color)
+                .progress(true, 0)
+                .progressIndeterminateStyle(true)
+                .content(R.string.wallpaper_applying);
+        final MaterialDialog dialog = builder.build();
 
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                manager = WallpaperManager.getInstance(context);
-                displaymetrics = context.getResources().getDisplayMetrics();
-                orientation = context.getResources().getConfiguration().orientation;
+        String imageUri = getWallpaperUri(context, url, name + FileHelper.IMAGE_EXTENSION);
 
-                MaterialDialog.Builder builder = new MaterialDialog.Builder(context);
-                builder.widgetColor(color)
-                        .progress(true, 0)
-                        .progressIndeterminateStyle(true)
-                        .content(R.string.wallpaper_applying);
-                dialog = builder.build();
-                dialog.setOnCancelListener(dialogInterface -> {
-                    ImageLoader.getInstance().stop();
-                    cancel(true);
+        loadBitmap(context, dialog, 1, imageUri, rectF, width, height);
+    }
+
+    private static void loadBitmap(Context context, MaterialDialog dialog, int call, String imageUri,
+                                   RectF rectF, int width, int height) {
+        final AsyncTask<Bitmap, Void, Boolean> setWallpaper = getWallpaperAsync(context, dialog, rectF, width, height);
+        dialog.setOnCancelListener(dialogInterface -> {
+            ImageLoader.getInstance().stop();
+            setWallpaper.cancel(true);
+        });
+
+        ImageLoader.getInstance().handleSlowNetwork(true);
+        ImageLoader.getInstance().loadImage(imageUri, new ImageSize(width, height),
+                ImageConfig.getWallpaperOptions(), new ImageLoadingListener() {
+                    @Override
+                    public void onLoadingStarted(String imageUri, View view) {
+                        dialog.show();
+                    }
+
+                    @Override
+                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                        if (failReason.getType() == FailReason.FailType.OUT_OF_MEMORY) {
+                            if (call <= 5) {
+                                double scaleFactor = 1 - (0.1 * call);
+                                int scaledWidth = Double.valueOf(width * scaleFactor).intValue();
+                                int scaledHeight = Double.valueOf(height * scaleFactor).intValue();
+
+                                loadBitmap(context, dialog, (call + 1), imageUri, rectF, scaledWidth, scaledHeight);
+                                return;
+                            }
+                        }
+
+                        dialog.dismiss();
+                        String message = context.getResources().getString(R.string.wallpaper_apply_failed);
+                        message = message +": "+ failReason.getType().toString();
+                        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                        setWallpaper.execute(loadedImage);
+                    }
+
+                    @Override
+                    public void onLoadingCancelled(String imageUri, View view) {
+                        dialog.dismiss();
+                        Toast.makeText(context, R.string.wallpaper_apply_failed,
+                                Toast.LENGTH_LONG).show();
+                    }
                 });
-                dialog.show();
-            }
+    }
+
+    private static AsyncTask<Bitmap, Void, Boolean> getWallpaperAsync(@NonNull Context context, MaterialDialog dialog,
+                                                                      RectF rectF, int width, int height) {
+        return new AsyncTask<Bitmap, Void, Boolean>() {
 
             @Override
-            protected Boolean doInBackground(Void... voids) {
+            protected Boolean doInBackground(Bitmap... bitmaps) {
                 while (!isCancelled()) {
                     try {
                         Thread.sleep(1);
-                        Bitmap bitmap = ImageLoader.getInstance().loadImageSync(
-                                getWallpaperUri(context, url, name + FileHelper.IMAGE_EXTENSION),
-                                ImageConfig.getImageOptions());
-                        if (bitmap != null) {
-                            final int height, width;
-                            height = orientation == Configuration.ORIENTATION_PORTRAIT ?
-                                    displaymetrics.heightPixels : displaymetrics.widthPixels;
-                            width = orientation == Configuration.ORIENTATION_PORTRAIT ?
-                                    displaymetrics.widthPixels : displaymetrics.heightPixels;
-
-                            double scale = (double) height / (double) bitmap.getHeight();
-                            int targetWidth = Double.valueOf(
-                                    bitmap.getWidth() * scale).intValue();
-
-                            Bitmap scaledBitmap = Bitmap.createScaledBitmap(
-                                    bitmap, targetWidth, height, false);
-
-                            if (scaledBitmap != null) {
-                                manager.setBitmap(scaledBitmap);
-                                return true;
+                        WallpaperManager manager = WallpaperManager.getInstance(context);
+                        if (bitmaps[0] != null) {
+                            Bitmap bitmap = bitmaps[0];
+                            if (!Preferences.getPreferences(context).isScrollWallpaper() && rectF != null) {
+                                bitmap = Bitmap.createBitmap(width, height, bitmaps[0].getConfig());
+                                Paint paint = new Paint();
+                                paint.setFilterBitmap(true);
+                                paint.setAntiAlias(true);
+                                Canvas canvas = new Canvas(bitmap);
+                                canvas.drawBitmap(bitmaps[0], null, rectF, paint);
                             }
 
                             manager.setBitmap(bitmap);
-                            manager.setWallpaperOffsetSteps(1, 1);
-                            manager.suggestDesiredDimensions(width, height);
                             return true;
                         }
                         return false;
@@ -290,7 +334,7 @@ public class WallpaperHelper {
             @Override
             protected void onCancelled() {
                 super.onCancelled();
-                Toast.makeText(context, R.string.wallpaper_apply_failed,
+                Toast.makeText(context, R.string.wallpaper_apply_cancelled,
                         Toast.LENGTH_LONG).show();
             }
 
@@ -306,7 +350,7 @@ public class WallpaperHelper {
                             Toast.LENGTH_LONG).show();
                 }
             }
-        }.execute();
+        };
     }
 
 }

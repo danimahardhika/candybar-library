@@ -32,7 +32,6 @@ import com.dm.material.dashboard.candybar.items.WallpaperJSON;
 import com.dm.material.dashboard.candybar.utils.Tag;
 import com.pluscubed.recyclerfastscroll.RecyclerFastScroller;
 
-import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -41,7 +40,7 @@ import java.util.List;
 /*
  * CandyBar - Material Dashboard
  *
- * Copyright (c) 2014-present Dani Mahardhika
+ * Copyright (c) 2014-2016 Dani Mahardhika
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -129,13 +128,13 @@ public class WallpapersFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         if (mGetWallpapers != null) {
             try {
                 if (mConnection != null) mConnection.disconnect();
             } catch (Exception ignored){}
             mGetWallpapers.cancel(true);
         }
+        super.onDestroy();
     }
 
     private void resetNavigationBarMargin() {
@@ -190,7 +189,7 @@ public class WallpapersFragment extends Fragment {
                         mConnection.setConnectTimeout(15000);
 
                         if (mConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                            InputStream stream = new BufferedInputStream(mConnection.getInputStream());
+                            InputStream stream = mConnection.getInputStream();
                             wallpapersJSON = LoganSquare.parse(stream, WallpaperJSON.class);
 
                             if (wallpapersJSON == null) return false;

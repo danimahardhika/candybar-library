@@ -38,7 +38,7 @@ import java.util.List;
 /*
  * CandyBar - Material Dashboard
  *
- * Copyright (c) 2014-present Dani Mahardhika
+ * Copyright (c) 2014-2016 Dani Mahardhika
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -94,17 +94,17 @@ public class FAQsFragment extends Fragment {
         int color = ColorHelper.getAttributeColor(getActivity(), R.attr.toolbar_icon);
         search.setIcon(DrawableHelper.getTintedDrawable(getActivity(),
                 R.drawable.ic_toolbar_search, color));
-        SearchView mSearchView = (SearchView) MenuItemCompat.getActionView(search);
-        mSearchView.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
-        mSearchView.setQueryHint(getActivity().getResources().getString(R.string.search_faqs));
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(search);
+        searchView.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
+        searchView.setQueryHint(getActivity().getResources().getString(R.string.search_faqs));
 
-        ViewHelper.changeSearchViewTextColor(mSearchView,
+        ViewHelper.changeSearchViewTextColor(searchView,
                 ColorHelper.getAttributeColor(getActivity(), R.attr.toolbar_icon),
                 ColorHelper.getAttributeColor(getActivity(), R.attr.hint_text));
-        View view = mSearchView.findViewById(android.support.v7.appcompat.R.id.search_plate);
+        View view = searchView.findViewById(android.support.v7.appcompat.R.id.search_plate);
         if (view != null) view.setBackgroundColor(Color.TRANSPARENT);
 
-        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             @Override
             public boolean onQueryTextChange(String string) {
@@ -114,7 +114,7 @@ public class FAQsFragment extends Fragment {
 
             @Override
             public boolean onQueryTextSubmit(String string) {
-                mSearchView.clearFocus();
+                searchView.clearFocus();
                 return true;
             }
         });
@@ -129,8 +129,8 @@ public class FAQsFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         if (mGetFAQs != null) mGetFAQs.cancel(true);
+        super.onDestroy();
     }
 
     private void resetNavigationBarMargin() {

@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
 import android.webkit.URLUtil;
@@ -19,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.balysv.materialripple.MaterialRippleLayout;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
@@ -30,7 +30,7 @@ import com.dm.material.dashboard.candybar.preferences.Preferences;
 /*
  * CandyBar - Material Dashboard
  *
- * Copyright (c) 2014-present Dani Mahardhika
+ * Copyright (c) 2014-2016 Dani Mahardhika
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,10 +67,10 @@ public class AboutFragment extends DialogFragment implements View.OnClickListene
 
     private ImageView mImageView;
     private CircularImageView mProfile;
-    private CardView mCardEmail;
+    private MaterialRippleLayout mEmailContainer;
     private TextView mEmail;
     private TextView mLink1;
-    private CardView mCardLink2;
+    private MaterialRippleLayout mLink2Container;
     private TextView mLink2;
     private TextView mDevLink1;
     private TextView mDevLink2;
@@ -85,10 +85,10 @@ public class AboutFragment extends DialogFragment implements View.OnClickListene
 
         mImageView = (ImageView) dialog.findViewById(R.id.image);
         mProfile = (CircularImageView) dialog.findViewById(R.id.profile);
-        mCardEmail = (CardView) dialog.findViewById(R.id.card_email);
+        mEmailContainer = (MaterialRippleLayout) dialog.findViewById(R.id.container_email);
         mEmail = (TextView) dialog.findViewById(R.id.email);
         mLink1 = (TextView) dialog.findViewById(R.id.link1);
-        mCardLink2 = (CardView) dialog.findViewById(R.id.card_link2);
+        mLink2Container = (MaterialRippleLayout) dialog.findViewById(R.id.container_link2);
         mLink2 = (TextView) dialog.findViewById(R.id.link2);
         mDevLink1 = (TextView) dialog.findViewById(R.id.dev_link1);
         mDevLink2 = (TextView) dialog.findViewById(R.id.dev_link2);
@@ -188,9 +188,9 @@ public class AboutFragment extends DialogFragment implements View.OnClickListene
 
     private void initAbout() {
         String email = getActivity().getResources().getString(R.string.about_email);
-        if (email.length() == 0) mCardEmail.setVisibility(View.GONE);
+        if (email.length() == 0) mEmailContainer.setVisibility(View.GONE);
         String link2 = getActivity().getResources().getString(R.string.about_link_2_url);
-        if (link2.length() == 0) mCardLink2.setVisibility(View.GONE);
+        if (link2.length() == 0) mLink2Container.setVisibility(View.GONE);
     }
 
 }

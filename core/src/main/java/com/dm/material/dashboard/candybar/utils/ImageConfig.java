@@ -9,11 +9,12 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.utils.L;
 
 /*
  * CandyBar - Material Dashboard
  *
- * Copyright (c) 2014-present Dani Mahardhika
+ * Copyright (c) 2014-2016 Dani Mahardhika
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +32,10 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 public class ImageConfig {
 
     public static ImageLoaderConfiguration getImageLoaderConfiguration(@NonNull Context context) {
+        L.writeLogs(true);
+        L.writeDebugLogs(true);
         return new ImageLoaderConfiguration.Builder(context)
+                .diskCacheSize(50 * 1024 * 1024)
                 .threadPriority(Thread.NORM_PRIORITY - 2)
                 .threadPoolSize(4)
                 .tasksProcessingOrder(QueueProcessingType.FIFO)
@@ -44,12 +48,9 @@ public class ImageConfig {
                 .resetViewBeforeLoading(true)
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .imageScaleType(ImageScaleType.EXACTLY)
-                .displayer(new FadeInBitmapDisplayer(650));
-        if (cache) options.cacheOnDisk(allowed);
-        else {
-            options.cacheOnDisk(false)
-                    .cacheInMemory(true);
-        }
+                .displayer(new FadeInBitmapDisplayer(650))
+                .cacheOnDisk(cache && allowed)
+                .cacheInMemory(!cache || !allowed);
         return options.build();
     }
 
@@ -65,21 +66,21 @@ public class ImageConfig {
         return options.build();
     }
 
-    public static DisplayImageOptions getImageOptions() {
+    public static DisplayImageOptions getWallpaperOptions() {
         DisplayImageOptions.Builder options = new DisplayImageOptions.Builder();
         options.delayBeforeLoading(10)
                 .bitmapConfig(Bitmap.Config.ARGB_8888)
-                .imageScaleType(ImageScaleType.NONE)
+                .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
                 .cacheOnDisk(false)
-                .cacheInMemory(true);
+                .cacheInMemory(false);
         return options.build();
     }
 
-    public static DisplayImageOptions getImageOptions(boolean isCacheAllowed) {
+    public static DisplayImageOptions getWallpaperPreviewOptions(boolean isCacheAllowed) {
         DisplayImageOptions.Builder options = new DisplayImageOptions.Builder();
         options.delayBeforeLoading(10)
-                .bitmapConfig(Bitmap.Config.ARGB_8888)
-                .imageScaleType(ImageScaleType.NONE)
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .imageScaleType(ImageScaleType.EXACTLY)
                 .cacheOnDisk(isCacheAllowed)
                 .cacheInMemory(false);
         return options.build();

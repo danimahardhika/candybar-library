@@ -1,11 +1,9 @@
 package com.dm.material.dashboard.candybar.items;
 
-import android.graphics.Bitmap;
-
 /*
  * CandyBar - Material Dashboard
  *
- * Copyright (c) 2014-present Dani Mahardhika
+ * Copyright (c) 2014-2016 Dani Mahardhika
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +20,7 @@ import android.graphics.Bitmap;
 
 public class Request {
 
-    private Bitmap mIcon;
+    private byte[] mBytes;
     private String mName;
     private String mActivity;
     private String mPackageName;
@@ -36,8 +34,8 @@ public class Request {
     private boolean mRequested;
     private int mRequestCount;
 
-    public Request(Bitmap icon, String name, String packageName, String activity, boolean requested) {
-        mIcon = icon;
+    public Request(byte[] bytes, String name, String packageName, String activity, boolean requested) {
+        mBytes = bytes;
         mName = name;
         mPackageName = packageName;
         mActivity = activity;
@@ -64,8 +62,8 @@ public class Request {
         mRequestedOn = requestedOn;
     }
 
-    public Bitmap getIcon() {
-        return mIcon;
+    public byte[] getIcon() {
+        return mBytes;
     }
 
     public String getName() {

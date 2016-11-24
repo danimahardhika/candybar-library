@@ -20,6 +20,24 @@ import com.dm.material.dashboard.candybar.helpers.PermissionHelper;
 import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 
+/*
+ * CandyBar - Material Dashboard
+ *
+ * Copyright (c) 2014-2016 Dani Mahardhika
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 public class WallpaperOptionsFragment extends DialogFragment implements View.OnClickListener {
 
     private static final String TAG = "candybar.dialog.wallpaper.options";
@@ -106,7 +124,7 @@ public class WallpaperOptionsFragment extends DialogFragment implements View.OnC
         int id = view.getId();
         int color = ColorHelper.getAttributeColor(getActivity(), R.attr.colorAccent);
         if (id == R.id.apply) {
-            WallpaperHelper.applyWallpaper(getActivity(), color, mUrl, mName);
+            WallpaperHelper.applyWallpaper(getActivity(), null, color, mUrl, mName);
         } else if (id == R.id.save) {
             if (PermissionHelper.isPermissionStorageGranted(getActivity())) {
                 WallpaperHelper.downloadWallpaper(getActivity(), color, mUrl, mName, -1);

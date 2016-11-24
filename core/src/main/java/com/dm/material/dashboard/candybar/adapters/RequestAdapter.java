@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.helpers.ColorHelper;
+import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.listeners.RequestListener;
@@ -25,7 +26,7 @@ import java.util.List;
 /*
  * CandyBar - Material Dashboard
  *
- * Copyright (c) 2014-present Dani Mahardhika
+ * Copyright (c) 2014-2016 Dani Mahardhika
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,7 +102,8 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         } else if (holder.holderId == TYPE_REGULAR) {
             int finalPosition = mIsPremiumRequestEnabled ? position - 1 : position;
 
-            holder.icon.setImageBitmap(mRequests.get(finalPosition).getIcon());
+            holder.icon.setImageBitmap(DrawableHelper.getBitmap(
+                    mRequests.get(finalPosition).getIcon()));
 
             holder.name.setText(mRequests.get(finalPosition).getName());
             holder.activity.setText(mRequests.get(finalPosition).getActivity());
@@ -207,6 +209,32 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
             mSelectedItems.delete(finalPos);
         else mSelectedItems.put(finalPos, true);
         notifyItemChanged(position);
+        try {
+            RequestListener listener = (RequestListener) mContext;
+            listener.OnSelected(getSelectedItemsSize());
+        } catch (Exception ignored) {}
+    }
+
+    public void selectAll() {
+        if (mSelectedItems.size() == mRequests.size()) {
+            deselectAll();
+            return;
+        }
+
+        mSelectedItems.clear();
+        for (int i = 0; i < mRequests.size(); i++) {
+            mSelectedItems.put(i, true);
+        }
+        notifyDataSetChanged();
+        try {
+            RequestListener listener = (RequestListener) mContext;
+            listener.OnSelected(getSelectedItemsSize());
+        } catch (Exception ignored) {}
+    }
+
+    private void deselectAll() {
+        mSelectedItems.clear();
+        notifyDataSetChanged();
         try {
             RequestListener listener = (RequestListener) mContext;
             listener.OnSelected(getSelectedItemsSize());

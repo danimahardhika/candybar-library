@@ -16,7 +16,7 @@ import java.util.Calendar;
 /*
  * CandyBar - Material Dashboard
  *
- * Copyright (c) 2014-present Dani Mahardhika
+ * Copyright (c) 2014-2016 Dani Mahardhika
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,6 +55,7 @@ public class PreferencesHelper {
     private static final String KEY_REGULAR_REQUEST_USED= "regular_request_used";
     private static final String KEY_INAPP_BILLING_TYPE = "inapp_billing_type";
     private static final String KEY_LICENSED = "licensed";
+    private static final String KEY_SCROLL_WALLPAPER = "scroll_wallpaper";
 
     public PreferencesHelper(@NonNull Context context) {
         mContext = context;
@@ -196,6 +197,14 @@ public class PreferencesHelper {
 
     public void setLicensed(boolean bool) {
         getSharedPreferences().edit().putBoolean(KEY_LICENSED, bool).apply();
+    }
+
+    public boolean isScrollWallpaper() {
+        return getSharedPreferences().getBoolean(KEY_SCROLL_WALLPAPER, true);
+    }
+
+    public void setScrollWallpaper(boolean bool) {
+        getSharedPreferences().edit().putBoolean(KEY_SCROLL_WALLPAPER, bool).apply();
     }
 
     public int getVersion() {

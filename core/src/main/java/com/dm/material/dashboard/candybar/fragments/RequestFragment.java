@@ -4,13 +4,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -19,7 +17,6 @@ import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -41,6 +38,7 @@ import com.dm.material.dashboard.candybar.databases.Database;
 import com.dm.material.dashboard.candybar.fragments.dialog.IntentChooserFragment;
 import com.dm.material.dashboard.candybar.helpers.AppFilterHelper;
 import com.dm.material.dashboard.candybar.helpers.ColorHelper;
+import com.dm.material.dashboard.candybar.helpers.DeviceHelper;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.helpers.FileHelper;
 import com.dm.material.dashboard.candybar.helpers.PermissionHelper;
@@ -65,7 +63,7 @@ import java.util.List;
 /*
  * CandyBar - Material Dashboard
  *
- * Copyright (c) 2014-present Dani Mahardhika
+ * Copyright (c) 2014-2016 Dani Mahardhika
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -89,8 +87,6 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 
     private RequestAdapter mAdapter;
     private Database mDatabase;
-    private File mDirectory;
-    private List<String> mFiles;
     private AsyncTask<Void, Request, Boolean> mGetMissingApps;
 
     @Nullable
@@ -112,17 +108,17 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         ViewCompat.setNestedScrollingEnabled(mRequestList, false);
         resetNavigationBarMargin();
 
-        mFiles = new ArrayList<>();
         mDatabase = new Database(getActivity());
 
         mProgress.getIndeterminateDrawable().setColorFilter(
                 ColorHelper.getAttributeColor(getActivity(), R.attr.colorAccent),
                 PorterDuff.Mode.SRC_IN);
-        mFab.setOnClickListener(this);
+
         int color = ColorHelper.getTitleTextColor(getActivity(),
                 ColorHelper.getAttributeColor(getActivity(), R.attr.colorAccent));
         mFab.setImageDrawable(DrawableHelper.getTintedDrawable(
                 getActivity(), R.drawable.ic_fab_send, color));
+        mFab.setOnClickListener(this);
 
         mRequestList.setItemAnimator(new DefaultItemAnimator());
         mRequestList.getItemAnimator().setChangeDuration(0);
@@ -130,7 +126,6 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         mRequestList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mFastScroll.attachRecyclerView(mRequestList);
 
-        mDirectory = FileHelper.getCacheDirectory(getActivity());
         getMissingApps();
     }
 
@@ -146,13 +141,15 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         MenuItem rebuild = menu.findItem(R.id.menu_rebuild_premium);
         boolean premium = getActivity().getResources().getBoolean(R.bool.enable_premium_request);
         rebuild.setVisible(premium);
+        MenuItem selectAll = menu.findItem(R.id.menu_select_all);
+        selectAll.setCheckable(true);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         if (mGetMissingApps != null) mGetMissingApps.cancel(true);
+        super.onDestroy();
     }
 
     @Override
@@ -160,6 +157,9 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         int id = item.getItemId();
         if (id == R.id.menu_rebuild_premium) {
             rebuildPremiumRequest();
+            return true;
+        } else if (id == R.id.menu_select_all) {
+            mAdapter.selectAll();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -196,7 +196,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                     if (requestLimit) {
                         int limit = getActivity().getResources().getInteger(R.integer.icon_request_limit);
                         int used = Preferences.getPreferences(getActivity()).getRegularRequestUsed();
-                        if (selected > limit || selected > (limit - used)) {
+                        if (selected > (limit - used)) {
                             RequestHelper.showIconRequestLimitDialog(getActivity());
                             return;
                         }
@@ -270,13 +270,13 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                 while (!isCancelled()) {
                     try {
                         Thread.sleep(1);
-
                         StringBuilder activities = AppFilterHelper.loadAppFilter(getActivity());
-
                         List<ResolveInfo> apps = getActivity().getPackageManager().queryIntentActivities(
                                 intent, PackageManager.GET_RESOLVED_FILTER);
-                        Collections.sort(apps, new ResolveInfo.DisplayNameComparator(
-                                getActivity().getPackageManager()));
+                        try {
+                            Collections.sort(apps, new ResolveInfo.DisplayNameComparator(
+                                    getActivity().getPackageManager()));
+                        } catch (Exception ignored) {}
 
                         for (ResolveInfo app : apps) {
                             String name = app.activityInfo.loadLabel(getActivity()
@@ -284,10 +284,10 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                             String activity = app.activityInfo.packageName +"/"+ app.activityInfo.name;
                             if (!activities.toString().contains(activity)) {
                                 Drawable drawable = DrawableHelper.getAppIcon(getActivity(), app);
-                                Bitmap bitmap = DrawableHelper.getBitmap(drawable);
+                                byte[] bytes = DrawableHelper.getBitmapByte(drawable);
                                 boolean requested = mDatabase.isRequested(activity);
                                 Request request = new Request(
-                                        bitmap,
+                                        bytes,
                                         name,
                                         app.activityInfo.packageName,
                                         activity,
@@ -339,7 +339,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 
             MaterialDialog dialog;
             StringBuilder sb;
-            StringBuilder activity;
+            File directory;
             String zipFile;
             String productId = "";
             String orderId = "";
@@ -348,7 +348,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
             protected void onPreExecute() {
                 super.onPreExecute();
                 sb = new StringBuilder();
-                activity = new StringBuilder();
+                directory = FileHelper.getCacheDirectory(getActivity());
 
                 MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
                 builder.content(R.string.request_building);
@@ -365,7 +365,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                 while (!isCancelled()) {
                     try {
                         Thread.sleep(1);
-                        sb.append(getDeviceInfo());
+                        sb.append(DeviceHelper.getDeviceInfo(getActivity()));
 
                         if (Preferences.getPreferences(getActivity()).isPremiumRequest()) {
                             if (billingProcessor == null) return false;
@@ -373,20 +373,22 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                                 TransactionDetails details = billingProcessor.getPurchaseTransactionDetails(
                                         Preferences.getPreferences(getActivity()).getPremiumRequestProductId());
                                 if (details != null) {
-                                    orderId = details.orderId;
-                                    productId = details.productId;
-                                    sb.append("Order ID : ").append(details.orderId)
-                                            .append("\nProduct ID : ").append(details.productId)
+                                    orderId = details.purchaseInfo.purchaseData.orderId;
+                                    productId = details.purchaseInfo.purchaseData.productId;
+                                    sb.append("Order Id : ").append(orderId)
+                                            .append("\nProduct Id : ").append(productId)
                                             .append("\n");
                                 }
                             }
                         }
 
                         List<Integer> selectedItems = mAdapter.getSelectedItems();
-                        File fileDir = new File(mDirectory.toString() + "/" + "appfilter.xml");
+                        List<String> files = new ArrayList<>();
+                        File fileDir = new File(directory.toString() + "/" + "appfilter.xml");
 
                         Writer out = new BufferedWriter(new OutputStreamWriter(
                                 new FileOutputStream(fileDir), "UTF8"));
+                        StringBuilder activity = new StringBuilder();
                         for (Integer selectedItem : selectedItems) {
                             Request item = mAdapter.getRequest(selectedItem);
                             mDatabase.addRequest(item);
@@ -409,8 +411,9 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                                     .append("\" />");
                             out.append("\n\n");
 
-                            String icon = FileHelper.saveIcon(mDirectory, item.getIcon(), item.getName());
-                            if (icon != null) mFiles.add(icon);
+                            String icon = FileHelper.saveIcon(directory,
+                                    DrawableHelper.getBitmap(item.getIcon()), item.getName());
+                            if (icon != null) files.add(icon);
                         }
 
                         sb.append(activity.toString());
@@ -421,10 +424,10 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 
                         out.flush();
                         out.close();
-                        mFiles.add(fileDir.toString());
+                        files.add(fileDir.toString());
 
-                        zipFile = mDirectory.toString() + "/" + "icon_request.zip";
-                        FileHelper.createZip(mFiles, zipFile);
+                        zipFile = directory.toString() + "/" + "icon_request.zip";
+                        FileHelper.createZip(files, zipFile);
                         return true;
                     } catch (Exception e) {
                         Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
@@ -455,8 +458,6 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                             Toast.LENGTH_LONG).show();
                 }
                 sb.setLength(0);
-                activity.setLength(0);
-                mFiles.clear();
             }
 
         }.execute();
@@ -490,14 +491,13 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                     try {
                         Thread.sleep(1);
                         requests = mDatabase.getPremiumRequest();
-                        sb.append(getDeviceInfo());
+                        sb.append(DeviceHelper.getDeviceInfo(getActivity()));
 
                         for (Request request : requests) {
-                            sb.append("\n\nOrder ID : ").append(request.getOrderId())
-                                    .append("\nProduct ID : ").append(request.getProductId())
+                            sb.append("\n\nOrder Id : ").append(request.getOrderId())
+                                    .append("\nProduct Id : ").append(request.getProductId())
                                     .append(request.getRequest());
                         }
-
                         return true;
                     } catch (Exception e) {
                         Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
@@ -526,41 +526,9 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                             .getSupportFragmentManager(), request);
                 }
                 sb.setLength(0);
-                mFiles.clear();
             }
 
         }.execute();
-    }
-
-    @NonNull
-    private String getDeviceInfo() {
-        DisplayMetrics displaymetrics = getActivity().getResources().getDisplayMetrics();
-        StringBuilder sb = new StringBuilder();
-        final int
-                height = displaymetrics.heightPixels,
-                width = displaymetrics.widthPixels;
-        final String
-                manufacturer = Build.MANUFACTURER,
-                model = Build.MODEL,
-                product = Build.PRODUCT,
-                os = Build.VERSION.RELEASE;
-        String appVersion = "";
-        try {
-            appVersion = getActivity().getPackageManager().getPackageInfo(
-                    getActivity().getPackageName(), 0).versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
-        }
-
-        sb.append("Manufacturer : ").append(manufacturer)
-                .append("\nModel : ").append(model)
-                .append("\nProduct : ").append(product)
-                .append("\nScreen Resolution : ")
-                .append(width).append(" x ").append(height).append(" pixels")
-                .append("\nAndroid Version : ").append(os)
-                .append("\nApp Version : ").append(appVersion)
-                .append("\n");
-        return sb.toString();
     }
 
 }

@@ -28,7 +28,7 @@ import java.io.File;
 /*
  * CandyBar - Material Dashboard
  *
- * Copyright (c) 2014-present Dani Mahardhika
+ * Copyright (c) 2014-2016 Dani Mahardhika
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -89,6 +89,13 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         mRestorePurchases.setOnClickListener(this);
         mRestorePurchases.setBackgroundResource(Preferences.getPreferences(getActivity()).isDarkTheme() ?
                 R.drawable.item_grid_dark : R.drawable.item_grid);
+
+        boolean premiumRequest = getActivity().getResources().getBoolean(R.bool.enable_premium_request);
+        if (!premiumRequest) {
+            mRestorePurchases.setVisibility(View.GONE);
+            View view = getActivity().findViewById(R.id.pref_restore_purchases_divider);
+            if (view != null) view.setVisibility(View.GONE);
+        }
 
         if (Preferences.getPreferences(getActivity()).getWallsDirectory().length() > 0) {
             String directory = Preferences.getPreferences(
@@ -175,11 +182,11 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         mDarkThemeCheck.setChecked(Preferences.getPreferences(getActivity()).isDarkTheme());
     }
 
-    private void clearCache (File file) {
-        File[] list = file.listFiles();
-        for (File temp : list) {
-            temp.delete();
-        }
+    private void clearCache(File fileOrDirectory) {
+        if (fileOrDirectory.isDirectory())
+            for (File child : fileOrDirectory.listFiles())
+                clearCache(child);
+        fileOrDirectory.delete();
     }
 
     private long cacheSize(File dir) {

@@ -14,7 +14,7 @@ import com.dm.material.dashboard.candybar.R;
 /*
  * CandyBar - Material Dashboard
  *
- * Copyright (c) 2014-present Dani Mahardhika
+ * Copyright (c) 2014-2016 Dani Mahardhika
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,9 +35,7 @@ public class PermissionHelper {
     public static final int PERMISSION_STORAGE_SETTINGS = 2;
 
     public static boolean isPermissionStorageGranted(@NonNull Context context) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true;
-        } else {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int read = ActivityCompat.checkSelfPermission(
                     context, Manifest.permission.READ_EXTERNAL_STORAGE);
             int write = ActivityCompat.checkSelfPermission(
@@ -45,6 +43,7 @@ public class PermissionHelper {
             return read == PackageManager.PERMISSION_GRANTED &&
                     write == PackageManager.PERMISSION_GRANTED;
         }
+        return true;
     }
 
     public static void requestStoragePermission(@NonNull Context context, int code) {

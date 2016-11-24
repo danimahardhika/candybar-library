@@ -79,7 +79,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 /*
  * CandyBar - Material Dashboard
  *
- * Copyright (c) 2014-present Dani Mahardhika
+ * Copyright (c) 2014-2016 Dani Mahardhika
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -98,9 +98,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
         ActivityCompat.OnRequestPermissionsResultCallback, PreviewWallpaperListener,
         RequestListener, InAppBillingListener, LicenseListener {
 
-    private Toolbar mToolbar;
     private TextView mToolbarTitle;
-    private ImageView mHomeImage;
     private LinearLayout mTitleContainer;
     private AppBarLayout mAppBar;
     private DrawerLayout mDrawerLayout;
@@ -139,9 +137,8 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbarTitle = (TextView) findViewById(R.id.toolbar_title);
-        mHomeImage = (ImageView) findViewById(R.id.home_image);
         mTitleContainer = (LinearLayout) findViewById(R.id.home_title_container);
         mAppBar = (AppBarLayout) findViewById(R.id.appbar);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -149,6 +146,8 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
         mFab = (FloatingActionButton) findViewById(R.id.fab);
 
         ViewHelper.resetNavigationBarTranslucent(this, getResources().getConfiguration().orientation);
+        SoftKeyboardHelper helper = new SoftKeyboardHelper(this, findViewById(R.id.container));
+        helper.enable();
 
         mLicenseKey = licenseKey;
         mDonationProductsId = donationProductsId;
@@ -157,14 +156,14 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
         mWallpaperActivity = wallpaperActivity;
         mFragManager = getSupportFragmentManager();
 
-        mToolbar.setPopupTheme(Preferences.getPreferences(this).isDarkTheme() ?
+        toolbar.setPopupTheme(Preferences.getPreferences(this).isDarkTheme() ?
                 R.style.AppThemeDark : R.style.AppTheme);
-        mToolbar.setTitle("");
-        setSupportActionBar(mToolbar);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
         Animator.startAlphaAnimation(mToolbarTitle, 0, View.INVISIBLE);
         mAppBar.addOnOffsetChangedListener(this);
 
-        initNavigationView();
+        initNavigationView(toolbar);
         initNavigationViewHeader();
         initHomeImage();
         initInAppBilling();
@@ -532,10 +531,10 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
         mNavigationView.getMenu().getItem(index).setVisible(false);
     }
 
-    private void initNavigationView() {
+    private void initNavigationView(Toolbar toolbar) {
         resetNavigationView(getResources().getConfiguration().orientation);
         mDrawerToggle = new ActionBarDrawerToggle(
-                this, mDrawerLayout, mToolbar, R.string.txt_open, R.string.txt_close) {
+                this, mDrawerLayout, toolbar, R.string.txt_open, R.string.txt_close) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -633,13 +632,14 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
 
     private void initHomeImage() {
         String image = getResources().getString(R.string.home_image);
+        ImageView homeImage = (ImageView) findViewById(R.id.home_image);
         if (URLUtil.isValidUrl(image)) {
             ImageLoader.getInstance().displayImage(
-                    image, mHomeImage, ImageConfig.getImageOptions(true,
+                    image, homeImage, ImageConfig.getImageOptions(true,
                             Preferences.getPreferences(this).isCacheAllowed()));
         } else {
             int res = DrawableHelper.getResourceId(this, image);
-            if (res > 0) mHomeImage.setImageDrawable(ContextCompat.getDrawable(this, res));
+            if (res > 0) homeImage.setImageDrawable(ContextCompat.getDrawable(this, res));
         }
     }
 

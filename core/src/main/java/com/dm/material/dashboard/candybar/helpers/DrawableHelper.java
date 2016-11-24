@@ -3,6 +3,7 @@ package com.dm.material.dashboard.candybar.helpers;
 import android.content.Context;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
@@ -19,10 +20,12 @@ import android.util.Log;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.utils.Tag;
 
+import java.io.ByteArrayOutputStream;
+
 /*
  * CandyBar - Material Dashboard
  *
- * Copyright (c) 2014-present Dani Mahardhika
+ * Copyright (c) 2014-2016 Dani Mahardhika
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,18 +63,32 @@ public class DrawableHelper {
     }
 
     @Nullable
-    public static Bitmap getBitmap(@NonNull Drawable drawable) {
+    public static byte[] getBitmapByte(@NonNull Drawable drawable) {
         try {
+            Bitmap bitmap;
             if (drawable instanceof LayerDrawable) {
-                Bitmap bitmap = Bitmap.createBitmap(
+                bitmap = Bitmap.createBitmap(
                         drawable.getIntrinsicWidth(),
                         drawable.getIntrinsicHeight(),
                         Bitmap.Config.ARGB_8888);
                 drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
                 drawable.draw(new Canvas(bitmap));
-                return bitmap;
+            } else {
+                bitmap = ((BitmapDrawable) drawable).getBitmap();
             }
-            return ((BitmapDrawable) drawable).getBitmap();
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 10, stream);
+            return stream.toByteArray();
+        } catch (Exception | OutOfMemoryError e) {
+            Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+        }
+        return null;
+    }
+
+    @Nullable
+    public static Bitmap getBitmap(byte[] bytes) {
+        try {
+            return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
         } catch (Exception | OutOfMemoryError e) {
             Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
         }

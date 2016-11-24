@@ -7,10 +7,8 @@ import android.content.pm.ResolveInfo;
 import android.content.res.AssetManager;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -39,7 +37,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 /*
  * CandyBar - Material Dashboard
  *
- * Copyright (c) 2014-present Dani Mahardhika
+ * Copyright (c) 2014-2016 Dani Mahardhika
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,19 +59,15 @@ public class ReportBugsHelper {
 
             MaterialDialog dialog;
             StringBuilder sb;
-            List<String> files;
             File folder;
-            DisplayMetrics displayMetrics;
             String file;
 
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
                 sb = new StringBuilder();
-                files = new ArrayList<>();
-                displayMetrics = context.getResources().getDisplayMetrics();
-
                 folder = FileHelper.getCacheDirectory(context);
+                file = folder.toString() + "/" + "reportbugs.zip";
 
                 MaterialDialog.Builder builder = new MaterialDialog.Builder(context);
                 builder.content(R.string.report_bugs_building)
@@ -82,8 +76,6 @@ public class ReportBugsHelper {
 
                 dialog = builder.build();
                 dialog.show();
-
-                file = folder.toString() + "/" + "reportbugs.zip";
             }
 
             @Override
@@ -91,31 +83,8 @@ public class ReportBugsHelper {
                 while (!isCancelled()) {
                     try {
                         Thread.sleep(1);
-                        final int
-                                height = displayMetrics.heightPixels,
-                                width = displayMetrics.widthPixels;
-                        final String
-                                manufacturer = Build.MANUFACTURER,
-                                model = Build.MODEL,
-                                product = Build.PRODUCT,
-                                os = Build.VERSION.RELEASE;
-
-                        String appVersion = "";
-                        try {
-                            appVersion = context.getPackageManager().getPackageInfo(
-                                    context.getPackageName(), 0).versionName;
-                        } catch (PackageManager.NameNotFoundException e) {
-                            Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
-                        }
-
-                        sb.append("Manufacturer : ").append(manufacturer)
-                                .append("\nModel : ").append(model)
-                                .append("\nProduct : ").append(product)
-                                .append("\nScreen Resolution : ")
-                                .append(width).append(" x ").append(height).append(" pixels")
-                                .append("\nAndroid Version : ").append(os)
-                                .append("\nApp Version : ").append(appVersion)
-                                .append("\n");
+                        List<String> files = new ArrayList<>();
+                        sb.append(DeviceHelper.getDeviceInfo(context));
 
                         String brokenAppFilter = buildBrokenAppFilter(context, folder);
                         if (brokenAppFilter != null) files.add(brokenAppFilter);
@@ -159,7 +128,6 @@ public class ReportBugsHelper {
                             Toast.LENGTH_LONG).show();
                 }
 
-                files.clear();
                 sb.setLength(0);
             }
         }.execute();
@@ -222,19 +190,18 @@ public class ReportBugsHelper {
             Writer out = new BufferedWriter(new OutputStreamWriter(
                     new FileOutputStream(fileDir), "UTF8"));
 
-            List<ResolveInfo> applist;
             Intent intent = new Intent(Intent.ACTION_MAIN);
             intent.addCategory(Intent.CATEGORY_LAUNCHER);
 
-            applist = context.getPackageManager().queryIntentActivities(
+            List<ResolveInfo> appList = context.getPackageManager().queryIntentActivities(
                     intent, PackageManager.GET_RESOLVED_FILTER);
 
             try {
-                Collections.sort(applist, new ResolveInfo.DisplayNameComparator(context.getPackageManager()));
+                Collections.sort(appList, new ResolveInfo.DisplayNameComparator(context.getPackageManager()));
             } catch (Exception ignored) {}
 
             boolean first = true;
-            for (ResolveInfo app : applist) {
+            for (ResolveInfo app : appList) {
 
                 if (first) {
                     first = false;
