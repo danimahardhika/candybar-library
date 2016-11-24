@@ -9,6 +9,14 @@
     * Disable -> false -->
     <bool name="enable_global_icon_search">false</bool>
 
+    <!-- Sort
+    * Enable or disable icons sort
+    * Disabling this will improve icons section performance, icons will load faster
+    * Use CandyBar drawable.xml builder instead
+    * Enable -> true
+    * Disable -> false -->
+    <bool name="enable_icons_sort">false</bool>
+
     <!-- Icon picker thumbnail size
     * default: 58dp -->
     <dimen name="icon_thumb_size">58dp</dimen>

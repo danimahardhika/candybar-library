@@ -30,7 +30,9 @@
     <string name="menu_rebuild_premium">Rebuild Premium Request</string>
     <string name="menu_search">Search</string>
     <string name="menu_save">Save to Device</string>
-    <string name="menu_details">Wallpaper Details</string>
+    <string name="menu_wallpaper_settings">Wallpaper Settings</string>
+    <string name="menu_select_all">Select All</string>
+    <string name="menu_deselect_all">Clear Selection</string>
 
     <!-- Dialog -->
     <string name="open">Open</string>
@@ -146,7 +148,7 @@
     <string name="wallpaper_refresh_apply">1. Swipe down to refresh wallpaper library
         \n2. Press and hold on wallpaper to apply or download wallpaper
         \n3. Press on wallpaper to preview it</string>
-    <string name="wallpaper_downloading">Downloading wallpaper</string>
+    <string name="wallpaper_downloading">Downloading wallpaper …</string>
     <string name="wallpaper_download_failed">Unable to download wallpaper</string>
     <string name="wallpaper_download_cancelled">Wallpaper download cancelled</string>
     <string name="wallpaper_downloaded">Wallpaper downloaded to</string>
@@ -154,8 +156,17 @@
     <string name="wallpaper_applying">Applying wallpaper …</string>
     <string name="wallpaper_applied">Wallpaper applied</string>
     <string name="wallpaper_apply_failed">Unable to apply wallpaper</string>
+    <string name="wallpaper_apply_cancelled">Wallpaper apply cancelled</string>
     <string name="connection_failed">Unable to fetch data from server</string>
     <string name="wallpaper_apply">Set as Wallpaper</string>
+
+    <string name="wallpaper_scroll_enable">Enable Wallpaper Scroll</string>
+    <string name="wallpaper_scroll_enable_desc">Dashboard will apply wallpaper based on original resolution
+        of the wallpaper. If your launcher support scrollable wallpaper, wallpaper will scroll when
+        you swipe left or right changing home screen.</string>
+    <string name="wallpaper_scroll_disable">Disable Wallpaper Scroll</string>
+    <string name="wallpaper_scroll_disable_desc">Dashboard will apply wallpaper based on current view of wallpaper.
+        Drag to left or right to adjust wallpaper. Pinch or double tap to zoom wallpaper.</string>
 
     <!-- Preferences -->
     <string name="pref_data_cache">Clear Cache</string>
@@ -199,7 +210,7 @@
 
     <!-- Please don't modify this -->
     <string name="about_dashboard_dev">CandyBar Material Dashboard developed by Dani Mahardhika
-        \nCopyright © 2014-present</string>
+        \nCopyright © 2014-2016</string>
     <string name="about_dashboard_dev_google_plus_title">Google+</string>
     <string name="about_dashboard_dev_google_plus_url">https://plus.google.com/u/1/+DaniMahardhika</string>
     <string name="about_dashboard_dev_github_title">GitHub</string>
