@@ -69,7 +69,7 @@
                     android:id="@+id/requested"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Requested"
+                    android:text="@string/request_not_requested"
                     android:textColor="?android:attr/textColorSecondary"
                     android:textSize="14sp"
                     android:singleLine="true"

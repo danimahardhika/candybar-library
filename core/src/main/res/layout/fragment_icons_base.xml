@@ -13,7 +13,7 @@
         app:tabTextAppearance="@style/TabsTextStyle"
         app:tabSelectedTextColor="?attr/tab_text_selected"
         app:tabTextColor="?attr/tab_text"
-        app:tabIndicatorHeight="4dp"
+        app:tabIndicatorHeight="3dp"
         app:tabPaddingStart="14dp"
         app:tabPaddingEnd="14dp"
         app:tabMode="scrollable" />

@@ -39,9 +39,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/pref_data_cache"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:textColor="?android:attr/textColorPrimary"
-                        fontPath="fonts/Font-Medium.ttf"/>
+                        fontPath="fonts/Font-Bold.ttf"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -60,7 +60,7 @@
                         android:textSize="14sp"
                         android:layout_marginTop="8dp"
                         android:textColor="?android:attr/textColorSecondary"
-                        fontPath="fonts/Font-Medium.ttf"/>
+                        fontPath="fonts/Font-Bold.ttf"/>
 
                 </LinearLayout>
 
@@ -103,9 +103,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/pref_theme_dark"
-                            android:textSize="18sp"
+                            android:textSize="16sp"
                             android:textColor="?android:attr/textColorPrimary"
-                            fontPath="fonts/Font-Medium.ttf"/>
+                            fontPath="fonts/Font-Bold.ttf"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -161,9 +161,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/pref_restore_purchases"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:textColor="?android:attr/textColorPrimary"
-                        fontPath="fonts/Font-Medium.ttf"/>
+                        fontPath="fonts/Font-Bold.ttf"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -180,6 +180,7 @@
             </com.balysv.materialripple.MaterialRippleLayout>
 
             <View
+                android:id="@+id/pref_restore_purchases_divider"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginLeft="16dp"
@@ -198,9 +199,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/pref_wallpaper_location"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textColor="?android:attr/textColorPrimary"
-                    fontPath="fonts/Font-Medium.ttf"/>
+                    fontPath="fonts/Font-Bold.ttf"/>
 
                 <TextView
                     android:id="@+id/pref_walls_directory"

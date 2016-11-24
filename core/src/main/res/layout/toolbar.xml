@@ -74,7 +74,7 @@
                         android:paddingStart="@dimen/home_content_padding"
                         android:paddingRight="@dimen/home_content_padding"
                         android:paddingEnd="@dimen/home_content_padding"
-                        fontPath="fonts/Font-Light.ttf"/>
+                        fontPath="fonts/Font-Regular.ttf"/>
 
                 </LinearLayout>
 
