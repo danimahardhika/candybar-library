@@ -64,6 +64,11 @@ Take a look inside <a href="https://github.com/danimahardhika/candybar-library/w
     <li>Premium Request: pay to request</li>
     </ul>
 <li>Cloud Based Wallpaper</li>
+    <ul>
+    <li>Preview wallpaper</li>
+    <li>Apply wallpaper: enable or disable wallpaper scroll</li>
+    <li>Download wallpaper</li>
+    </ul>
 <li>Settings</li>
     <ul>
     <li>Clear Cache</li>
