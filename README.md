@@ -50,6 +50,7 @@ Take a look inside <a href="https://github.com/danimahardhika/candybar-library/w
 <li>Very Light &#8594; Compared to other dashboard, CandyBar has smallest size, only around 2 MB.</li>
 <li>Premium Icon Request &#8594; CandyBar is the <b>FIRST</b> dashboard that has premium icon request feature (pay to request).</li>
 <li>Customization &#8594; CandyBar has a lot of options and easy to customize.</li>
+<li>CandyBar tools.</li>
 </ul>
 
 # Features
