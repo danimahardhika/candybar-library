@@ -79,7 +79,7 @@ Support development by making donation through demo app at Google Play.
 
 # Icon Pack Using CandyBar
 * [Simpax](https://play.google.com/store/apps/details?id=com.sikebo.simpax.icons)
-* [Retrorika](https://play.google.com/store/apps/details?id=com.sikebo.simpax.icons)
+* [Retrorika](https://play.google.com/store/apps/details?id=com.sikebox.retrorika.material.icons)
 * [Materialistik](https://play.google.com/store/apps/details?id=com.sikebo.materialistik.material.icons)
 
 # License
