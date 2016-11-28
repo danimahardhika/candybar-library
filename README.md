@@ -51,7 +51,6 @@ Take a look inside <a href="https://github.com/danimahardhika/candybar-library/w
 * CandyBar Tools &#8594; CandyBar provide several tools to help you creating Icon Pack.
 
 # Features
-* Very Light: only 2 MB
 * License Checker
 * Apply: 19 launchers
 * Icon Picker: see all icons included with sections and search
