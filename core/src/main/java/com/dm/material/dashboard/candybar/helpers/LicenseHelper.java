@@ -38,7 +38,7 @@ import com.google.android.vending.licensing.ServerManagedPolicy;
 
 public class LicenseHelper implements LicenseCheckerCallback {
 
-    private Context mContext;
+    private final Context mContext;
     private MaterialDialog mDialog;
 
     public static LicenseHelper getLicenseChecker(@NonNull Context context) {

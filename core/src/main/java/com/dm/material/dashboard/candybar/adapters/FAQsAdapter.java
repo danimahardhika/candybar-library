@@ -36,9 +36,9 @@ import java.util.Locale;
 
 public class FAQsAdapter extends RecyclerView.Adapter<FAQsAdapter.ViewHolder> {
 
-    private Context mContext;
-    private List<FAQs> mFAQs;
-    private List<FAQs> mFAQsAll;
+    private final Context mContext;
+    private final List<FAQs> mFAQs;
+    private final List<FAQs> mFAQsAll;
 
     public FAQsAdapter(@NonNull Context context, @NonNull List<FAQs> faqs) {
         mContext = context;
@@ -67,8 +67,8 @@ public class FAQsAdapter extends RecyclerView.Adapter<FAQsAdapter.ViewHolder> {
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView question;
-        TextView answer;
+        final TextView question;
+        final TextView answer;
 
         ViewHolder(View itemView) {
             super(itemView);

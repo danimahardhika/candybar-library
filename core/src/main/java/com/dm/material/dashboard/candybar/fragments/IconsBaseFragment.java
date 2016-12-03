@@ -1,7 +1,7 @@
 package com.dm.material.dashboard.candybar.fragments;
 
+import android.animation.AnimatorListenerAdapter;
 import android.content.res.XmlResourceParser;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,9 +9,9 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,24 +19,20 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.dm.material.dashboard.candybar.R;
-import com.dm.material.dashboard.candybar.adapters.IconsSuggestionAdapter;
 import com.dm.material.dashboard.candybar.helpers.ColorHelper;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
-import com.dm.material.dashboard.candybar.helpers.IconsHelper;
-import com.dm.material.dashboard.candybar.helpers.SoftKeyboardHelper;
-import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.items.Icon;
+import com.dm.material.dashboard.candybar.utils.Animator;
 import com.dm.material.dashboard.candybar.utils.Tag;
+import com.dm.material.dashboard.candybar.utils.listeners.SearchListener;
 
 import org.xmlpull.v1.XmlPullParser;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /*
@@ -61,7 +57,7 @@ public class IconsBaseFragment extends Fragment {
 
     private ViewPager mPager;
     private ProgressBar mProgress;
-    private List<Icon> mIcons;
+    private TabLayout mTabLayout;
 
     private AsyncTask<Void, Void, Boolean> mGetIcons;
 
@@ -70,15 +66,16 @@ public class IconsBaseFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_icons_base, container, false);
-        TabLayout mTabLayout = (TabLayout) view.findViewById(R.id.tab);
+        mTabLayout = (TabLayout) view.findViewById(R.id.tab);
         mPager = (ViewPager) view.findViewById(R.id.pager);
         mProgress = (ProgressBar) view.findViewById(R.id.progress);
-        initViewPager();
+        Animator.startSlideDownAnimation(getActivity(),
+                mTabLayout, view.findViewById(R.id.shadow));
+        getIcons();
         mTabLayout.setupWithViewPager(mPager);
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                SoftKeyboardHelper.closeKeyboard(getActivity());
                 mPager.setCurrentItem(tab.getPosition());
             }
 
@@ -96,64 +93,69 @@ public class IconsBaseFragment extends Fragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mIcons = new ArrayList<>();
-    }
-
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_search, menu);
         MenuItem search = menu.findItem(R.id.menu_search);
         int color = ColorHelper.getAttributeColor(getActivity(), R.attr.toolbar_icon);
         search.setIcon(DrawableHelper.getTintedDrawable(getActivity(),
                 R.drawable.ic_toolbar_search, color));
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(search);
-        searchView.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI | EditorInfo.IME_ACTION_SEARCH);
-        searchView.setQueryHint(getActivity().getResources().getString(R.string.search_icon));
 
-        SearchView.SearchAutoComplete autoComplete = (SearchView.SearchAutoComplete)
-                searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        if (autoComplete != null) {
-            autoComplete.setThreshold(1);
-            autoComplete.setAdapter(new IconsSuggestionAdapter(getActivity(),
-                    R.layout.fragment_icons_suggestion_item_list, mIcons));
-        }
+        MenuItemCompat.setOnActionExpandListener(search, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                if (fm == null) return false;
 
-        ViewHelper.changeSearchViewTextColor(searchView,
-                ColorHelper.getAttributeColor(getActivity(), R.attr.toolbar_icon),
-                ColorHelper.getAttributeColor(getActivity(), R.attr.hint_text));
-        View view = searchView.findViewById(android.support.v7.appcompat.R.id.search_plate);
-        if (view != null) view.setBackgroundColor(Color.TRANSPARENT);
-        super.onCreateOptionsMenu(menu, inflater);
+                View view = getActivity().findViewById(R.id.shadow);
+                if (view != null) view.animate().translationY(-mTabLayout.getHeight())
+                        .setDuration(200).start();
+                mTabLayout.animate().translationY(-mTabLayout.getHeight()).setDuration(200)
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(android.animation.Animator animation) {
+                                super.onAnimationEnd(animation);
+                                Fragment prev = fm.findFragmentByTag("home");
+                                if (prev != null) return;
+
+                                try {
+                                    SearchListener listener = (SearchListener) getActivity();
+                                    listener.OnSearchCollapse(true);
+                                } catch (Exception ignored) {}
+
+                                fm.beginTransaction()
+                                        .replace(R.id.container, new IconsSearchFragment(), IconsSearchFragment.TAG)
+                                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                                        .addToBackStack(null)
+                                        .commit();
+                            }
+                        }).start();
+
+                return false;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                return true;
+            }
+        });
     }
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         if (mGetIcons != null) mGetIcons.cancel(true);
+        super.onDestroy();
     }
 
-    private void initViewPager() {
-        boolean globalSearch = getActivity().getResources().getBoolean(
-                R.bool.enable_global_icon_search);
-        getIcons(globalSearch);
-    }
-
-    private void getIcons(boolean globalSearch) {
+    private void getIcons() {
         mGetIcons = new AsyncTask<Void, Void, Boolean>() {
 
-            List<Icon> icons;
             List<Icon> sections;
-            boolean iconReplacer;
 
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                icons = new ArrayList<>();
                 sections = new ArrayList<>();
-                iconReplacer = getActivity().getResources().getBoolean(
-                        R.bool.enable_icon_name_replacer);
                 mProgress.setVisibility(View.VISIBLE);
             }
 
@@ -181,14 +183,6 @@ public class IconsBaseFragment extends Fragment {
                                     String name = parser.getAttributeValue(null, "drawable");
                                     int id = DrawableHelper.getResourceId(getActivity(), name);
                                     if (id > 0) count += 1;
-                                    if (globalSearch) {
-                                        if (id > 0) {
-                                            name = IconsHelper.replaceIconName(
-                                                    getActivity(), iconReplacer, name);
-                                            Icon icon = new Icon(category, name, id);
-                                            icons.add(icon);
-                                        }
-                                    }
                                 }
                             }
 
@@ -197,17 +191,6 @@ public class IconsBaseFragment extends Fragment {
 
                         sections.add(new Icon(category, count));
                         parser.close();
-
-                        if (globalSearch) {
-                            try {
-                                Collections.sort(icons, (icon, icon1) -> {
-                                    String name = icon.getTitle();
-                                    String name1 = icon1.getTitle();
-                                    return name.compareTo(name1);
-                                });
-                            } catch (Exception ignored) {}
-                        }
-
                         return true;
                     } catch (Exception e) {
                         Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
@@ -222,27 +205,21 @@ public class IconsBaseFragment extends Fragment {
                 super.onPostExecute(aBoolean);
                 mProgress.setVisibility(View.GONE);
                 if (aBoolean) {
+                    setHasOptionsMenu(true);
                     mPager.setAdapter(new PagerIconsAdapter(getChildFragmentManager(), sections));
-
-                    if (globalSearch) {
-                        mIcons.addAll(icons);
-                        setHasOptionsMenu(true);
-                    }
                 } else {
                     Toast.makeText(getActivity(), R.string.icons_load_failed,
                             Toast.LENGTH_LONG).show();
                 }
 
-                icons = null;
                 mGetIcons = null;
             }
-
         }.execute();
     }
 
     private class PagerIconsAdapter extends FragmentStatePagerAdapter {
 
-        private List<Icon> mIcons;
+        private final List<Icon> mIcons;
 
         PagerIconsAdapter(FragmentManager fm, List<Icon> icons) {
             super(fm);

@@ -1,6 +1,8 @@
 package com.dm.material.dashboard.candybar.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -38,8 +40,8 @@ import java.util.List;
 
 public class HomeFeaturesAdapter extends RecyclerView.Adapter<HomeFeaturesAdapter.ViewHolder> {
 
-    private Context mContext;
-    private List<Feature> mFeatures;
+    private final Context mContext;
+    private final List<Feature> mFeatures;
 
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_CONTENT = 1;
@@ -60,6 +62,17 @@ public class HomeFeaturesAdapter extends RecyclerView.Adapter<HomeFeaturesAdapte
                     R.layout.fragment_home_feature_item_list, parent, false);
         }
         return new ViewHolder(view, viewType);
+    }
+
+    @Override
+    public void onViewRecycled(ViewHolder holder) {
+        super.onViewRecycled(holder);
+        if (holder.holderId == TYPE_CONTENT) {
+            Bitmap bitmap = ((BitmapDrawable) holder.icon.getDrawable()).getBitmap();
+            if (bitmap != null) bitmap.recycle();
+
+            holder.icon.setImageDrawable(null);
+        }
     }
 
     @Override

@@ -206,6 +206,9 @@ public class LauncherHelper {
                 } catch (ActivityNotFoundException e) {
                     Toast.makeText(context, R.string.apply_cmtheme_not_available,
                             Toast.LENGTH_LONG).show();
+                } catch (IllegalArgumentException e) {
+                    Toast.makeText(context, R.string.apply_cmtheme_failed,
+                            Toast.LENGTH_LONG).show();
                 }
                 break;
             case GO:

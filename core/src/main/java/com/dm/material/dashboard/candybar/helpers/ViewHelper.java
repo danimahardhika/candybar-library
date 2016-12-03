@@ -4,10 +4,15 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.Build;
+import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +20,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dm.material.dashboard.candybar.utils.Animator;
@@ -152,6 +159,40 @@ public class ViewHelper {
                     changeSearchViewTextColor(viewGroup.getChildAt(i), text, hint);
                 }
             }
+        }
+    }
+
+    public static void removeSearchViewSearchIcon(@Nullable View view) {
+        if (view != null) {
+            ImageView searchIcon = (ImageView) view;
+            ViewGroup linearLayoutSearchView = (ViewGroup) view.getParent();
+            if (linearLayoutSearchView != null) {
+                linearLayoutSearchView.removeView(searchIcon);
+                linearLayoutSearchView.addView(searchIcon);
+
+                searchIcon.setAdjustViewBounds(true);
+                searchIcon.setMaxWidth(0);
+                searchIcon.setLayoutParams(new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT));
+                searchIcon.setImageDrawable(null);
+            }
+        }
+    }
+
+    public static void changeSearchViewActionModeColor(@NonNull Context context, @Nullable View view,
+                                                       @AttrRes int original, @AttrRes int target) {
+        if (view != null) {
+            CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) view;
+            int originalColor = ColorHelper.getAttributeColor(context, original);
+            int targetColor = ColorHelper.getAttributeColor(context, target);
+
+            ColorDrawable cd1 = new ColorDrawable(originalColor);
+            ColorDrawable cd2 = new ColorDrawable(targetColor);
+
+            TransitionDrawable td = new TransitionDrawable(new Drawable[]{cd1, cd2});
+            collapsingToolbar.setContentScrim(td);
+            td.startTransition(200);
         }
     }
 

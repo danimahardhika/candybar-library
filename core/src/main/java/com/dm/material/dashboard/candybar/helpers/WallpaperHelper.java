@@ -124,12 +124,12 @@ public class WallpaperHelper {
                                 return false;
 
                         URL url = new URL(link);
-                        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                        urlConnection.setConnectTimeout(15000);
+                        connection = (HttpURLConnection) url.openConnection();
+                        connection.setConnectTimeout(15000);
 
-                        if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                            fileLength = urlConnection.getContentLength();
-                            InputStream stream = urlConnection.getInputStream();
+                        if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                            fileLength = connection.getContentLength();
+                            InputStream stream = connection.getInputStream();
                             OutputStream output = new FileOutputStream(file.toString());
 
                             byte data[] = new byte[1024];
@@ -145,7 +145,6 @@ public class WallpaperHelper {
                             output.flush();
                             output.close();
                             stream.close();
-
                             return true;
                         }
                     } catch (Exception e) {

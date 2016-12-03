@@ -20,7 +20,7 @@ package com.dm.material.dashboard.candybar.items;
 
 public class InAppBilling {
 
-    private String mProductId;
+    private final String mProductId;
     private String mProductName;
     private String mPrice;
     private int mProductCount;

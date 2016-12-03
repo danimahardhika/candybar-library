@@ -33,7 +33,7 @@ import java.util.Calendar;
 
 public class PreferencesHelper {
 
-    private Context mContext;
+    private final Context mContext;
 
     private static final String PREFERENCES_NAME = "candybar_preferences";
 

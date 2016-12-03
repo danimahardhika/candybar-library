@@ -20,9 +20,9 @@ package com.dm.material.dashboard.candybar.items;
 
 public class Launcher {
 
-    private String mName;
-    private String mPackageName;
-    private int mIcon;
+    private final String mName;
+    private final String mPackageName;
+    private final int mIcon;
 
     public Launcher(int icon, String name, String packageName) {
         mIcon = icon;

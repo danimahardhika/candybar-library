@@ -11,11 +11,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dm.material.dashboard.candybar.R;
-import com.dm.material.dashboard.candybar.helpers.LauncherHelper;
-import com.dm.material.dashboard.candybar.items.Launcher;
+import com.dm.material.dashboard.candybar.helpers.IconsHelper;
+import com.dm.material.dashboard.candybar.helpers.IntentHelper;
+import com.dm.material.dashboard.candybar.helpers.SoftKeyboardHelper;
+import com.dm.material.dashboard.candybar.items.Icon;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
+import com.dm.material.dashboard.candybar.utils.ImageConfig;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /*
  * CandyBar - Material Dashboard
@@ -35,38 +41,50 @@ import java.util.List;
  * limitations under the License.
  */
 
-public class LauncherAdapter extends RecyclerView.Adapter<LauncherAdapter.ViewHolder> {
+public class IconsSearchAdapter extends RecyclerView.Adapter<IconsSearchAdapter.ViewHolder> {
 
     private final Context mContext;
-    private final List<Launcher> mLaunchers;
+    private final List<Icon> mIcons;
+    private final List<Icon> mIconsAll;
+    private final boolean mIsShowIconName;
 
-    public LauncherAdapter(@NonNull Context context, @NonNull List<Launcher> launchers) {
+    public IconsSearchAdapter(@NonNull Context context, @NonNull List<Icon> icons) {
         mContext = context;
-        mLaunchers = launchers;
+        mIcons = icons;
+        mIconsAll = new ArrayList<>();
+        mIconsAll.addAll(mIcons);
+        mIsShowIconName = mContext.getResources().getBoolean(R.bool.show_icon_name);
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(
-                R.layout.fragment_apply_item_grid, parent, false);
+                R.layout.fragment_icons_item_grid, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.name.setText(mLaunchers.get(position).getName());
-        holder.icon.setImageResource(mLaunchers.get(position).getIcon());
+        if (mIsShowIconName) {
+            holder.name.setVisibility(View.VISIBLE);
+            holder.name.setText(mIcons.get(position).getTitle());
+        } else {
+            holder.name.setVisibility(View.GONE);
+        }
+
+        ImageLoader.getInstance().displayImage("drawable://" + mIcons.get(position).getRes(),
+                holder.icon, ImageConfig.getIconOptions());
     }
 
     @Override
     public int getItemCount() {
-        return mLaunchers.size();
+        return mIcons.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        final TextView name;
         final ImageView icon;
+        final TextView name;
         final LinearLayout container;
 
         ViewHolder(View itemView) {
@@ -84,11 +102,26 @@ public class LauncherAdapter extends RecyclerView.Adapter<LauncherAdapter.ViewHo
             int id = view.getId();
             int position = getAdapterPosition();
             if (id == R.id.container) {
-                LauncherHelper.apply(mContext,
-                        mLaunchers.get(position).getPackageName(),
-                        mLaunchers.get(position).getName());
+                SoftKeyboardHelper.closeKeyboard(mContext);
+                IconsHelper.selectIcon(mContext, IntentHelper.sAction, mIcons.get(position));
             }
         }
+    }
+
+    public void search(String query) {
+        query = query.toLowerCase(Locale.getDefault());
+        mIcons.clear();
+        if (query.length() == 0) {
+            mIcons.addAll(mIconsAll);
+        } else {
+            for (Icon icon : mIconsAll) {
+                String title = icon.getTitle().toLowerCase(Locale.getDefault());
+                if (title.contains(query)) {
+                    mIcons.add(icon);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 
 }

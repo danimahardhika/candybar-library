@@ -1,8 +1,14 @@
 package com.dm.material.dashboard.candybar.utils;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+
+import com.dm.material.dashboard.candybar.R;
 
 /*
  * CandyBar - Material Dashboard
@@ -24,13 +30,35 @@ import android.view.animation.AlphaAnimation;
 
 public class Animator {
 
-    public static void startAlphaAnimation (@NonNull View v, long duration, int visibility) {
+    public static void startAlphaAnimation(@NonNull View view, long duration, int visibility) {
         AlphaAnimation alphaAnimation = (visibility == View.VISIBLE)
                 ? new AlphaAnimation(0f, 1f) : new AlphaAnimation(1f, 0f);
 
         alphaAnimation.setDuration(duration);
         alphaAnimation.setFillAfter(true);
-        v.startAnimation(alphaAnimation);
+        view.startAnimation(alphaAnimation);
+    }
+
+    public static void startSlideDownAnimation(@NonNull Context context, @NonNull View view, @Nullable View view2) {
+        Animation slideDown = AnimationUtils.loadAnimation(context, R.anim.slide_down_from_top);
+        slideDown.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                if (view2 != null) startAlphaAnimation(view2, 200, View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        view.startAnimation(slideDown);
+        view.setVisibility(View.VISIBLE);
     }
 
 }

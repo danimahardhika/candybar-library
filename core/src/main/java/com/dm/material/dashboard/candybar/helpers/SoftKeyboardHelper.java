@@ -38,38 +38,47 @@ public class SoftKeyboardHelper {
         }
     }
 
+    public static void openKeyboard(@NonNull Context context) {
+        InputMethodManager input = (InputMethodManager) context.getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+        View view = ((Activity) context).getCurrentFocus();
+        if (view != null) {
+            input.toggleSoftInputFromWindow(view.getWindowToken(), InputMethodManager.SHOW_IMPLICIT, 0);
+        }
+    }
+
     /*
      * This code was taken from https://github.com/mikepenz/MaterialDrawer/issues/95#issuecomment-80519589
      */
 
-    private View decorView;
-    private View contentView;
+    private final View decorView;
+    private final View contentView;
 
     public SoftKeyboardHelper(Activity act, View contentView) {
         this.decorView = act.getWindow().getDecorView();
         this.contentView = contentView;
 
         //only required on newer android versions. it was working on API level 19 (Build.VERSION_CODES.KITKAT)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             decorView.getViewTreeObserver().addOnGlobalLayoutListener(onGlobalLayoutListener);
         }
     }
 
     public void enable() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             decorView.getViewTreeObserver().addOnGlobalLayoutListener(onGlobalLayoutListener);
         }
     }
 
     public void disable() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             decorView.getViewTreeObserver().removeOnGlobalLayoutListener(onGlobalLayoutListener);
         }
     }
 
 
     //a small helper to allow showing the editText focus
-    private ViewTreeObserver.OnGlobalLayoutListener onGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+    private final ViewTreeObserver.OnGlobalLayoutListener onGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
         @Override
         public void onGlobalLayout() {
             Rect r = new Rect();

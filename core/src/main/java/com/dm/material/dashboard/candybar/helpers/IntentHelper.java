@@ -25,6 +25,7 @@ public class IntentHelper {
     public static final int ACTION_DEFAULT = 0;
     public static final int ICON_PICKER = 1;
     public static final int IMAGE_PICKER = 2;
+    public static final int WALLPAPER_PICKER = 3;
 
     public static int sAction = ACTION_DEFAULT;
 
@@ -44,6 +45,8 @@ public class IntentHelper {
                 case Intent.ACTION_PICK :
                 case Intent.ACTION_GET_CONTENT :
                     return IMAGE_PICKER;
+                case Intent.ACTION_SET_WALLPAPER :
+                    return WALLPAPER_PICKER;
             }
         }
         return ACTION_DEFAULT;

@@ -97,9 +97,9 @@ public class FAQsFragment extends Fragment {
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(search);
         searchView.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
         searchView.setQueryHint(getActivity().getResources().getString(R.string.search_faqs));
+        searchView.setMaxWidth(Integer.MAX_VALUE);
 
-        ViewHelper.changeSearchViewTextColor(searchView,
-                ColorHelper.getAttributeColor(getActivity(), R.attr.toolbar_icon),
+        ViewHelper.changeSearchViewTextColor(searchView, color,
                 ColorHelper.getAttributeColor(getActivity(), R.attr.hint_text));
         View view = searchView.findViewById(android.support.v7.appcompat.R.id.search_plate);
         if (view != null) view.setBackgroundColor(Color.TRANSPARENT);

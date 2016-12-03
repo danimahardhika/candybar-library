@@ -47,9 +47,9 @@ import java.util.List;
 
 public class IntentAdapter extends BaseAdapter {
 
-    private Context mContext;
-    private List<ResolveInfo> mApps;
-    private Request mRequest;
+    private final Context mContext;
+    private final List<ResolveInfo> mApps;
+    private final Request mRequest;
 
     public IntentAdapter(@NonNull Context context, @NonNull List<ResolveInfo> apps,
                          @NonNull Request request) {
@@ -112,10 +112,10 @@ public class IntentAdapter extends BaseAdapter {
 
     private class ViewHolder {
 
-        TextView name;
-        ImageView icon;
-        LinearLayout container;
-        View divider;
+        final TextView name;
+        final ImageView icon;
+        final LinearLayout container;
+        final View divider;
 
         ViewHolder(View view) {
             name = (TextView) view.findViewById(R.id.name);
@@ -134,7 +134,7 @@ public class IntentAdapter extends BaseAdapter {
         if (mRequest.getStream().length() > 0) {
             File zip = new File(mRequest.getStream());
             Uri uri = FileHelper.getUriFromFile(mContext, mContext.getPackageName(), zip);
-            intent.putExtra(Intent.EXTRA_STREAM, uri);
+            if (uri != null) intent.putExtra(Intent.EXTRA_STREAM, uri);
         }
 
         intent.putExtra(Intent.EXTRA_EMAIL,

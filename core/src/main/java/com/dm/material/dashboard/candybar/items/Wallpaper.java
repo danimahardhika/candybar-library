@@ -20,7 +20,7 @@ package com.dm.material.dashboard.candybar.items;
 
 public class Wallpaper {
 
-    private String mUrl;
+    private final String mUrl;
     private String mDate;
     private String mThumbUrl;
     private String mAuthor;

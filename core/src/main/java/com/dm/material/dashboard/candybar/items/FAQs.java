@@ -20,8 +20,8 @@ package com.dm.material.dashboard.candybar.items;
 
 public class FAQs {
 
-    private String mQuestion;
-    private String mAnswer;
+    private final String mQuestion;
+    private final String mAnswer;
 
     public FAQs(String question, String answer) {
         mQuestion = question;

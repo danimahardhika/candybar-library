@@ -47,11 +47,15 @@ public class DrawableHelper {
                 resName, "drawable", context.getPackageName());
     }
 
-    @NonNull
+    @Nullable
     public static Drawable getTintedDrawable(@NonNull Context context, @DrawableRes int res, @ColorInt int color) {
-        Drawable drawable = AppCompatDrawableManager.get().getDrawable(context, res);
-        drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);
-        return drawable.mutate();
+        try {
+            Drawable drawable = AppCompatDrawableManager.get().getDrawable(context, res);
+            drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+            return drawable.mutate();
+        } catch (OutOfMemoryError e) {
+            return null;
+        }
     }
 
     public static Drawable getAppIcon(@NonNull Context context, ResolveInfo info) {

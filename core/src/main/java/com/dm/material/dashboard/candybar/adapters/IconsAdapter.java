@@ -18,9 +18,7 @@ import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /*
  * CandyBar - Material Dashboard
@@ -42,15 +40,13 @@ import java.util.Locale;
 
 public class IconsAdapter extends RecyclerView.Adapter<IconsAdapter.ViewHolder> {
 
-    private Context mContext;
-    private List<Icon> mIcons;
-    private List<Icon> mIconsAll;
-    private boolean mIsShowIconName;
+    private final Context mContext;
+    private final List<Icon> mIcons;
+    private final boolean mIsShowIconName;
 
     public IconsAdapter(@NonNull Context context, @NonNull List<Icon> icons) {
         mContext = context;
         mIcons = icons;
-        mIconsAll = new ArrayList<>();
         mIsShowIconName = mContext.getResources().getBoolean(R.bool.show_icon_name);
     }
 
@@ -81,9 +77,9 @@ public class IconsAdapter extends RecyclerView.Adapter<IconsAdapter.ViewHolder> 
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        ImageView icon;
-        TextView name;
-        LinearLayout container;
+        final ImageView icon;
+        final TextView name;
+        final LinearLayout container;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -103,31 +99,6 @@ public class IconsAdapter extends RecyclerView.Adapter<IconsAdapter.ViewHolder> 
                 IconsHelper.selectIcon(mContext, IntentHelper.sAction, mIcons.get(position));
             }
         }
-    }
-
-    public void initSearch() {
-        mIconsAll.clear();
-        mIconsAll.addAll(mIcons);
-    }
-
-    public void resetSearch() {
-        mIconsAll.clear();
-    }
-
-    public void search(String query) {
-        query = query.toLowerCase(Locale.getDefault());
-        mIcons.clear();
-        if (query.length() == 0) {
-            mIcons.addAll(mIconsAll);
-        } else {
-            for (Icon icon : mIconsAll) {
-                String title = icon.getTitle().toLowerCase(Locale.getDefault());
-                if (title.contains(query)) {
-                    mIcons.add(icon);
-                }
-            }
-        }
-        notifyDataSetChanged();
     }
 
 }

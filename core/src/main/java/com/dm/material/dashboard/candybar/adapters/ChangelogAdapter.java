@@ -34,8 +34,8 @@ import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 
 public class ChangelogAdapter extends BaseAdapter {
 
-    private Context mContext;
-    private String[] mChangelog;
+    private final Context mContext;
+    private final String[] mChangelog;
 
     public ChangelogAdapter(@NonNull Context context, @NonNull String[] changelog) {
         mContext = context;
@@ -79,8 +79,8 @@ public class ChangelogAdapter extends BaseAdapter {
 
     private class ViewHolder {
 
-        TextView changelog;
-        ImageView dot;
+        final TextView changelog;
+        final ImageView dot;
 
         ViewHolder(View view) {
             changelog = (TextView) view.findViewById(R.id.changelog);

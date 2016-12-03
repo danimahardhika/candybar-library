@@ -1,4 +1,4 @@
-package com.dm.material.dashboard.candybar.items;
+package com.dm.material.dashboard.candybar.utils.listeners;
 
 /*
  * CandyBar - Material Dashboard
@@ -18,22 +18,8 @@ package com.dm.material.dashboard.candybar.items;
  * limitations under the License.
  */
 
-public class Feature {
+public interface SearchListener {
 
-    private final int mIcon;
-    private final String mTitle;
-
-    public Feature(int icon, String title) {
-        mIcon = icon;
-        mTitle = title;
-    }
-
-    public int getIcon() {
-        return mIcon;
-    }
-
-    public String getTitle() {
-        return mTitle;
-    }
+    void OnSearchCollapse(boolean expand);
 
 }

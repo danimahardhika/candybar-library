@@ -33,8 +33,8 @@ import com.dm.material.dashboard.candybar.preferences.Preferences;
 
 public class InAppBillingAdapter extends BaseAdapter {
 
-    private Context mContext;
-    private InAppBilling[] mInAppBillings;
+    private final Context mContext;
+    private final InAppBilling[] mInAppBillings;
 
     private int mSelectedPosition = 0;
 
@@ -85,9 +85,9 @@ public class InAppBillingAdapter extends BaseAdapter {
 
     private class ViewHolder {
 
-        AppCompatRadioButton radio;
-        TextView name;
-        LinearLayout container;
+        final AppCompatRadioButton radio;
+        final TextView name;
+        final LinearLayout container;
 
         ViewHolder(View view) {
             radio = (AppCompatRadioButton) view.findViewById(R.id.radio);

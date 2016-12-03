@@ -30,7 +30,7 @@ import com.dm.material.dashboard.candybar.utils.listeners.RequestListener;
 
 public class InAppBillingHelper implements BillingProcessor.IBillingHandler {
 
-    private Context mContext;
+    private final Context mContext;
 
     public static final int DONATE = 0;
     public static final int PREMIUM_REQUEST = 1;

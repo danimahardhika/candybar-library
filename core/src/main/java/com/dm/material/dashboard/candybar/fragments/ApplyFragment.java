@@ -248,7 +248,7 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
         return isPackageInstalled(pkg1) | isPackageInstalled(pkg2) | isPackageInstalled(pkg3);
     }
 
-    private Comparator<Launcher> LauncherNameComparator = (launcher, launcher1) -> {
+    private final Comparator<Launcher> LauncherNameComparator = (launcher, launcher1) -> {
         String name = launcher.getName();
         String name1 = launcher1.getName();
         return name.compareTo(name1);

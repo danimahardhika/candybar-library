@@ -101,8 +101,12 @@ public class FileHelper {
         return null;
     }
 
+    @Nullable
     public static Uri getUriFromFile(Context context, String applicationId, File file) {
-        return FileProvider.getUriForFile(context, applicationId +".fileProvider", file);
+        try {
+            return FileProvider.getUriForFile(context, applicationId + ".fileProvider", file);
+        } catch (IllegalArgumentException ignored) {}
+        return null;
     }
 
 }

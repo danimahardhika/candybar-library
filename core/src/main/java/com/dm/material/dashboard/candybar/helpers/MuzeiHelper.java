@@ -38,8 +38,8 @@ import java.util.Random;
 
 public class MuzeiHelper {
 
-    private Database mDatabase;
-    private String mDirectory;
+    private final Database mDatabase;
+    private final String mDirectory;
 
     public MuzeiHelper(@NonNull Context context, String directory) {
         mDatabase = new Database(context);

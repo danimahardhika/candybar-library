@@ -41,6 +41,7 @@ import com.dm.material.dashboard.candybar.helpers.ColorHelper;
 import com.dm.material.dashboard.candybar.helpers.DeviceHelper;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.helpers.FileHelper;
+import com.dm.material.dashboard.candybar.helpers.LocaleHelper;
 import com.dm.material.dashboard.candybar.helpers.PermissionHelper;
 import com.dm.material.dashboard.candybar.helpers.RequestHelper;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
@@ -59,6 +60,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 /*
  * CandyBar - Material Dashboard
@@ -270,8 +272,9 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                 while (!isCancelled()) {
                     try {
                         Thread.sleep(1);
+                        PackageManager packageManager = getActivity().getPackageManager();
                         StringBuilder activities = AppFilterHelper.loadAppFilter(getActivity());
-                        List<ResolveInfo> apps = getActivity().getPackageManager().queryIntentActivities(
+                        List<ResolveInfo> apps = packageManager.queryIntentActivities(
                                 intent, PackageManager.GET_RESOLVED_FILTER);
                         try {
                             Collections.sort(apps, new ResolveInfo.DisplayNameComparator(
@@ -279,9 +282,14 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                         } catch (Exception ignored) {}
 
                         for (ResolveInfo app : apps) {
-                            String name = app.activityInfo.loadLabel(getActivity()
-                                    .getPackageManager()).toString();
-                            String activity = app.activityInfo.packageName +"/"+ app.activityInfo.name;
+                            String packageName = app.activityInfo.packageName;
+                            String name = app.activityInfo.loadLabel(packageManager).toString();
+
+                            String localizedLabel = LocaleHelper.getOtherAppLocaleName(
+                                    getActivity(), new Locale("en-US"), packageName);
+                            if (localizedLabel != null) name = localizedLabel;
+
+                            String activity = packageName +"/"+ app.activityInfo.name;
                             if (!activities.toString().contains(activity)) {
                                 Drawable drawable = DrawableHelper.getAppIcon(getActivity(), app);
                                 byte[] bytes = DrawableHelper.getBitmapByte(drawable);

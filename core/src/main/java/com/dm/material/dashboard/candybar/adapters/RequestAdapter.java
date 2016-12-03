@@ -1,6 +1,8 @@
 package com.dm.material.dashboard.candybar.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.CardView;
@@ -43,13 +45,13 @@ import java.util.List;
 
 public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHolder> {
 
-    private Context mContext;
-    private List<Request> mRequests;
-    private SparseBooleanArray mSelectedItems;
+    private final Context mContext;
+    private final List<Request> mRequests;
+    private final SparseBooleanArray mSelectedItems;
 
-    private int mTextColorSecondary;
-    private int mTextColorAccent;
-    private boolean mIsPremiumRequestEnabled;
+    private final int mTextColorSecondary;
+    private final int mTextColorAccent;
+    private final boolean mIsPremiumRequestEnabled;
 
     private static final int TYPE_PREMIUM = 0;
     private static final int TYPE_REGULAR = 1;
@@ -82,6 +84,9 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
     public void onViewRecycled(ViewHolder holder) {
         super.onViewRecycled(holder);
         if (holder.holderId == TYPE_REGULAR) {
+            Bitmap bitmap = ((BitmapDrawable) holder.icon.getDrawable()).getBitmap();
+            if (bitmap != null) bitmap.recycle();
+
             holder.requested.setTextColor(mTextColorSecondary);
             holder.icon.setImageBitmap(null);
         }
@@ -267,7 +272,6 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
     }
 
     public void resetAdapter() {
-        notifyItemChanged(0);
         resetSelectedItems();
     }
 
