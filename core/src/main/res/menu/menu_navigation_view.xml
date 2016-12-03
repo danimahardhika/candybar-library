@@ -29,6 +29,11 @@
             android:icon="@drawable/ic_drawer_wallpapers"
             android:title="@string/navigation_view_wallpapers"/>
 
+    </group>
+
+    <group android:id="@+id/optional"
+        android:checkableBehavior="single">
+
         <item
             android:id="@+id/navigation_view_settings"
             android:icon="@drawable/ic_drawer_settings"

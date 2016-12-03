@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
+        android:visibility="invisible"
         app:tabIndicatorColor="?attr/tab_indicator"
         app:tabTextAppearance="@style/TabsTextStyle"
         app:tabSelectedTextColor="?attr/tab_text_selected"
@@ -33,9 +34,11 @@
         style="?android:attr/progressBarStyleLarge"/>
 
     <View
+        android:id="@+id/shadow"
         android:layout_width="match_parent"
         android:layout_height="@dimen/toolbar_shadow"
         android:layout_below="@+id/tab"
+        android:visibility="invisible"
         android:background="@drawable/toolbar_shadow" />
 
 </RelativeLayout>

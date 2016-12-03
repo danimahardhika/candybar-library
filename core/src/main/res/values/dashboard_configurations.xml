@@ -105,12 +105,15 @@
     <string name="navigation_view_header">https://drive.google.com/uc?id=0B0f4ypHfNKm5UFhmaTB0TGJLRDA</string>
 
     <!-- Navigation view header height
-    * default: 220dp -->
-    <dimen name="navigation_view_header_height">220dp</dimen>
+    * default: 200dp -->
+    <dimen name="navigation_view_header_height">200dp</dimen>
 
     <!-- Navigation view header text
     * Leave empty if you don't want to show any text -->
     <string name="navigation_view_header_title">CandyBar</string>
+
+    <!-- Navigation view width -->
+    <dimen name="navigation_view_width">300dp</dimen>
 
     <!-- CONFIG: ICONS
     * Take a look inside dashboard_icons.xml -->

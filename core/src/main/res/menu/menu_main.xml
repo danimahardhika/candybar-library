@@ -12,9 +12,4 @@
         android:title="@string/menu_licenses"
         app:showAsAction="never"/>
 
-    <item
-        android:id="@+id/menu_report_bugs"
-        android:title="@string/menu_report_bugs"
-        app:showAsAction="never"/>
-
 </menu>

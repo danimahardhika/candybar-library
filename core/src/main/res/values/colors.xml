@@ -27,6 +27,14 @@
     <color name="toolbarIcon">#FFFFFFFF</color>
     <color name="toolbarIconDark">#FFFFFFFF</color>
 
+    <!-- Toolbar Search -->
+    <color name="searchToolbar">#E2E2E2</color>
+    <color name="searchToolbarDark">#E2E2E2</color>
+    <color name="searchToolbarIcon">#555555</color>
+    <color name="searchToolbarIconDark">#555555</color>
+    <color name="searchToolbarHintText">#999999</color>
+    <color name="searchToolbarHintTextDark">#999999</color>
+
     <!-- Home -->
     <color name="homeTitle">#FFFFFF</color>
     <color name="homeTitleDark">#FFFFFF</color>

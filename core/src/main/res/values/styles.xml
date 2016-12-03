@@ -36,6 +36,9 @@
         <item name="tab_text">@color/tabText</item>
         <item name="tab_text_selected">@color/tabTextSelected</item>
         <item name="home_title">@color/homeTitle</item>
+        <item name="search_toolbar">@color/searchToolbar</item>
+        <item name="search_toolbar_icon">@color/searchToolbarIcon</item>
+        <item name="search_toolbar_hint">@color/searchToolbarHintText</item>
         <item name="md_positive_color">@color/colorAccent</item>
         <item name="md_neutral_color">@color/primaryText</item>
         <item name="md_negative_color">@color/primaryText</item>
@@ -69,6 +72,9 @@
         <item name="tab_text">@color/tabTextDark</item>
         <item name="tab_text_selected">@color/tabTextSelectedDark</item>
         <item name="home_title">@color/homeTitleDark</item>
+        <item name="search_toolbar">@color/searchToolbarDark</item>
+        <item name="search_toolbar_icon">@color/searchToolbarIconDark</item>
+        <item name="search_toolbar_hint">@color/searchToolbarHintTextDark</item>
         <item name="md_background_color">@color/cardBackgroundDark</item>
         <item name="md_positive_color">@color/darkColorAccent</item>
         <item name="md_neutral_color">@color/primaryTextDark</item>

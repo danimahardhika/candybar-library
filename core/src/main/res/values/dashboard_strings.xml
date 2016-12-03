@@ -26,7 +26,6 @@
     <!-- Menu -->
     <string name="menu_changelog">Changelog</string>
     <string name="menu_licenses">Credits &amp; Licenses</string>
-    <string name="menu_report_bugs">Report Bugs</string>
     <string name="menu_rebuild_premium">Rebuild Premium Request</string>
     <string name="menu_search">Search</string>
     <string name="menu_save">Save to Device</string>
@@ -94,6 +93,7 @@
     <string name="launcher_not_installed">not installed. Do you want to open Google Play Store to download and install it?</string>
 
     <string name="apply_cmtheme_not_available">CM Theme not available on this device</string>
+    <string name="apply_cmtheme_failed">Unable to launch CM Theme, you can try to apply Icon Pack manually from Settings</string>
 
     <!-- Icons -->
     <string name="icons_load_failed">Unable to read drawable.xml</string>
@@ -200,10 +200,6 @@
 
     <!-- Library -->
     <string name="open_source_licenses">Open Source Licenses</string>
-
-    <!-- Report Bugs -->
-    <string name="report_bugs_building">Building activity list …</string>
-    <string name="report_bugs_failed">Unable to build activity list</string>
 
     <!-- Support Development -->
     <string name="donation_success">Thank you for making donation. I will use the donation you have given for good.</string>

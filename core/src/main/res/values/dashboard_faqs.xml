@@ -26,7 +26,6 @@
         <item>Why ACCESS_NETWORK_STATE permission needed?</item>
         <item>Why ACCESS_WIFI_STATE permission needed?</item>
         <item>Why SET_WALLPAPER permission needed?</item>
-        <item>Why SET_WALLPAPER_HINTS permission needed?</item>
         <item>Why WAKE_LOCK Permission needed?</item>
     </string-array>
 
@@ -73,7 +72,6 @@
         <item>It used to check if your phone has internet connection or not.</item>
         <item>It used to check if your phone has internet connection from wifi or not, to load cloud wallpapers from Muzei.</item>
         <item>It used to apply wallpaper directly from dashboard app.</item>
-        <item>It used to adjust wallpaper based on your screen resolution.</item>
         <item>It used by Muzei Live Wallpaper</item>
     </string-array>
 

@@ -13,5 +13,8 @@
     <attr name="tab_text" format="color"/>
     <attr name="tab_text_selected" format="color"/>
     <attr name="home_title" format="color"/>
+    <attr name="search_toolbar" format="color"/>
+    <attr name="search_toolbar_icon" format="color"/>
+    <attr name="search_toolbar_hint" format="color"/>
 
 </resources>
