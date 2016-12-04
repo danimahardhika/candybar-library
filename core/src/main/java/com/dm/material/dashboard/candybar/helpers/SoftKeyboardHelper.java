@@ -76,7 +76,6 @@ public class SoftKeyboardHelper {
         }
     }
 
-
     //a small helper to allow showing the editText focus
     private final ViewTreeObserver.OnGlobalLayoutListener onGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
         @Override

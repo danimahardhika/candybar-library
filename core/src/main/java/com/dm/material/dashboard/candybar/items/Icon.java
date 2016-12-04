@@ -20,17 +20,10 @@ package com.dm.material.dashboard.candybar.items;
 
 public class Icon {
 
-    private String mSection;
     private final String mTitle;
     private final int mRes;
 
     public Icon(String title, int res) {
-        mTitle = title;
-        mRes = res;
-    }
-
-    public Icon(String section, String title, int res) {
-        mSection = section;
         mTitle = title;
         mRes = res;
     }

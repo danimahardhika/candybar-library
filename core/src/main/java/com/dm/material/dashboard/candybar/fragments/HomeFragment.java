@@ -61,9 +61,7 @@ public class HomeFragment extends Fragment {
     private LinearLayout mQuickApply;
     private ImageView mAppsIcon;
     private ImageView mQuickApplyIcon;
-    private TextView mQuickApplyText;
     private NestedScrollView mScrollView;
-    private View mShadow;
 
     @Nullable
     @Override
@@ -78,9 +76,7 @@ public class HomeFragment extends Fragment {
         mQuickApply = (LinearLayout) view.findViewById(R.id.quick_apply);
         mAppsIcon = (ImageView) view.findViewById(R.id.more_apps_icon);
         mQuickApplyIcon = (ImageView) view.findViewById(R.id.quick_apply_icon);
-        mQuickApplyText = (TextView) view.findViewById(R.id.quick_apply_text);
         mScrollView = (NestedScrollView) view.findViewById(R.id.scrollview);
-        mShadow = view.findViewById(R.id.shadow);
         return view;
     }
 
@@ -109,7 +105,8 @@ public class HomeFragment extends Fragment {
     }
 
     public void showToolbarShadow(boolean isTimeToShow) {
-        mShadow.setVisibility(isTimeToShow ? View.VISIBLE : View.GONE);
+        View shadow = getActivity().findViewById(R.id.shadow);
+        if (shadow != null) shadow.setVisibility(isTimeToShow ? View.VISIBLE : View.GONE);
     }
 
     private void initDescription() {
@@ -141,7 +138,9 @@ public class HomeFragment extends Fragment {
             String text = getActivity().getResources().getString(R.string.quick_apply_desc) +" "+
                     getActivity().getResources().getString(R.string.app_name) +" "+
                     getActivity().getResources().getString(R.string.quick_apply_desc_1);
-            mQuickApplyText.setText(text);
+
+            TextView quickApplyText = (TextView) getActivity().findViewById(R.id.quick_apply_text);
+            if (quickApplyText != null) quickApplyText.setText(text);
         }
     }
 

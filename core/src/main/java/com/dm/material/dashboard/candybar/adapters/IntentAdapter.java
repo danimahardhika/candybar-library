@@ -134,7 +134,8 @@ public class IntentAdapter extends BaseAdapter {
         if (mRequest.getStream().length() > 0) {
             File zip = new File(mRequest.getStream());
             Uri uri = FileHelper.getUriFromFile(mContext, mContext.getPackageName(), zip);
-            if (uri != null) intent.putExtra(Intent.EXTRA_STREAM, uri);
+            if (uri == null) uri = Uri.fromFile(zip);
+            intent.putExtra(Intent.EXTRA_STREAM, uri);
         }
 
         intent.putExtra(Intent.EXTRA_EMAIL,

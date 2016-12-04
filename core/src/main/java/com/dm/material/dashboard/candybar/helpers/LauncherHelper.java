@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -397,7 +396,6 @@ public class LauncherHelper {
                         context.startActivity(intent);
                         ((AppCompatActivity) context).finish();
                     } catch (ActivityNotFoundException | NullPointerException e) {
-                        Log.d("TEST", Log.getStackTraceString(e));
                         Toast.makeText(context, R.string.manual_apply_lg_home_not_available,
                                 Toast.LENGTH_LONG).show();
                     } catch (SecurityException e) {

@@ -58,14 +58,11 @@ import java.util.List;
 public class WallpapersFragment extends Fragment {
 
     private RecyclerView mWallpapersGrid;
-    private RecyclerFastScroller mFastScroll;
     private SwipeRefreshLayout mSwipe;
     private ProgressBar mProgress;
 
     private GridLayoutManager mLayoutManager;
     private HttpURLConnection mConnection;
-    private Database mDatabase;
-    private WallpapersAdapter mAdapter;
     private AsyncTask<Void, Void, Boolean> mGetWallpapers;
 
     @Nullable
@@ -74,7 +71,6 @@ public class WallpapersFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_wallpapers, container, false);
         mWallpapersGrid = (RecyclerView) view.findViewById(R.id.wallpapers_grid);
-        mFastScroll = (RecyclerFastScroller) view.findViewById(R.id.fastscroll);
         mSwipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe);
         mProgress = (ProgressBar) view.findViewById(R.id.progress);
         return view;
@@ -85,8 +81,6 @@ public class WallpapersFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         ViewCompat.setNestedScrollingEnabled(mWallpapersGrid, false);
         resetNavigationBarMargin();
-
-        mDatabase = new Database(getActivity());
 
         mProgress.getIndeterminateDrawable().setColorFilter(
                 ColorHelper.getAttributeColor(getActivity(), R.attr.colorAccent),
@@ -99,7 +93,10 @@ public class WallpapersFragment extends Fragment {
         mWallpapersGrid.setItemAnimator(new DefaultItemAnimator());
         mWallpapersGrid.setHasFixedSize(false);
         mWallpapersGrid.setLayoutManager(mLayoutManager);
-        mFastScroll.attachRecyclerView(mWallpapersGrid);
+
+        RecyclerFastScroller fastScroller = (RecyclerFastScroller)
+                getActivity().findViewById(R.id.fastscroll);
+        if (fastScroller != null) fastScroller.attachRecyclerView(mWallpapersGrid);
 
         mSwipe.setOnRefreshListener(() -> {
             if (mProgress.getVisibility() == View.GONE)
@@ -107,8 +104,9 @@ public class WallpapersFragment extends Fragment {
             else mSwipe.setRefreshing(false);
         });
 
+        Database database = new Database(getActivity());
         boolean isTimeToUpdate = Preferences.getPreferences(getActivity()).isTimeToUpdateWallpaper();
-        if (!mDatabase.isWallpapersEmpty() && isTimeToUpdate) {
+        if (!database.isWallpapersEmpty() && isTimeToUpdate) {
             getWallpapers(true);
             return;
         }
@@ -166,12 +164,14 @@ public class WallpapersFragment extends Fragment {
 
             WallpaperJSON wallpapersJSON;
             List<Wallpaper> wallpapers;
+            Database database;
 
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
                 if (!refreshing) mProgress.setVisibility(View.VISIBLE);
                 else mSwipe.setRefreshing(true);
+                database = new Database(getActivity());
             }
 
             @Override
@@ -179,8 +179,8 @@ public class WallpapersFragment extends Fragment {
                 while (!isCancelled()) {
                     try {
                         Thread.sleep(1);
-                        if (!refreshing && !mDatabase.isWallpapersEmpty()) {
-                            wallpapers = mDatabase.getWallpapers();
+                        if (!refreshing && !database.isWallpapersEmpty()) {
+                            wallpapers = database.getWallpapers();
                             return true;
                         }
 
@@ -194,20 +194,20 @@ public class WallpapersFragment extends Fragment {
 
                             if (wallpapersJSON == null) return false;
                             if (refreshing) {
-                                List<Wallpaper> dates = mDatabase.getWallpaperAddedOn();
+                                List<Wallpaper> dates = database.getWallpaperAddedOn();
 
-                                mDatabase.deleteAllWalls();
-                                mDatabase.addAllWallpapers(wallpapersJSON);
+                                database.deleteAllWalls();
+                                database.addAllWallpapers(wallpapersJSON);
 
                                 for (Wallpaper date : dates) {
-                                    mDatabase.setWallpaperAddedOn(date.getURL(), date.getDate());
+                                    database.setWallpaperAddedOn(date.getURL(), date.getDate());
                                 }
                             } else {
-                                if (!mDatabase.isWallpapersEmpty()) mDatabase.deleteAllWalls();
-                                mDatabase.addAllWallpapers(wallpapersJSON);
+                                if (!database.isWallpapersEmpty()) database.deleteAllWalls();
+                                database.addAllWallpapers(wallpapersJSON);
                             }
 
-                            wallpapers = mDatabase.getWallpapers();
+                            wallpapers = database.getWallpapers();
                             return true;
                         }
                     } catch (Exception e) {
@@ -226,14 +226,14 @@ public class WallpapersFragment extends Fragment {
                 if (aBoolean) {
                     Preferences.getPreferences(getActivity()).setWallpaperLastUpdate();
                     resetSpanSizeLookUp(getActivity().getResources().getConfiguration().orientation);
-                    mAdapter = new WallpapersAdapter(getActivity(), wallpapers);
-                    mWallpapersGrid.setAdapter(mAdapter);
+                    mWallpapersGrid.setAdapter(new WallpapersAdapter(getActivity(), wallpapers));
                 } else {
                     if (refreshing) {
                         Toast.makeText(getActivity(), R.string.connection_failed,
                                 Toast.LENGTH_LONG).show();
                     }
                 }
+                database = null;
                 mConnection = null;
                 mGetWallpapers = null;
             }

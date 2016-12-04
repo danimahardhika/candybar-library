@@ -110,10 +110,8 @@ public class WallpapersAdapter extends RecyclerView.Adapter<WallpapersAdapter.Vi
                                 holder.card.setCardBackgroundColor(vibrant);
                                 int primary = ColorHelper.getAttributeColor(
                                         mContext, android.R.attr.textColorPrimary);
-                                int secondary = ColorHelper.getAttributeColor(
-                                        mContext, android.R.attr.textColorSecondary);
                                 holder.name.setTextColor(primary);
-                                holder.author.setTextColor(secondary);
+                                holder.author.setTextColor(primary);
                             }
                         }
 

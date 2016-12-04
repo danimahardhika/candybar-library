@@ -107,6 +107,7 @@ public class IconsBaseFragment extends Fragment {
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 if (fm == null) return false;
 
+                setHasOptionsMenu(false);
                 View view = getActivity().findViewById(R.id.shadow);
                 if (view != null) view.animate().translationY(-mTabLayout.getHeight())
                         .setDuration(200).start();

@@ -189,7 +189,6 @@ public class IconsSearchFragment extends Fragment {
                         Thread.sleep(1);
                         XmlResourceParser parser = getActivity().getResources().getXml(R.xml.drawable);
                         int eventType = parser.getEventType();
-                        String category = "";
 
                         while (eventType != XmlPullParser.END_DOCUMENT) {
                             if (eventType == XmlPullParser.START_TAG) {
@@ -199,7 +198,7 @@ public class IconsSearchFragment extends Fragment {
                                     if (id > 0) {
                                         name = IconsHelper.replaceIconName(
                                                 getActivity(), iconReplacer, name);
-                                        Icon icon = new Icon(category, name, id);
+                                        Icon icon = new Icon(name, id);
                                         icons.add(icon);
                                     }
                                 }

@@ -53,7 +53,6 @@ public class IconsFragment extends Fragment {
     private AutoFitRecyclerView mIconsGrid;
     private RecyclerFastScroller mFastScroll;
 
-    private IconsAdapter mAdapter;
     private String mTitle;
     private AsyncTask<Void, Void, Boolean> mGetIcons;
 
@@ -183,8 +182,8 @@ public class IconsFragment extends Fragment {
             protected void onPostExecute(Boolean aBoolean) {
                 super.onPostExecute(aBoolean);
                 if (aBoolean) {
-                    mAdapter = new IconsAdapter(getActivity(), icons);
-                    mIconsGrid.setAdapter(mAdapter);
+                    IconsAdapter adapter = new IconsAdapter(getActivity(), icons);
+                    mIconsGrid.setAdapter(adapter);
                 }
                 mGetIcons = null;
             }

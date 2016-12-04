@@ -56,7 +56,6 @@ import java.util.List;
 public class FAQsFragment extends Fragment {
 
     private RecyclerView mFAQsList;
-    private RecyclerFastScroller mFastScroll;
     private TextView mSearchResult;
 
     private FAQsAdapter mAdapter;
@@ -68,7 +67,6 @@ public class FAQsFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_faqs, container, false);
         mFAQsList = (RecyclerView) view.findViewById(R.id.faqs_list);
-        mFastScroll = (RecyclerFastScroller) view.findViewById(R.id.fastscroll);
         mSearchResult = (TextView) view.findViewById(R.id.search_result);
         return view;
     }
@@ -82,7 +80,10 @@ public class FAQsFragment extends Fragment {
         mFAQsList.setItemAnimator(new DefaultItemAnimator());
         mFAQsList.setHasFixedSize(false);
         mFAQsList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mFastScroll.attachRecyclerView(mFAQsList);
+
+        RecyclerFastScroller fastScroller = (RecyclerFastScroller)
+                getActivity().findViewById(R.id.fastscroll);
+        if (fastScroller != null) fastScroller.attachRecyclerView(mFAQsList);
 
         getFAQs();
     }
@@ -199,7 +200,7 @@ public class FAQsFragment extends Fragment {
                 super.onPostExecute(aBoolean);
                 if (aBoolean) {
                     setHasOptionsMenu(true);
-                    mAdapter = new FAQsAdapter(getActivity(), faqs);
+                    mAdapter = new FAQsAdapter(faqs);
                     mFAQsList.setAdapter(mAdapter);
                 }
                 mGetFAQs = null;

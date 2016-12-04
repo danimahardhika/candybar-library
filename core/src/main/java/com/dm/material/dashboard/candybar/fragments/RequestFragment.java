@@ -83,7 +83,6 @@ import java.util.Locale;
 public class RequestFragment extends Fragment implements View.OnClickListener {
 
     private RecyclerView mRequestList;
-    private RecyclerFastScroller mFastScroll;
     private ProgressBar mProgress;
     private FloatingActionButton mFab;
 
@@ -97,7 +96,6 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_request, container, false);
         mRequestList = (RecyclerView) view.findViewById(R.id.request_list);
-        mFastScroll = (RecyclerFastScroller) view.findViewById(R.id.fastscroll);
         mProgress = (ProgressBar) view.findViewById(R.id.progress);
         mFab = (FloatingActionButton) view.findViewById(R.id.fab);
         return view;
@@ -126,7 +124,10 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         mRequestList.getItemAnimator().setChangeDuration(0);
         mRequestList.setHasFixedSize(false);
         mRequestList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mFastScroll.attachRecyclerView(mRequestList);
+
+        RecyclerFastScroller fastScroller = (RecyclerFastScroller)
+                getActivity().findViewById(R.id.fastscroll);
+        if (fastScroller != null) fastScroller.attachRecyclerView(mRequestList);
 
         getMissingApps();
     }

@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:text="name"
                 android:textColor="?android:attr/textColorPrimary"
-                android:textSize="15sp"
+                android:textSize="14sp"
                 android:layout_marginLeft="@dimen/card_padding"
                 android:layout_marginStart="@dimen/card_padding"
                 android:layout_marginRight="@dimen/card_padding"
@@ -49,7 +49,7 @@
                 android:layout_marginTop="@dimen/card_padding"
                 android:singleLine="true"
                 android:ellipsize="end"
-                fontPath="fonts/Font-Regular.ttf"/>
+                fontPath="fonts/Font-Medium.ttf"/>
 
             <TextView
                 android:id="@+id/author"
@@ -57,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:text="author"
                 android:textColor="?android:attr/textColorSecondary"
-                android:textSize="15sp"
+                android:textSize="14sp"
                 android:layout_marginLeft="@dimen/card_padding"
                 android:layout_marginStart="@dimen/card_padding"
                 android:layout_marginRight="@dimen/card_padding"

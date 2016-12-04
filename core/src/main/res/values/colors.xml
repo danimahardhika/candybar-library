@@ -29,11 +29,11 @@
 
     <!-- Toolbar Search -->
     <color name="searchToolbar">#E2E2E2</color>
-    <color name="searchToolbarDark">#E2E2E2</color>
+    <color name="searchToolbarDark">#323232</color>
     <color name="searchToolbarIcon">#555555</color>
-    <color name="searchToolbarIconDark">#555555</color>
+    <color name="searchToolbarIconDark">#FFFFFF</color>
     <color name="searchToolbarHintText">#999999</color>
-    <color name="searchToolbarHintTextDark">#999999</color>
+    <color name="searchToolbarHintTextDark">#44FFFFFF</color>
 
     <!-- Home -->
     <color name="homeTitle">#FFFFFF</color>

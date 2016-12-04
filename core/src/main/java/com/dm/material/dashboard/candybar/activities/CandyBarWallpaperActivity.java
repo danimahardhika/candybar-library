@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -26,6 +27,7 @@ import android.widget.TextView;
 
 import com.dm.material.dashboard.candybar.fragments.dialog.WallpaperSettingsFragment;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
+import com.dm.material.dashboard.candybar.utils.Animator;
 import com.kogitune.activitytransition.ActivityTransition;
 import com.kogitune.activitytransition.ExitActivityTransition;
 import com.dm.material.dashboard.candybar.R;
@@ -129,6 +131,9 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
                 .to(this, mWallpaper, "image")
                 .duration(300)
                 .start(savedInstanceState);
+
+        Animator.startAlphaAnimation(toolbar, 1000, View.VISIBLE);
+        toolbar.setVisibility(View.VISIBLE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && savedInstanceState == null) {
             Transition transition = getWindow().getSharedElementEnterTransition();
@@ -269,13 +274,8 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
                 super.onLoadingFailed(imageUri, view, failReason);
-                mAttacher.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                mProgress.setVisibility(View.GONE);
                 int text = ColorHelper.getTitleTextColor(CandyBarWallpaperActivity.this, mColor);
-                mFab.setImageDrawable(DrawableHelper.getTintedDrawable(
-                        CandyBarWallpaperActivity.this, R.drawable.ic_fab_check, text));
-                mFab.show();
-                mFab.setVisibility(View.VISIBLE);
+                OnWallpaperLoaded(text);
             }
 
             @Override
@@ -285,10 +285,6 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 }
 
-                mAttacher.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                mRunnable = null;
-                mHandler = null;
-                mProgress.setVisibility(View.GONE);
                 if (loadedImage != null) {
                     Palette.from(loadedImage).generate(palette -> {
                         int accent = ColorHelper.getAttributeColor(
@@ -299,14 +295,23 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
                         mFab.setBackgroundTintList(ColorHelper.getColorStateList(
                                 android.R.attr.state_pressed,
                                 color, ColorHelper.getDarkerColor(color, 0.9f)));
-                        mFab.setImageDrawable(DrawableHelper.getTintedDrawable(
-                                CandyBarWallpaperActivity.this, R.drawable.ic_fab_check, text));
-                        mFab.show();
-                        mFab.setVisibility(View.VISIBLE);
+                        OnWallpaperLoaded(text);
                     });
                 }
             }
         });
+    }
+
+    private void OnWallpaperLoaded(@ColorInt int textColor) {
+        mAttacher.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        mProgress.setVisibility(View.GONE);
+        mRunnable = null;
+        mHandler = null;
+
+        mFab.setImageDrawable(DrawableHelper.getTintedDrawable(
+                CandyBarWallpaperActivity.this, R.drawable.ic_fab_check, textColor));
+        mFab.show();
+        mFab.setVisibility(View.VISIBLE);
     }
 
 }

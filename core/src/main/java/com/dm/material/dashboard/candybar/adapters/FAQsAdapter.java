@@ -1,6 +1,5 @@
 package com.dm.material.dashboard.candybar.adapters;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -36,12 +35,10 @@ import java.util.Locale;
 
 public class FAQsAdapter extends RecyclerView.Adapter<FAQsAdapter.ViewHolder> {
 
-    private final Context mContext;
     private final List<FAQs> mFAQs;
     private final List<FAQs> mFAQsAll;
 
-    public FAQsAdapter(@NonNull Context context, @NonNull List<FAQs> faqs) {
-        mContext = context;
+    public FAQsAdapter(@NonNull List<FAQs> faqs) {
         mFAQs = faqs;
         mFAQsAll = new ArrayList<>();
         mFAQsAll.addAll(mFAQs);
@@ -49,7 +46,7 @@ public class FAQsAdapter extends RecyclerView.Adapter<FAQsAdapter.ViewHolder> {
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(
+        View view = LayoutInflater.from(parent.getContext()).inflate(
                 R.layout.fragment_faqs_item_list, parent, false);
         return new ViewHolder(view);
     }
