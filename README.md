@@ -16,7 +16,7 @@
 <p>Take a look on this <a href="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/requirements.jpg">screenshot</a> for requirements
 <p>The minimum API level supported by this library is API 15</p>
 Add JitPack repository to root ```build.gradle```
-```groovy
+```Gradle
 allprojects {
     repositories {
         //...
@@ -25,7 +25,7 @@ allprojects {
 }
 ```
 Add the dependency
-```groovy
+```Gradle
 dependencies {
     //...
     compile 'com.github.danimahardhika.candybar-library:core:1.3.2'
