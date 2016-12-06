@@ -1,10 +1,17 @@
 package com.dm.material.dashboard.candybar.applications;
 
 import android.app.Application;
+import android.content.Intent;
 
 import com.dm.material.dashboard.candybar.R;
+import com.dm.material.dashboard.candybar.activities.CandyBarCrashReport;
+import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
@@ -28,6 +35,8 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 public class CandyBarApplication extends Application {
 
+    private Thread.UncaughtExceptionHandler mHandler;
+
     public void initApplication() {
         super.onCreate();
         if (!ImageLoader.getInstance().isInited())
@@ -37,6 +46,38 @@ public class CandyBarApplication extends Application {
                 .setDefaultFontPath("fonts/Font-Regular.ttf")
                 .setFontAttrId(R.attr.fontPath)
                 .build());
+
+        mHandler = Thread.getDefaultUncaughtExceptionHandler();
+        Thread.setDefaultUncaughtExceptionHandler(this::handleUncaughtException);
+    }
+
+    private void handleUncaughtException(Thread thread, Throwable throwable) {
+        try {
+            StringBuilder sb = new StringBuilder();
+            SimpleDateFormat dateFormat = new SimpleDateFormat(
+                    "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+            String dateTime = dateFormat.format(new Date());
+            sb.append("Crash Time : ").append(dateTime).append("\n");
+
+            for (StackTraceElement element : throwable.getStackTrace()) {
+                sb.append("\n");
+                sb.append(element.toString());
+            }
+
+            Preferences.getPreferences(this).setLatestCrashLog(sb.toString());
+
+            Intent intent = new Intent(this, CandyBarCrashReport.class);
+            intent.putExtra(CandyBarCrashReport.EXTRA_STACKTRACE, sb.toString());
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+            startActivity(intent);
+        } catch (Exception e) {
+            if (mHandler != null) {
+                mHandler.uncaughtException(thread, throwable);
+                return;
+            }
+        }
+        System.exit(1);
     }
 
 }

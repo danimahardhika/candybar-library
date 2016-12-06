@@ -77,14 +77,17 @@ public class RequestHelper {
 
     public static boolean isReadyToSendPremiumRequest(@NonNull Context context) {
         boolean isReady = Preferences.getPreferences(context).isConnectedToNetwork();
+        boolean granted = PermissionHelper.isPermissionStorageGranted(context);
         if (!isReady) {
             new MaterialDialog.Builder(context)
                     .title(R.string.premium_request)
                     .content(R.string.premium_request_no_internet)
                     .positiveText(R.string.close)
                     .show();
+        } else if (!granted) {
+            PermissionHelper.showRequestPermissionStorageDenied(context);
         }
-        return isReady;
+        return isReady && granted;
     }
 
     public static void showPremiumRequestConsumeFailed(@NonNull Context context) {

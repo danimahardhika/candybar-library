@@ -210,19 +210,21 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
     private void toggleSelection(int position) {
         int finalPos = mIsPremiumRequestEnabled ?
                 position - 1 : position;
-        if (mSelectedItems.get(finalPos, false))
-            mSelectedItems.delete(finalPos);
-        else mSelectedItems.put(finalPos, true);
-        notifyItemChanged(position);
-        try {
-            RequestListener listener = (RequestListener) mContext;
-            listener.OnSelected(getSelectedItemsSize());
-        } catch (Exception ignored) {}
+        if (finalPos >= 0 && finalPos < mRequests.size()) {
+            if (mSelectedItems.get(finalPos, false))
+                mSelectedItems.delete(finalPos);
+            else mSelectedItems.put(finalPos, true);
+            notifyItemChanged(position);
+            try {
+                RequestListener listener = (RequestListener) mContext;
+                listener.OnSelected(getSelectedItemsSize());
+            } catch (Exception ignored) {}
+        }
     }
 
     public void selectAll() {
         if (mSelectedItems.size() == mRequests.size()) {
-            deselectAll();
+            resetSelectedItems();
             return;
         }
 
@@ -230,15 +232,6 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         for (int i = 0; i < mRequests.size(); i++) {
             mSelectedItems.put(i, true);
         }
-        notifyDataSetChanged();
-        try {
-            RequestListener listener = (RequestListener) mContext;
-            listener.OnSelected(getSelectedItemsSize());
-        } catch (Exception ignored) {}
-    }
-
-    private void deselectAll() {
-        mSelectedItems.clear();
         notifyDataSetChanged();
         try {
             RequestListener listener = (RequestListener) mContext;
@@ -282,8 +275,11 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
     private List<Request> getSelectedApps() {
         List<Request> items = new ArrayList<>(mSelectedItems.size());
         for (int i = 0; i < mSelectedItems.size(); i++) {
-            Request request = mRequests.get(mSelectedItems.keyAt(i));
-            items.add(request);
+            int position = mSelectedItems.keyAt(i);
+            if (position >= 0 && position < mRequests.size()) {
+                Request request = mRequests.get(mSelectedItems.keyAt(i));
+                items.add(request);
+            }
         }
         return items;
     }

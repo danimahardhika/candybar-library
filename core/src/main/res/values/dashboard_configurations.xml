@@ -31,8 +31,8 @@
     <bool name="use_splash_screen">true</bool>
 
     <!-- Splash screen duration in milliseconds
-    * default: 1500 milliseconds -> 1.5 seconds -->
-    <integer name="splash_screen_duration">1500</integer>
+    * default: 1000 milliseconds -> 1 seconds -->
+    <integer name="splash_screen_duration">1000</integer>
 
     <!-- CONFIG: HOME -->
 

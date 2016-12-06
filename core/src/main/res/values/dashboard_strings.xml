@@ -1,5 +1,7 @@
 <resources>
 
+    <string name="candybar_material_dashboard">CandyBar Material Dashboard</string>
+
     <!-- Navigation View -->
     <string name="navigation_view_home">Home</string>
     <string name="navigation_view_apply">Apply</string>
@@ -32,6 +34,7 @@
     <string name="menu_wallpaper_settings">Wallpaper Settings</string>
     <string name="menu_select_all">Select All</string>
     <string name="menu_deselect_all">Clear Selection</string>
+    <string name="menu_report_bugs">Report Bugs</string>
 
     <!-- Dialog -->
     <string name="open">Open</string>
@@ -201,8 +204,18 @@
     <!-- Library -->
     <string name="open_source_licenses">Open Source Licenses</string>
 
+    <!-- Report Bugs -->
+    <string name="report_bugs_building">Building activity list …</string>
+    <string name="report_bugs_failed">Unable to build activity list</string>
+
     <!-- Support Development -->
     <string name="donation_success">Thank you for making donation. I will use the donation you have given for good.</string>
+
+    <!-- Crash Report -->
+    <string name="crash_report">Crash Report</string>
+    <string name="crash_report_message">Unfortunately</string>
+    <string name="crash_report_message_1">has crashed. Choose send report below to help developer fix the issue.</string>
+    <string name="crash_report_send">Send Report</string>
 
     <!-- Please don't modify this -->
     <string name="about_dashboard_dev">CandyBar Material Dashboard developed by Dani Mahardhika

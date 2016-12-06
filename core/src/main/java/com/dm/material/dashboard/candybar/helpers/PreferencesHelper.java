@@ -56,6 +56,7 @@ public class PreferencesHelper {
     private static final String KEY_INAPP_BILLING_TYPE = "inapp_billing_type";
     private static final String KEY_LICENSED = "licensed";
     private static final String KEY_SCROLL_WALLPAPER = "scroll_wallpaper";
+    private static final String KEY_LATEST_CRASHLOG = "last_crashlog";
 
     public PreferencesHelper(@NonNull Context context) {
         mContext = context;
@@ -205,6 +206,14 @@ public class PreferencesHelper {
 
     public void setScrollWallpaper(boolean bool) {
         getSharedPreferences().edit().putBoolean(KEY_SCROLL_WALLPAPER, bool).apply();
+    }
+
+    public String getLatestCrashLog() {
+        return getSharedPreferences().getString(KEY_LATEST_CRASHLOG, "");
+    }
+
+    public void setLatestCrashLog(String string) {
+        getSharedPreferences().edit().putString(KEY_LATEST_CRASHLOG, string).apply();
     }
 
     public int getVersion() {

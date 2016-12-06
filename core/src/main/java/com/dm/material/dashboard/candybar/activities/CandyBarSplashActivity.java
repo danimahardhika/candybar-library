@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.TextView;
 
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.helpers.ColorHelper;
@@ -38,6 +39,11 @@ public class CandyBarSplashActivity extends AppCompatActivity {
     public void initSplashActivity(Bundle savedInstanceState, Class<?> mainActivity, int duration) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+        TextView splashTitle = (TextView) findViewById(R.id.splash_title);
+        splashTitle.setTextColor(ColorHelper.getTitleTextColor(this,
+                ContextCompat.getColor(this, R.color.splashColor)));
+
         int color = ColorHelper.getDarkerColor(
                 ContextCompat.getColor(this, R.color.splashColor), 0.8f);
         ColorHelper.setNavigationBarColor(this, color);

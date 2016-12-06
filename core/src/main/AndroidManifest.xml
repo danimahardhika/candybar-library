@@ -31,6 +31,11 @@
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
-    <application />
+    <application>
+        <activity android:name="com.dm.material.dashboard.candybar.activities.CandyBarCrashReport"
+            android:launchMode="singleInstance"
+            android:noHistory="true"
+            android:theme="@style/Theme.AppCompat.Light.Dialog" />
+    </application>
 
 </manifest>

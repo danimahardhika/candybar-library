@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import com.dm.material.dashboard.candybar.BuildConfig;
+import com.dm.material.dashboard.candybar.R;
+
 import android.util.DisplayMetrics;
 
 /*
@@ -48,6 +51,13 @@ public class DeviceHelper {
                 .append("\nApp Version : ").append(appVersion)
                 .append("\n");
         return sb.toString();
+    }
+
+    @NonNull
+    public static String getDeviceInfoForCrashReport(@NonNull Context context) {
+        return "CandyBar Version : " +BuildConfig.VERSION_NAME +
+                "\nIcon Pack Name : " +context.getResources().getString(R.string.app_name)
+                + "\n"+ getDeviceInfo(context);
     }
 
 }

@@ -39,6 +39,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.anjlab.android.iab.v3.BillingProcessor;
 import com.dm.material.dashboard.candybar.helpers.LicenseHelper;
+import com.dm.material.dashboard.candybar.helpers.ReportBugsHelper;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.listeners.LicenseListener;
 import com.dm.material.dashboard.candybar.utils.listeners.SearchListener;
@@ -167,7 +168,6 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
 
         initNavigationView(toolbar);
         initNavigationViewHeader();
-        initHomeImage();
         initInAppBilling();
 
         if (savedInstanceState != null) {
@@ -178,17 +178,18 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
 
         IntentHelper.sAction = IntentHelper.getAction(getIntent());
         if (IntentHelper.sAction == IntentHelper.ACTION_DEFAULT) {
-            setFragment(getFragment(mPosition));
+            setFragment(getFragment(mPosition), false);
         } else {
-            setFragment(getActionFragment(IntentHelper.sAction));
+            setFragment(getActionFragment(IntentHelper.sAction), false);
         }
+
+        initHomeImage();
 
         if (Preferences.getPreferences(this).isFirstRun()) {
             if (licenseChecker) {
                 LicenseHelper.getLicenseChecker(this).checkLicense(mLicenseKey, salt);
                 return;
             }
-            Preferences.getPreferences(this).setFirstRun(false);
         }
 
         if (Preferences.getPreferences(this).isNewVersion())
@@ -223,7 +224,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
     protected void onNewIntent(Intent intent) {
         int action = IntentHelper.getAction(intent);
         if (action != IntentHelper.ACTION_DEFAULT)
-            setFragment(getActionFragment(action));
+            setFragment(getActionFragment(action), true);
         super.onNewIntent(intent);
     }
 
@@ -259,6 +260,14 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
         } else if (id == R.id.menu_licenses) {
             LicensesFragment.showLicensesDialog(mFragManager);
             return true;
+        } else if (id == R.id.menu_report_bugs) {
+            if (PermissionHelper.isPermissionStorageGranted(this)) {
+                ReportBugsHelper.checkForBugs(this);
+                return true;
+            }
+
+            PermissionHelper.requestStoragePermission(this, PermissionHelper.PERMISSION_STORAGE);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -283,7 +292,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
 
         if (!mFragmentTag.equals(TAG_HOME)) {
             mPosition = mLastPosition = 0;
-            setFragment(getFragment(mPosition));
+            setFragment(getFragment(mPosition), true);
             return;
         }
         super.onBackPressed();
@@ -366,24 +375,24 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
         if (Preferences.getPreferences(this).isPremiumRequest()) {
             RequestHelper.showPremiumRequestStillAvailable(this);
         } else {
-            if (mBillingProcessor != null) {
-                if (mBillingProcessor.loadOwnedPurchasesFromGoogle()) {
-                    List<String> products = mBillingProcessor.listOwnedProducts();
-                    if (products != null) {
-                        boolean isProductIdExist = false;
-                        for (String product : products) {
-                            for (String premiumRequestProductId : mPremiumRequestProductsId) {
-                                if (premiumRequestProductId.equals(product)) {
-                                    isProductIdExist = true;
-                                    break;
-                                }
+            if (mBillingProcessor == null) return;
+
+            if (mBillingProcessor.loadOwnedPurchasesFromGoogle()) {
+                List<String> products = mBillingProcessor.listOwnedProducts();
+                if (products != null) {
+                    boolean isProductIdExist = false;
+                    for (String product : products) {
+                        for (String premiumRequestProductId : mPremiumRequestProductsId) {
+                            if (premiumRequestProductId.equals(product)) {
+                                isProductIdExist = true;
+                                break;
                             }
                         }
+                    }
 
-                        if (isProductIdExist) {
-                            RequestHelper.showPremiumRequestExist(this);
-                            return;
-                        }
+                    if (isProductIdExist) {
+                        RequestHelper.showPremiumRequestExist(this);
+                        return;
                     }
                 }
             }
@@ -481,15 +490,15 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
 
     @Override
     public void OnInAppBillingConsume(int type, String productId) {
-        if (mBillingProcessor != null) {
-            if (mBillingProcessor.consumePurchase(productId)) {
-                if (type == InAppBillingHelper.DONATE) {
-                    new MaterialDialog.Builder(this)
-                            .title(R.string.navigation_view_donate)
-                            .content(R.string.donation_success)
-                            .positiveText(R.string.close)
-                            .show();
-                }
+        if (mBillingProcessor == null) return;
+
+        if (mBillingProcessor.consumePurchase(productId)) {
+            if (type == InAppBillingHelper.DONATE) {
+                new MaterialDialog.Builder(this)
+                        .title(R.string.navigation_view_donate)
+                        .content(R.string.donation_success)
+                        .positiveText(R.string.close)
+                        .show();
             }
         }
     }
@@ -597,7 +606,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
                 } else {
                     if (mPosition != mLastPosition) {
                         mLastPosition = mPosition;
-                        setFragment(getFragment(mPosition));
+                        setFragment(getFragment(mPosition), true);
                     }
                 }
             }
@@ -696,11 +705,11 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
         boolean donation = getResources().getBoolean(R.bool.enable_donation);
         boolean premium = getResources().getBoolean(R.bool.enable_premium_request);
         if (donation || premium) {
-            if (mBillingProcessor == null) {
-                if (BillingProcessor.isIabServiceAvailable(this)) {
-                    mBillingProcessor = new BillingProcessor(this,
-                            mLicenseKey, new InAppBillingHelper(this));
-                }
+            if (mBillingProcessor != null) return;
+
+            if (BillingProcessor.isIabServiceAvailable(this)) {
+                mBillingProcessor = new BillingProcessor(this,
+                        mLicenseKey, new InAppBillingHelper(this));
             }
         }
     }
@@ -719,12 +728,12 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
         }
     }
 
-    private void setFragment(Fragment fragment) {
+    private void setFragment(Fragment fragment, boolean animate) {
         clearBackStack();
 
         FragmentTransaction ft = mFragManager.beginTransaction()
-                .replace(R.id.container, fragment, mFragmentTag)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                .replace(R.id.container, fragment, mFragmentTag);
+        if (animate) ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         try {
             ft.commit();
         } catch (Exception e) {

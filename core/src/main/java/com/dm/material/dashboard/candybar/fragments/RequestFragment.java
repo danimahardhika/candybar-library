@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -87,7 +88,6 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     private FloatingActionButton mFab;
 
     private RequestAdapter mAdapter;
-    private Database mDatabase;
     private AsyncTask<Void, Request, Boolean> mGetMissingApps;
 
     @Nullable
@@ -107,8 +107,6 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         setHasOptionsMenu(false);
         ViewCompat.setNestedScrollingEnabled(mRequestList, false);
         resetNavigationBarMargin();
-
-        mDatabase = new Database(getActivity());
 
         mProgress.getIndeterminateDrawable().setColorFilter(
                 ColorHelper.getAttributeColor(getActivity(), R.attr.colorAccent),
@@ -255,15 +253,10 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     private void getMissingApps() {
         mGetMissingApps = new AsyncTask<Void, Request, Boolean>() {
 
-            Intent intent;
-
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
                 mProgress.setVisibility(View.VISIBLE);
-                intent = new Intent(Intent.ACTION_MAIN);
-                intent.addCategory(Intent.CATEGORY_LAUNCHER);
-
                 mAdapter = new RequestAdapter(getActivity(), new ArrayList<>());
                 mRequestList.setAdapter(mAdapter);
             }
@@ -273,8 +266,12 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                 while (!isCancelled()) {
                     try {
                         Thread.sleep(1);
+                        Database database = new Database(getActivity());
                         PackageManager packageManager = getActivity().getPackageManager();
                         StringBuilder activities = AppFilterHelper.loadAppFilter(getActivity());
+
+                        Intent intent = new Intent(Intent.ACTION_MAIN);
+                        intent.addCategory(Intent.CATEGORY_LAUNCHER);
                         List<ResolveInfo> apps = packageManager.queryIntentActivities(
                                 intent, PackageManager.GET_RESOLVED_FILTER);
                         try {
@@ -294,7 +291,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                             if (!activities.toString().contains(activity)) {
                                 Drawable drawable = DrawableHelper.getAppIcon(getActivity(), app);
                                 byte[] bytes = DrawableHelper.getBitmapByte(drawable);
-                                boolean requested = mDatabase.isRequested(activity);
+                                boolean requested = database.isRequested(activity);
                                 Request request = new Request(
                                         bytes,
                                         name,
@@ -348,7 +345,6 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 
             MaterialDialog dialog;
             StringBuilder sb;
-            File directory;
             String zipFile;
             String productId = "";
             String orderId = "";
@@ -357,7 +353,6 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
             protected void onPreExecute() {
                 super.onPreExecute();
                 sb = new StringBuilder();
-                directory = FileHelper.getCacheDirectory(getActivity());
 
                 MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
                 builder.content(R.string.request_building);
@@ -374,20 +369,20 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                 while (!isCancelled()) {
                     try {
                         Thread.sleep(1);
+                        Database database = new Database(getActivity());
+                        File directory = FileHelper.getCacheDirectory(getActivity());
                         sb.append(DeviceHelper.getDeviceInfo(getActivity()));
 
                         if (Preferences.getPreferences(getActivity()).isPremiumRequest()) {
                             if (billingProcessor == null) return false;
-                            else {
-                                TransactionDetails details = billingProcessor.getPurchaseTransactionDetails(
-                                        Preferences.getPreferences(getActivity()).getPremiumRequestProductId());
-                                if (details != null) {
-                                    orderId = details.purchaseInfo.purchaseData.orderId;
-                                    productId = details.purchaseInfo.purchaseData.productId;
-                                    sb.append("Order Id : ").append(orderId)
-                                            .append("\nProduct Id : ").append(productId)
-                                            .append("\n");
-                                }
+                            TransactionDetails details = billingProcessor.getPurchaseTransactionDetails(
+                                    Preferences.getPreferences(getActivity()).getPremiumRequestProductId());
+                            if (details != null) {
+                                orderId = details.purchaseInfo.purchaseData.orderId;
+                                productId = details.purchaseInfo.purchaseData.productId;
+                                sb.append("Order Id : ").append(orderId)
+                                        .append("\nProduct Id : ").append(productId)
+                                        .append("\n");
                             }
                         }
 
@@ -400,7 +395,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                         StringBuilder activity = new StringBuilder();
                         for (Integer selectedItem : selectedItems) {
                             Request item = mAdapter.getRequest(selectedItem);
-                            mDatabase.addRequest(item);
+                            database.addRequest(item);
                             mAdapter.setRequested(selectedItem, true);
 
                             String link = "https://play.google.com/store/apps/details?id=";
@@ -420,15 +415,18 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                                     .append("\" />");
                             out.append("\n\n");
 
-                            String icon = FileHelper.saveIcon(directory,
-                                    DrawableHelper.getBitmap(item.getIcon()), item.getName());
+                            Bitmap bitmap = DrawableHelper.getHighQualityIcon(
+                                    getActivity(), item.getPackageName());
+                            if (bitmap == null) bitmap = DrawableHelper.getBitmap(item.getIcon());
+
+                            String icon = FileHelper.saveIcon(directory, bitmap, item.getName());
                             if (icon != null) files.add(icon);
                         }
 
                         sb.append(activity.toString());
 
                         if (Preferences.getPreferences(getActivity()).isPremiumRequest()) {
-                            mDatabase.addPremiumRequest(orderId, productId, activity.toString());
+                            database.addPremiumRequest(orderId, productId, activity.toString());
                         }
 
                         out.flush();
@@ -466,6 +464,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                     Toast.makeText(getActivity(), R.string.request_build_failed,
                             Toast.LENGTH_LONG).show();
                 }
+                dialog = null;
                 sb.setLength(0);
             }
 
@@ -499,7 +498,8 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                 while (!isCancelled()) {
                     try {
                         Thread.sleep(1);
-                        requests = mDatabase.getPremiumRequest();
+                        Database database = new Database(getActivity());
+                        requests = database.getPremiumRequest();
                         sb.append(DeviceHelper.getDeviceInfo(getActivity()));
 
                         for (Request request : requests) {
@@ -534,6 +534,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                     IntentChooserFragment.showIntentChooserDialog(getActivity()
                             .getSupportFragmentManager(), request);
                 }
+                dialog = null;
                 sb.setLength(0);
             }
 

@@ -1,7 +1,10 @@
 package com.dm.material.dashboard.candybar.helpers;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -9,12 +12,15 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.dm.material.dashboard.candybar.R;
@@ -64,6 +70,28 @@ public class DrawableHelper {
         } catch (OutOfMemoryError | Exception e) {
             return ContextCompat.getDrawable(context, R.drawable.ic_app_default);
         }
+    }
+
+    @Nullable
+    public static Bitmap getHighQualityIcon(@NonNull Context context, String packageName) {
+        try {
+            PackageManager packageManager = context.getPackageManager();
+            ApplicationInfo info = packageManager.getApplicationInfo(
+                    packageName, PackageManager.GET_META_DATA);
+
+            Resources resources = packageManager.getResourcesForApplication(packageName);
+            int density = DisplayMetrics.DENSITY_XXHIGH;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                density = DisplayMetrics.DENSITY_XXXHIGH;
+            }
+
+            Drawable drawable = ResourcesCompat.getDrawableForDensity(
+                    resources, info.icon, density, null);
+            if (drawable != null) return ((BitmapDrawable) drawable).getBitmap();
+        } catch (Exception | OutOfMemoryError e) {
+            Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+        }
+        return null;
     }
 
     @Nullable
