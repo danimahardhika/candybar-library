@@ -133,7 +133,8 @@ public class RequestHelper {
             } catch (Exception ignored) {}
         }
 
-        Preferences.getPreferences(context).setPremiumRequestEnabled(true);
+        Preferences.getPreferences(context).setPremiumRequestEnabled(
+                context.getResources().getBoolean(R.bool.enable_premium_request));
     }
 
 }
