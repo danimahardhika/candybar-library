@@ -1,6 +1,8 @@
 package com.dm.material.dashboard.candybar.helpers;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -104,6 +106,34 @@ public class RequestHelper {
                 .content(R.string.premium_request_exist)
                 .positiveText(R.string.close)
                 .show();
+    }
+
+    public static void checkPiracyApp(@NonNull Context context) {
+
+        //Lucky Patcher and Freedom package name
+        String[] strings = new String[] {
+                "com.chelpus.lackypatch",
+                "com.dimonvideo.luckypatcher",
+                "com.forpda.lp",
+                "com.android.protips",
+                "com.android.vending.billing.InAppBillingService.LUCK",
+                "com.android.vending.billing.InAppBillingService.LOCK",
+                "cc.madkite.freedom",
+                "com.android.vending.billing.InAppBillingService.LACK"
+        };
+
+        for (String string : strings) {
+            try {
+                PackageInfo packageInfo = context.getPackageManager().getPackageInfo(
+                        string, PackageManager.GET_ACTIVITIES);
+                if (packageInfo != null) {
+                    Preferences.getPreferences(context).setPremiumRequestEnabled(false);
+                    return;
+                }
+            } catch (Exception ignored) {}
+        }
+
+        Preferences.getPreferences(context).setPremiumRequestEnabled(true);
     }
 
 }
