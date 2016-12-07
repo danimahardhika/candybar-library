@@ -22,10 +22,17 @@ public class Icon {
 
     private final String mTitle;
     private final int mRes;
+    private String mPackageName;
 
     public Icon(String title, int res) {
         mTitle = title;
         mRes = res;
+    }
+
+    public Icon(String title, int res, String packageName) {
+        mTitle = title;
+        mRes = res;
+        mPackageName = packageName;
     }
 
     public String getTitle() {
@@ -34,6 +41,10 @@ public class Icon {
 
     public int getRes() {
         return mRes;
+    }
+
+    public String getPackageName() {
+        return mPackageName;
     }
 
 }

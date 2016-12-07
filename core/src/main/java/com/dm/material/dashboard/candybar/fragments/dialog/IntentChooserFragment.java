@@ -137,22 +137,16 @@ public class IntentChooserFragment extends DialogFragment {
     private void loadIntentChooser() {
         mLoadIntentChooser = new AsyncTask<Void, Void, Boolean>() {
 
-            Intent intent;
             List<ResolveInfo> apps;
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto",
-                        getActivity().getResources().getString(R.string.dev_email),
-                        null));
-            }
 
             @Override
             protected Boolean doInBackground(Void... voids) {
                 while(!isCancelled()) {
                     try {
                         Thread.sleep(1);
+                        Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto",
+                                getActivity().getResources().getString(R.string.dev_email),
+                                null));
                         apps = getActivity().getPackageManager()
                                 .queryIntentActivities(intent, 0);
                         try {

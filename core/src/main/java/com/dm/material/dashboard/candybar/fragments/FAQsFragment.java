@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.SparseArrayCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -31,9 +32,6 @@ import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.items.FAQs;
 import com.dm.material.dashboard.candybar.utils.Tag;
 import com.pluscubed.recyclerfastscroll.RecyclerFastScroller;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /*
  * CandyBar - Material Dashboard
@@ -163,14 +161,14 @@ public class FAQsFragment extends Fragment {
     private void getFAQs() {
         mGetFAQs = new AsyncTask<Void, Void, Boolean>() {
 
-            List<FAQs> faqs;
+            SparseArrayCompat<FAQs> faqs;
             String[] questions;
             String[] answers;
 
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                faqs = new ArrayList<>();
+                faqs = new SparseArrayCompat<>();
                 questions = getActivity().getResources().getStringArray(R.array.questions);
                 answers = getActivity().getResources().getStringArray(R.array.answers);
             }
@@ -183,7 +181,7 @@ public class FAQsFragment extends Fragment {
                         for (int i = 0; i < questions.length; i++) {
                             if (i < answers.length) {
                                 FAQs faq = new FAQs(questions[i], answers[i]);
-                                faqs.add(faq);
+                                faqs.append(faqs.size(), faq);
                             }
                         }
                         return true;

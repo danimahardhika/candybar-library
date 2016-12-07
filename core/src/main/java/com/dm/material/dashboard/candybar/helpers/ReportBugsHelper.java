@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.util.SparseArrayCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -28,7 +29,6 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -84,18 +84,18 @@ public class ReportBugsHelper {
                 while (!isCancelled()) {
                     try {
                         Thread.sleep(1);
-                        List<String> files = new ArrayList<>();
+                        SparseArrayCompat<String> files = new SparseArrayCompat<>();
                         sb.append(DeviceHelper.getDeviceInfo(context));
 
                         String brokenAppFilter = buildBrokenAppFilter(context, folder);
-                        if (brokenAppFilter != null) files.add(brokenAppFilter);
+                        if (brokenAppFilter != null) files.append(files.size(), brokenAppFilter);
 
                         String activityList = buildActivityList(context, folder);
-                        if (activityList != null) files.add(activityList);
+                        if (activityList != null) files.append(files.size(), activityList);
 
                         String stackTrace = Preferences.getPreferences(context).getLatestCrashLog();
                         String crashLog = buildCrashLog(context, folder, stackTrace);
-                        if (crashLog != null) files.add(crashLog);
+                        if (crashLog != null) files.append(files.size(), crashLog);
 
                         FileHelper.createZip(files, file);
                         return true;
@@ -154,7 +154,7 @@ public class ReportBugsHelper {
                     new FileOutputStream(fileDir), "UTF8"));
 
             boolean first = true;
-            for (int i = 0; i<list.getLength(); i++) {
+            for (int i = 0; i < list.getLength(); i++) {
                 Node nNode = list.item(i);
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element eElement = (Element) nNode;

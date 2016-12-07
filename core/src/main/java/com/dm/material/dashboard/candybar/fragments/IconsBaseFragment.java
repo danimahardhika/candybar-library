@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.util.SparseArrayCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -31,9 +32,6 @@ import com.dm.material.dashboard.candybar.utils.Tag;
 import com.dm.material.dashboard.candybar.utils.listeners.SearchListener;
 
 import org.xmlpull.v1.XmlPullParser;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /*
  * CandyBar - Material Dashboard
@@ -151,12 +149,12 @@ public class IconsBaseFragment extends Fragment {
     private void getIcons() {
         mGetIcons = new AsyncTask<Void, Void, Boolean>() {
 
-            List<Icon> sections;
+            SparseArrayCompat<Icon> sections;
 
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                sections = new ArrayList<>();
+                sections = new SparseArrayCompat<>();
                 mProgress.setVisibility(View.VISIBLE);
             }
 
@@ -176,7 +174,7 @@ public class IconsBaseFragment extends Fragment {
                                     String title = parser.getAttributeValue(null, "title");
                                     if (!category.equals(title)) {
                                         if (category.length() > 0)
-                                            sections.add(new Icon(category, count));
+                                            sections.append(sections.size(), new Icon(category, count));
                                         category = title;
                                         count = 0;
                                     }
@@ -190,7 +188,7 @@ public class IconsBaseFragment extends Fragment {
                             eventType = parser.next();
                         }
 
-                        sections.add(new Icon(category, count));
+                        sections.append(sections.size(), new Icon(category, count));
                         parser.close();
                         return true;
                     } catch (Exception e) {
@@ -220,9 +218,9 @@ public class IconsBaseFragment extends Fragment {
 
     private class PagerIconsAdapter extends FragmentStatePagerAdapter {
 
-        private final List<Icon> mIcons;
+        private final SparseArrayCompat<Icon> mIcons;
 
-        PagerIconsAdapter(FragmentManager fm, List<Icon> icons) {
+        PagerIconsAdapter(FragmentManager fm, SparseArrayCompat<Icon> icons) {
             super(fm);
             mIcons = icons;
         }

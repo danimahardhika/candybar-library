@@ -2,6 +2,7 @@ package com.dm.material.dashboard.candybar.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,8 +18,6 @@ import com.dm.material.dashboard.candybar.items.Icon;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
-import java.util.List;
 
 /*
  * CandyBar - Material Dashboard
@@ -41,10 +40,10 @@ import java.util.List;
 public class IconsAdapter extends RecyclerView.Adapter<IconsAdapter.ViewHolder> {
 
     private final Context mContext;
-    private final List<Icon> mIcons;
+    private final SparseArrayCompat<Icon> mIcons;
     private final boolean mIsShowIconName;
 
-    public IconsAdapter(@NonNull Context context, @NonNull List<Icon> icons) {
+    public IconsAdapter(@NonNull Context context, @NonNull SparseArrayCompat<Icon> icons) {
         mContext = context;
         mIcons = icons;
         mIsShowIconName = mContext.getResources().getBoolean(R.bool.show_icon_name);

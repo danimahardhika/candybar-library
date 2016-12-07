@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.util.SparseArrayCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -35,7 +36,6 @@ import com.pluscubed.recyclerfastscroll.RecyclerFastScroller;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
 
 /*
  * CandyBar - Material Dashboard
@@ -163,7 +163,7 @@ public class WallpapersFragment extends Fragment {
         mGetWallpapers = new AsyncTask<Void, Void, Boolean>() {
 
             WallpaperJSON wallpapersJSON;
-            List<Wallpaper> wallpapers;
+            SparseArrayCompat<Wallpaper> wallpapers;
             Database database;
 
             @Override
@@ -194,13 +194,15 @@ public class WallpapersFragment extends Fragment {
 
                             if (wallpapersJSON == null) return false;
                             if (refreshing) {
-                                List<Wallpaper> dates = database.getWallpaperAddedOn();
+                                SparseArrayCompat<Wallpaper> dates = database.getWallpaperAddedOn();
 
                                 database.deleteAllWalls();
                                 database.addAllWallpapers(wallpapersJSON);
 
-                                for (Wallpaper date : dates) {
-                                    database.setWallpaperAddedOn(date.getURL(), date.getDate());
+                                for (int i = 0; i < dates.size(); i++) {
+                                    database.setWallpaperAddedOn(
+                                            dates.get(i).getURL(),
+                                            dates.get(i).getDate());
                                 }
                             } else {
                                 if (!database.isWallpapersEmpty()) database.deleteAllWalls();

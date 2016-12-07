@@ -1,6 +1,7 @@
 package com.dm.material.dashboard.candybar.adapters;
 
 import android.support.annotation.NonNull;
+import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,8 +11,6 @@ import android.widget.TextView;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.items.FAQs;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 
@@ -35,13 +34,12 @@ import java.util.Locale;
 
 public class FAQsAdapter extends RecyclerView.Adapter<FAQsAdapter.ViewHolder> {
 
-    private final List<FAQs> mFAQs;
-    private final List<FAQs> mFAQsAll;
+    private SparseArrayCompat<FAQs> mFAQs;
+    private final SparseArrayCompat<FAQs> mFAQsAll;
 
-    public FAQsAdapter(@NonNull List<FAQs> faqs) {
+    public FAQsAdapter(@NonNull SparseArrayCompat<FAQs> faqs) {
         mFAQs = faqs;
-        mFAQsAll = new ArrayList<>();
-        mFAQsAll.addAll(mFAQs);
+        mFAQsAll = mFAQs.clone();
     }
 
     @Override
@@ -77,13 +75,14 @@ public class FAQsAdapter extends RecyclerView.Adapter<FAQsAdapter.ViewHolder> {
     public void search(String query) {
         query = query.toLowerCase(Locale.getDefault());
         mFAQs.clear();
-        if (query.length() == 0) mFAQs.addAll(mFAQsAll);
+        if (query.length() == 0) mFAQs = mFAQsAll.clone();
         else {
-            for (FAQs faq : mFAQsAll) {
+            for (int i = 0; i < mFAQsAll.size(); i++) {
+                FAQs faq = mFAQsAll.get(i);
                 String question = faq.getQuestion().toLowerCase(Locale.getDefault());
                 String answer = faq.getAnswer().toLowerCase(Locale.getDefault());
                 if (question.contains(query) || answer.contains(query)) {
-                    mFAQs.add(faq);
+                    mFAQs.append(mFAQs.size(), faq);
                 }
             }
         }

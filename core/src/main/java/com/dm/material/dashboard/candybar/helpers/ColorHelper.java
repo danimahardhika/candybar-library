@@ -89,7 +89,7 @@ public class ColorHelper {
         return new ColorStateList(states, colors);
     }
 
-    public static boolean isLightToolbar(@NonNull Context context) {
+    private static boolean isLightToolbar(@NonNull Context context) {
         int color = getAttributeColor(context, R.attr.colorPrimaryDark);
         int red = Color.red(color);
         int green = Color.green(color);

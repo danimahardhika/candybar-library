@@ -2,6 +2,7 @@ package com.dm.material.dashboard.candybar.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,8 +20,6 @@ import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 /*
@@ -44,15 +43,15 @@ import java.util.Locale;
 public class IconsSearchAdapter extends RecyclerView.Adapter<IconsSearchAdapter.ViewHolder> {
 
     private final Context mContext;
-    private final List<Icon> mIcons;
-    private final List<Icon> mIconsAll;
+    private SparseArrayCompat<Icon> mIcons;
+    private SparseArrayCompat<Icon> mIconsAll;
     private final boolean mIsShowIconName;
 
-    public IconsSearchAdapter(@NonNull Context context, @NonNull List<Icon> icons) {
+    public IconsSearchAdapter(@NonNull Context context, @NonNull SparseArrayCompat<Icon> icons) {
         mContext = context;
         mIcons = icons;
-        mIconsAll = new ArrayList<>();
-        mIconsAll.addAll(mIcons);
+        mIconsAll = new SparseArrayCompat<>();
+        mIconsAll = mIcons.clone();
         mIsShowIconName = mContext.getResources().getBoolean(R.bool.show_icon_name);
     }
 
@@ -111,13 +110,13 @@ public class IconsSearchAdapter extends RecyclerView.Adapter<IconsSearchAdapter.
     public void search(String query) {
         query = query.toLowerCase(Locale.getDefault());
         mIcons.clear();
-        if (query.length() == 0) {
-            mIcons.addAll(mIconsAll);
-        } else {
-            for (Icon icon : mIconsAll) {
+        if (query.length() == 0) mIcons = mIconsAll.clone();
+        else {
+            for (int i = 0; i < mIconsAll.size(); i++) {
+                Icon icon = mIconsAll.get(i);
                 String title = icon.getTitle().toLowerCase(Locale.getDefault());
                 if (title.contains(query)) {
-                    mIcons.add(icon);
+                    mIcons.append(mIcons.size(), icon);
                 }
             }
         }

@@ -3,6 +3,7 @@ package com.dm.material.dashboard.candybar.helpers;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.util.SparseArrayCompat;
 
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.dm.material.dashboard.candybar.databases.Database;
@@ -14,8 +15,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 /*
@@ -73,13 +72,13 @@ public class MuzeiHelper {
 
     @Nullable
     public Wallpaper getRandomDownloadedWallpaper() throws Exception {
-        List<Wallpaper> downloaded = new ArrayList<>();
-        List<Wallpaper> wallpapers = mDatabase.getWallpapers();
-        for (Wallpaper wallpaper : wallpapers) {
-            File file = new File(mDirectory + File.separator + wallpaper.getName() +
+        SparseArrayCompat<Wallpaper> downloaded = new SparseArrayCompat<>();
+        SparseArrayCompat<Wallpaper> wallpapers = mDatabase.getWallpapers();
+        for (int i = 0; i < wallpapers.size(); i++) {
+            File file = new File(mDirectory + File.separator + wallpapers.get(i).getName() +
                     FileHelper.IMAGE_EXTENSION);
             if (file.exists()) {
-                downloaded.add(wallpaper);
+                downloaded.append(downloaded.size(), wallpapers.get(i));
             }
         }
 

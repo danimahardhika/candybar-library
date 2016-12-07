@@ -57,6 +57,7 @@ public class PreferencesHelper {
     private static final String KEY_LICENSED = "licensed";
     private static final String KEY_SCROLL_WALLPAPER = "scroll_wallpaper";
     private static final String KEY_LATEST_CRASHLOG = "last_crashlog";
+    private static final String KEY_PREMIUM_REQUEST_ENABLED = "premium_request_enabled";
 
     public PreferencesHelper(@NonNull Context context) {
         mContext = context;
@@ -152,6 +153,15 @@ public class PreferencesHelper {
         return new File(getWallsDirectory() + "/" + filename).exists();
     }
 
+    public boolean isPremiumRequestEnabled() {
+        return getSharedPreferences().getBoolean(KEY_PREMIUM_REQUEST_ENABLED,
+                mContext.getResources().getBoolean(R.bool.enable_premium_request));
+    }
+
+    public void setPremiumRequestEnabled(boolean bool) {
+        getSharedPreferences().edit().putBoolean(KEY_PREMIUM_REQUEST_ENABLED, bool).apply();
+    }
+
     public boolean isPremiumRequest() {
         return getSharedPreferences().getBoolean(KEY_PREMIUM_REQUEST, false);
     }
@@ -216,11 +226,11 @@ public class PreferencesHelper {
         getSharedPreferences().edit().putString(KEY_LATEST_CRASHLOG, string).apply();
     }
 
-    public int getVersion() {
+    private int getVersion() {
         return getSharedPreferences().getInt(KEY_APP_VERSION, 0);
     }
 
-    public void setVersion(int version) {
+    private void setVersion(int version) {
         getSharedPreferences().edit().putInt(KEY_APP_VERSION, version).apply();
     }
 

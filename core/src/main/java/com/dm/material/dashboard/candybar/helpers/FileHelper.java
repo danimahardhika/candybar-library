@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
+import android.support.v4.util.SparseArrayCompat;
 import android.util.Log;
 
 import com.dm.material.dashboard.candybar.utils.Tag;
@@ -15,7 +16,6 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -51,7 +51,7 @@ public class FileHelper {
         return new File(context.getCacheDir().toString());
     }
 
-    public static void createZip (List<String> files, String directory) {
+    public static void createZip (SparseArrayCompat<String> files, String directory) {
         try {
             BufferedInputStream origin;
             FileOutputStream dest = new FileOutputStream(directory);

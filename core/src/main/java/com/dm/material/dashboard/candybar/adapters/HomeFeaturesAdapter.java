@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,9 +17,7 @@ import android.widget.TextView;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.helpers.ColorHelper;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
-import com.dm.material.dashboard.candybar.items.Feature;
-
-import java.util.List;
+import com.dm.material.dashboard.candybar.items.Icon;
 
 /*
  * CandyBar - Material Dashboard
@@ -41,12 +40,12 @@ import java.util.List;
 public class HomeFeaturesAdapter extends RecyclerView.Adapter<HomeFeaturesAdapter.ViewHolder> {
 
     private final Context mContext;
-    private final List<Feature> mFeatures;
+    private final SparseArrayCompat<Icon> mFeatures;
 
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_CONTENT = 1;
 
-    public HomeFeaturesAdapter(@NonNull Context context, @NonNull List<Feature> features) {
+    public HomeFeaturesAdapter(@NonNull Context context, @NonNull SparseArrayCompat<Icon> features) {
         mContext = context;
         mFeatures = features;
     }
@@ -82,7 +81,7 @@ public class HomeFeaturesAdapter extends RecyclerView.Adapter<HomeFeaturesAdapte
             if (mFeatures.get(finalPosition).getTitle().length() > 0) {
                 holder.container.setVisibility(View.VISIBLE);
                 Drawable icon = DrawableHelper.getTintedDrawable(
-                        mContext, mFeatures.get(finalPosition).getIcon(),
+                        mContext, mFeatures.get(finalPosition).getRes(),
                         ColorHelper.getAttributeColor(mContext, android.R.attr.textColorSecondary));
                 holder.icon.setImageDrawable(icon);
                 holder.title.setText(mFeatures.get(finalPosition).getTitle());

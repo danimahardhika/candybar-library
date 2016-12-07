@@ -32,12 +32,12 @@ import com.nostra13.universalimageloader.utils.L;
 public class ImageConfig {
 
     public static ImageLoaderConfiguration getImageLoaderConfiguration(@NonNull Context context) {
-        L.writeLogs(true);
-        L.writeDebugLogs(true);
+        L.writeLogs(false);
+        L.writeDebugLogs(false);
         return new ImageLoaderConfiguration.Builder(context)
                 .diskCacheSize(50 * 1024 * 1024)
                 .threadPriority(Thread.NORM_PRIORITY - 2)
-                .threadPoolSize(4)
+                .threadPoolSize(3)
                 .tasksProcessingOrder(QueueProcessingType.FIFO)
                 .build();
     }

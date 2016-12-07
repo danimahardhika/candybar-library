@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.NonNull;
+import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -21,9 +22,6 @@ import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.listeners.RequestListener;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /*
  * CandyBar - Material Dashboard
@@ -46,8 +44,8 @@ import java.util.List;
 public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHolder> {
 
     private final Context mContext;
-    private final List<Request> mRequests;
     private final SparseBooleanArray mSelectedItems;
+    private final SparseArrayCompat<Request> mRequests;
 
     private final int mTextColorSecondary;
     private final int mTextColorAccent;
@@ -56,11 +54,10 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
     private static final int TYPE_PREMIUM = 0;
     private static final int TYPE_REGULAR = 1;
 
-    public RequestAdapter(@NonNull Context context, @NonNull List<Request> requests) {
-        mIsPremiumRequestEnabled = context.getResources().getBoolean(
-                R.bool.enable_premium_request);
+    public RequestAdapter(@NonNull Context context, @NonNull SparseArrayCompat<Request> requests) {
         mContext = context;
         mRequests = requests;
+        mIsPremiumRequestEnabled = Preferences.getPreferences(mContext).isPremiumRequestEnabled();
         mTextColorSecondary = ColorHelper.getAttributeColor(mContext,
                 android.R.attr.textColorSecondary);
         mTextColorAccent = ColorHelper.getAttributeColor(mContext, R.attr.colorAccent);
@@ -203,7 +200,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
     }
 
     public void addRequest(Request request) {
-        mRequests.add(request);
+        mRequests.append(mRequests.size(), request);
         notifyItemInserted(getItemCount() - 1);
     }
 
@@ -247,10 +244,10 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         return mSelectedItems.size();
     }
 
-    public List<Integer> getSelectedItems() {
-        List<Integer> selected = new ArrayList<>();
+    public SparseArrayCompat<Integer> getSelectedItems() {
+        SparseArrayCompat<Integer> selected = new SparseArrayCompat<>();
         for (int i = 0; i < mSelectedItems.size(); i++) {
-            selected.add(mSelectedItems.keyAt(i));
+            selected.append(selected.size(), mSelectedItems.keyAt(i));
         }
         return selected;
     }
@@ -272,23 +269,23 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         return mRequests.get(position);
     }
 
-    private List<Request> getSelectedApps() {
-        List<Request> items = new ArrayList<>(mSelectedItems.size());
+    private SparseArrayCompat<Request> getSelectedApps() {
+        SparseArrayCompat<Request> items = new SparseArrayCompat<>(mSelectedItems.size());
         for (int i = 0; i < mSelectedItems.size(); i++) {
             int position = mSelectedItems.keyAt(i);
             if (position >= 0 && position < mRequests.size()) {
                 Request request = mRequests.get(mSelectedItems.keyAt(i));
-                items.add(request);
+                items.append(items.size(), request);
             }
         }
         return items;
     }
 
     public boolean isContainsRequested() {
-        List<Request> requests = getSelectedApps();
+        SparseArrayCompat<Request> requests = getSelectedApps();
         boolean requested = false;
-        for (Request request : requests) {
-            if (request.isRequested()) {
+        for (int i = 0; i < requests.size(); i++) {
+            if (requests.get(i).isRequested()) {
                 requested = true;
                 break;
             }

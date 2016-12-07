@@ -6,13 +6,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
+import android.support.v4.util.SparseArrayCompat;
 
 import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.items.Wallpaper;
 import com.dm.material.dashboard.candybar.items.WallpaperJSON;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /*
  * CandyBar - Material Dashboard
@@ -97,18 +95,18 @@ public class Database extends SQLiteOpenHelper {
 
     private void resetDatabase(SQLiteDatabase db) {
         Cursor cursor = db.rawQuery("SELECT name FROM sqlite_master WHERE type=\'table\'", null);
-        List<String> tables = new ArrayList<>();
+        SparseArrayCompat<String> tables = new SparseArrayCompat<>();
         if (cursor.moveToFirst()) {
             do {
-                tables.add(cursor.getString(0));
+                tables.append(tables.size(), cursor.getString(0));
             } while (cursor.moveToNext());
         }
         cursor.close();
 
-        for (String table : tables) {
+        for (int i = 0; i < tables.size(); i++) {
             try {
-                String dropQuery = "DROP TABLE IF EXISTS " + table;
-                if (!table.equalsIgnoreCase("SQLITE_SEQUENCE"))
+                String dropQuery = "DROP TABLE IF EXISTS " + tables.get(i);
+                if (!tables.get(i).equalsIgnoreCase("SQLITE_SEQUENCE"))
                     db.execSQL(dropQuery);
             } catch (Exception ignored) {}
         }
@@ -146,8 +144,8 @@ public class Database extends SQLiteOpenHelper {
         db.close();
     }
 
-    public List<Request> getPremiumRequest() {
-        List<Request> requests = new ArrayList<>();
+    public SparseArrayCompat<Request> getPremiumRequest() {
+        SparseArrayCompat<Request> requests = new SparseArrayCompat<>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_PREMIUM_REQUEST,
                 null, null, null, null, null, null);
@@ -158,7 +156,7 @@ public class Database extends SQLiteOpenHelper {
                         cursor.getString(2),
                         cursor.getString(3),
                         cursor.getString(4));
-                requests.add(request);
+                requests.append(requests.size(), request);
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -189,8 +187,8 @@ public class Database extends SQLiteOpenHelper {
         db.close();
     }
 
-    public List<Wallpaper> getWallpapers() {
-        List<Wallpaper> wallpapers = new ArrayList<>();
+    public SparseArrayCompat<Wallpaper> getWallpapers() {
+        SparseArrayCompat<Wallpaper> wallpapers = new SparseArrayCompat<>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_WALLPAPERS,
                 null, null, null, null, null, KEY_ADDED_ON + " DESC, " +KEY_ID);
@@ -201,7 +199,7 @@ public class Database extends SQLiteOpenHelper {
                         cursor.getString(2),
                         cursor.getString(3),
                         cursor.getString(4));
-                wallpapers.add(wallpaper);
+                wallpapers.append(wallpapers.size(), wallpaper);
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -228,8 +226,8 @@ public class Database extends SQLiteOpenHelper {
         return wallpaper;
     }
 
-    public List<Wallpaper> getWallpaperAddedOn() {
-        List<Wallpaper> date = new ArrayList<>();
+    public SparseArrayCompat<Wallpaper> getWallpaperAddedOn() {
+        SparseArrayCompat<Wallpaper> dates = new SparseArrayCompat<>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_WALLPAPERS, new String[]{
                 KEY_URL, KEY_ADDED_ON}, null, null, null, null, null);
@@ -238,12 +236,12 @@ public class Database extends SQLiteOpenHelper {
                 Wallpaper item = new Wallpaper(
                         cursor.getString(0),
                         cursor.getString(1));
-                date.add(item);
+                dates.append(dates.size(), item);
             } while (cursor.moveToNext());
         }
         cursor.close();
         db.close();
-        return date;
+        return dates;
     }
 
     public void setWallpaperAddedOn (String url, String date) {

@@ -4,8 +4,7 @@
     tools:ignore="MissingPrefix"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/splashColor">
+    android:layout_height="match_parent">
 
     <ImageView
         android:layout_width="96dp"

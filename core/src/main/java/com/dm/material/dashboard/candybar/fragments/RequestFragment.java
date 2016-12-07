@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.SparseArrayCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -58,7 +59,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -140,10 +140,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_request, menu);
         MenuItem rebuild = menu.findItem(R.id.menu_rebuild_premium);
-        boolean premium = getActivity().getResources().getBoolean(R.bool.enable_premium_request);
-        rebuild.setVisible(premium);
-        MenuItem selectAll = menu.findItem(R.id.menu_select_all);
-        selectAll.setCheckable(true);
+        rebuild.setVisible(Preferences.getPreferences(getActivity()).isPremiumRequestEnabled());
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -257,7 +254,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
             protected void onPreExecute() {
                 super.onPreExecute();
                 mProgress.setVisibility(View.VISIBLE);
-                mAdapter = new RequestAdapter(getActivity(), new ArrayList<>());
+                mAdapter = new RequestAdapter(getActivity(), new SparseArrayCompat<>());
                 mRequestList.setAdapter(mAdapter);
             }
 
@@ -292,13 +289,12 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                                 Drawable drawable = DrawableHelper.getAppIcon(getActivity(), app);
                                 byte[] bytes = DrawableHelper.getBitmapByte(drawable);
                                 boolean requested = database.isRequested(activity);
-                                Request request = new Request(
+                                publishProgress(new Request(
                                         bytes,
                                         name,
                                         app.activityInfo.packageName,
                                         activity,
-                                        requested);
-                                publishProgress(request);
+                                        requested));
                             }
                         }
                         return true;
@@ -313,8 +309,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
             @Override
             protected void onProgressUpdate(Request... values) {
                 super.onProgressUpdate(values);
-                Request request = values[0];
-                mAdapter.addRequest(request);
+                mAdapter.addRequest(values[0]);
             }
 
             @Override
@@ -386,17 +381,17 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                             }
                         }
 
-                        List<Integer> selectedItems = mAdapter.getSelectedItems();
-                        List<String> files = new ArrayList<>();
+                        SparseArrayCompat<Integer> selectedItems = mAdapter.getSelectedItems();
+                        SparseArrayCompat<String> files = new SparseArrayCompat<>();
                         File fileDir = new File(directory.toString() + "/" + "appfilter.xml");
 
                         Writer out = new BufferedWriter(new OutputStreamWriter(
                                 new FileOutputStream(fileDir), "UTF8"));
                         StringBuilder activity = new StringBuilder();
-                        for (Integer selectedItem : selectedItems) {
-                            Request item = mAdapter.getRequest(selectedItem);
+                        for (int i = 0; i < selectedItems.size(); i++) {
+                            Request item = mAdapter.getRequest(selectedItems.get(i));
                             database.addRequest(item);
-                            mAdapter.setRequested(selectedItem, true);
+                            mAdapter.setRequested(selectedItems.get(i), true);
 
                             String link = "https://play.google.com/store/apps/details?id=";
                             activity.append("\n\n")
@@ -420,7 +415,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                             if (bitmap == null) bitmap = DrawableHelper.getBitmap(item.getIcon());
 
                             String icon = FileHelper.saveIcon(directory, bitmap, item.getName());
-                            if (icon != null) files.add(icon);
+                            if (icon != null) files.append(files.size(), icon);
                         }
 
                         sb.append(activity.toString());
@@ -431,7 +426,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 
                         out.flush();
                         out.close();
-                        files.add(fileDir.toString());
+                        files.append(files.size(), fileDir.toString());
 
                         zipFile = directory.toString() + "/" + "icon_request.zip";
                         FileHelper.createZip(files, zipFile);
@@ -466,6 +461,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                 }
                 dialog = null;
                 sb.setLength(0);
+                sb.trimToSize();
             }
 
         }.execute();
@@ -476,7 +472,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 
             MaterialDialog dialog;
             StringBuilder sb;
-            List<Request> requests;
+            SparseArrayCompat<Request> requests;
 
             @Override
             protected void onPreExecute() {
@@ -502,10 +498,10 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                         requests = database.getPremiumRequest();
                         sb.append(DeviceHelper.getDeviceInfo(getActivity()));
 
-                        for (Request request : requests) {
-                            sb.append("\n\nOrder Id : ").append(request.getOrderId())
-                                    .append("\nProduct Id : ").append(request.getProductId())
-                                    .append(request.getRequest());
+                        for (int i = 0; i < requests.size(); i++) {
+                            sb.append("\n\nOrder Id : ").append(requests.get(i).getOrderId())
+                                    .append("\nProduct Id : ").append(requests.get(i).getProductId())
+                                    .append(requests.get(i).getRequest());
                         }
                         return true;
                     } catch (Exception e) {

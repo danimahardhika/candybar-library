@@ -2,6 +2,7 @@ package com.dm.material.dashboard.candybar.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,10 +13,8 @@ import android.widget.TextView;
 
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.helpers.LauncherHelper;
-import com.dm.material.dashboard.candybar.items.Launcher;
+import com.dm.material.dashboard.candybar.items.Icon;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
-
-import java.util.List;
 
 /*
  * CandyBar - Material Dashboard
@@ -38,9 +37,9 @@ import java.util.List;
 public class LauncherAdapter extends RecyclerView.Adapter<LauncherAdapter.ViewHolder> {
 
     private final Context mContext;
-    private final List<Launcher> mLaunchers;
+    private final SparseArrayCompat<Icon> mLaunchers;
 
-    public LauncherAdapter(@NonNull Context context, @NonNull List<Launcher> launchers) {
+    public LauncherAdapter(@NonNull Context context, @NonNull SparseArrayCompat<Icon> launchers) {
         mContext = context;
         mLaunchers = launchers;
     }
@@ -54,8 +53,8 @@ public class LauncherAdapter extends RecyclerView.Adapter<LauncherAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.name.setText(mLaunchers.get(position).getName());
-        holder.icon.setImageResource(mLaunchers.get(position).getIcon());
+        holder.name.setText(mLaunchers.get(position).getTitle());
+        holder.icon.setImageResource(mLaunchers.get(position).getRes());
     }
 
     @Override
@@ -86,7 +85,7 @@ public class LauncherAdapter extends RecyclerView.Adapter<LauncherAdapter.ViewHo
             if (id == R.id.container) {
                 LauncherHelper.apply(mContext,
                         mLaunchers.get(position).getPackageName(),
-                        mLaunchers.get(position).getName());
+                        mLaunchers.get(position).getTitle());
             }
         }
     }

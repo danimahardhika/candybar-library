@@ -49,8 +49,11 @@ import java.io.ByteArrayOutputStream;
 public class DrawableHelper {
 
     public static int getResourceId(@NonNull Context context, String resName) {
-        return context.getResources().getIdentifier(
-                resName, "drawable", context.getPackageName());
+        try {
+            return context.getResources().getIdentifier(
+                    resName, "drawable", context.getPackageName());
+        } catch (Exception ignored) {}
+        return -1;
     }
 
     @Nullable

@@ -90,8 +90,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         mRestorePurchases.setBackgroundResource(Preferences.getPreferences(getActivity()).isDarkTheme() ?
                 R.drawable.item_grid_dark : R.drawable.item_grid);
 
-        boolean premiumRequest = getActivity().getResources().getBoolean(R.bool.enable_premium_request);
-        if (!premiumRequest) {
+        if (!Preferences.getPreferences(getActivity()).isPremiumRequestEnabled()) {
             mRestorePurchases.setVisibility(View.GONE);
             View view = getActivity().findViewById(R.id.pref_restore_purchases_divider);
             if (view != null) view.setVisibility(View.GONE);

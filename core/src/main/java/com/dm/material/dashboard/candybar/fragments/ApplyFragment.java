@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.SparseArrayCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
@@ -23,15 +24,11 @@ import android.widget.TextView;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.LauncherAdapter;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
-import com.dm.material.dashboard.candybar.items.Launcher;
+import com.dm.material.dashboard.candybar.items.Icon;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
+import com.dm.material.dashboard.candybar.utils.SparseArrayUtils;
 import com.dm.material.dashboard.candybar.utils.Tag;
 import com.dm.material.dashboard.candybar.utils.views.AutoFitRecyclerView;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 /*
  * CandyBar - Material Dashboard
@@ -150,30 +147,17 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
     private void getLaunchers() {
         mGetLaunchers = new AsyncTask<Void, Void, Boolean>() {
 
-            String[] launcherNames;
-            TypedArray launcherIcons;
-            String[] launcherPackages1;
-            String[] launcherPackages2;
-            String[] launcherPackages3;
+            SparseArrayCompat<Icon> installed;
+            SparseArrayCompat<Icon> supported;
 
-            List<Launcher> installed;
-            List<Launcher> supported;
+
+            boolean isInstalled = false;
 
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                installed = new ArrayList<>();
-                supported = new ArrayList<>();
-                launcherNames = getActivity().getResources().getStringArray(
-                        R.array.launcher_names);
-                launcherIcons = getActivity().getResources().obtainTypedArray(
-                        R.array.launcher_icons);
-                launcherPackages1 = getActivity().getResources().getStringArray(
-                        R.array.launcher_packages_1);
-                launcherPackages2 = getActivity().getResources().getStringArray(
-                        R.array.launcher_packages_2);
-                launcherPackages3 = getActivity().getResources().getStringArray(
-                        R.array.launcher_packages_3);
+                installed = new SparseArrayCompat<>();
+                supported = new SparseArrayCompat<>();
             }
 
             @Override
@@ -181,8 +165,19 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
                 while (!isCancelled()) {
                     try {
                         Thread.sleep(1);
+                        String[] launcherNames = getActivity().getResources().getStringArray(
+                                R.array.launcher_names);
+                        TypedArray launcherIcons = getActivity().getResources().obtainTypedArray(
+                                R.array.launcher_icons);
+                        String[] launcherPackages1 = getActivity().getResources().getStringArray(
+                                R.array.launcher_packages_1);
+                        String[] launcherPackages2 = getActivity().getResources().getStringArray(
+                                R.array.launcher_packages_2);
+                        String[] launcherPackages3 = getActivity().getResources().getStringArray(
+                                R.array.launcher_packages_3);
+
                         for (int i = 0; i < launcherNames.length; i++) {
-                            boolean isInstalled = isLauncherInstalled(
+                            isInstalled = isLauncherInstalled(
                                     launcherPackages1[i],
                                     launcherPackages2[i],
                                     launcherPackages3[i]);
@@ -197,18 +192,22 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
                                 if (lghome3) launcherPackage = launcherPackages2[i];
                             }
 
-                            Launcher launcher = new Launcher(icon, launcherNames[i], launcherPackage);
-                            if (isInstalled) installed.add(launcher);
-                            else supported.add(launcher);
+                            Icon launcher = new Icon(launcherNames[i], icon, launcherPackage);
+                            if (isInstalled) installed.append(installed.size(), launcher);
+                            else supported.append(supported.size(), launcher);
                         }
 
                         try {
-                            Collections.sort(installed, LauncherNameComparator);
+                            SparseArrayUtils utils = new SparseArrayUtils();
+                            utils.sort(installed);
                         } catch (Exception ignored) {}
 
                         try {
-                            Collections.sort(supported, LauncherNameComparator);
+                            SparseArrayUtils utils = new SparseArrayUtils();
+                            utils.sort(supported);
                         } catch (Exception ignored) {}
+
+                        launcherIcons.recycle();
                         return true;
                     } catch (Exception e) {
                         Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
@@ -228,7 +227,6 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
 
                    mSupportedGrid.setAdapter(new LauncherAdapter(getActivity(), supported));
                 }
-                if (launcherIcons != null) launcherIcons.recycle();
                 mGetLaunchers = null;
             }
         }.execute();
@@ -247,11 +245,5 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
     private boolean isLauncherInstalled(String pkg1, String pkg2, String pkg3) {
         return isPackageInstalled(pkg1) | isPackageInstalled(pkg2) | isPackageInstalled(pkg3);
     }
-
-    private final Comparator<Launcher> LauncherNameComparator = (launcher, launcher1) -> {
-        String name = launcher.getName();
-        String name1 = launcher1.getName();
-        return name.compareTo(name1);
-    };
 
 }

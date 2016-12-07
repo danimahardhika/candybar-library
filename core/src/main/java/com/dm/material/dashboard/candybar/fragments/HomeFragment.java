@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.SparseArrayCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -27,11 +28,8 @@ import com.dm.material.dashboard.candybar.helpers.ColorHelper;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.helpers.LauncherHelper;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
-import com.dm.material.dashboard.candybar.items.Feature;
+import com.dm.material.dashboard.candybar.items.Icon;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /*
  * CandyBar - Material Dashboard
@@ -154,20 +152,20 @@ public class HomeFragment extends Fragment {
         String[] titles = getActivity().getResources().getStringArray(R.array.home_features);
         TypedArray icons = getActivity().getResources().obtainTypedArray(R.array.home_features_icons);
         String wallpaperUrl = getActivity().getResources().getString(R.string.wallpaper_json);
-        List<Feature> features = new ArrayList<>();
+        SparseArrayCompat<Icon> features = new SparseArrayCompat<>();
 
         for (int i = 0; i < titles.length; i++) {
             int icon;
             if (i < titles.length && i < icons.length())
                 icon = icons.getResourceId(i, -1);
             else icon = R.drawable.ic_feature_others;
-            Feature feature = new Feature(icon, titles[i]);
+            Icon feature = new Icon(titles[i], icon);
 
             if (i == 2 || i == 3) {
                 if (!URLUtil.isValidUrl(wallpaperUrl)) feature = null;
             }
 
-            if (feature != null) features.add(feature);
+            if (feature != null) features.append(features.size(), feature);
         }
 
         icons.recycle();

@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.SparseArrayCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.util.Log;
@@ -19,16 +20,12 @@ import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.helpers.IconsHelper;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.items.Icon;
-import com.dm.material.dashboard.candybar.utils.AlphanumComparator;
+import com.dm.material.dashboard.candybar.utils.SparseArrayUtils;
 import com.dm.material.dashboard.candybar.utils.Tag;
 import com.dm.material.dashboard.candybar.utils.views.AutoFitRecyclerView;
 import com.pluscubed.recyclerfastscroll.RecyclerFastScroller;
 
 import org.xmlpull.v1.XmlPullParser;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /*
  * CandyBar - Material Dashboard
@@ -112,13 +109,13 @@ public class IconsFragment extends Fragment {
     private void getIcons() {
         mGetIcons = new AsyncTask<Void, Void, Boolean>() {
 
-            List<Icon> icons;
+            SparseArrayCompat<Icon> icons;
             boolean iconReplacer;
 
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                icons = new ArrayList<>();
+                icons = new SparseArrayCompat<>();
                 iconReplacer = getActivity().getResources().getBoolean(
                         R.bool.enable_icon_name_replacer);
             }
@@ -145,7 +142,7 @@ public class IconsFragment extends Fragment {
                                             name = IconsHelper.replaceIconName(
                                                     getActivity(), iconReplacer, name);
                                             Icon icon = new Icon(name, id);
-                                            icons.add(icon);
+                                            icons.append(icons.size(), icon);
                                         }
                                         filled = true;
                                     } else {
@@ -160,14 +157,8 @@ public class IconsFragment extends Fragment {
                         parser.close();
 
                         try {
-                            Collections.sort(icons, new AlphanumComparator() {
-                                @Override
-                                public int compare(Object o1, Object o2) {
-                                    Icon icon1 = (Icon) o1;
-                                    Icon icon2 = (Icon) o2;
-                                    return super.compare(icon1.getTitle(), icon2.getTitle());
-                                }
-                            });
+                            SparseArrayUtils utils = new SparseArrayUtils();
+                            utils.sort(icons);
                         } catch (Exception ignored) {}
                         return true;
                     } catch (Exception e) {

@@ -166,6 +166,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
         Animator.startAlphaAnimation(mToolbarTitle, 0, View.INVISIBLE);
         mAppBar.addOnOffsetChangedListener(this);
 
+        RequestHelper.checkPiracyApp(this);
         initNavigationView(toolbar);
         initNavigationViewHeader();
         initInAppBilling();
@@ -703,8 +704,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
 
     private void initInAppBilling() {
         boolean donation = getResources().getBoolean(R.bool.enable_donation);
-        boolean premium = getResources().getBoolean(R.bool.enable_premium_request);
-        if (donation || premium) {
+        if (donation || Preferences.getPreferences(this).isPremiumRequestEnabled()) {
             if (mBillingProcessor != null) return;
 
             if (BillingProcessor.isIabServiceAvailable(this)) {
