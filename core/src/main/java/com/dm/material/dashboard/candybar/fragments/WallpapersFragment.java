@@ -147,15 +147,19 @@ public class WallpapersFragment extends Fragment {
     }
 
     private void resetSpanSizeLookUp(int orientation) {
-        mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                boolean portrait = orientation == Configuration.ORIENTATION_PORTRAIT;
-                boolean showTips = Preferences.getPreferences(getActivity()).isShowWallpaperTips();
-                if (portrait) return position == 0 && showTips ? 2 : 1;
-                else return position == 0 && showTips ? 3 : 1;
-            }
-        });
+        try {
+            mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    boolean portrait = orientation == Configuration.ORIENTATION_PORTRAIT;
+                    boolean showTips = Preferences.getPreferences(getActivity()).isShowWallpaperTips();
+                    if (portrait) return position == 0 && showTips ? 2 : 1;
+                    else return position == 0 && showTips ? 3 : 1;
+                }
+            });
+        } catch (Exception e) {
+            Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+        }
     }
 
     private void getWallpapers(boolean refreshing) {
@@ -164,14 +168,12 @@ public class WallpapersFragment extends Fragment {
 
             WallpaperJSON wallpapersJSON;
             SparseArrayCompat<Wallpaper> wallpapers;
-            Database database;
 
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
                 if (!refreshing) mProgress.setVisibility(View.VISIBLE);
                 else mSwipe.setRefreshing(true);
-                database = new Database(getActivity());
             }
 
             @Override
@@ -179,6 +181,7 @@ public class WallpapersFragment extends Fragment {
                 while (!isCancelled()) {
                     try {
                         Thread.sleep(1);
+                        Database database = new Database(getActivity());
                         if (!refreshing && !database.isWallpapersEmpty()) {
                             wallpapers = database.getWallpapers();
                             return true;
@@ -230,12 +233,9 @@ public class WallpapersFragment extends Fragment {
                     resetSpanSizeLookUp(getActivity().getResources().getConfiguration().orientation);
                     mWallpapersGrid.setAdapter(new WallpapersAdapter(getActivity(), wallpapers));
                 } else {
-                    if (refreshing) {
-                        Toast.makeText(getActivity(), R.string.connection_failed,
-                                Toast.LENGTH_LONG).show();
-                    }
+                    Toast.makeText(getActivity(), R.string.connection_failed,
+                            Toast.LENGTH_LONG).show();
                 }
-                database = null;
                 mConnection = null;
                 mGetWallpapers = null;
             }

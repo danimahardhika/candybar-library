@@ -58,8 +58,10 @@ public class IconPreviewFragment extends DialogFragment {
         }
         ft.addToBackStack(null);
 
-        DialogFragment dialog = IconPreviewFragment.newInstance(name, id);
-        dialog.show(ft, TAG);
+        try {
+            DialogFragment dialog = IconPreviewFragment.newInstance(name, id);
+            dialog.show(ft, TAG);
+        } catch (IllegalArgumentException ignored) {}
     }
 
     private TextView mName;

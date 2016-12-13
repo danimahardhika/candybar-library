@@ -10,7 +10,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.webkit.URLUtil;
@@ -164,26 +163,24 @@ public class AboutFragment extends DialogFragment implements View.OnClickListene
 
     private void initImageHeader() {
         String url = getActivity().getString(R.string.about_image);
-        if (URLUtil.isValidUrl(url)) {
-            ImageLoader.getInstance().displayImage(url, mImageView,
-                    ImageConfig.getImageOptions(true, Preferences.getPreferences(getActivity())
-                            .isCacheAllowed()));
-        } else {
-            int res = DrawableHelper.getResourceId(getActivity(), url);
-            if (res > 0) mImageView.setImageDrawable(ContextCompat.getDrawable(getActivity(), res));
+        if (!URLUtil.isValidUrl(url)) {
+            url = "drawable://" + DrawableHelper.getResourceId(getActivity(), url);
         }
+
+        ImageLoader.getInstance().displayImage(url, mImageView,
+                ImageConfig.getImageOptions(true, Preferences.getPreferences(getActivity())
+                        .isCacheAllowed()));
     }
 
     private void initProfileImage() {
         String url = getActivity().getResources().getString(R.string.about_profile_image);
-        if (URLUtil.isValidUrl(url)) {
-            ImageLoader.getInstance().displayImage(url, mProfile,
-                    ImageConfig.getImageOptions(true, Preferences.getPreferences(getActivity())
-                    .isCacheAllowed()));
-        } else {
-            int res = DrawableHelper.getResourceId(getActivity(), url);
-            if (res > 0) mProfile.setImageDrawable(ContextCompat.getDrawable(getActivity(), res));
+        if (!URLUtil.isValidUrl(url)) {
+            url = "drawable://" + DrawableHelper.getResourceId(getActivity(), url);
         }
+
+        ImageLoader.getInstance().displayImage(url, mProfile,
+                ImageConfig.getImageOptions(true, Preferences.getPreferences(getActivity())
+                        .isCacheAllowed()));
     }
 
     private void initAbout() {

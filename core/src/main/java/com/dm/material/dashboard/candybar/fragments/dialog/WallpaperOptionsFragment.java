@@ -62,8 +62,10 @@ public class WallpaperOptionsFragment extends DialogFragment implements View.OnC
         }
         ft.addToBackStack(null);
 
-        DialogFragment dialog = WallpaperOptionsFragment.newInstance(url, name);
-        dialog.show(ft, TAG);
+        try {
+            DialogFragment dialog = WallpaperOptionsFragment.newInstance(url, name);
+            dialog.show(ft, TAG);
+        } catch (IllegalArgumentException ignored) {}
     }
 
     private LinearLayout mApply;

@@ -17,7 +17,7 @@ import android.support.v4.util.SparseArrayCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
@@ -87,6 +87,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     private ProgressBar mProgress;
     private FloatingActionButton mFab;
 
+    private Database mDatabase;
     private RequestAdapter mAdapter;
     private AsyncTask<Void, Request, Boolean> mGetMissingApps;
 
@@ -108,6 +109,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         ViewCompat.setNestedScrollingEnabled(mRequestList, false);
         resetNavigationBarMargin();
 
+        mDatabase = new Database(getActivity());
         mProgress.getIndeterminateDrawable().setColorFilter(
                 ColorHelper.getAttributeColor(getActivity(), R.attr.colorAccent),
                 PorterDuff.Mode.SRC_IN);
@@ -121,7 +123,9 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         mRequestList.setItemAnimator(new DefaultItemAnimator());
         mRequestList.getItemAnimator().setChangeDuration(0);
         mRequestList.setHasFixedSize(false);
-        mRequestList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRequestList.setLayoutManager(new GridLayoutManager(getActivity(),
+                getActivity().getResources().getConfiguration().orientation ==
+                        Configuration.ORIENTATION_PORTRAIT ? 1 : 2));
 
         RecyclerFastScroller fastScroller = (RecyclerFastScroller)
                 getActivity().findViewById(R.id.fastscroll);
@@ -133,6 +137,9 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        GridLayoutManager manager = (GridLayoutManager) mRequestList.getLayoutManager();
+        if (manager != null) manager.setSpanCount(newConfig.orientation ==
+                Configuration.ORIENTATION_PORTRAIT ? 1 : 2);
         resetNavigationBarMargin();
     }
 
@@ -263,7 +270,6 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                 while (!isCancelled()) {
                     try {
                         Thread.sleep(1);
-                        Database database = new Database(getActivity());
                         PackageManager packageManager = getActivity().getPackageManager();
                         StringBuilder activities = AppFilterHelper.loadAppFilter(getActivity());
 
@@ -288,7 +294,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                             if (!activities.toString().contains(activity)) {
                                 Drawable drawable = DrawableHelper.getAppIcon(getActivity(), app);
                                 byte[] bytes = DrawableHelper.getBitmapByte(drawable);
-                                boolean requested = database.isRequested(activity);
+                                boolean requested = mDatabase.isRequested(activity);
                                 publishProgress(new Request(
                                         bytes,
                                         name,
@@ -390,7 +396,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                         StringBuilder activity = new StringBuilder();
                         for (int i = 0; i < selectedItems.size(); i++) {
                             Request item = mAdapter.getRequest(selectedItems.get(i));
-                            database.addRequest(item);
+                            database.addRequest(item.getName(), item.getActivity(), null);
                             mAdapter.setRequested(selectedItems.get(i), true);
 
                             String link = "https://play.google.com/store/apps/details?id=";

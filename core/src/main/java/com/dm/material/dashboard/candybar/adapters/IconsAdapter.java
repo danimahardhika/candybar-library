@@ -14,10 +14,13 @@ import android.widget.TextView;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.helpers.IconsHelper;
 import com.dm.material.dashboard.candybar.helpers.IntentHelper;
+import com.dm.material.dashboard.candybar.helpers.SoftKeyboardHelper;
 import com.dm.material.dashboard.candybar.items.Icon;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
+import java.util.Locale;
 
 /*
  * CandyBar - Material Dashboard
@@ -40,13 +43,15 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 public class IconsAdapter extends RecyclerView.Adapter<IconsAdapter.ViewHolder> {
 
     private final Context mContext;
-    private final SparseArrayCompat<Icon> mIcons;
+    private SparseArrayCompat<Icon> mIcons;
+    private SparseArrayCompat<Icon> mIconsAll;
     private final boolean mIsShowIconName;
 
-    public IconsAdapter(@NonNull Context context, @NonNull SparseArrayCompat<Icon> icons) {
+    public IconsAdapter(@NonNull Context context, @NonNull SparseArrayCompat<Icon> icons, boolean search) {
         mContext = context;
         mIcons = icons;
         mIsShowIconName = mContext.getResources().getBoolean(R.bool.show_icon_name);
+        if (search) mIconsAll = mIcons.clone();
     }
 
     @Override
@@ -95,9 +100,27 @@ public class IconsAdapter extends RecyclerView.Adapter<IconsAdapter.ViewHolder> 
             int id = view.getId();
             int position = getAdapterPosition();
             if (id == R.id.container) {
+                if (position < 0 || position > mIcons.size()) return;
+                SoftKeyboardHelper.closeKeyboard(mContext);
                 IconsHelper.selectIcon(mContext, IntentHelper.sAction, mIcons.get(position));
             }
         }
+    }
+
+    public void search(String query) {
+        query = query.toLowerCase(Locale.getDefault());
+        mIcons.clear();
+        if (query.length() == 0) mIcons = mIconsAll.clone();
+        else {
+            for (int i = 0; i < mIconsAll.size(); i++) {
+                Icon icon = mIconsAll.get(i);
+                String title = icon.getTitle().toLowerCase(Locale.getDefault());
+                if (title.contains(query)) {
+                    mIcons.append(mIcons.size(), icon);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 
 }

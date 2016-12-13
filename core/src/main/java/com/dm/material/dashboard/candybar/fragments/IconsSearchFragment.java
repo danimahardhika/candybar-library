@@ -25,7 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dm.material.dashboard.candybar.R;
-import com.dm.material.dashboard.candybar.adapters.IconsSearchAdapter;
+import com.dm.material.dashboard.candybar.adapters.IconsAdapter;
 import com.dm.material.dashboard.candybar.helpers.ColorHelper;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.helpers.IconsHelper;
@@ -65,7 +65,7 @@ public class IconsSearchFragment extends Fragment {
     private SearchView mSearchView;
     private ProgressBar mProgress;
 
-    private IconsSearchAdapter mAdapter;
+    private IconsAdapter mAdapter;
     private AsyncTask<Void, Void, Boolean> mGetIcons;
 
     public static final String TAG = "icons_search";
@@ -224,7 +224,7 @@ public class IconsSearchFragment extends Fragment {
                 super.onPostExecute(aBoolean);
                 mProgress.setVisibility(View.GONE);
                 if (aBoolean) {
-                    mAdapter = new IconsSearchAdapter(getActivity(), icons);
+                    mAdapter = new IconsAdapter(getActivity(), icons, true);
                     mIconsGrid.setAdapter(mAdapter);
                     mSearchView.requestFocus();
                     SoftKeyboardHelper.openKeyboard(getActivity());

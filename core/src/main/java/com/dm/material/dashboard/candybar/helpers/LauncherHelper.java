@@ -56,27 +56,7 @@ public class LauncherHelper {
     private static final int SMART = 18;
     private static final int SOLO = 19;
     private static final int ZENUI = 20;
-
-    private static final String ACTION_APPLY_ICON_THEME = "com.teslacoilsw.launcher.APPLY_ICON_THEME";
-    private static final String NOVA_PACKAGE = "com.teslacoilsw.launcher";
-    private static final String EXTRA_ICON_THEME_PACKAGE = "com.teslacoilsw.launcher.extra.ICON_THEME_PACKAGE";
-    private static final String EXTRA_ICON_THEME_TYPE = "com.teslacoilsw.launcher.extra.ICON_THEME_TYPE";
-    private static final String APEX_ACTION_SET_THEME = "com.anddoes.launcher.SET_THEME";
-    private static final String APEX_EXTRA_PACKAGE_NAME = "com.anddoes.launcher.THEME_PACKAGE_NAME";
-    private static final String AVIATE_ACTION_SET_THEME = "com.tul.aviate.SET_THEME";
-    private static final String AVIATE_EXTRA_PACKAGE_NAME = "THEME_PACKAGE";
-    private static final String SOLO_ACTION_SET_THEME = "home.solo.launcher.free.APPLY_THEME";
-    private static final String SOLO_EXTRA_THEME_NAME = "EXTRA_THEMENAME";
-    private static final String SOLO_EXTRA_PACKAGE_NAME = "EXTRA_PACKAGENAME";
-    private static final String KK_APPLY_ICON_THEME = "com.kk.launcher.APPLY_ICON_THEME";
-    private static final String KK_EXTRA_PKG = "com.kk.launcher.theme.EXTRA_PKG";
-    private static final String KK_EXTRA_NAME = "com.kk.launcher.theme.EXTRA_NAME";
-    private static final String S_APPLY_ICON_THEME = "com.s.launcher.APPLY_ICON_THEME";
-    private static final String S_EXTRA_PKG = "com.s.launcher.theme.EXTRA_PKG";
-    private static final String S_EXTRA_NAME = "com.s.launcher.theme.EXTRA_NAME";
-    private static final String LUCID_INTENT = "com.powerpoint45.action.APPLY_THEME";
-    private static final String CMTHEME_INTENT = "org.cyanogenmod.theme.chooser.ChooserActivity";
-    private static final String ASUS_APPLY_ICON_PACK = "com.asus.launcher.intent.action.APPLY_ICONPACK";
+    private static final int NOUGAT = 21;
 
     public static int getLauncherId(String packageName) {
         if (packageName == null) return UNKNOWN;
@@ -128,6 +108,8 @@ public class LauncherHelper {
                 return SOLO;
             case "com.asus.launcher":
                 return ZENUI;
+            case "me.craftsapp.nlauncher":
+                return NOUGAT;
             default:
                 return UNKNOWN;
         }
@@ -137,84 +119,84 @@ public class LauncherHelper {
         applyLauncher(context, packageName, launcherName, getLauncherId(packageName));
     }
 
-    private static void applyLauncher(Context context, String packageName, String launcherName, int id) {
+    private static void applyLauncher(@NonNull Context context, String launcherPackage, String launcherName, int id) {
         switch (id) {
             case ACTION:
-                final Intent action = context.getPackageManager().getLaunchIntentForPackage(
-                        packageName);
                 try {
+                    final Intent action = context.getPackageManager().getLaunchIntentForPackage(
+                            launcherPackage);
                     action.putExtra("apply_icon_pack", context.getPackageName());
                     action.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(action);
                     ((AppCompatActivity) context).finish();
                 } catch (ActivityNotFoundException | NullPointerException e) {
-                    openGooglePlay(context, packageName, launcherName);
+                    openGooglePlay(context, launcherPackage, launcherName);
                 }
                 break;
             case ADW:
-                final Intent adw = new Intent("org.adw.launcher.SET_THEME");
                 try {
+                    final Intent adw = new Intent("org.adw.launcher.SET_THEME");
                     adw.putExtra("org.adw.launcher.theme.NAME", context.getPackageName());
                     adw.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(adw);
                     ((AppCompatActivity) context).finish();
                 } catch (ActivityNotFoundException | NullPointerException e) {
-                    openGooglePlay(context, packageName, launcherName);
+                    openGooglePlay(context, launcherPackage, launcherName);
                 }
                 break;
             case APEX:
-                final Intent apex = new Intent(APEX_ACTION_SET_THEME);
                 try {
-                    apex.putExtra(APEX_EXTRA_PACKAGE_NAME, context.getPackageName());
+                    final Intent apex = new Intent("com.anddoes.launcher.SET_THEME");
+                    apex.putExtra("com.anddoes.launcher.THEME_PACKAGE_NAME", context.getPackageName());
                     apex.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(apex);
                     ((AppCompatActivity) context).finish();
                 } catch (ActivityNotFoundException | NullPointerException e) {
-                    openGooglePlay(context, packageName, launcherName);
+                    openGooglePlay(context, launcherPackage, launcherName);
                 }
                 break;
             case ATOM:
-                final Intent launcher_atom = new Intent(
-                        "com.dlto.atom.launcher.intent.action.ACTION_VIEW_THEME_SETTINGS");
                 try {
-                    launcher_atom.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    launcher_atom.putExtra("packageName", context.getPackageName());
-                    context.startActivity(launcher_atom);
+                    final Intent atom = new Intent("com.dlto.atom.launcher.intent.action.ACTION_VIEW_THEME_SETTINGS");
+                    atom.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    atom.putExtra("packageName", context.getPackageName());
+                    context.startActivity(atom);
                     ((AppCompatActivity) context).finish();
                 } catch (ActivityNotFoundException | NullPointerException e) {
-                    openGooglePlay(context, packageName, launcherName);
+                    openGooglePlay(context, launcherPackage, launcherName);
                 }
                 break;
             case AVIATE:
-                final Intent launcher_aviate = new Intent(AVIATE_ACTION_SET_THEME);
                 try {
-                    launcher_aviate.putExtra(AVIATE_EXTRA_PACKAGE_NAME, context.getPackageName());
-                    launcher_aviate.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(launcher_aviate);
+                    final Intent aviate = new Intent("com.tul.aviate.SET_THEME");
+                    aviate.putExtra("THEME_PACKAGE", context.getPackageName());
+                    aviate.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(aviate);
                     ((AppCompatActivity) context).finish();
                 } catch (ActivityNotFoundException | NullPointerException e) {
-                    openGooglePlay(context, packageName, launcherName);
+                    openGooglePlay(context, launcherPackage, launcherName);
                 }
                 break;
             case CMTHEME:
-                final Intent cmtheme = new Intent("android.intent.action.MAIN");
                 try {
-                    cmtheme.setComponent(new ComponentName(packageName, CMTHEME_INTENT));
+                    final Intent cmtheme = new Intent("android.intent.action.MAIN");
+                    cmtheme.setComponent(new ComponentName(launcherPackage,
+                            "org.cyanogenmod.theme.chooser.ChooserActivity"));
                     cmtheme.putExtra("pkgName", context.getPackageName());
                     context.startActivity(cmtheme);
-                } catch (ActivityNotFoundException e) {
+                } catch (ActivityNotFoundException | NullPointerException e) {
                     Toast.makeText(context, R.string.apply_cmtheme_not_available,
                             Toast.LENGTH_LONG).show();
-                } catch (IllegalArgumentException e) {
+                } catch (SecurityException | IllegalArgumentException e) {
                     Toast.makeText(context, R.string.apply_cmtheme_failed,
                             Toast.LENGTH_LONG).show();
                 }
                 break;
             case GO:
-                final Intent goex = context.getPackageManager().getLaunchIntentForPackage(
-                        "com.gau.go.launcherex"),
-                        go = new Intent("com.gau.go.launcherex.MyThemes.mythemeaction");
                 try {
+                    final Intent goex = context.getPackageManager().getLaunchIntentForPackage(
+                            "com.gau.go.launcherex");
+                    final Intent go = new Intent("com.gau.go.launcherex.MyThemes.mythemeaction");
                     go.putExtra("type",1);
                     go.putExtra("pkgname", context.getPackageName());
                     goex.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -222,54 +204,57 @@ public class LauncherHelper {
                     context.startActivity(goex);
                     ((AppCompatActivity) context).finish();
                 } catch (ActivityNotFoundException | NullPointerException e) {
-                    openGooglePlay(context, packageName, launcherName);
+                    openGooglePlay(context, launcherPackage, launcherName);
                 }
                 break;
             case HOLO:
-                applyManual(context, launcherName, packageName, "com.mobint.hololauncher.SettingsActivity");
+                applyManual(context, launcherPackage, launcherName, "com.mobint.hololauncher.SettingsActivity");
                 break;
             case HOLOHD:
-                applyManual(context, launcherName, packageName, "com.mobint.hololauncher.SettingsActivity");
+                applyManual(context, launcherPackage, launcherName, "com.mobint.hololauncher.SettingsActivity");
                 break;
             case KK:
-                final Intent launcher_kk = new Intent(KK_APPLY_ICON_THEME);
                 try {
-                    launcher_kk.putExtra(KK_EXTRA_PKG, context.getPackageName());
-                    launcher_kk.putExtra(KK_EXTRA_NAME, context.getResources().getString(
+                    final Intent launcher_kk = new Intent("com.kk.launcher.APPLY_ICON_THEME");
+                    launcher_kk.putExtra("com.kk.launcher.theme.EXTRA_PKG", context.getPackageName());
+                    launcher_kk.putExtra("com.kk.launcher.theme.EXTRA_NAME", context.getResources().getString(
                             R.string.app_name));
                     launcher_kk.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(launcher_kk);
                     ((AppCompatActivity) context).finish();
                 } catch (ActivityNotFoundException | NullPointerException e) {
-                    openGooglePlay(context, packageName, launcherName);
+                    openGooglePlay(context, launcherPackage, launcherName);
                 }
                 break;
             case LGHOME:
-                applyLgHome(context, packageName, launcherName, "com.lge.launcher2.homesettings.HomeSettingsPrefActivity");
+                applyLgHome(context, launcherPackage, launcherName,
+                        "com.lge.launcher2.homesettings.HomeSettingsPrefActivity");
                 break;
             case LGHOME3:
-                applyLgHome(context, packageName, launcherName, "com.lge.launcher3.homesettings.HomeSettingsPrefActivity");
+                applyLgHome(context, launcherPackage, launcherName,
+                        "com.lge.launcher3.homesettings.HomeSettingsPrefActivity");
                 break;
             case LUCID:
-                Intent lucid = new Intent(LUCID_INTENT, null);
                 try {
+                    final Intent lucid = new Intent("com.powerpoint45.action.APPLY_THEME", null);
                     lucid.putExtra("icontheme", context.getPackageName());
                     context.startActivity(lucid);
                     ((AppCompatActivity) context).finish();
                 } catch (ActivityNotFoundException | NullPointerException e) {
-                    openGooglePlay(context, packageName, launcherName);
+                    openGooglePlay(context, launcherPackage, launcherName);
                 }
                 break;
             case MINI:
-                applyManual(context, launcherName, packageName, "com.jiubang.go.mini.launcher.setting.MiniLauncherSettingActivity");
+                applyManual(context, launcherPackage, launcherName,
+                        "com.jiubang.go.mini.launcher.setting.MiniLauncherSettingActivity");
                 break;
             case NEXT:
-                Intent next = context.getPackageManager().getLaunchIntentForPackage("com.gtp.nextlauncher");
-                if (next == null) {
-                    next = context.getPackageManager().getLaunchIntentForPackage("com.gtp.nextlauncher.trial");
-                }
-                final Intent next2 = new Intent("com.gau.go.launcherex.MyThemes.mythemeaction");
                 try {
+                    Intent next = context.getPackageManager().getLaunchIntentForPackage("com.gtp.nextlauncher");
+                    if (next == null) {
+                        next = context.getPackageManager().getLaunchIntentForPackage("com.gtp.nextlauncher.trial");
+                    }
+                    final Intent next2 = new Intent("com.gau.go.launcherex.MyThemes.mythemeaction");
                     next2.putExtra("type", 1);
                     next2.putExtra("pkgname", context.getPackageName());
                     next.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -277,79 +262,97 @@ public class LauncherHelper {
                     context.startActivity(next);
                     ((AppCompatActivity) context).finish();
                 } catch (ActivityNotFoundException | NullPointerException e) {
-                    openGooglePlay(context, packageName, launcherName);
+                    openGooglePlay(context, launcherPackage, launcherName);
                 }
                 break;
             case NOVA:
-                final Intent nova = new Intent(ACTION_APPLY_ICON_THEME);
                 try {
-                    nova.setPackage(NOVA_PACKAGE);
-                    nova.putExtra(EXTRA_ICON_THEME_TYPE, "GO");
-                    nova.putExtra(EXTRA_ICON_THEME_PACKAGE, context.getPackageName());
+                    final Intent nova = new Intent("com.teslacoilsw.launcher.APPLY_ICON_THEME");
+                    nova.setPackage("com.teslacoilsw.launcher");
+                    nova.putExtra("com.teslacoilsw.launcher.extra.ICON_THEME_TYPE", "GO");
+                    nova.putExtra("com.teslacoilsw.launcher.extra.ICON_THEME_PACKAGE", context.getPackageName());
                     nova.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(nova);
                     ((AppCompatActivity) context).finish();
                 } catch (ActivityNotFoundException | NullPointerException e) {
-                    openGooglePlay(context, packageName, launcherName);
+                    openGooglePlay(context, launcherPackage, launcherName);
                 }
                 break;
             case S:
-                final Intent launcher_s = new Intent(S_APPLY_ICON_THEME);
                 try {
-                    launcher_s.putExtra(S_EXTRA_PKG, context.getPackageName());
-                    launcher_s.putExtra(S_EXTRA_NAME, context.getResources().getString(
+                    final Intent launcher_s = new Intent("com.s.launcher.APPLY_ICON_THEME");
+                    launcher_s.putExtra("com.s.launcher.theme.EXTRA_PKG", context.getPackageName());
+                    launcher_s.putExtra("com.s.launcher.theme.EXTRA_NAME", context.getResources().getString(
                             R.string.app_name));
                     launcher_s.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(launcher_s);
                     ((AppCompatActivity) context).finish();
                 } catch (ActivityNotFoundException | NullPointerException e) {
-                    openGooglePlay(context, packageName, launcherName);
+                    openGooglePlay(context, launcherPackage, launcherName);
                 }
                 break;
             case SMART:
-                final Intent smart = new Intent("ginlemon.smartlauncher.setGSLTHEME");
                 try {
+                    final Intent smart = new Intent("ginlemon.smartlauncher.setGSLTHEME");
                     smart.putExtra("package", context.getPackageName());
                     smart.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(smart);
                     ((AppCompatActivity) context).finish();
                 } catch (ActivityNotFoundException | NullPointerException e) {
-                    openGooglePlay(context, packageName, launcherName);
+                    openGooglePlay(context, launcherPackage, launcherName);
                 }
                 break;
             case SOLO:
-                final Intent launcher_solo = context.getPackageManager().getLaunchIntentForPackage(
-                        "home.solo.launcher.free"),
-                        launcher_solo_act = new Intent(SOLO_ACTION_SET_THEME);
                 try {
-                    launcher_solo_act.putExtra(SOLO_EXTRA_THEME_NAME, context.getResources().getString(
+                    final Intent solo = context.getPackageManager().getLaunchIntentForPackage(
+                            "home.solo.launcher.free");
+                    final Intent soloAction = new Intent("home.solo.launcher.free.APPLY_THEME");
+                    soloAction.putExtra("EXTRA_THEMENAME", context.getResources().getString(
                             R.string.app_name));
-                    launcher_solo_act.putExtra(SOLO_EXTRA_PACKAGE_NAME, context.getPackageName());
-                    launcher_solo.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.sendBroadcast(launcher_solo_act);
-                    context.startActivity(launcher_solo);
+                    soloAction.putExtra("EXTRA_PACKAGENAME", context.getPackageName());
+                    solo.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.sendBroadcast(soloAction);
+                    context.startActivity(solo);
                     ((AppCompatActivity) context).finish();
                 } catch (ActivityNotFoundException | NullPointerException e) {
-                    openGooglePlay(context, packageName, launcherName);
+                    openGooglePlay(context, launcherPackage, launcherName);
                 }
                 break;
             case ZENUI:
-                final Intent asus = new Intent("com.asus.launcher");
                 try {
-                    asus.setAction(ASUS_APPLY_ICON_PACK);
+                    final Intent asus = new Intent("com.asus.launcher");
+                    asus.setAction("com.asus.launcher.intent.action.APPLY_ICONPACK");
                     asus.addCategory(Intent.CATEGORY_DEFAULT);
                     asus.putExtra("com.asus.launcher.iconpack.PACKAGE_NAME", context.getPackageName());
                     asus.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(asus);
                     ((AppCompatActivity) context).finish();
                 } catch (ActivityNotFoundException | NullPointerException e) {
-                    openGooglePlay(context, packageName, launcherName);
+                    openGooglePlay(context, launcherPackage, launcherName);
+                }
+                break;
+            case NOUGAT:
+                try {
+                    /*
+                     * Just want to let anyone who is going to copy
+                     * It's not easy searching for this
+                     * I will be grateful if you take this with a proper credit
+                     * Thank you
+                     */
+                    final Intent nougat = new Intent("me.craftsapp.nlauncher");
+                    nougat.setAction("me.craftsapp.nlauncher.SET_THEME");
+                    nougat.putExtra("me.craftsapp.nlauncher.theme.NAME", context.getPackageName());
+                    nougat.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(nougat);
+                    ((AppCompatActivity) context).finish();
+                } catch (ActivityNotFoundException | NullPointerException e) {
+                    openGooglePlay(context, launcherPackage, launcherName);
                 }
                 break;
         }
     }
 
-    private static void applyManual(Context context, String launcherName, String packageName, String activity) {
+    private static void applyManual(Context context, String launcherPackage, String launcherName, String activity) {
         new MaterialDialog.Builder(context)
                 .title(launcherName)
                 .content(launcherName + " " +
@@ -360,14 +363,14 @@ public class LauncherHelper {
                 .onPositive((dialog, which) -> {
                     try{
                         final Intent intent = new Intent(Intent.ACTION_MAIN);
-                        intent.setComponent(new ComponentName(packageName,
+                        intent.setComponent(new ComponentName(launcherPackage,
                                 activity));
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(intent);
                         ((AppCompatActivity) context).finish();
                     } catch (ActivityNotFoundException | NullPointerException e) {
-                        openGooglePlay(context, packageName, launcherName);
-                    } catch (SecurityException e) {
+                        openGooglePlay(context, launcherPackage, launcherName);
+                    } catch (SecurityException | IllegalArgumentException e) {
                         Toast.makeText(context, context.getResources().getString(R.string.unable_launch)
                                         + " " +launcherName+ " " +
                                         context.getResources().getString(R.string.unable_launch2),
@@ -378,7 +381,7 @@ public class LauncherHelper {
                 .show();
     }
 
-    private static void applyLgHome(Context context, String packageName, String launcherName, String activity) {
+    private static void applyLgHome(Context context, String launcherPackage, String launcherName, String activity) {
         new MaterialDialog.Builder(context)
                 .title(launcherName)
                 .content(launcherName + " " +
@@ -390,7 +393,7 @@ public class LauncherHelper {
                 .onPositive((dialog, which) -> {
                     try{
                         final Intent intent = new Intent(Intent.ACTION_MAIN);
-                        intent.setComponent(new ComponentName(packageName,
+                        intent.setComponent(new ComponentName(launcherPackage,
                                 activity));
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(intent);
@@ -398,10 +401,8 @@ public class LauncherHelper {
                     } catch (ActivityNotFoundException | NullPointerException e) {
                         Toast.makeText(context, R.string.manual_apply_lg_home_not_available,
                                 Toast.LENGTH_LONG).show();
-                    } catch (SecurityException e) {
-                        Toast.makeText(context, context.getResources().getString(R.string.unable_launch)
-                                        + " " +launcherName+ " " +
-                                        context.getResources().getString(R.string.unable_launch2),
+                    } catch (SecurityException | IllegalArgumentException e) {
+                        Toast.makeText(context, context.getResources().getString(R.string.apply_lghome_failed),
                                 Toast.LENGTH_LONG).show();
                     }
                 })

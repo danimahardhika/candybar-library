@@ -215,6 +215,7 @@ public class WallpapersAdapter extends RecyclerView.Adapter<WallpapersAdapter.Vi
             int id = view.getId();
             int position = mIsShowTips ? getAdapterPosition() - 1 : getAdapterPosition();
             if (id == R.id.container || id == R.id.image) {
+                if (position < 0 || position > mWallpapers.size()) return true;
                 WallpaperOptionsFragment.showWallpaperOptionsDialog(
                         ((AppCompatActivity) mContext).getSupportFragmentManager(),
                         mWallpapers.get(position).getURL(),

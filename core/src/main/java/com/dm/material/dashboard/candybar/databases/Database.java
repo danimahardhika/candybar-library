@@ -7,10 +7,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
 import android.support.v4.util.SparseArrayCompat;
+import android.util.Log;
 
 import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.items.Wallpaper;
 import com.dm.material.dashboard.candybar.items.WallpaperJSON;
+import com.dm.material.dashboard.candybar.utils.Tag;
 
 /*
  * CandyBar - Material Dashboard
@@ -103,6 +105,8 @@ public class Database extends SQLiteOpenHelper {
         }
         cursor.close();
 
+        SparseArrayCompat<Request> requests = getRequestedApps(db);
+
         for (int i = 0; i < tables.size(); i++) {
             try {
                 String dropQuery = "DROP TABLE IF EXISTS " + tables.get(i);
@@ -111,19 +115,40 @@ public class Database extends SQLiteOpenHelper {
             } catch (Exception ignored) {}
         }
         onCreate(db);
+
+        for (int i = 0; i < requests.size(); i++) {
+            addRequest(db, requests.get(i).getName(),
+                    requests.get(i).getPackageName(),
+                    requests.get(i).getActivity());
+        }
     }
 
-    public void addRequest (Request request) {
+    public void addRequest(String name, String activity, String requestedOn) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(KEY_NAME, request.getName());
-        values.put(KEY_ACTIVITY, request.getActivity());
+        values.put(KEY_NAME, name);
+        values.put(KEY_ACTIVITY, activity);
+        if (requestedOn != null) values.put(KEY_REQUESTED_ON, requestedOn);
 
         db.insert(TABLE_REQUEST, null, values);
         db.close();
     }
 
-    public boolean isRequested (String activity) {
+    private void addRequest(SQLiteDatabase db, String name, String activity, String requestedOn) {
+        if (db == null) return;
+        try {
+            ContentValues values = new ContentValues();
+            values.put(KEY_NAME, name);
+            values.put(KEY_ACTIVITY, activity);
+            if (requestedOn != null) values.put(KEY_REQUESTED_ON, requestedOn);
+
+            db.insert(TABLE_REQUEST, null, values);
+        } catch (Exception e) {
+            Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+        }
+    }
+
+    public boolean isRequested(String activity) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_REQUEST, null, KEY_ACTIVITY + " = ?",
                 new String[]{activity}, null, null, null, null);
@@ -131,6 +156,29 @@ public class Database extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return rowCount > 0;
+    }
+
+    private SparseArrayCompat<Request> getRequestedApps(SQLiteDatabase db) {
+        SparseArrayCompat<Request> requests = new SparseArrayCompat<>();
+        if (db == null) return requests;
+        try {
+            Cursor cursor = db.query(TABLE_REQUEST, null, null, null, null, null, null);
+            if (cursor.moveToFirst()) {
+                do {
+                    Request request = new Request(
+                            null,
+                            cursor.getString(1),
+                            cursor.getString(2),
+                            cursor.getString(3),
+                            true);
+                    requests.append(requests.size(), request);
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+        } catch (Exception e) {
+            Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+        }
+        return requests;
     }
 
     public void addPremiumRequest(String orderId, String productId, String request) {

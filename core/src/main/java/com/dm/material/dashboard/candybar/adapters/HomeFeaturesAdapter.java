@@ -1,8 +1,6 @@
 package com.dm.material.dashboard.candybar.adapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v4.util.SparseArrayCompat;
@@ -61,17 +59,6 @@ public class HomeFeaturesAdapter extends RecyclerView.Adapter<HomeFeaturesAdapte
                     R.layout.fragment_home_feature_item_list, parent, false);
         }
         return new ViewHolder(view, viewType);
-    }
-
-    @Override
-    public void onViewRecycled(ViewHolder holder) {
-        super.onViewRecycled(holder);
-        if (holder.holderId == TYPE_CONTENT) {
-            Bitmap bitmap = ((BitmapDrawable) holder.icon.getDrawable()).getBitmap();
-            if (bitmap != null) bitmap.recycle();
-
-            holder.icon.setImageDrawable(null);
-        }
     }
 
     @Override

@@ -72,8 +72,10 @@ public class IntentChooserFragment extends DialogFragment {
         }
         ft.addToBackStack(null);
 
-        DialogFragment dialog = IntentChooserFragment.newInstance(request);
-        dialog.show(ft, TAG);
+        try {
+            DialogFragment dialog = IntentChooserFragment.newInstance(request);
+            dialog.show(ft, TAG);
+        } catch (IllegalArgumentException ignored) {}
     }
 
     private ListView mIntentList;

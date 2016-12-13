@@ -79,8 +79,10 @@ public class InAppBillingFragment extends DialogFragment {
         }
         ft.addToBackStack(null);
 
-        DialogFragment dialog = InAppBillingFragment.newInstance(type, key, productId, productCount);
-        dialog.show(ft, TAG);
+        try {
+            DialogFragment dialog = InAppBillingFragment.newInstance(type, key, productId, productCount);
+            dialog.show(ft, TAG);
+        } catch (IllegalArgumentException ignored) {}
     }
 
     private ListView mInAppList;

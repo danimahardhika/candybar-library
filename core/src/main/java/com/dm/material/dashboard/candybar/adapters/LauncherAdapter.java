@@ -83,6 +83,7 @@ public class LauncherAdapter extends RecyclerView.Adapter<LauncherAdapter.ViewHo
             int id = view.getId();
             int position = getAdapterPosition();
             if (id == R.id.container) {
+                if (position < 0 || position > mLaunchers.size()) return;
                 LauncherHelper.apply(mContext,
                         mLaunchers.get(position).getPackageName(),
                         mLaunchers.get(position).getTitle());

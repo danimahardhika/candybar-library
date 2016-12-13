@@ -1,5 +1,6 @@
 package com.dm.material.dashboard.candybar.adapters;
 
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -23,6 +25,7 @@ import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.helpers.FileHelper;
 import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
+import com.dm.material.dashboard.candybar.utils.Tag;
 
 import java.io.File;
 import java.util.List;
@@ -128,9 +131,27 @@ public class IntentAdapter extends BaseAdapter {
     }
 
     private void sendRequest(ComponentName name) {
-        final Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("message/rfc822");
+        try {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent = addIntentExtra(intent);
+            intent.setComponent(name);
+            intent.addCategory(Intent.CATEGORY_LAUNCHER);
+            mContext.startActivity(intent);
+        } catch (IllegalArgumentException e) {
+            try {
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent = addIntentExtra(intent);
+                mContext.startActivity(Intent.createChooser(intent,
+                        mContext.getResources().getString(R.string.email_client)));
+            }
+            catch (ActivityNotFoundException e1) {
+                Log.d(Tag.LOG_TAG, Log.getStackTraceString(e1));
+            }
+        }
+    }
 
+    private Intent addIntentExtra(@NonNull Intent intent) {
+        intent.setType("message/rfc822");
         if (mRequest.getStream().length() > 0) {
             File zip = new File(mRequest.getStream());
             Uri uri = FileHelper.getUriFromFile(mContext, mContext.getPackageName(), zip);
@@ -142,11 +163,9 @@ public class IntentAdapter extends BaseAdapter {
                 new String[]{mContext.getResources().getString(R.string.dev_email)});
         intent.putExtra(Intent.EXTRA_SUBJECT, mRequest.getSubject());
         intent.putExtra(Intent.EXTRA_TEXT, mRequest.getText());
-        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                 Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-        intent.setComponent(name);
-        mContext.startActivity(intent);
+        return intent;
     }
 
 }

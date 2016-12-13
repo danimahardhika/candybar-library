@@ -97,6 +97,7 @@
 
     <string name="apply_cmtheme_not_available">CM Theme not available on this device</string>
     <string name="apply_cmtheme_failed">Unable to launch CM Theme, you can try to apply Icon Pack manually from Settings</string>
+    <string name="apply_lghome_failed">Unable to launch Settings, you can try to apply Icon Pack manually from Settings</string>
 
     <!-- Icons -->
     <string name="icons_load_failed">Unable to read drawable.xml</string>

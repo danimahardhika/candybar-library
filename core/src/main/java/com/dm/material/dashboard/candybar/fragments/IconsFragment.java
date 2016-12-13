@@ -173,7 +173,7 @@ public class IconsFragment extends Fragment {
             protected void onPostExecute(Boolean aBoolean) {
                 super.onPostExecute(aBoolean);
                 if (aBoolean) {
-                    IconsAdapter adapter = new IconsAdapter(getActivity(), icons);
+                    IconsAdapter adapter = new IconsAdapter(getActivity(), icons, false);
                     mIconsGrid.setAdapter(adapter);
                 }
                 mGetIcons = null;

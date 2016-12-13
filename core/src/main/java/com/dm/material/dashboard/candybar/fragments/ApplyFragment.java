@@ -1,5 +1,7 @@
 package com.dm.material.dashboard.candybar.fragments;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -17,8 +19,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.dm.material.dashboard.candybar.R;
@@ -114,34 +114,22 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
         int id = view.getId();
         if (id == R.id.gotit) {
             Preferences.getPreferences(getActivity()).showApplyTips(false);
-            Animation fadeOut = AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out);
-            fadeOut.setDuration(400);
-            fadeOut.setAnimationListener(new Animation.AnimationListener() {
+            mApplyTips.animate().alpha(0.0f).setDuration(400).setListener(new AnimatorListenerAdapter() {
                 @Override
-                public void onAnimationStart(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
                     mApplyTips.setVisibility(View.GONE);
                 }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
             });
-            mApplyTips.startAnimation(fadeOut);
         }
     }
 
     private void initApplyTips() {
-        if (!Preferences.getPreferences(getActivity()).isShowApplyTips())
+        if (!Preferences.getPreferences(getActivity()).isShowApplyTips()) {
             mApplyTips.setVisibility(View.GONE);
-        else {
-            mGotIt.setOnClickListener(this);
+            return;
         }
+        mGotIt.setOnClickListener(this);
     }
 
     private void getLaunchers() {
@@ -149,9 +137,6 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
 
             SparseArrayCompat<Icon> installed;
             SparseArrayCompat<Icon> supported;
-
-
-            boolean isInstalled = false;
 
             @Override
             protected void onPreExecute() {
@@ -177,7 +162,7 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
                                 R.array.launcher_packages_3);
 
                         for (int i = 0; i < launcherNames.length; i++) {
-                            isInstalled = isLauncherInstalled(
+                            boolean isInstalled = isLauncherInstalled(
                                     launcherPackages1[i],
                                     launcherPackages2[i],
                                     launcherPackages3[i]);
