@@ -2,6 +2,7 @@ package com.dm.material.dashboard.candybar.applications;
 
 import android.app.Application;
 import android.content.Intent;
+import android.util.Log;
 
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.activities.CandyBarCrashReport;
@@ -58,6 +59,7 @@ public class CandyBarApplication extends Application {
                     "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
             String dateTime = dateFormat.format(new Date());
             sb.append("Crash Time : ").append(dateTime).append("\n");
+            sb.append("Class Name : ").append(throwable.getClass().getName()).append("\n");
 
             for (StackTraceElement element : throwable.getStackTrace()) {
                 sb.append("\n");
