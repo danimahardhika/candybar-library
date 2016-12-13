@@ -25,13 +25,14 @@ import com.dm.material.dashboard.candybar.R;
  * limitations under the License.
  */
 
-public class CandyBarStartActivity  extends AppCompatActivity {
+public class CandyBarStartActivity extends AppCompatActivity {
 
-    public void initStartActivity(Bundle savedInstanceState, Class<?> slashActivity, @NonNull Class<?> mainActivity) {
+    public void initStartActivity(Bundle savedInstanceState, @NonNull Class<?> splashActivity,
+                                  @NonNull Class<?> mainActivity) {
         super.onCreate(savedInstanceState);
         boolean showSplashScreen = getResources().getBoolean(R.bool.use_splash_screen);
         startActivity(new Intent(this, showSplashScreen ?
-                slashActivity : mainActivity));
+                splashActivity : mainActivity));
         //overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         finish();
     }
