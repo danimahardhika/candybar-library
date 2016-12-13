@@ -166,7 +166,6 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
         Animator.startAlphaAnimation(mToolbarTitle, 0, View.INVISIBLE);
         mAppBar.addOnOffsetChangedListener(this);
 
-        RequestHelper.checkPiracyApp(this);
         initNavigationView(toolbar);
         initNavigationViewHeader();
         initInAppBilling();
@@ -232,6 +231,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
     @Override
     protected void onResume() {
         super.onResume();
+        RequestHelper.checkPiracyApp(this);
         IntentHelper.sAction = IntentHelper.getAction(getIntent());
     }
 
@@ -655,13 +655,13 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
         LinearLayout container = (LinearLayout) header.findViewById(R.id.header_title_container);
         TextView title = (TextView )header.findViewById(R.id.header_title);
         TextView version = (TextView) header.findViewById(R.id.header_version);
-        if (URLUtil.isValidUrl(imageUrl)) {
-            ImageLoader.getInstance().displayImage(imageUrl, image, ImageConfig.getImageOptions(
-                    true, Preferences.getPreferences(this).isCacheAllowed()));
-        } else {
-            int res = DrawableHelper.getResourceId(this, imageUrl);
-            if (res > 0) image.setImageDrawable(ContextCompat.getDrawable(this, res));
+        if (!URLUtil.isValidUrl(imageUrl)) {
+            imageUrl = "drawable://" + DrawableHelper.getResourceId(this, imageUrl);
         }
+
+        ImageLoader.getInstance().displayImage(imageUrl, image,
+                ImageConfig.getImageOptions(true, Preferences.getPreferences(this)
+                        .isCacheAllowed()));
 
         if (titleText.length() == 0) {
             container.setVisibility(View.GONE);
@@ -678,14 +678,13 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
     private void initHomeImage() {
         String image = getResources().getString(R.string.home_image);
         ImageView homeImage = (ImageView) findViewById(R.id.home_image);
-        if (URLUtil.isValidUrl(image)) {
-            ImageLoader.getInstance().displayImage(
-                    image, homeImage, ImageConfig.getImageOptions(true,
-                            Preferences.getPreferences(this).isCacheAllowed()));
-        } else {
-            int res = DrawableHelper.getResourceId(this, image);
-            if (res > 0) homeImage.setImageDrawable(ContextCompat.getDrawable(this, res));
+        if (!URLUtil.isValidUrl(image)) {
+            image = "drawable://" + DrawableHelper.getResourceId(this, image);
         }
+
+        ImageLoader.getInstance().displayImage(image, homeImage,
+                ImageConfig.getImageOptions(true, Preferences.getPreferences(this)
+                        .isCacheAllowed()));
     }
 
     private void initRateReviewFab() {
