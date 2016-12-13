@@ -2,7 +2,6 @@ package com.dm.material.dashboard.candybar.applications;
 
 import android.app.Application;
 import android.content.Intent;
-import android.util.Log;
 
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.activities.CandyBarCrashReport;
