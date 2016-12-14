@@ -52,7 +52,7 @@ Take a look inside <a href="https://github.com/danimahardhika/candybar-library/w
 
 # Features
 * License Checker
-* Apply: 19 launchers
+* Apply: 20 launchers
 * Icon Picker: see all icons included with sections and search
 * Icon Request
  * Regular Request: free to request
