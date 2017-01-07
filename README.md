@@ -32,14 +32,14 @@ dependencies {
 }
 ```
 # Previews
-<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/618a19aec0794b007333cb36f25a93b57ad3dd40/screenshots/home.jpg" width="215">
-<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/618a19aec0794b007333cb36f25a93b57ad3dd40/screenshots/navigation_drawer.jpg" width="215">
-<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/618a19aec0794b007333cb36f25a93b57ad3dd40/screenshots/changelog.jpg" width="215">
-<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/618a19aec0794b007333cb36f25a93b57ad3dd40/screenshots/icon_request.jpg" width="215">
-<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/618a19aec0794b007333cb36f25a93b57ad3dd40/screenshots/cloud_wallpapers.jpg" width="215">
-<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/618a19aec0794b007333cb36f25a93b57ad3dd40/screenshots/wallpaper_preview.jpg" width="215">
-<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/618a19aec0794b007333cb36f25a93b57ad3dd40/screenshots/icons.jpg" width="215">
-<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/618a19aec0794b007333cb36f25a93b57ad3dd40/screenshots/settings.jpg" width="215">
+<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/home.jpg" width="215">
+<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/navigation_drawer.jpg" width="215">
+<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/changelog.jpg" width="215">
+<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/icon_request.jpg" width="215">
+<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/cloud_wallpapers.jpg" width="215">
+<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/wallpaper_preview.jpg" width="215">
+<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/icons.jpg" width="215">
+<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/settings.jpg" width="215">
 
 # How to Use
 Take a look inside <a href="https://github.com/danimahardhika/candybar-library/wiki" target="_blank">Wiki Site</a>.
