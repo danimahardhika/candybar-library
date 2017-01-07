@@ -1,4 +1,10 @@
-package com.dm.material.dashboard.candybar.utils.listeners;
+package com.dm.material.dashboard.candybar.receivers;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+
+import com.dm.material.dashboard.candybar.utils.listeners.WallpapersListener;
 
 /*
  * CandyBar - Material Dashboard
@@ -18,8 +24,15 @@ package com.dm.material.dashboard.candybar.utils.listeners;
  * limitations under the License.
  */
 
-public interface SearchListener {
+public class CandyBarBroadcastReceiver extends BroadcastReceiver {
 
-    void OnSearchExpanded(boolean expand);
+    public static final String PROCESS_RESPONSE = "candybar.broadcast.receiver";
 
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if (intent == null) return;
+
+        WallpapersListener listener = (WallpapersListener) context;
+        listener.OnWallpapersChecked(intent);
+    }
 }

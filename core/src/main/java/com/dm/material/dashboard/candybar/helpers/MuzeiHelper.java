@@ -46,7 +46,7 @@ public class MuzeiHelper {
     }
 
     public Wallpaper getRandomWallpaper(String wallpaperUrl) throws Exception {
-        if (mDatabase.isWallpapersEmpty()) {
+        if (mDatabase.getWallpapersCount() == 0) {
             URL url = new URL(wallpaperUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setConnectTimeout(15000);

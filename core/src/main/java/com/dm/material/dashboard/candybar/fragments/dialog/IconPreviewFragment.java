@@ -101,7 +101,7 @@ public class IconPreviewFragment extends DialogFragment {
 
         mName.setText(mIconName);
         ImageLoader.getInstance().displayImage("drawable://" + mIconId, mIcon,
-                ImageConfig.getIconOptions());
+                ImageConfig.getDefaultImageOptions(false));
     }
 
     @Override

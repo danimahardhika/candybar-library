@@ -119,7 +119,7 @@ public class IconsBaseFragment extends Fragment {
 
                                 try {
                                     SearchListener listener = (SearchListener) getActivity();
-                                    listener.OnSearchCollapse(true);
+                                    listener.OnSearchExpanded(true);
                                 } catch (Exception ignored) {}
 
                                 fm.beginTransaction()
@@ -202,6 +202,8 @@ public class IconsBaseFragment extends Fragment {
             @Override
             protected void onPostExecute(Boolean aBoolean) {
                 super.onPostExecute(aBoolean);
+                if (getActivity().isFinishing()) return;
+
                 mProgress.setVisibility(View.GONE);
                 if (aBoolean) {
                     setHasOptionsMenu(true);

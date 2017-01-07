@@ -27,7 +27,7 @@ public class WallpaperView extends ImageView {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
         int width = getMeasuredWidth();
-        setMeasuredDimension(width, (int) (width * 1.3 ));
+        setMeasuredDimension(width, (int) (width * 1.2));
     }
 
 }

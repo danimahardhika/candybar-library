@@ -120,8 +120,7 @@ public class IconsSearchFragment extends Fragment {
 
         ImageView closeIcon = (ImageView) mSearchView.findViewById(
                 android.support.v7.appcompat.R.id.search_close_btn);
-        if (closeIcon != null) closeIcon.setImageDrawable(DrawableHelper.getTintedDrawable(
-                getActivity(), R.drawable.ic_toolbar_close, color));
+        if (closeIcon != null) closeIcon.setImageResource(R.drawable.ic_toolbar_close);
 
         ImageView searchIcon = (ImageView) mSearchView.findViewById(
                 android.support.v7.appcompat.R.id.search_mag_icon);

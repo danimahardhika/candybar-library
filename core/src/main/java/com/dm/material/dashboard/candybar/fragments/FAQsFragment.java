@@ -27,7 +27,6 @@ import android.widget.TextView;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.FAQsAdapter;
 import com.dm.material.dashboard.candybar.helpers.ColorHelper;
-import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.items.FAQs;
 import com.dm.material.dashboard.candybar.utils.Tag;
@@ -55,6 +54,7 @@ public class FAQsFragment extends Fragment {
 
     private RecyclerView mFAQsList;
     private TextView mSearchResult;
+    private RecyclerFastScroller mFastScroll;
 
     private FAQsAdapter mAdapter;
     private AsyncTask<Void, Void, Boolean> mGetFAQs;
@@ -66,6 +66,7 @@ public class FAQsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_faqs, container, false);
         mFAQsList = (RecyclerView) view.findViewById(R.id.faqs_list);
         mSearchResult = (TextView) view.findViewById(R.id.search_result);
+        mFastScroll = (RecyclerFastScroller) view.findViewById(R.id.fastscroll);
         return view;
     }
 
@@ -78,10 +79,7 @@ public class FAQsFragment extends Fragment {
         mFAQsList.setItemAnimator(new DefaultItemAnimator());
         mFAQsList.setHasFixedSize(false);
         mFAQsList.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-        RecyclerFastScroller fastScroller = (RecyclerFastScroller)
-                getActivity().findViewById(R.id.fastscroll);
-        if (fastScroller != null) fastScroller.attachRecyclerView(mFAQsList);
+        mFastScroll.attachRecyclerView(mFAQsList);
 
         getFAQs();
     }
@@ -91,8 +89,7 @@ public class FAQsFragment extends Fragment {
         inflater.inflate(R.menu.menu_search, menu);
         MenuItem search = menu.findItem(R.id.menu_search);
         int color = ColorHelper.getAttributeColor(getActivity(), R.attr.toolbar_icon);
-        search.setIcon(DrawableHelper.getTintedDrawable(getActivity(),
-                R.drawable.ic_toolbar_search, color));
+
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(search);
         searchView.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
         searchView.setQueryHint(getActivity().getResources().getString(R.string.search_faqs));

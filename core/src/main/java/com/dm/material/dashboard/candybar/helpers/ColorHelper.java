@@ -77,6 +77,14 @@ public class ColorHelper {
                 ContextCompat.getColor(context, android.R.color.white);
     }
 
+    public static int setColorAlpha(@ColorInt int color, float alpha) {
+        int alpha2 = Math.round(Color.alpha(color) * alpha);
+        int red = Color.red(color);
+        int green = Color.green(color);
+        int blue = Color.blue(color);
+        return Color.argb(alpha2, red, green, blue);
+    }
+
     public static ColorStateList getColorStateList(int attr, @ColorInt int color, @ColorInt int color2) {
         int[][] states = new int[][] {
                 new int[] {attr},

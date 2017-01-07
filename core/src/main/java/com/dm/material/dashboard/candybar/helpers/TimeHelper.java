@@ -1,4 +1,8 @@
-package com.dm.material.dashboard.candybar.utils.listeners;
+package com.dm.material.dashboard.candybar.helpers;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /*
  * CandyBar - Material Dashboard
@@ -18,8 +22,16 @@ package com.dm.material.dashboard.candybar.utils.listeners;
  * limitations under the License.
  */
 
-public interface SearchListener {
+public class TimeHelper {
 
-    void OnSearchExpanded(boolean expand);
+    public static String getDateTime() {
+        SimpleDateFormat dateFormat = getDefaultDateTimeFormat();
+        Date date = new Date();
+        return dateFormat.format(date);
+    }
+
+    private static SimpleDateFormat getDefaultDateTimeFormat() {
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS", Locale.getDefault());
+    }
 
 }

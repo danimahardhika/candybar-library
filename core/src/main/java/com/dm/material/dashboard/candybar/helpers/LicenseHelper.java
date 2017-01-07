@@ -10,8 +10,9 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.dm.material.dashboard.candybar.R;
+import com.dm.material.dashboard.candybar.fragments.dialog.ChangelogFragment;
+import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.Tag;
-import com.dm.material.dashboard.candybar.utils.listeners.LicenseListener;
 import com.google.android.vending.licensing.AESObfuscator;
 import com.google.android.vending.licensing.LicenseChecker;
 import com.google.android.vending.licensing.LicenseCheckerCallback;
@@ -124,10 +125,8 @@ public class LicenseHelper implements LicenseCheckerCallback {
                 .content(message)
                 .positiveText(R.string.close)
                 .onPositive((dialog, which) -> {
-                    try {
-                        LicenseListener listener = (LicenseListener) mContext;
-                        listener.OnLicenseChecked(reason);
-                    } catch (Exception ignored) {}
+                    OnLicenseChecked(reason);
+                    dialog.dismiss();
                 })
                 .cancelable(false)
                 .canceledOnTouchOutside(false)
@@ -143,6 +142,18 @@ public class LicenseHelper implements LicenseCheckerCallback {
                 .canceledOnTouchOutside(false)
                 .onPositive((dialog, which) -> ((AppCompatActivity) mContext).finish())
                 .show();
+    }
+
+    private void OnLicenseChecked(int reason) {
+        Preferences.getPreferences(mContext).setFirstRun(false);
+        if (reason == Policy.LICENSED) {
+            Preferences.getPreferences(mContext).setLicensed(true);
+            if (Preferences.getPreferences(mContext).isNewVersion())
+                ChangelogFragment.showChangelog(((AppCompatActivity) mContext).getSupportFragmentManager());
+        } else if (reason == Policy.NOT_LICENSED) {
+            Preferences.getPreferences(mContext).setLicensed(false);
+            ((AppCompatActivity) mContext).finish();
+        }
     }
 
 }

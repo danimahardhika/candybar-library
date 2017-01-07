@@ -4,12 +4,17 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 
+import com.dm.material.dashboard.candybar.R;
+import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.utils.L;
+
+import java.io.File;
 
 /*
  * CandyBar - Material Dashboard
@@ -35,33 +40,23 @@ public class ImageConfig {
         L.writeLogs(false);
         L.writeDebugLogs(false);
         return new ImageLoaderConfiguration.Builder(context)
-                .diskCacheSize(50 * 1024 * 1024)
+                .diskCacheSize(100 * 1024 * 1024)
                 .threadPriority(Thread.NORM_PRIORITY - 2)
                 .threadPoolSize(3)
                 .tasksProcessingOrder(QueueProcessingType.FIFO)
+                .diskCache(new UnlimitedDiskCache(new File(
+                        context.getCacheDir().toString() + "/uil-images")))
                 .build();
     }
 
-    public static DisplayImageOptions getImageOptions(boolean cache, boolean allowed) {
+    public static DisplayImageOptions getDefaultImageOptions(boolean cacheOnDisk) {
         DisplayImageOptions.Builder options = new DisplayImageOptions.Builder();
         options.delayBeforeLoading(10)
                 .resetViewBeforeLoading(true)
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .imageScaleType(ImageScaleType.EXACTLY)
                 .displayer(new FadeInBitmapDisplayer(650))
-                .cacheOnDisk(cache && allowed)
-                .cacheInMemory(!cache || !allowed);
-        return options.build();
-    }
-
-    public static DisplayImageOptions getIconOptions() {
-        DisplayImageOptions.Builder options = new DisplayImageOptions.Builder();
-        options.delayBeforeLoading(10)
-                .resetViewBeforeLoading(true)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .imageScaleType(ImageScaleType.EXACTLY)
-                .displayer(new FadeInBitmapDisplayer(650))
-                .cacheOnDisk(false)
+                .cacheOnDisk(cacheOnDisk)
                 .cacheInMemory(false);
         return options.build();
     }
@@ -76,14 +71,18 @@ public class ImageConfig {
         return options.build();
     }
 
-    public static DisplayImageOptions getWallpaperPreviewOptions(boolean isCacheAllowed) {
+    public static DisplayImageOptions.Builder getRawImageOptions() {
         DisplayImageOptions.Builder options = new DisplayImageOptions.Builder();
         options.delayBeforeLoading(10)
                 .bitmapConfig(Bitmap.Config.RGB_565)
-                .imageScaleType(ImageScaleType.EXACTLY)
-                .cacheOnDisk(isCacheAllowed)
-                .cacheInMemory(false);
-        return options.build();
+                .imageScaleType(ImageScaleType.EXACTLY);
+        return options;
+    }
+
+    public static ImageSize getTargetSize(@NonNull Context context) {
+        int quality = context.getResources().getInteger(R.integer.wallpaper_grid_preview_quality);
+        if (quality <= 0) quality = 1;
+        return new ImageSize((50 * quality), (50 * quality));
     }
 
 }

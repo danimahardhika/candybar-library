@@ -16,6 +16,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.util.SparseArrayCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,7 +29,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -38,17 +41,16 @@ import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.RequestAdapter;
 import com.dm.material.dashboard.candybar.databases.Database;
 import com.dm.material.dashboard.candybar.fragments.dialog.IntentChooserFragment;
-import com.dm.material.dashboard.candybar.helpers.AppFilterHelper;
 import com.dm.material.dashboard.candybar.helpers.ColorHelper;
 import com.dm.material.dashboard.candybar.helpers.DeviceHelper;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.helpers.FileHelper;
 import com.dm.material.dashboard.candybar.helpers.LocaleHelper;
-import com.dm.material.dashboard.candybar.helpers.PermissionHelper;
 import com.dm.material.dashboard.candybar.helpers.RequestHelper;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
+import com.dm.material.dashboard.candybar.utils.Animator;
 import com.dm.material.dashboard.candybar.utils.Tag;
 import com.dm.material.dashboard.candybar.utils.listeners.InAppBillingListener;
 import com.dm.material.dashboard.candybar.utils.listeners.RequestListener;
@@ -84,10 +86,10 @@ import java.util.Locale;
 public class RequestFragment extends Fragment implements View.OnClickListener {
 
     private RecyclerView mRequestList;
-    private ProgressBar mProgress;
     private FloatingActionButton mFab;
+    private RecyclerFastScroller mFastScroll;
+    private ProgressBar mProgress;
 
-    private Database mDatabase;
     private RequestAdapter mAdapter;
     private AsyncTask<Void, Request, Boolean> mGetMissingApps;
 
@@ -97,8 +99,17 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_request, container, false);
         mRequestList = (RecyclerView) view.findViewById(R.id.request_list);
-        mProgress = (ProgressBar) view.findViewById(R.id.progress);
         mFab = (FloatingActionButton) view.findViewById(R.id.fab);
+        mFastScroll = (RecyclerFastScroller) view.findViewById(R.id.fastscroll);
+        mProgress = (ProgressBar) view.findViewById(R.id.progress);
+
+        LinearLayout premiumRequestBar = (LinearLayout) view.findViewById(R.id.premium_request_bar);
+        if (Preferences.getPreferences(getActivity()).isPremiumRequestEnabled()) {
+            Animator.startSlideDownAnimation(getActivity(), premiumRequestBar, view.findViewById(R.id.shadow));
+        } else {
+            premiumRequestBar.setVisibility(View.GONE);
+            Animator.startAlphaAnimation(view.findViewById(R.id.shadow), 200, View.VISIBLE);
+        }
         return view;
     }
 
@@ -109,7 +120,6 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         ViewCompat.setNestedScrollingEnabled(mRequestList, false);
         resetNavigationBarMargin();
 
-        mDatabase = new Database(getActivity());
         mProgress.getIndeterminateDrawable().setColorFilter(
                 ColorHelper.getAttributeColor(getActivity(), R.attr.colorAccent),
                 PorterDuff.Mode.SRC_IN);
@@ -126,21 +136,22 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         mRequestList.setLayoutManager(new GridLayoutManager(getActivity(),
                 getActivity().getResources().getConfiguration().orientation ==
                         Configuration.ORIENTATION_PORTRAIT ? 1 : 2));
+        mFastScroll.attachRecyclerView(mRequestList);
 
-        RecyclerFastScroller fastScroller = (RecyclerFastScroller)
-                getActivity().findViewById(R.id.fastscroll);
-        if (fastScroller != null) fastScroller.attachRecyclerView(mRequestList);
-
+        initPremiumRequest();
         getMissingApps();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        resetNavigationBarMargin();
+        if (mRequestList == null) return;
+        if (mRequestList.getLayoutManager() == null) return;
+
         GridLayoutManager manager = (GridLayoutManager) mRequestList.getLayoutManager();
         if (manager != null) manager.setSpanCount(newConfig.orientation ==
                 Configuration.ORIENTATION_PORTRAIT ? 1 : 2);
-        resetNavigationBarMargin();
     }
 
     @Override
@@ -164,6 +175,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
             rebuildPremiumRequest();
             return true;
         } else if (id == R.id.menu_select_all) {
+            if (mAdapter == null) return false;
             mAdapter.selectAll();
             return true;
         }
@@ -174,84 +186,128 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.fab) {
+            if (mAdapter == null) return;
+
             int selected = mAdapter.getSelectedItemsSize();
             if (selected > 0) {
                 if (mAdapter.isContainsRequested()) {
                     RequestHelper.showAlreadyRequestedDialog(getActivity());
                     return;
-                } else {
-                    if (Preferences.getPreferences(getActivity()).isPremiumRequest()) {
-                        int count = Preferences.getPreferences(getActivity()).getPremiumRequestCount();
-                        if (selected > count) {
-                            RequestHelper.showPremiumRequestLimitDialog(getActivity(), selected);
-                            return;
-                        }
+                }
 
-                        if (!RequestHelper.isReadyToSendPremiumRequest(getActivity())) return;
+                boolean requestLimit = getActivity().getResources().getBoolean(
+                        R.bool.enable_icon_request_limit);
+                boolean iconRequest = getActivity().getResources().getBoolean(
+                        R.bool.enable_icon_request);
+                boolean premiumRequest = getActivity().getResources().getBoolean(
+                        R.bool.enable_premium_request);
 
-                        try {
-                            InAppBillingListener listener = (InAppBillingListener) getActivity();
-                            listener.OnInAppBillingRequest();
-                        } catch (Exception ignored) {}
+                if (Preferences.getPreferences(getActivity()).isPremiumRequest()) {
+                    int count = Preferences.getPreferences(getActivity()).getPremiumRequestCount();
+                    if (selected > count) {
+                        RequestHelper.showPremiumRequestLimitDialog(getActivity(), selected);
                         return;
                     }
 
-                    boolean requestLimit = getActivity().getResources().getBoolean(
-                            R.bool.enable_icon_request_limit);
-                    if (requestLimit) {
-                        int limit = getActivity().getResources().getInteger(R.integer.icon_request_limit);
-                        int used = Preferences.getPreferences(getActivity()).getRegularRequestUsed();
-                        if (selected > (limit - used)) {
-                            RequestHelper.showIconRequestLimitDialog(getActivity());
-                            return;
-                        }
+                    if (!RequestHelper.isReadyToSendPremiumRequest(getActivity())) return;
 
-                        Preferences.getPreferences(getActivity()).setRegularRequestUsed(selected);
-                    }
-                }
-
-                if (PermissionHelper.isPermissionStorageGranted(getActivity())) {
-                    sendRequest(null);
+                    try {
+                        InAppBillingListener listener = (InAppBillingListener) getActivity();
+                        listener.OnInAppBillingRequest();
+                    } catch (Exception ignored) {}
                     return;
                 }
 
-                PermissionHelper.showRequestPermissionStorageDenied(getActivity());
+                if (!iconRequest && premiumRequest) {
+                    RequestHelper.showPremiumRequestRequired(getActivity());
+                    return;
+                }
+
+                if (requestLimit) {
+                    int limit = getActivity().getResources().getInteger(R.integer.icon_request_limit);
+                    int used = Preferences.getPreferences(getActivity()).getRegularRequestUsed();
+                    if (selected > (limit - used)) {
+                        RequestHelper.showIconRequestLimitDialog(getActivity());
+                        return;
+                    }
+
+                    Preferences.getPreferences(getActivity()).setRegularRequestUsed(selected);
+                }
+
+                sendRequest(null);
             } else {
                 Toast.makeText(getActivity(), R.string.request_not_selected,
                         Toast.LENGTH_LONG).show();
             }
+        } else if (id == R.id.premium_request_buy) {
+            RequestListener listener = (RequestListener) getActivity();
+            listener.OnBuyPremiumRequest();
         }
+    }
+
+    private void initPremiumRequest() {
+        boolean premiumRequest = Preferences.getPreferences(getActivity()).isPremiumRequestEnabled();
+        if (premiumRequest) {
+            int accent = ColorHelper.getAttributeColor(getActivity(), R.attr.colorAccent);
+            AppCompatButton buy = (AppCompatButton) getActivity().findViewById(R.id.premium_request_buy);
+            buy.setTextColor(ColorHelper.getTitleTextColor(getActivity(), accent));
+            buy.setOnClickListener(this);
+
+            int toolbarIcon = ColorHelper.getAttributeColor(getActivity(), R.attr.toolbar_icon);
+            TextView desc = (TextView) getActivity().findViewById(R.id.premium_request_desc);
+            desc.setTextColor(ColorHelper.setColorAlpha(toolbarIcon, 0.6f));
+
+            initPremiumRequestCount();
+        }
+    }
+
+    private void initPremiumRequestCount() {
+        TextView count = (TextView) getActivity().findViewById(R.id.premium_request_count);
+        if (Preferences.getPreferences(getActivity()).isPremiumRequest()) {
+            String countText = getActivity().getResources().getString(R.string.premium_request_count)
+                    +" "+ Preferences.getPreferences(getActivity()).getPremiumRequestCount();
+            count.setText(countText);
+            count.setVisibility(View.VISIBLE);
+            AppCompatButton buy = (AppCompatButton) getActivity().findViewById(R.id.premium_request_buy);
+            buy.setVisibility(View.GONE);
+            return;
+        }
+
+        count.setVisibility(View.GONE);
+        AppCompatButton buy = (AppCompatButton) getActivity().findViewById(R.id.premium_request_buy);
+        buy.setVisibility(View.VISIBLE);
     }
 
     public void OnInAppBillingSent(BillingProcessor billingProcessor) {
         sendRequest(billingProcessor);
     }
 
-    public void refreshAdapter() {
-        if (mAdapter != null)
-            mAdapter.resetAdapter();
+    public void premiumRequestBought() {
+        initPremiumRequestCount();
     }
 
     private void resetNavigationBarMargin() {
+        int padding = getActivity().getResources().getDimensionPixelSize(R.dimen.content_padding);
+        int size = getActivity().getResources().getDimensionPixelSize(R.dimen.fab_size);
+        int margin = getActivity().getResources().getDimensionPixelSize(R.dimen.fab_margin);
+        int marginGlobal = getActivity().getResources().getDimensionPixelSize(R.dimen.fab_margin_global);
+        int navBar = 0;
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int padding = getActivity().getResources().getDimensionPixelSize(R.dimen.content_padding);
-            int size = getActivity().getResources().getDimensionPixelSize(R.dimen.fab_size);
-            int margin = getActivity().getResources().getDimensionPixelSize(R.dimen.fab_margin);
-            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                    FrameLayout.LayoutParams.WRAP_CONTENT,
-                    FrameLayout.LayoutParams.WRAP_CONTENT);
-            if (getActivity().getResources().getConfiguration().orientation
-                    == Configuration.ORIENTATION_PORTRAIT) {
-                int navbar = ViewHelper.getNavigationBarHeight(getActivity());
-                mRequestList.setPadding(padding, padding, padding, (padding + navbar + size + margin));
-                params.setMargins(0, 0, margin, (margin + navbar));
-            } else {
-                mRequestList.setPadding(padding, padding, padding, (padding + size + margin));
-                params.setMargins(0, 0, margin, margin);
-            }
-            params.gravity = GravityCompat.END | Gravity.BOTTOM;
-            mFab.setLayoutParams(params);
+            navBar = ViewHelper.getNavigationBarHeight(getActivity());
         }
+
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(size, size);
+        if (getActivity().getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_PORTRAIT) {
+            mRequestList.setPadding(padding, padding, padding, (padding + size + marginGlobal + navBar));
+            params.setMargins(0, 0, margin, (margin + navBar));
+        } else {
+            mRequestList.setPadding(padding, padding, padding, (padding + size + marginGlobal));
+            params.setMargins(0, 0, margin, margin);
+        }
+        params.gravity = GravityCompat.END | Gravity.BOTTOM;
+        mFab.setLayoutParams(params);
     }
 
     private void getMissingApps() {
@@ -260,9 +316,11 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                mProgress.setVisibility(View.VISIBLE);
                 mAdapter = new RequestAdapter(getActivity(), new SparseArrayCompat<>());
                 mRequestList.setAdapter(mAdapter);
+
+                if (!Preferences.getPreferences(getActivity()).isSameAppFilterVersion())
+                    mProgress.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -270,8 +328,9 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                 while (!isCancelled()) {
                     try {
                         Thread.sleep(1);
+                        Database database = new Database(getActivity());
                         PackageManager packageManager = getActivity().getPackageManager();
-                        StringBuilder activities = AppFilterHelper.loadAppFilter(getActivity());
+                        StringBuilder activities = RequestHelper.loadAppFilter(getActivity());
 
                         Intent intent = new Intent(Intent.ACTION_MAIN);
                         intent.addCategory(Intent.CATEGORY_LAUNCHER);
@@ -294,7 +353,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                             if (!activities.toString().contains(activity)) {
                                 Drawable drawable = DrawableHelper.getAppIcon(getActivity(), app);
                                 byte[] bytes = DrawableHelper.getBitmapByte(drawable);
-                                boolean requested = mDatabase.isRequested(activity);
+                                boolean requested = database.isRequested(activity);
                                 publishProgress(new Request(
                                         bytes,
                                         name,
@@ -324,12 +383,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                 mProgress.setVisibility(View.GONE);
                 if (aBoolean) {
                     setHasOptionsMenu(true);
-                    mFab.show();
-                    mFab.setVisibility(View.VISIBLE);
-
-                    if (!PermissionHelper.isPermissionStorageGranted(getActivity()))
-                        PermissionHelper.requestStoragePermission(getActivity(),
-                                PermissionHelper.PERMISSION_STORAGE);
+                    Animator.showFab(mFab);
                 } else {
                     mRequestList.setAdapter(null);
                     Toast.makeText(getActivity(), getActivity().getResources().getString(
@@ -371,7 +425,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                     try {
                         Thread.sleep(1);
                         Database database = new Database(getActivity());
-                        File directory = FileHelper.getCacheDirectory(getActivity());
+                        File directory = getActivity().getCacheDir();
                         sb.append(DeviceHelper.getDeviceInfo(getActivity()));
 
                         if (Preferences.getPreferences(getActivity()).isPremiumRequest()) {
@@ -418,7 +472,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 
                             Bitmap bitmap = DrawableHelper.getHighQualityIcon(
                                     getActivity(), item.getPackageName());
-                            if (bitmap == null) bitmap = DrawableHelper.getBitmap(item.getIcon());
+                            if (bitmap == null) bitmap = DrawableHelper.getBitmap(item.getIcon(), false);
 
                             String icon = FileHelper.saveIcon(directory, bitmap, item.getName());
                             if (icon != null) files.append(files.size(), icon);

@@ -5,7 +5,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -18,11 +17,14 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.fragments.dialog.IntentChooserFragment;
+import com.dm.material.dashboard.candybar.helpers.ColorHelper;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.helpers.FileHelper;
+import com.dm.material.dashboard.candybar.items.IntentChooser;
 import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.Tag;
@@ -51,10 +53,10 @@ import java.util.List;
 public class IntentAdapter extends BaseAdapter {
 
     private final Context mContext;
-    private final List<ResolveInfo> mApps;
+    private final List<IntentChooser> mApps;
     private final Request mRequest;
 
-    public IntentAdapter(@NonNull Context context, @NonNull List<ResolveInfo> apps,
+    public IntentAdapter(@NonNull Context context, @NonNull List<IntentChooser> apps,
                          @NonNull Request request) {
         mContext = context;
         mApps = apps;
@@ -67,7 +69,7 @@ public class IntentAdapter extends BaseAdapter {
     }
 
     @Override
-    public ResolveInfo getItem(int position) {
+    public IntentChooser getItem(int position) {
         return mApps.get(position);
     }
 
@@ -88,26 +90,44 @@ public class IntentAdapter extends BaseAdapter {
             holder.divider.setVisibility(View.VISIBLE);
         }
 
-        holder.icon.setImageDrawable(DrawableHelper.getAppIcon(mContext, mApps.get(position)));
-        holder.name.setText(mApps.get(position).loadLabel(mContext.getPackageManager()).toString());
+        holder.icon.setImageDrawable(DrawableHelper.getAppIcon(mContext, mApps.get(position).getApp()));
+        holder.name.setText(mApps.get(position).getApp().loadLabel(mContext.getPackageManager()).toString());
 
         if (position == mApps.size()-1) {
             holder.divider.setVisibility(View.GONE);
         }
 
-        holder.container.setOnClickListener(v -> {
-            ActivityInfo app = mApps.get(position).activityInfo;
-            ComponentName name = new ComponentName(app.applicationInfo.packageName, app.name);
-            sendRequest(name);
+        if (mApps.get(position).getType() == IntentChooser.TYPE_SUPPORTED) {
+            holder.type.setTextColor(ColorHelper.getAttributeColor(mContext, android.R.attr.textColorSecondary));
+            holder.type.setText(mContext.getResources().getString(R.string.intent_email_supported));
+        } else if (mApps.get(position).getType() == IntentChooser.TYPE_RECOMMENDED) {
+            holder.type.setTextColor(ColorHelper.getAttributeColor(mContext, R.attr.colorAccent));
+            holder.type.setText(mContext.getResources().getString(R.string.intent_email_recommended));
+        } else {
+            holder.type.setTextColor(ColorHelper.getAttributeColor(mContext, R.attr.error_text));
+            holder.type.setText(mContext.getResources().getString(R.string.intent_email_not_supported));
+        }
 
-            FragmentManager fm = ((AppCompatActivity) mContext).getSupportFragmentManager();
-            if (fm != null) {
-                DialogFragment dialog = (DialogFragment) fm.findFragmentByTag(
-                        IntentChooserFragment.TAG);
-                if (dialog!= null) {
-                    dialog.dismiss();
+        holder.container.setOnClickListener(v -> {
+            ActivityInfo app = mApps.get(position).getApp().activityInfo;
+            if (mApps.get(position).getType() == IntentChooser.TYPE_RECOMMENDED ||
+                    mApps.get(position).getType() == IntentChooser.TYPE_SUPPORTED) {
+                ComponentName name = new ComponentName(app.applicationInfo.packageName, app.name);
+                sendRequest(name);
+
+                FragmentManager fm = ((AppCompatActivity) mContext).getSupportFragmentManager();
+                if (fm != null) {
+                    DialogFragment dialog = (DialogFragment) fm.findFragmentByTag(
+                            IntentChooserFragment.TAG);
+                    if (dialog!= null) {
+                        dialog.dismiss();
+                    }
                 }
+                return;
             }
+
+            Toast.makeText(mContext, R.string.intent_email_not_supported_message,
+                    Toast.LENGTH_LONG).show();
         });
 
         return view;
@@ -116,12 +136,14 @@ public class IntentAdapter extends BaseAdapter {
     private class ViewHolder {
 
         final TextView name;
+        final TextView type;
         final ImageView icon;
         final LinearLayout container;
         final View divider;
 
         ViewHolder(View view) {
             name = (TextView) view.findViewById(R.id.name);
+            type = (TextView) view.findViewById(R.id.type);
             icon = (ImageView) view.findViewById(R.id.icon);
             container = (LinearLayout) view.findViewById(R.id.container);
             divider = view.findViewById(R.id.divider);
@@ -157,6 +179,7 @@ public class IntentAdapter extends BaseAdapter {
             Uri uri = FileHelper.getUriFromFile(mContext, mContext.getPackageName(), zip);
             if (uri == null) uri = Uri.fromFile(zip);
             intent.putExtra(Intent.EXTRA_STREAM, uri);
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         }
 
         intent.putExtra(Intent.EXTRA_EMAIL,

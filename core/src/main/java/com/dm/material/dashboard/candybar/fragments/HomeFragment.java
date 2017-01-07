@@ -15,6 +15,9 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.URLUtil;
@@ -30,6 +33,8 @@ import com.dm.material.dashboard.candybar.helpers.LauncherHelper;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.items.Icon;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
+
+import org.sufficientlysecure.htmltextview.HtmlTextView;
 
 /*
  * CandyBar - Material Dashboard
@@ -52,13 +57,6 @@ import com.dm.material.dashboard.candybar.preferences.Preferences;
 public class HomeFragment extends Fragment {
 
     private RecyclerView mFeatureList;
-    private CardView mCardDesc;
-    private CardView mCardApps;
-    private CardView mCardQuickApply;
-    private LinearLayout mMoreApps;
-    private LinearLayout mQuickApply;
-    private ImageView mAppsIcon;
-    private ImageView mQuickApplyIcon;
     private NestedScrollView mScrollView;
 
     @Nullable
@@ -67,13 +65,6 @@ public class HomeFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         mFeatureList = (RecyclerView) view.findViewById(R.id.home_feature_list);
-        mCardDesc = (CardView) view.findViewById(R.id.card_desc);
-        mCardApps = (CardView) view.findViewById(R.id.card_more_apps);
-        mCardQuickApply = (CardView) view.findViewById(R.id.card_quick_apply);
-        mMoreApps = (LinearLayout) view.findViewById(R.id.more_apps);
-        mQuickApply = (LinearLayout) view.findViewById(R.id.quick_apply);
-        mAppsIcon = (ImageView) view.findViewById(R.id.more_apps_icon);
-        mQuickApplyIcon = (ImageView) view.findViewById(R.id.quick_apply_icon);
         mScrollView = (NestedScrollView) view.findViewById(R.id.scrollview);
         return view;
     }
@@ -81,6 +72,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(false);
         ViewHelper.resetNavigationBarBottomMargin(getActivity(), mScrollView,
                 getActivity().getResources().getConfiguration().orientation);
 
@@ -97,40 +89,68 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_home, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.menu_rate) {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(
+                    "https://play.google.com/store/apps/details?id=" + getActivity().getPackageName()));
+            intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         initQuickApply();
     }
 
-    public void showToolbarShadow(boolean isTimeToShow) {
-        View shadow = getActivity().findViewById(R.id.shadow);
-        if (shadow != null) shadow.setVisibility(isTimeToShow ? View.VISIBLE : View.GONE);
+    public void showOptionsMenu(boolean show) {
+        setHasOptionsMenu(show);
     }
 
     private void initDescription() {
         String desc = getActivity().getResources().getString(R.string.home_description);
-        if (desc.length() == 0) mCardDesc.setVisibility(View.GONE);
-        else mCardDesc.setVisibility(View.VISIBLE);
+        CardView cardDesc = (CardView) getActivity().findViewById(R.id.card_desc);
+        if (desc.length() == 0) {
+            cardDesc.setVisibility(View.GONE);
+            return;
+        }
+
+        cardDesc.setVisibility(View.VISIBLE);
+        HtmlTextView description = (HtmlTextView) getActivity().findViewById(R.id.home_description);
+        description.setHtml(desc);
     }
 
     private void initQuickApply() {
-        boolean quickApply = getActivity().getResources().getBoolean(R.bool.enable_quick_apply);
-        if (quickApply) {
+        if (getActivity().getResources().getBoolean(R.bool.enable_quick_apply)) {
             String[] packageInfo = LauncherHelper.getDefaultLauncher(getActivity());
             if (packageInfo == null) return;
             int id = LauncherHelper.getLauncherId(packageInfo[0]);
             if (id == LauncherHelper.UNKNOWN) return;
 
-            mCardQuickApply.setVisibility(View.VISIBLE);
+            CardView cardQuickApply = (CardView) getActivity().findViewById(R.id.card_quick_apply);
+            cardQuickApply.setVisibility(View.VISIBLE);
+
             int color = ColorHelper.getAttributeColor(getActivity(),
                     android.R.attr.textColorSecondary);
             Drawable drawable = DrawableHelper.getTintedDrawable(
                     getActivity(), R.drawable.ic_home_quick_apply, color);
-            mQuickApplyIcon.setImageDrawable(drawable);
+            ImageView quickApplyIcon = (ImageView) getActivity().findViewById(R.id.quick_apply_icon);
+            quickApplyIcon.setImageDrawable(drawable);
 
-            mQuickApply.setBackgroundResource(Preferences.getPreferences(getActivity()).isDarkTheme() ?
+            LinearLayout quickApply = (LinearLayout) getActivity().findViewById(R.id.quick_apply);
+            quickApply.setBackgroundResource(Preferences.getPreferences(getActivity()).isDarkTheme() ?
                     R.drawable.card_item_list_dark : R.drawable.card_item_list);
-            mQuickApply.setOnClickListener(view ->
+            quickApply.setOnClickListener(view ->
                     LauncherHelper.apply(getActivity(), packageInfo[0], packageInfo[1]));
 
             String text = getActivity().getResources().getString(R.string.quick_apply_desc) +" "+
@@ -174,16 +194,21 @@ public class HomeFragment extends Fragment {
 
     private void initMoreApps() {
         String link = getActivity().getResources().getString(R.string.google_play_dev);
-        if (link.length() == 0) mCardApps.setVisibility(View.GONE);
-        else {
+        if (link.length() > 0) {
+            CardView cardApps = (CardView) getActivity().findViewById(R.id.card_more_apps);
+            cardApps.setVisibility(View.VISIBLE);
+
             int color = ColorHelper.getAttributeColor(getActivity(),
                     android.R.attr.textColorSecondary);
             Drawable drawable = DrawableHelper.getTintedDrawable(getActivity(),
                     R.drawable.ic_google_play_more_apps, color);
-            mAppsIcon.setImageDrawable(drawable);
-            mMoreApps.setBackgroundResource(Preferences.getPreferences(getActivity()).isDarkTheme() ?
+            ImageView appsIcon = (ImageView) getActivity().findViewById(R.id.more_apps_icon);
+            appsIcon.setImageDrawable(drawable);
+
+            LinearLayout moreApps = (LinearLayout) getActivity().findViewById(R.id.more_apps);
+            moreApps.setBackgroundResource(Preferences.getPreferences(getActivity()).isDarkTheme() ?
                     R.drawable.card_item_list_dark : R.drawable.card_item_list);
-            mMoreApps.setOnClickListener(view -> {
+            moreApps.setOnClickListener(view -> {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
                 intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
                 startActivity(intent);

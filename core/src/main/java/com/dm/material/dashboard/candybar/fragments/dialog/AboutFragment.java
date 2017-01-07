@@ -168,8 +168,7 @@ public class AboutFragment extends DialogFragment implements View.OnClickListene
         }
 
         ImageLoader.getInstance().displayImage(url, mImageView,
-                ImageConfig.getImageOptions(true, Preferences.getPreferences(getActivity())
-                        .isCacheAllowed()));
+                ImageConfig.getDefaultImageOptions(true));
     }
 
     private void initProfileImage() {
@@ -179,8 +178,7 @@ public class AboutFragment extends DialogFragment implements View.OnClickListene
         }
 
         ImageLoader.getInstance().displayImage(url, mProfile,
-                ImageConfig.getImageOptions(true, Preferences.getPreferences(getActivity())
-                        .isCacheAllowed()));
+                ImageConfig.getDefaultImageOptions(true));
     }
 
     private void initAbout() {

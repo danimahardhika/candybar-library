@@ -22,9 +22,11 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.IntentAdapter;
+import com.dm.material.dashboard.candybar.items.IntentChooser;
 import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.utils.Tag;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -139,7 +141,13 @@ public class IntentChooserFragment extends DialogFragment {
     private void loadIntentChooser() {
         mLoadIntentChooser = new AsyncTask<Void, Void, Boolean>() {
 
-            List<ResolveInfo> apps;
+            List<IntentChooser> apps;
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                apps = new ArrayList<>();
+            }
 
             @Override
             protected Boolean doInBackground(Void... voids) {
@@ -149,12 +157,28 @@ public class IntentChooserFragment extends DialogFragment {
                         Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto",
                                 getActivity().getResources().getString(R.string.dev_email),
                                 null));
-                        apps = getActivity().getPackageManager()
+                        List<ResolveInfo> resolveInfos = getActivity().getPackageManager()
                                 .queryIntentActivities(intent, 0);
                         try {
-                            Collections.sort(apps, new ResolveInfo.DisplayNameComparator(
+                            Collections.sort(resolveInfos, new ResolveInfo.DisplayNameComparator(
                                     getActivity().getPackageManager()));
                         } catch (Exception ignored){}
+
+                        for (ResolveInfo resolveInfo : resolveInfos) {
+                            switch (resolveInfo.activityInfo.packageName) {
+                                case "com.google.android.gm":
+                                    apps.add(new IntentChooser(resolveInfo, IntentChooser.TYPE_RECOMMENDED));
+                                    break;
+                                case "com.google.android.apps.inbox":
+                                    apps.add(new IntentChooser(resolveInfo, IntentChooser.TYPE_NOT_SUPPORTED));
+                                    break;
+                                case "com.android.fallback":
+                                    break;
+                                default:
+                                    apps.add(new IntentChooser(resolveInfo, IntentChooser.TYPE_SUPPORTED));
+                                    break;
+                            }
+                        }
                         return true;
                     } catch (Exception e) {
                         Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
@@ -172,9 +196,14 @@ public class IntentChooserFragment extends DialogFragment {
                             apps, mRequest);
                     mIntentList.setAdapter(adapter);
 
-                    if (adapter.getCount() == 0) {
+                    if (apps.size() == 0) {
                         mNoApp.setVisibility(View.VISIBLE);
                         setCancelable(true);
+                    }
+
+                    if (apps.size() == 1) {
+                        if (apps.get(0).getApp().activityInfo.packageName.equals("com.google.android.apps.inbox"))
+                            setCancelable(true);
                     }
                 } else {
                     dismiss();

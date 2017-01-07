@@ -1,7 +1,5 @@
 package com.dm.material.dashboard.candybar.fragments;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -9,23 +7,27 @@ import android.content.res.TypedArray;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.SparseArrayCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.LauncherAdapter;
+import com.dm.material.dashboard.candybar.helpers.ColorHelper;
+import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.items.Icon;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
+import com.dm.material.dashboard.candybar.utils.Animator;
 import com.dm.material.dashboard.candybar.utils.SparseArrayUtils;
 import com.dm.material.dashboard.candybar.utils.Tag;
 import com.dm.material.dashboard.candybar.utils.views.AutoFitRecyclerView;
@@ -50,8 +52,6 @@ import com.dm.material.dashboard.candybar.utils.views.AutoFitRecyclerView;
 
 public class ApplyFragment extends Fragment implements View.OnClickListener {
 
-    private CardView mApplyTips;
-    private TextView mGotIt;
     private TextView mNoLauncher;
     private AutoFitRecyclerView mInstalledGrid;
     private AutoFitRecyclerView mSupportedGrid;
@@ -65,11 +65,15 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_apply, container, false);
         mScrollView = (NestedScrollView) view.findViewById(R.id.scrollview);
-        mApplyTips = (CardView) view.findViewById(R.id.apply_tips);
-        mGotIt = (TextView) view.findViewById(R.id.gotit);
         mNoLauncher = (TextView) view.findViewById(R.id.no_launcher);
         mInstalledGrid = (AutoFitRecyclerView) view.findViewById(R.id.installed_grid);
         mSupportedGrid = (AutoFitRecyclerView) view.findViewById(R.id.supported_grid);
+
+        if (Preferences.getPreferences(getActivity()).isShowApplyTips()) {
+            LinearLayout applyTips = (LinearLayout) view.findViewById(
+                    R.id.apply_tips_bar);
+            applyTips.setVisibility(View.VISIBLE);
+        }
         return view;
     }
 
@@ -79,9 +83,6 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
         ViewCompat.setNestedScrollingEnabled(mScrollView, false);
         ViewHelper.resetNavigationBarBottomMargin(getActivity(), mScrollView,
                 getActivity().getResources().getConfiguration().orientation);
-
-        mGotIt.setBackgroundResource(Preferences.getPreferences(getActivity()).isDarkTheme() ?
-                R.drawable.button_accent_dark : R.drawable.button_accent);
 
         mInstalledGrid.setHasFixedSize(false);
         mInstalledGrid.setNestedScrollingEnabled(false);
@@ -112,25 +113,36 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         int id = view.getId();
-        if (id == R.id.gotit) {
+        if (id == R.id.apply_tips_fab) {
+            Animator.hideFab((FloatingActionButton) getActivity().findViewById(R.id.apply_tips_fab));
+
+            LinearLayout applyTips = (LinearLayout) getActivity()
+                    .findViewById(R.id.apply_tips_bar);
+            applyTips.setVisibility(View.GONE);
             Preferences.getPreferences(getActivity()).showApplyTips(false);
-            mApplyTips.animate().alpha(0.0f).setDuration(400).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    super.onAnimationEnd(animation);
-                    mApplyTips.setVisibility(View.GONE);
-                }
-            });
         }
     }
 
     private void initApplyTips() {
-        if (!Preferences.getPreferences(getActivity()).isShowApplyTips()) {
-            mApplyTips.setVisibility(View.GONE);
-            return;
-        }
-        mGotIt.setOnClickListener(this);
+        if (!Preferences.getPreferences(getActivity()).isShowApplyTips()) return;
+
+        int toolbarIcon = ColorHelper.getAttributeColor(getActivity(), R.attr.toolbar_icon);
+        TextView desc = (TextView) getActivity().findViewById(R.id.apply_tips_desc);
+        desc.setTextColor(ColorHelper.setColorAlpha(toolbarIcon, 0.6f));
     }
+    private void initApplyTipsFab() {
+        if (!Preferences.getPreferences(getActivity()).isShowApplyTips()) return;
+
+        int accent = ColorHelper.getAttributeColor(getActivity(), R.attr.colorAccent);
+        int textColor = ColorHelper.getTitleTextColor(getActivity(), accent);
+        FloatingActionButton fab = (FloatingActionButton) getActivity()
+                .findViewById(R.id.apply_tips_fab);
+        fab.setImageDrawable(DrawableHelper.getTintedDrawable(getActivity(),
+                R.drawable.ic_fab_check, textColor));
+        fab.setOnClickListener(this);
+        Animator.showFab(fab);
+    }
+
 
     private void getLaunchers() {
         mGetLaunchers = new AsyncTask<Void, Void, Boolean>() {
@@ -205,6 +217,7 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
             @Override
             protected void onPostExecute(Boolean aBoolean) {
                 super.onPostExecute(aBoolean);
+                initApplyTipsFab();
                 if (aBoolean) {
                     if (installed.size() > 0)
                         mInstalledGrid.setAdapter(new LauncherAdapter(getActivity(), installed));

@@ -5,13 +5,9 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
 import android.support.annotation.NonNull;
 
 import com.dm.material.dashboard.candybar.R;
-
-import java.io.File;
-import java.util.Calendar;
 
 /*
  * CandyBar - Material Dashboard
@@ -38,7 +34,6 @@ public class PreferencesHelper {
     private static final String PREFERENCES_NAME = "candybar_preferences";
 
     private static final String KEY_FIRST_RUN = "first_run";
-    private static final String KEY_CACHE_ALLOWED = "cache_allowed";
     private static final String KEY_DARK_THEME = "dark_theme";
     private static final String KEY_APP_VERSION = "app_version";
     private static final String KEY_APPLY_TIPS = "apply_tips";
@@ -48,7 +43,6 @@ public class PreferencesHelper {
     private static final String KEY_WIFI_ONLY = "wifi_only";
     private static final String KEY_DOWNLOADED_ONLY = "downloaded_only";
     private static final String KEY_WALLS_DIRECTORY = "wallpaper_directory";
-    private static final String KEY_WALLS_LAST_UPDATE = "wallpaper_lats_update";
     private static final String KEY_PREMIUM_REQUEST = "premium_request";
     private static final String KEY_PREMIUM_REQUEST_PRODUCT = "premium_request_product";
     private static final String KEY_PREMIUM_REQUEST_COUNT = "premium_request_count";
@@ -58,6 +52,9 @@ public class PreferencesHelper {
     private static final String KEY_SCROLL_WALLPAPER = "scroll_wallpaper";
     private static final String KEY_LATEST_CRASHLOG = "last_crashlog";
     private static final String KEY_PREMIUM_REQUEST_ENABLED = "premium_request_enabled";
+    private static final String KEY_AVAILABLE_WALLPAPERS_COUNT = "available_wallpapers_count";
+    private static final String KEY_APPFILTER = "appfilter";
+    private static final String KEY_APPFILTER_VERSION = "appfilter_version";
 
     public PreferencesHelper(@NonNull Context context) {
         mContext = context;
@@ -71,17 +68,8 @@ public class PreferencesHelper {
         return getSharedPreferences().getBoolean(KEY_FIRST_RUN, true);
     }
 
-    public void setFirstRun(boolean bool) {
+    void setFirstRun(boolean bool) {
         getSharedPreferences().edit().putBoolean(KEY_FIRST_RUN, bool).apply();
-    }
-
-    public boolean isCacheAllowed() {
-        boolean cache = Build.VERSION.SDK_INT < Build.VERSION_CODES.M;
-        return getSharedPreferences().getBoolean(KEY_CACHE_ALLOWED, cache);
-    }
-
-    public void setCacheAllowed(boolean bool) {
-        getSharedPreferences().edit().putBoolean(KEY_CACHE_ALLOWED, bool).apply();
     }
 
     public boolean isDarkTheme() {
@@ -141,7 +129,7 @@ public class PreferencesHelper {
         return getSharedPreferences().getBoolean(KEY_DOWNLOADED_ONLY, false);
     }
 
-    public void setWallsDirectory (String directory) {
+    void setWallsDirectory(String directory) {
         getSharedPreferences().edit().putString(KEY_WALLS_DIRECTORY, directory).apply();
     }
 
@@ -149,16 +137,12 @@ public class PreferencesHelper {
         return getSharedPreferences().getString(KEY_WALLS_DIRECTORY, "");
     }
 
-    public boolean isWallpaperSaved (String filename) {
-        return new File(getWallsDirectory() + "/" + filename).exists();
-    }
-
     public boolean isPremiumRequestEnabled() {
         return getSharedPreferences().getBoolean(KEY_PREMIUM_REQUEST_ENABLED,
                 mContext.getResources().getBoolean(R.bool.enable_premium_request));
     }
 
-    public void setPremiumRequestEnabled(boolean bool) {
+    void setPremiumRequestEnabled(boolean bool) {
         getSharedPreferences().edit().putBoolean(KEY_PREMIUM_REQUEST_ENABLED, bool).apply();
     }
 
@@ -194,7 +178,7 @@ public class PreferencesHelper {
         getSharedPreferences().edit().putInt(KEY_REGULAR_REQUEST_USED, used).apply();
     }
 
-    public int getInAppBillingType() {
+    int getInAppBillingType() {
         return getSharedPreferences().getInt(KEY_INAPP_BILLING_TYPE, -1);
     }
 
@@ -218,7 +202,7 @@ public class PreferencesHelper {
         getSharedPreferences().edit().putBoolean(KEY_SCROLL_WALLPAPER, bool).apply();
     }
 
-    public String getLatestCrashLog() {
+    String getLatestCrashLog() {
         return getSharedPreferences().getString(KEY_LATEST_CRASHLOG, "");
     }
 
@@ -226,7 +210,35 @@ public class PreferencesHelper {
         getSharedPreferences().edit().putString(KEY_LATEST_CRASHLOG, string).apply();
     }
 
-    private int getVersion() {
+    public int getAvailableWallpapersCount() {
+        return getSharedPreferences().getInt(KEY_AVAILABLE_WALLPAPERS_COUNT, 0);
+    }
+
+    public void setAvailableWallpapersCount(int count) {
+        getSharedPreferences().edit().putInt(KEY_AVAILABLE_WALLPAPERS_COUNT, count).apply();
+    }
+
+    int getAppFilterVersion() {
+        return getSharedPreferences().getInt(KEY_APPFILTER_VERSION, -1);
+    }
+
+    void setAppFilterVersion(int version) {
+        getSharedPreferences().edit().putInt(KEY_APPFILTER_VERSION, version).apply();
+    }
+
+    public boolean isSameAppFilterVersion() {
+        return getAppFilterVersion() == getVersion();
+    }
+
+    StringBuilder getAppFilter() {
+        return new StringBuilder(getSharedPreferences().getString(KEY_APPFILTER, ""));
+    }
+
+    void setAppFilter(String appFilter) {
+        getSharedPreferences().edit().putString(KEY_APPFILTER, appFilter).apply();
+    }
+
+    public int getVersion() {
         return getSharedPreferences().getInt(KEY_APP_VERSION, 0);
     }
 
@@ -244,30 +256,6 @@ public class PreferencesHelper {
             boolean resetLimit = mContext.getResources().getBoolean(R.bool.reset_icon_request_limit);
             if (resetLimit) setRegularRequestUsed(0);
             setVersion(version);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public void setWallpaperLastUpdate() {
-        getSharedPreferences().edit().putInt(KEY_WALLS_LAST_UPDATE, getCurrentDay()).apply();
-    }
-
-    private int getWallpaperLastUpdate () {
-        return getSharedPreferences().getInt(KEY_WALLS_LAST_UPDATE, 0);
-    }
-
-    private int getCurrentDay() {
-        return Calendar.getInstance().get(Calendar.DATE);
-    }
-
-    public boolean isTimeToUpdateWallpaper() {
-        int saved = getWallpaperLastUpdate();
-        int updateTime = mContext.getResources().getInteger(R.integer.wallpaper_update_every_days);
-        int current = getCurrentDay();
-        if ((current-saved) >= updateTime || (saved-current) >= updateTime) {
-            setWallpaperLastUpdate();
             return true;
         } else {
             return false;

@@ -17,13 +17,15 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.dm.material.dashboard.candybar.R;
-import com.dm.material.dashboard.candybar.helpers.PermissionHelper;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.Tag;
 import com.dm.material.dashboard.candybar.utils.listeners.InAppBillingListener;
 
 import java.io.File;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.List;
 
 /*
  * CandyBar - Material Dashboard
@@ -54,7 +56,6 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     private NestedScrollView mScrollView;
 
     private File mCache;
-    private File mCacheExternal;
 
     @Nullable
     @Override
@@ -102,12 +103,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             mWallsDirectory.setText(directory);
         }
 
-        if (PermissionHelper.isPermissionStorageGranted(getActivity())) {
-            initSettings(true);
-        } else {
-            PermissionHelper.requestStoragePermission(getActivity(),
-                    PermissionHelper.PERMISSION_STORAGE_SETTINGS);
-        }
+        initSettings();
     }
 
     @Override
@@ -129,15 +125,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                     .onPositive((dialog, which) -> {
                         try {
                             clearCache(mCache);
-                            if (PermissionHelper.isPermissionStorageGranted(getActivity())) {
-                                if (mCacheExternal != null)
-                                    clearCache(mCacheExternal);
-                            }
-
-                            String cacheSize = getActivity().getResources().getString(
-                                    R.string.pref_data_cache_size)
-                                    +" 0 KB";
-                            mCacheSize.setText(cacheSize);
+                            initSettings();
 
                             Toast.makeText(getActivity(), getActivity()
                                             .getResources().getString(
@@ -160,22 +148,39 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    public void initSettings(boolean granted) {
+    public void restorePurchases(List<String> productsId, String[]premiumRequestProductsId,
+                                 int[] premiumRequestProductsCount) {
+        int index = -1;
+        for (String productId : productsId) {
+            for (int i = 0; i < premiumRequestProductsId.length; i ++) {
+                if (premiumRequestProductsId[i].equals(productId)) {
+                    index = i;
+                    break;
+                }
+            }
+            if (index > -1 && index < premiumRequestProductsCount.length) {
+                if (!Preferences.getPreferences(getActivity()).isPremiumRequest()) {
+                    Preferences.getPreferences(getActivity()).setPremiumRequestProductId(productId);
+                    Preferences.getPreferences(getActivity()).setPremiumRequestCount(
+                            premiumRequestProductsCount[index]);
+                    Preferences.getPreferences(getActivity()).setPremiumRequest(true);
+                }
+            }
+        }
+        int message = index > -1 ?
+                R.string.pref_restore_purchases_success :
+                R.string.pref_restore_purchases_empty;
+        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+    }
+
+    private void initSettings() {
         mCache = new File(getActivity().getCacheDir().toString());
 
-        if (granted) {
-            File cacheExternal = getActivity().getExternalCacheDir();
-            if (cacheExternal != null) mCacheExternal = new File(cacheExternal.toString());
-        }
-
-        long cache = cacheSize(mCache)/1024;
-        long cacheEx = 0;
-        if (mCacheExternal != null) cacheEx = cacheSize(mCacheExternal)/1024;
-        long total = cache + cacheEx;
-
+        double cache = (double) cacheSize(mCache)/1024/1024;
+        NumberFormat formatter = new DecimalFormat("#0.00");
         String cacheSize = getActivity().getResources().getString(
                 R.string.pref_data_cache_size)
-                +" "+ (total) + " KB";
+                +" "+ (formatter.format(cache)) + " MB";
 
         mCacheSize.setText(cacheSize);
         mDarkThemeCheck.setChecked(Preferences.getPreferences(getActivity()).isDarkTheme());

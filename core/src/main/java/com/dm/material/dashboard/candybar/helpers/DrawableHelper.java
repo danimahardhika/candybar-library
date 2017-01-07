@@ -8,6 +8,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -19,6 +20,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -63,6 +65,39 @@ public class DrawableHelper {
             drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);
             return drawable.mutate();
         } catch (OutOfMemoryError e) {
+            return null;
+        }
+    }
+
+    @Nullable
+    public static Drawable getTintedDrawable(@NonNull Context context, @DrawableRes int res,
+                                             @ColorInt int color, int padding) {
+        try {
+            Drawable drawable = AppCompatDrawableManager.get().getDrawable(context, res);
+            drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                drawable = (DrawableCompat.wrap(drawable)).mutate();
+            }
+
+            Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+                    drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            drawable.draw(canvas);
+
+            Bitmap tintedBitmap = Bitmap.createBitmap(
+                    bitmap.getWidth() + padding,
+                    bitmap.getHeight() + padding,
+                    Bitmap.Config.ARGB_8888);
+            Canvas tintedCanvas = new Canvas(tintedBitmap);
+            Paint paint = new Paint();
+            paint.setFilterBitmap(true);
+            paint.setAntiAlias(true);
+            tintedCanvas.drawBitmap(bitmap,
+                    (tintedCanvas.getWidth() - bitmap.getWidth())/2,
+                    (tintedCanvas.getHeight() - bitmap.getHeight())/2, paint);
+            return new BitmapDrawable(context.getResources(), tintedBitmap);
+        } catch (Exception | OutOfMemoryError e) {
             return null;
         }
     }
@@ -121,8 +156,13 @@ public class DrawableHelper {
     }
 
     @Nullable
-    public static Bitmap getBitmap(byte[] bytes) {
+    public static Bitmap getBitmap(byte[] bytes, boolean compress) {
         try {
+            if (compress) {
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inSampleSize = 2;
+                return BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+            }
             return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
         } catch (Exception | OutOfMemoryError e) {
             Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));

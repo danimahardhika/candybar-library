@@ -67,7 +67,7 @@ public class ReportBugsHelper {
             protected void onPreExecute() {
                 super.onPreExecute();
                 sb = new StringBuilder();
-                folder = FileHelper.getCacheDirectory(context);
+                folder = context.getCacheDir();
                 file = folder.toString() + "/" + "reportbugs.zip";
 
                 MaterialDialog.Builder builder = new MaterialDialog.Builder(context);

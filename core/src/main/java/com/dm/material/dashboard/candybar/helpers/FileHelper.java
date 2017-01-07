@@ -43,15 +43,7 @@ public class FileHelper {
 
     private static final int BUFFER = 2048;
 
-    public static File getCacheDirectory(@NonNull Context context) {
-        if (PermissionHelper.isPermissionStorageGranted(context)) {
-            File cache = context.getExternalCacheDir();
-            if (cache != null) return new File(cache.toString());
-        }
-        return new File(context.getCacheDir().toString());
-    }
-
-    public static void createZip (SparseArrayCompat<String> files, String directory) {
+    public static void createZip (@NonNull SparseArrayCompat<String> files, String directory) {
         try {
             BufferedInputStream origin;
             FileOutputStream dest = new FileOutputStream(directory);
@@ -82,21 +74,15 @@ public class FileHelper {
     @Nullable
     public static String saveIcon (File directory, Bitmap bitmap, String name) {
         String fileName = name.toLowerCase().replace(" ", "_") + ".png";
-        boolean createFolder = true;
-        if (!directory.exists()) {
-            createFolder = directory.mkdirs();
-        }
-        if (createFolder) {
-            File file = new File(directory, fileName);
-            try {
-                FileOutputStream outStream = new FileOutputStream(file);
-                bitmap.compress(Bitmap.CompressFormat.PNG, 50, outStream);
-                outStream.flush();
-                outStream.close();
-                return directory.toString() + "/" + fileName;
-            } catch (Exception | OutOfMemoryError e) {
-                Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
-            }
+        File file = new File(directory, fileName);
+        try {
+            FileOutputStream outStream = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 50, outStream);
+            outStream.flush();
+            outStream.close();
+            return directory.toString() + "/" + fileName;
+        } catch (Exception | OutOfMemoryError e) {
+            Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
         }
         return null;
     }
@@ -105,7 +91,9 @@ public class FileHelper {
     public static Uri getUriFromFile(Context context, String applicationId, File file) {
         try {
             return FileProvider.getUriForFile(context, applicationId + ".fileProvider", file);
-        } catch (IllegalArgumentException ignored) {}
+        } catch (IllegalArgumentException e) {
+            Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+        }
         return null;
     }
 

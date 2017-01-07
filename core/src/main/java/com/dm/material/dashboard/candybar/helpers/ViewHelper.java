@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -47,8 +48,8 @@ import com.dm.material.dashboard.candybar.utils.Tag;
 
 public class ViewHelper {
 
-    private static final float PERCENTAGE_TO_SHOW_TOOLBAR_TITLE  = 0.75f;
-    private static final float PERCENTAGE_TO_HIDE_TITLE_CONTAINER = 0.5f;
+    private static final float PERCENTAGE_TO_SHOW_TOOLBAR_TITLE  = 0.85f;
+    private static final float PERCENTAGE_TO_HIDE_TITLE_CONTAINER = 0.7f;
     private static final int ALPHA_ANIMATIONS_DURATION = 200;
 
     public static void resetNavigationBarTranslucent(@NonNull Context context, int orientation) {
@@ -111,17 +112,17 @@ public class ViewHelper {
     }
 
     public static boolean handleTitleContainerVisibility(float percentage, boolean isTitleContainerVisible,
-                                                @NonNull View titleContainer) {
+                                                         @NonNull View titleContainer, @NonNull FloatingActionButton fab) {
         if (percentage >= PERCENTAGE_TO_HIDE_TITLE_CONTAINER) {
             if (isTitleContainerVisible) {
-                Animator.startAlphaAnimation(
-                        titleContainer, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE);
+                Animator.startAlphaAnimation(titleContainer, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE);
+                Animator.hideFab(fab);
                 isTitleContainerVisible = false;
             }
         } else {
             if (!isTitleContainerVisible) {
-                Animator.startAlphaAnimation(
-                        titleContainer, ALPHA_ANIMATIONS_DURATION, View.VISIBLE);
+                Animator.startAlphaAnimation(titleContainer, ALPHA_ANIMATIONS_DURATION, View.VISIBLE);
+                Animator.showFab(fab);
                 isTitleContainerVisible = true;
             }
         }

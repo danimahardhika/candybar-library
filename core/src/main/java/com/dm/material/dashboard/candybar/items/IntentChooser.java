@@ -1,4 +1,6 @@
-package com.dm.material.dashboard.candybar.utils.listeners;
+package com.dm.material.dashboard.candybar.items;
+
+import android.content.pm.ResolveInfo;
 
 /*
  * CandyBar - Material Dashboard
@@ -18,8 +20,26 @@ package com.dm.material.dashboard.candybar.utils.listeners;
  * limitations under the License.
  */
 
-public interface SearchListener {
+public class IntentChooser {
 
-    void OnSearchExpanded(boolean expand);
+    private final ResolveInfo mApp;
+    private final int mType;
+
+    public static final int TYPE_SUPPORTED = 0;
+    public static final int TYPE_RECOMMENDED = 1;
+    public static final int TYPE_NOT_SUPPORTED = 2;
+
+    public IntentChooser(ResolveInfo app, int type) {
+        mApp = app;
+        mType = type;
+    }
+
+    public ResolveInfo getApp() {
+        return mApp;
+    }
+
+    public int getType() {
+        return mType;
+    }
 
 }

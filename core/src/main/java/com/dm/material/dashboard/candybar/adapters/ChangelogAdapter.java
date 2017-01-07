@@ -1,18 +1,16 @@
 package com.dm.material.dashboard.candybar.adapters;
 
 import android.content.Context;
-import android.os.Build;
 import android.support.annotation.NonNull;
-import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.helpers.ColorHelper;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
+
+import org.sufficientlysecure.htmltextview.HtmlTextView;
 
 /*
  * CandyBar - Material Dashboard
@@ -68,27 +66,21 @@ public class ChangelogAdapter extends BaseAdapter {
             holder = (ViewHolder) view.getTag();
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            holder.changelog.setText(Html.fromHtml(mChangelog[position],
-                    Html.FROM_HTML_MODE_COMPACT));
-        } else {
-            holder.changelog.setText(Html.fromHtml(mChangelog[position]));
-        }
+        holder.changelog.setHtml(mChangelog[position]);
         return view;
     }
 
     private class ViewHolder {
 
-        final TextView changelog;
-        final ImageView dot;
+        final HtmlTextView changelog;
 
         ViewHolder(View view) {
-            changelog = (TextView) view.findViewById(R.id.changelog);
-            dot = (ImageView) view.findViewById(R.id.dot);
+            changelog = (HtmlTextView) view.findViewById(R.id.changelog);
             int color = ColorHelper.getAttributeColor(mContext,
                     android.R.attr.textColorSecondary);
-            dot.setImageDrawable(DrawableHelper.getTintedDrawable(
-                    mContext, R.drawable.ic_changelog_dot, color));
+            changelog.setCompoundDrawablesWithIntrinsicBounds(
+                    DrawableHelper.getTintedDrawable(mContext, R.drawable.ic_changelog_dot, color),
+                    null, null, null);
         }
 
     }

@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.util.SparseArrayCompat;
 import android.util.Log;
 
+import com.dm.material.dashboard.candybar.helpers.TimeHelper;
 import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.items.Wallpaper;
 import com.dm.material.dashboard.candybar.items.WallpaperJSON;
@@ -35,7 +36,7 @@ import com.dm.material.dashboard.candybar.utils.Tag;
 public class Database extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "candybar_database";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     private static final String TABLE_REQUEST = "icon_request";
     private static final String TABLE_PREMIUM_REQUEST = "premium_request";
@@ -79,7 +80,7 @@ public class Database extends SQLiteOpenHelper {
                 KEY_AUTHOR + " TEXT NOT NULL, " +
                 KEY_URL + " TEXT NOT NULL, " +
                 KEY_THUMB_URL + " TEXT NOT NULL, " +
-                KEY_ADDED_ON + " DATETIME DEFAULT CURRENT_TIMESTAMP" + ")";
+                KEY_ADDED_ON + " TEXT NOT NULL" + ")";
         db.execSQL(CREATE_TABLE_REQUEST);
         db.execSQL(CREATE_TABLE_PREMIUM_REQUEST);
         db.execSQL(CREATE_TABLE_WALLPAPER);
@@ -212,13 +213,13 @@ public class Database extends SQLiteOpenHelper {
         return requests;
     }
 
-    public boolean isWallpapersEmpty() {
+    public int getWallpapersCount() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_WALLPAPERS, null, null, null, null, null, null, null);
         int rowCount = cursor.getCount();
         cursor.close();
         db.close();
-        return rowCount == 0;
+        return rowCount;
     }
 
     public void addAllWallpapers(WallpaperJSON wallpaper) {
@@ -229,6 +230,7 @@ public class Database extends SQLiteOpenHelper {
             values.put(KEY_AUTHOR, wallpaper.getWalls.get(i).author);
             values.put(KEY_URL, wallpaper.getWalls.get(i).url);
             values.put(KEY_THUMB_URL, wallpaper.getWalls.get(i).thumbUrl);
+            values.put(KEY_ADDED_ON, TimeHelper.getDateTime());
 
             db.insert(TABLE_WALLPAPERS, null, values);
         }

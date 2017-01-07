@@ -71,7 +71,7 @@ public class IconsAdapter extends RecyclerView.Adapter<IconsAdapter.ViewHolder> 
         }
 
         ImageLoader.getInstance().displayImage("drawable://" + mIcons.get(position).getRes(),
-                holder.icon, ImageConfig.getIconOptions());
+                holder.icon, ImageConfig.getDefaultImageOptions(false));
     }
 
     @Override

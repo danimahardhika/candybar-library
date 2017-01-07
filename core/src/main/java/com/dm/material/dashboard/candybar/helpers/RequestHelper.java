@@ -3,11 +3,24 @@ package com.dm.material.dashboard.candybar.helpers;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
+import com.dm.material.dashboard.candybar.utils.Tag;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.io.InputStream;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 /*
  * CandyBar - Material Dashboard
@@ -29,6 +42,42 @@ import com.dm.material.dashboard.candybar.preferences.Preferences;
 
 public class RequestHelper {
 
+    public static StringBuilder loadAppFilter(@NonNull Context context) {
+        try {
+            if (Preferences.getPreferences(context).getVersion() >
+                    Preferences.getPreferences(context).getAppFilterVersion()) {
+                Preferences.getPreferences(context).setAppFilterVersion(
+                        Preferences.getPreferences(context).getVersion());
+
+                StringBuilder sb = new StringBuilder();
+                AssetManager asset = context.getAssets();
+                InputStream stream = asset.open("appfilter.xml");
+                DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+                Document doc = docBuilder.parse(stream);
+                NodeList list = doc.getElementsByTagName("item");
+
+                for (int i = 0; i < list.getLength(); i++) {
+                    Node nNode = list.item(i);
+                    if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                        Element element = (Element) nNode;
+                        String activity = element.getAttribute("component")
+                                .replace("ComponentInfo{", "").replace("}", "");
+                        sb.append(activity).append(", ");
+                    }
+                }
+
+                Preferences.getPreferences(context).setAppFilter(sb.toString());
+                return sb;
+            }
+            return Preferences.getPreferences(context).getAppFilter();
+        } catch (Exception e) {
+            Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+        }
+        Preferences.getPreferences(context).setAppFilterVersion(-1);
+        return new StringBuilder();
+    }
+
     public static void showAlreadyRequestedDialog(@NonNull Context context) {
         new MaterialDialog.Builder(context)
                 .title(R.string.request_title)
@@ -49,6 +98,14 @@ public class RequestHelper {
         new MaterialDialog.Builder(context)
                 .title(R.string.request_title)
                 .content(message)
+                .positiveText(R.string.close)
+                .show();
+    }
+
+    public static void showPremiumRequestRequired(@NonNull Context context) {
+        new MaterialDialog.Builder(context)
+                .title(R.string.request_title)
+                .content(R.string.premium_request_required)
                 .positiveText(R.string.close)
                 .show();
     }
@@ -79,17 +136,14 @@ public class RequestHelper {
 
     public static boolean isReadyToSendPremiumRequest(@NonNull Context context) {
         boolean isReady = Preferences.getPreferences(context).isConnectedToNetwork();
-        boolean granted = PermissionHelper.isPermissionStorageGranted(context);
         if (!isReady) {
             new MaterialDialog.Builder(context)
                     .title(R.string.premium_request)
                     .content(R.string.premium_request_no_internet)
                     .positiveText(R.string.close)
                     .show();
-        } else if (!granted) {
-            PermissionHelper.showRequestPermissionStorageDenied(context);
         }
-        return isReady && granted;
+        return isReady;
     }
 
     public static void showPremiumRequestConsumeFailed(@NonNull Context context) {
@@ -109,13 +163,12 @@ public class RequestHelper {
     }
 
     public static void checkPiracyApp(@NonNull Context context) {
-
         //Lucky Patcher and Freedom package name
         String[] strings = new String[] {
                 "com.chelpus.lackypatch",
                 "com.dimonvideo.luckypatcher",
                 "com.forpda.lp",
-                "com.android.protips",
+                //"com.android.protips", This is not lucky patcher or freedom
                 "com.android.vending.billing.InAppBillingService.LUCK",
                 "com.android.vending.billing.InAppBillingService.LOCK",
                 "cc.madkite.freedom",

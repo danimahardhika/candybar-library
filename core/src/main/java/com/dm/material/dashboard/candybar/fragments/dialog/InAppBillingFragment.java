@@ -113,7 +113,7 @@ public class InAppBillingFragment extends DialogFragment {
                 .title(mType == InAppBillingHelper.DONATE ?
                         R.string.navigation_view_donate : R.string.premium_request)
                 .positiveText(mType == InAppBillingHelper.DONATE ?
-                        R.string.donate : R.string.premium_request_package)
+                        R.string.donate : R.string.premium_request_buy)
                 .negativeText(R.string.close)
                 .onPositive((dialog, which) -> {
                     if (mLoadInAppProducts == null) {

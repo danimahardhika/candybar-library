@@ -67,23 +67,21 @@ public class IconsHelper {
             Bitmap bitmap = ImageLoader.getInstance().loadImageSync(
                     "drawable://" + icon.getRes());
             if (bitmap != null) {
-                File folder = FileHelper.getCacheDirectory(context);
+                File file = new File(context.getCacheDir(), icon.getTitle() + ".png");
+                FileOutputStream outStream;
+                try {
+                    outStream = new FileOutputStream(file);
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, outStream);
+                    outStream.flush();
+                    outStream.close();
 
-                boolean createFolder = true;
-                if (!folder.exists())
-                    createFolder = folder.mkdirs();
-                if (createFolder) {
-                    File file = new File(folder, icon.getTitle() + ".png");
-                    FileOutputStream outStream;
-                    try {
-                        outStream = new FileOutputStream(file);
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outStream);
-                        outStream.flush();
-                        outStream.close();
-                        intent.setData(Uri.fromFile(file));
-                    } catch (Exception | OutOfMemoryError e) {
-                        Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
-                    }
+                    Uri uri = FileHelper.getUriFromFile(context, context.getPackageName(), file);
+                    if (uri == null) uri = Uri.fromFile(file);
+                    intent.putExtra(Intent.EXTRA_STREAM, uri);
+                    intent.setData(uri);
+                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                } catch (Exception | OutOfMemoryError e) {
+                    Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
                 }
                 intent.putExtra("return-data", false);
             }

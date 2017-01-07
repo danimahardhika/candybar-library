@@ -116,9 +116,13 @@ public class WallpaperOptionsFragment extends DialogFragment implements View.OnC
         mApply.setBackgroundResource(Preferences.getPreferences(getActivity()).isDarkTheme() ?
                 R.drawable.item_grid_dark : R.drawable.item_grid);
 
-        mSave.setOnClickListener(this);
-        mSave.setBackgroundResource(Preferences.getPreferences(getActivity()).isDarkTheme() ?
-                R.drawable.item_grid_dark : R.drawable.item_grid);
+        if (getActivity().getResources().getBoolean(R.bool.enable_wallpaper_download)) {
+            mSave.setOnClickListener(this);
+            mSave.setBackgroundResource(Preferences.getPreferences(getActivity()).isDarkTheme() ?
+                    R.drawable.item_grid_dark : R.drawable.item_grid);
+            return;
+        }
+        mSave.setVisibility(View.GONE);
     }
 
     @Override
@@ -130,10 +134,9 @@ public class WallpaperOptionsFragment extends DialogFragment implements View.OnC
         } else if (id == R.id.save) {
             if (PermissionHelper.isPermissionStorageGranted(getActivity())) {
                 WallpaperHelper.downloadWallpaper(getActivity(), color, mUrl, mName, -1);
-            } else {
-                PermissionHelper.requestStoragePermission(getActivity(),
-                        PermissionHelper.PERMISSION_STORAGE);
+                return;
             }
+            PermissionHelper.requestStoragePermission(getActivity());
         }
         dismiss();
     }

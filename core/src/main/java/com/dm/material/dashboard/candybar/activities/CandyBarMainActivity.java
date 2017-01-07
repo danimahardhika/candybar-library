@@ -2,16 +2,18 @@ package com.dm.material.dashboard.candybar.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -22,6 +24,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -34,17 +37,17 @@ import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.anjlab.android.iab.v3.BillingProcessor;
+import com.dm.material.dashboard.candybar.databases.Database;
 import com.dm.material.dashboard.candybar.helpers.LicenseHelper;
 import com.dm.material.dashboard.candybar.helpers.ReportBugsHelper;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
-import com.dm.material.dashboard.candybar.utils.listeners.LicenseListener;
+import com.dm.material.dashboard.candybar.receivers.CandyBarBroadcastReceiver;
+import com.dm.material.dashboard.candybar.services.CandyBarWallpapersService;
 import com.dm.material.dashboard.candybar.utils.listeners.SearchListener;
-import com.google.android.vending.licensing.Policy;
-import com.kogitune.activitytransition.ActivityTransitionLauncher;
+import com.dm.material.dashboard.candybar.utils.listeners.WallpapersListener;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.fragments.ApplyFragment;
 import com.dm.material.dashboard.candybar.fragments.FAQsFragment;
@@ -68,13 +71,13 @@ import com.dm.material.dashboard.candybar.helpers.SoftKeyboardHelper;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.items.InAppBilling;
 import com.dm.material.dashboard.candybar.items.Request;
-import com.dm.material.dashboard.candybar.items.Wallpaper;
 import com.dm.material.dashboard.candybar.utils.Animator;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
 import com.dm.material.dashboard.candybar.utils.listeners.InAppBillingListener;
-import com.dm.material.dashboard.candybar.utils.listeners.PreviewWallpaperListener;
 import com.dm.material.dashboard.candybar.utils.listeners.RequestListener;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 
 import java.util.List;
 
@@ -99,8 +102,8 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
  */
 
 public class CandyBarMainActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener,
-        ActivityCompat.OnRequestPermissionsResultCallback, PreviewWallpaperListener,
-        RequestListener, InAppBillingListener, LicenseListener, SearchListener {
+        ActivityCompat.OnRequestPermissionsResultCallback, RequestListener, InAppBillingListener,
+        SearchListener, WallpapersListener {
 
     private TextView mToolbarTitle;
     private AppBarLayout mAppBar;
@@ -111,9 +114,9 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
     private String mFragmentTag;
     private int mPosition, mLastPosition;
     private BillingProcessor mBillingProcessor;
+    private CandyBarBroadcastReceiver mReceiver;
     private ActionBarDrawerToggle mDrawerToggle;
     private FragmentManager mFragManager;
-    private Class<?> mWallpaperActivity;
 
     private boolean mIsMenuVisible = true;
     private boolean mIsToolbarTitleVisible = false;
@@ -132,14 +135,14 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
     private static final String TAG_SETTINGS = "settings";
     private static final String TAG_FAQS = "faqs";
 
-    public void initMainActivity(Bundle savedInstanceState, Class<?> wallpaperActivity,
-                                 boolean licenseChecker, byte[] salt,
+    public void initMainActivity(@Nullable Bundle savedInstanceState, boolean licenseChecker, byte[] salt,
                                  String licenseKey, String[] donationProductsId,
                                  String[] premiumRequestProductsId, int[] premiumRequestProductsCount) {
         super.setTheme(Preferences.getPreferences(this).isDarkTheme() ?
                 R.style.AppThemeDark : R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        registerBroadcastReceiver();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbarTitle = (TextView) findViewById(R.id.toolbar_title);
@@ -156,7 +159,6 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
         mDonationProductsId = donationProductsId;
         mPremiumRequestProductsId = premiumRequestProductsId;
         mPremiumRequestProductsCount = premiumRequestProductsCount;
-        mWallpaperActivity = wallpaperActivity;
         mFragManager = getSupportFragmentManager();
 
         toolbar.setPopupTheme(Preferences.getPreferences(this).isDarkTheme() ?
@@ -170,9 +172,10 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
         initNavigationViewHeader();
         initInAppBilling();
 
+        mPosition = mLastPosition = 0;
         if (savedInstanceState != null) {
             mPosition = mLastPosition = savedInstanceState.getInt("position", 0);
-        } else mPosition = mLastPosition = 0;
+        }
         initTheme();
         initRateReviewFab();
 
@@ -184,6 +187,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
         }
 
         initHomeImage();
+        checkWallpapers();
 
         if (Preferences.getPreferences(this).isFirstRun()) {
             if (licenseChecker) {
@@ -241,6 +245,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
             mBillingProcessor.release();
             mBillingProcessor = null;
         }
+        if (mReceiver != null) unregisterReceiver(mReceiver);
         super.onDestroy();
     }
 
@@ -262,12 +267,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
             LicensesFragment.showLicensesDialog(mFragManager);
             return true;
         } else if (id == R.id.menu_report_bugs) {
-            if (PermissionHelper.isPermissionStorageGranted(this)) {
-                ReportBugsHelper.checkForBugs(this);
-                return true;
-            }
-
-            PermissionHelper.requestStoragePermission(this, PermissionHelper.PERMISSION_STORAGE);
+            ReportBugsHelper.checkForBugs(this);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -307,11 +307,11 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
         mIsToolbarTitleVisible = ViewHelper.handleToolbarTitleVisibility(this, percentage,
                 mIsToolbarTitleVisible, mToolbarTitle);
         mIsTitleContainerVisible = ViewHelper.handleTitleContainerVisibility(percentage,
-                mIsTitleContainerVisible, findViewById(R.id.home_title_container));
+                mIsTitleContainerVisible, findViewById(R.id.home_title_container), mFab);
 
         if (mFragmentTag.equals(TAG_HOME)) {
-            HomeFragment fragment = (HomeFragment) mFragManager.findFragmentByTag(mFragmentTag);
-            if (fragment != null) fragment.showToolbarShadow(percentage == 1.0f);
+            HomeFragment fragment = (HomeFragment) mFragManager.findFragmentByTag(TAG_HOME);
+            if (fragment != null) fragment.showOptionsMenu(mIsToolbarTitleVisible);
         }
     }
 
@@ -328,38 +328,11 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
         if (requestCode == PermissionHelper.PERMISSION_STORAGE) {
             if (grantResults.length > 0 &&
                     grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Preferences.getPreferences(this).setCacheAllowed(true);
                 recreate();
-            } else {
-                PermissionHelper.showPermissionStorageDenied(this);
+                return;
             }
-        } else if (requestCode == PermissionHelper.PERMISSION_STORAGE_SETTINGS) {
-            if (grantResults.length > 0 &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Preferences.getPreferences(this).setCacheAllowed(true);
-                recreate();
-            } else {
-                if (mFragmentTag.equals(TAG_SETTINGS)) {
-                    SettingsFragment fragment = (SettingsFragment)
-                            mFragManager.findFragmentByTag(TAG_SETTINGS);
-                    if (fragment != null) fragment.initSettings(false);
-                    PermissionHelper.showPermissionStorageDenied(this);
-                }
-            }
+            PermissionHelper.showPermissionStorageDenied(this);
         }
-    }
-
-    @Override
-    public void previewWallpaper(View view, Wallpaper wallpaper, Bitmap bitmap) {
-        final Intent intent = new Intent(this, mWallpaperActivity);
-        intent.putExtra("url", wallpaper.getURL());
-        intent.putExtra("author", wallpaper.getAuthor());
-        intent.putExtra("name", wallpaper.getName());
-
-        ActivityTransitionLauncher.with(this)
-                .from(view, "image")
-                .image(bitmap)
-                .launch(intent);
     }
 
     @Override
@@ -411,7 +384,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
     public void OnPremiumRequestBought() {
         if (mFragmentTag.equals(TAG_REQUEST)) {
             RequestFragment fragment = (RequestFragment) mFragManager.findFragmentByTag(TAG_REQUEST);
-            if (fragment != null) fragment.refreshAdapter();
+            if (fragment != null) fragment.premiumRequestBought();
         }
     }
 
@@ -428,18 +401,16 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
                         .getPreferences(this).getPremiumRequestProductId())) {
                     Preferences.getPreferences(this).setPremiumRequest(false);
                     Preferences.getPreferences(this).setPremiumRequestProductId("");
-
-                    if (mFragmentTag.equals(TAG_REQUEST)) {
-                        RequestFragment fragment = (RequestFragment) mFragManager.findFragmentByTag(TAG_REQUEST);
-                        if (fragment != null) fragment.refreshAdapter();
-                    }
                 } else {
                     RequestHelper.showPremiumRequestConsumeFailed(this);
                     return;
                 }
             }
+            if (mFragmentTag.equals(TAG_REQUEST)) {
+                RequestFragment fragment = (RequestFragment) mFragManager.findFragmentByTag(TAG_REQUEST);
+                if (fragment != null) fragment.premiumRequestBought();
+            }
         }
-
         IntentChooserFragment.showIntentChooserDialog(mFragManager, request);
     }
 
@@ -450,35 +421,16 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
 
     @Override
     public void OnRestorePurchases() {
-        int message = R.string.pref_restore_purchases_failed;
-        if (mBillingProcessor != null) {
-            if (mBillingProcessor.loadOwnedPurchasesFromGoogle()) {
-                List<String> productsId = mBillingProcessor.listOwnedProducts();
-                if (productsId != null) {
-                    int index = -1;
-                    for (String productId : productsId) {
-                        for (int i = 0; i < mPremiumRequestProductsId.length; i ++) {
-                            if (mPremiumRequestProductsId[i].equals(productId)) {
-                                index = i;
-                                break;
-                            }
-                        }
-                        if (index > -1 && index < mPremiumRequestProductsCount.length) {
-                            if (!Preferences.getPreferences(this).isPremiumRequest()) {
-                                Preferences.getPreferences(this).setPremiumRequestProductId(productId);
-                                Preferences.getPreferences(this).setPremiumRequestCount(
-                                        mPremiumRequestProductsCount[index]);
-                                Preferences.getPreferences(this).setPremiumRequest(true);
-                            }
-                        }
-                    }
-                    message = index > -1 ?
-                            R.string.pref_restore_purchases_success :
-                            R.string.pref_restore_purchases_empty;
-                }
+        if (mBillingProcessor == null) return;
+
+        if (mBillingProcessor.loadOwnedPurchasesFromGoogle()) {
+            List<String> productsId = mBillingProcessor.listOwnedProducts();
+            if (productsId != null) {
+                SettingsFragment fragment = (SettingsFragment) mFragManager.findFragmentByTag(TAG_SETTINGS);
+                if (fragment != null) fragment.restorePurchases(productsId,
+                        mPremiumRequestProductsId, mPremiumRequestProductsCount);
             }
         }
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -513,20 +465,36 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
     }
 
     @Override
-    public void OnLicenseChecked(int reason) {
-        Preferences.getPreferences(this).setFirstRun(false);
-        if (reason == Policy.LICENSED) {
-            Preferences.getPreferences(this).setLicensed(true);
-            if (Preferences.getPreferences(this).isNewVersion())
-                ChangelogFragment.showChangelog(mFragManager);
-        } else if (reason == Policy.NOT_LICENSED) {
-            Preferences.getPreferences(this).setLicensed(false);
-            finish();
+    public void OnWallpapersChecked(@Nullable Intent intent) {
+        if (intent != null) {
+            int size = intent.getIntExtra("size", 0);
+            int offlineSize = new Database(this).getWallpapersCount();
+            Preferences.getPreferences(this).setAvailableWallpapersCount(size);
+
+            if (size > offlineSize) {
+                int accent = ColorHelper.getAttributeColor(this, R.attr.color_accent_secondary);
+                LinearLayout container = (LinearLayout) mNavigationView.getMenu().getItem(4).getActionView();
+                if (container != null) {
+                    TextView counter = (TextView) container.findViewById(R.id.counter);
+                    if (counter == null) return;
+
+                    ViewCompat.setBackground(counter, DrawableHelper.getTintedDrawable(this,
+                            R.drawable.ic_toolbar_circle, accent));
+                    counter.setTextColor(ColorHelper.getTitleTextColor(this, accent));
+                    int newItem = (size - offlineSize);
+                    counter.setText(String.valueOf(newItem > 99 ? "99+" : newItem));
+                    container.setVisibility(View.VISIBLE);
+                    return;
+                }
+            }
         }
+
+        LinearLayout container = (LinearLayout) mNavigationView.getMenu().getItem(4).getActionView();
+        if (container != null) container.setVisibility(View.GONE);
     }
 
     @Override
-    public void OnSearchCollapse(boolean expand) {
+    public void OnSearchExpanded(boolean expand) {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout)
                 findViewById(R.id.collapsing_toolbar);
@@ -545,9 +513,8 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
         } else {
             SoftKeyboardHelper.closeKeyboard(this);
             ColorHelper.setTransparentStatusBar(this, Color.TRANSPARENT);
-            ViewHelper.changeSearchViewActionModeColor(this,
-                    collapsingToolbar, R.attr.search_toolbar, R.attr.colorPrimary);
-
+            collapsingToolbar.setContentScrim(new ColorDrawable(
+                    ColorHelper.getAttributeColor(this, R.attr.colorPrimary)));
             mDrawerToggle.setDrawerArrowDrawable(new DrawerArrowDrawable(this));
             toolbar.setNavigationOnClickListener(view ->
                     mDrawerLayout.openDrawer(GravityCompat.START));
@@ -591,11 +558,30 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
+                if (mPosition == 3) {
+                    boolean iconRequest = getResources().getBoolean(R.bool.enable_icon_request);
+                    boolean premiumRequest = getResources().getBoolean(R.bool.enable_premium_request);
+                    if (!iconRequest && premiumRequest) {
+                        if (!Preferences.getPreferences(CandyBarMainActivity.this).isPremiumRequestEnabled())
+                            return;
+
+                        if (!Preferences.getPreferences(CandyBarMainActivity.this).isPremiumRequest()) {
+                            mPosition = mLastPosition;
+                            mNavigationView.getMenu().getItem(mPosition).setChecked(true);
+                            OnBuyPremiumRequest();
+                            return;
+                        }
+                    }
+                }
+
                 if (mPosition == 7) {
                     mPosition = mLastPosition;
                     mNavigationView.getMenu().getItem(mPosition).setChecked(true);
                     AboutFragment.showAbout(mFragManager);
-                } else if (mPosition == 8) {
+                    return;
+                }
+
+                if (mPosition == 8) {
                     mPosition = mLastPosition;
                     mNavigationView.getMenu().getItem(mPosition).setChecked(true);
                     InAppBillingFragment.showInAppBillingDialog(mFragManager,
@@ -604,11 +590,12 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
                             mLicenseKey,
                             mDonationProductsId,
                             null);
-                } else {
-                    if (mPosition != mLastPosition) {
-                        mLastPosition = mPosition;
-                        setFragment(getFragment(mPosition), true);
-                    }
+                    return;
+                }
+
+                if (mPosition != mLastPosition) {
+                    mLastPosition = mPosition;
+                    setFragment(getFragment(mPosition), true);
                 }
             }
         };
@@ -616,7 +603,8 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mNavigationView.getMenu().getItem(3).setVisible(
-                getResources().getBoolean(R.bool.enable_icon_request));
+                getResources().getBoolean(R.bool.enable_icon_request) ||
+                        Preferences.getPreferences(this).isPremiumRequestEnabled());
         String url = getResources().getString(R.string.wallpaper_json);
         if (!URLUtil.isValidUrl(url)) {
             mNavigationView.getMenu().getItem(4).setVisible(false);
@@ -659,20 +647,19 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
             imageUrl = "drawable://" + DrawableHelper.getResourceId(this, imageUrl);
         }
 
-        ImageLoader.getInstance().displayImage(imageUrl, image,
-                ImageConfig.getImageOptions(true, Preferences.getPreferences(this)
-                        .isCacheAllowed()));
+        ImageLoader.getInstance().displayImage(imageUrl, new ImageViewAware(image),
+                ImageConfig.getDefaultImageOptions(true), new ImageSize(720, 720), null, null);
 
         if (titleText.length() == 0) {
             container.setVisibility(View.GONE);
-        } else {
-            title.setText(titleText);
-            try {
-                String versionText = "v" + getPackageManager()
-                        .getPackageInfo(getPackageName(), 0).versionName;
-                version.setText(versionText);
-            } catch (Exception ignored) {}
+            return;
         }
+        title.setText(titleText);
+        try {
+            String versionText = "v" + getPackageManager()
+                    .getPackageInfo(getPackageName(), 0).versionName;
+            version.setText(versionText);
+        } catch (Exception ignored) {}
     }
 
     private void initHomeImage() {
@@ -683,8 +670,13 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
         }
 
         ImageLoader.getInstance().displayImage(image, homeImage,
-                ImageConfig.getImageOptions(true, Preferences.getPreferences(this)
-                        .isCacheAllowed()));
+                ImageConfig.getDefaultImageOptions(true));
+
+        String subtitle = getResources().getString(R.string.home_subtitle);
+        if (subtitle.length() == 0) {
+            TextView textView = (TextView) findViewById(R.id.home_subtitle);
+            textView.setVisibility(View.GONE);
+        }
     }
 
     private void initRateReviewFab() {
@@ -713,6 +705,26 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
         }
     }
 
+    private void registerBroadcastReceiver() {
+        IntentFilter filter = new IntentFilter(CandyBarBroadcastReceiver.PROCESS_RESPONSE);
+        filter.addCategory(Intent.CATEGORY_DEFAULT);
+        mReceiver = new CandyBarBroadcastReceiver();
+        registerReceiver(mReceiver, filter);
+    }
+
+    private void checkWallpapers() {
+        if (Preferences.getPreferences(this).isConnectedToNetwork()) {
+            Intent intent = new Intent(this, CandyBarWallpapersService.class);
+            startService(intent);
+            return;
+        }
+
+        int size = Preferences.getPreferences(this).getAvailableWallpapersCount();
+        if (size > 0) {
+            OnWallpapersChecked(new Intent().putExtra("size", size));
+        }
+    }
+
     private void expandToolbar(boolean expand) {
         mAppBar.setExpanded(expand, true);
         if (expand) mFab.show();
@@ -723,7 +735,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
     private void clearBackStack() {
         if (mFragManager.getBackStackEntryCount() > 0) {
             mFragManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            OnSearchCollapse(false);
+            OnSearchExpanded(false);
         }
     }
 

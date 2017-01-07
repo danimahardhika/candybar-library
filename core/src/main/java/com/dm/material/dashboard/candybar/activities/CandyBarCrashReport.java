@@ -50,9 +50,6 @@ public class CandyBarCrashReport extends AppCompatActivity {
 
             String stackTrace = bundle.getString(EXTRA_STACKTRACE);
             String deviceInfo = DeviceHelper.getDeviceInfoForCrashReport(this);
-            String crashLog = ReportBugsHelper.buildCrashLog(this,
-                    FileHelper.getCacheDirectory(this), stackTrace);
-            boolean granted = PermissionHelper.isPermissionStorageGranted(this);
 
             String message = getResources().getString(R.string.crash_report_message) +" "+
                     getResources().getString(R.string.app_name) +" "+
@@ -65,20 +62,13 @@ public class CandyBarCrashReport extends AppCompatActivity {
                     .positiveText(R.string.crash_report_send)
                     .negativeText(R.string.close)
                     .onPositive((dialog, which) -> {
-                        final Intent intent = new Intent(Intent.ACTION_SEND);
+                        Intent intent = new Intent(Intent.ACTION_SEND);
                         intent.setType("message/rfc822");
                         intent.putExtra(Intent.EXTRA_EMAIL,
                                 new String[]{getResources().getString(R.string.dev_email)});
                         intent.putExtra(Intent.EXTRA_SUBJECT, "CandyBar: Crash Report");
 
-                        if (crashLog != null && granted) {
-                            Uri uri = FileHelper.getUriFromFile(this, getPackageName(), new File(crashLog));
-                            if (uri == null) uri = Uri.fromFile(new File(crashLog));
-                            intent.putExtra(Intent.EXTRA_TEXT, deviceInfo +"\n");
-                            intent.putExtra(Intent.EXTRA_STREAM, uri);
-                        } else {
-                            intent.putExtra(Intent.EXTRA_TEXT, deviceInfo + stackTrace);
-                        }
+                        intent = prepareUri(deviceInfo, stackTrace, intent);
 
                         startActivity(Intent.createChooser(intent,
                                 getResources().getString(R.string.email_client)));
@@ -89,6 +79,29 @@ public class CandyBarCrashReport extends AppCompatActivity {
         } catch (Exception e) {
             finish();
         }
+    }
+
+    private Intent prepareUri(String deviceInfo, String stackTrace, Intent intent) {
+        String crashLog = ReportBugsHelper.buildCrashLog(this, getCacheDir(), stackTrace);
+        boolean granted = PermissionHelper.isPermissionStorageGranted(this);
+        if (crashLog != null) {
+            Uri uri = FileHelper.getUriFromFile(this, getPackageName(), new File(crashLog));
+            if (uri != null) {
+                intent.putExtra(Intent.EXTRA_TEXT, deviceInfo +"\n");
+                intent.putExtra(Intent.EXTRA_STREAM, uri);
+                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                return intent;
+            } else {
+                if (granted) {
+                    uri = Uri.fromFile(new File(crashLog));
+                    intent.putExtra(Intent.EXTRA_STREAM, uri);
+                    return intent;
+                }
+            }
+        }
+
+        intent.putExtra(Intent.EXTRA_TEXT, deviceInfo + stackTrace);
+        return intent;
     }
 
 }

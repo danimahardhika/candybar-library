@@ -6,7 +6,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.NonNull;
 import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.widget.AppCompatCheckBox;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -49,15 +48,10 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
 
     private final int mTextColorSecondary;
     private final int mTextColorAccent;
-    private final boolean mIsPremiumRequestEnabled;
-
-    private static final int TYPE_PREMIUM = 0;
-    private static final int TYPE_REGULAR = 1;
 
     public RequestAdapter(@NonNull Context context, @NonNull SparseArrayCompat<Request> requests) {
         mContext = context;
         mRequests = requests;
-        mIsPremiumRequestEnabled = Preferences.getPreferences(mContext).isPremiumRequestEnabled();
         mTextColorSecondary = ColorHelper.getAttributeColor(mContext,
                 android.R.attr.textColorSecondary);
         mTextColorAccent = ColorHelper.getAttributeColor(mContext, R.attr.colorAccent);
@@ -66,125 +60,77 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = null;
-        if (viewType == TYPE_PREMIUM) {
-            view = LayoutInflater.from(mContext).inflate(
-                    R.layout.fragment_request_premium_item_list, parent, false);
-        } else if (viewType == TYPE_REGULAR) {
-            view = LayoutInflater.from(mContext).inflate(
-                    R.layout.fragment_request_item_list, parent, false);
-        }
-        return new ViewHolder(view, viewType);
+        View view = LayoutInflater.from(mContext).inflate(
+                R.layout.fragment_request_item_list, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
     public void onViewRecycled(ViewHolder holder) {
         super.onViewRecycled(holder);
-        if (holder.holderId == TYPE_REGULAR) {
-            Bitmap bitmap = ((BitmapDrawable) holder.icon.getDrawable()).getBitmap();
-            if (bitmap != null) bitmap.recycle();
+        Bitmap bitmap = ((BitmapDrawable) holder.icon.getDrawable()).getBitmap();
+        if (bitmap != null) bitmap.recycle();
 
-            holder.requested.setTextColor(mTextColorSecondary);
-            holder.icon.setImageBitmap(null);
-        }
+        holder.requested.setTextColor(mTextColorSecondary);
+        holder.icon.setImageBitmap(null);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        if (holder.holderId == TYPE_PREMIUM) {
-            if (!mIsPremiumRequestEnabled) holder.premiumRequest.setVisibility(View.GONE);
-            else {
-                if (Preferences.getPreferences(mContext).isPremiumRequest()) {
-                    String count = mContext.getResources().getString(R.string.premium_request_count)
-                            +" "+ Preferences.getPreferences(mContext).getPremiumRequestCount();
-                    holder.count.setText(count);
-                    holder.count.setVisibility(View.VISIBLE);
-                } else holder.count.setVisibility(View.GONE);
-            }
-        } else if (holder.holderId == TYPE_REGULAR) {
-            int finalPosition = mIsPremiumRequestEnabled ? position - 1 : position;
+        holder.icon.setImageBitmap(DrawableHelper.getBitmap(
+                mRequests.get(position).getIcon(), true));
 
-            holder.icon.setImageBitmap(DrawableHelper.getBitmap(
-                    mRequests.get(finalPosition).getIcon()));
+        holder.name.setText(mRequests.get(position).getName());
+        holder.activity.setText(mRequests.get(position).getActivity());
 
-            holder.name.setText(mRequests.get(finalPosition).getName());
-            holder.activity.setText(mRequests.get(finalPosition).getActivity());
-
-            if (mRequests.get(finalPosition).isRequested()) {
-                holder.requested.setTextColor(mTextColorAccent);
-                holder.requested.setText(mContext.getResources().getString(
-                        R.string.request_already_requested));
-            } else {
-                holder.requested.setText(mContext.getResources().getString(
-                        R.string.request_not_requested));
-            }
-
-            holder.checkbox.setChecked(mSelectedItems.get(finalPosition, false));
+        if (mRequests.get(position).isRequested()) {
+            holder.requested.setTextColor(mTextColorAccent);
+            holder.requested.setText(mContext.getResources().getString(
+                    R.string.request_already_requested));
+        } else {
+            holder.requested.setText(mContext.getResources().getString(
+                    R.string.request_not_requested));
         }
+
+        holder.checkbox.setChecked(mSelectedItems.get(position, false));
     }
 
     @Override
     public int getItemCount() {
-        return mIsPremiumRequestEnabled ? mRequests.size() + 1 : mRequests.size();
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return position == 0 && mIsPremiumRequestEnabled ? TYPE_PREMIUM : TYPE_REGULAR;
+        return mRequests.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
             View.OnLongClickListener {
 
-        CardView premiumRequest;
-        TextView buyPackage;
-        TextView count;
-        TextView name;
-        TextView activity;
-        TextView requested;
-        ImageView icon;
-        AppCompatCheckBox checkbox;
-        LinearLayout container;
+        final TextView name;
+        final TextView activity;
+        final TextView requested;
+        final ImageView icon;
+        final AppCompatCheckBox checkbox;
+        final LinearLayout container;
 
-        int holderId;
-
-        ViewHolder(View itemView, int viewType) {
+        ViewHolder(View itemView) {
             super(itemView);
-            if (viewType == TYPE_PREMIUM) {
-                premiumRequest = (CardView) itemView.findViewById(R.id.premium_request);
-                buyPackage = (TextView) itemView.findViewById(R.id.buy_package);
-                count = (TextView) itemView.findViewById(R.id.count);
-                buyPackage.setOnClickListener(this);
-                buyPackage.setBackgroundResource(Preferences.getPreferences(mContext).isDarkTheme() ?
-                        R.drawable.button_accent_dark : R.drawable.button_accent);
-
-                holderId = TYPE_PREMIUM;
-            } else if (viewType == TYPE_REGULAR) {
-                name = (TextView) itemView.findViewById(R.id.name);
-                activity = (TextView) itemView.findViewById(R.id.activity);
-                requested = (TextView) itemView.findViewById(R.id.requested);
-                icon = (ImageView) itemView.findViewById(R.id.icon);
-                checkbox = (AppCompatCheckBox) itemView.findViewById(R.id.checkbox);
-                container = (LinearLayout) itemView.findViewById(R.id.container);
-                container.setBackgroundResource(Preferences.getPreferences(mContext).isDarkTheme() ?
-                        R.drawable.card_item_list_dark : R.drawable.card_item_list);
-                container.setOnClickListener(this);
-                container.setOnLongClickListener(this);
-
-                holderId = TYPE_REGULAR;
-            }
+            name = (TextView) itemView.findViewById(R.id.name);
+            activity = (TextView) itemView.findViewById(R.id.activity);
+            requested = (TextView) itemView.findViewById(R.id.requested);
+            icon = (ImageView) itemView.findViewById(R.id.icon);
+            checkbox = (AppCompatCheckBox) itemView.findViewById(R.id.checkbox);
+            container = (LinearLayout) itemView.findViewById(R.id.container);
+            container.setBackgroundResource(Preferences.getPreferences(mContext).isDarkTheme() ?
+                    R.drawable.card_item_list_dark : R.drawable.card_item_list);
+            container.setOnClickListener(this);
+            container.setOnLongClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
             int id = view.getId();
             if (id == R.id.container) {
-                toggleSelection(getAdapterPosition());
-            } else if (id == R.id.buy_package) {
-                try {
-                    RequestListener listener = (RequestListener) mContext;
-                    listener.OnBuyPremiumRequest();
-                } catch (Exception ignored) {}
+                if (toggleSelection(getAdapterPosition())) {
+                    checkbox.toggle();
+                }
             }
         }
 
@@ -192,8 +138,10 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         public boolean onLongClick(View view) {
             int id = view.getId();
             if (id == R.id.container) {
-                toggleSelection(getAdapterPosition());
-                return true;
+                if (toggleSelection(getAdapterPosition())) {
+                    checkbox.toggle();
+                    return true;
+                }
             }
             return false;
         }
@@ -204,19 +152,18 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         notifyItemInserted(getItemCount() - 1);
     }
 
-    private void toggleSelection(int position) {
-        int finalPos = mIsPremiumRequestEnabled ?
-                position - 1 : position;
-        if (finalPos >= 0 && finalPos < mRequests.size()) {
-            if (mSelectedItems.get(finalPos, false))
-                mSelectedItems.delete(finalPos);
-            else mSelectedItems.put(finalPos, true);
-            notifyItemChanged(position);
+    private boolean toggleSelection(int position) {
+        if (position >= 0 && position < mRequests.size()) {
+            if (mSelectedItems.get(position, false))
+                mSelectedItems.delete(position);
+            else mSelectedItems.put(position, true);
             try {
                 RequestListener listener = (RequestListener) mContext;
                 listener.OnSelected(getSelectedItemsSize());
+                return true;
             } catch (Exception ignored) {}
         }
+        return false;
     }
 
     public void selectAll() {
@@ -259,10 +206,6 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
             listener.OnSelected(getSelectedItemsSize());
         } catch (Exception ignored) {}
         notifyDataSetChanged();
-    }
-
-    public void resetAdapter() {
-        resetSelectedItems();
     }
 
     public Request getRequest(int position) {

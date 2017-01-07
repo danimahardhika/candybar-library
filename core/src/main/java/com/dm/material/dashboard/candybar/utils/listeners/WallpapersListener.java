@@ -1,5 +1,8 @@
 package com.dm.material.dashboard.candybar.utils.listeners;
 
+import android.content.Intent;
+import android.support.annotation.Nullable;
+
 /*
  * CandyBar - Material Dashboard
  *
@@ -18,8 +21,8 @@ package com.dm.material.dashboard.candybar.utils.listeners;
  * limitations under the License.
  */
 
-public interface SearchListener {
+public interface WallpapersListener {
 
-    void OnSearchExpanded(boolean expand);
+    void OnWallpapersChecked(@Nullable Intent intent);
 
 }

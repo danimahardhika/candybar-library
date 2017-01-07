@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.helpers.ColorHelper;
+import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.Tag;
@@ -52,7 +53,7 @@ public class CandyBarMuzeiActivity extends AppCompatActivity implements View.OnC
     private AppCompatCheckBox mWifiOnly;
 
     private Class<?> mMuzeiService;
-    
+
     public void initMuzeiActivity(Bundle savedInstanceState, Class<?> muzeiService) {
         super.setTheme(Preferences.getPreferences(this).isDarkTheme() ?
                 R.style.AppThemeDark : R.style.AppTheme);
@@ -78,7 +79,6 @@ public class CandyBarMuzeiActivity extends AppCompatActivity implements View.OnC
         mNumberPicker.setMinValue(1);
         mNumberPicker.setMaxValue(100);
         setDividerColor(mNumberPicker);
-
         mMinute.setOnClickListener(this);
         mHour.setOnClickListener(this);
 
@@ -105,9 +105,11 @@ public class CandyBarMuzeiActivity extends AppCompatActivity implements View.OnC
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.menu_muzei, menu);
-        return true;
+        MenuItem save = menu.findItem(R.id.menu_save);
+        int color = ColorHelper.getAttributeColor(this, R.attr.toolbar_icon);
+        save.setIcon(DrawableHelper.getTintedDrawable(this, R.drawable.ic_toolbar_save, color));
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override

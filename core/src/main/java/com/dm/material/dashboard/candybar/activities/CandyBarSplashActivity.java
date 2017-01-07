@@ -40,9 +40,10 @@ public class CandyBarSplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+        int titleColor = ColorHelper.getTitleTextColor(this,
+                ContextCompat.getColor(this, R.color.splashColor));
         TextView splashTitle = (TextView) findViewById(R.id.splash_title);
-        splashTitle.setTextColor(ColorHelper.getTitleTextColor(this,
-                ContextCompat.getColor(this, R.color.splashColor)));
+        splashTitle.setTextColor(ColorHelper.setColorAlpha(titleColor, 0.6f ));
 
         int color = ColorHelper.getDarkerColor(
                 ContextCompat.getColor(this, R.color.splashColor), 0.8f);

@@ -170,6 +170,8 @@ public class WallpaperHelper {
             @Override
             protected void onCancelled() {
                 super.onCancelled();
+                if (((AppCompatActivity) context).isFinishing()) return;
+
                 Toast.makeText(context,
                         context.getResources().getString(R.string.wallpaper_download_cancelled),
                         Toast.LENGTH_LONG).show();
