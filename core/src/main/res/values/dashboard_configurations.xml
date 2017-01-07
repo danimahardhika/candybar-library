@@ -42,11 +42,10 @@
     * Disable -> false -->
     <bool name="enable_quick_apply">false</bool>
 
-    <!-- Text on home image
-    * Leave empty if you don't want to show any text -->
+    <!-- Home title must be defined -->
     <string name="home_title">CandyBar</string>
 
-    <!-- Text below home title
+    <!-- Home subtitle is optional
     * Leave empty if you don't want to show any text -->
     <string name="home_subtitle">Material Dashboard</string>
 
@@ -58,16 +57,15 @@
 
     <!-- Home image height
     * default: 256dp -->
-    <dimen name="home_image_height">256dp</dimen>
+    <dimen name="home_image_height">220dp</dimen>
 
     <!-- Home description
     - If you don't want to show description, just leave this empty -->
-    <string name="home_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-        eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-        nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
-        deserunt mollit anim id est laborum.</string>
+    <string name="home_description"><![CDATA[
+        Description now support html formatting, <b>bold description</b>,
+        <i>italic description</i>, <u>underline description</u>,
+        <a href="https://github.com/danimahardhika">link inside description</a>.
+        ]]></string>
 
     <!-- Icon Pack features (will be visible in home)
     * Number 1 - 5 must be included, after that only optional -->
@@ -161,10 +159,9 @@
     * <string name="wallpaper_json"></string>-->
     <string name="wallpaper_json">https://drive.google.com/uc?id=0B0f4ypHfNKm5NkFoNzB1anZPc28</string>
 
-    <!-- Auto update wallpaper library
-    * default: 7
-    * every 7 days wallpaper library will be refreshed automatically -->
-    <integer name="wallpaper_update_every_days">7</integer>
+    <!-- Allow to download wallpaper
+    * If disabled user only able to apply wallpaper from dashboard -->
+    <bool name="enable_wallpaper_download">true</bool>
 
     <!-- Auto generated color for wallpaper card
     * default: true
@@ -176,6 +173,12 @@
     * Show -> true
     * Hide -> false -->
     <bool name="wallpaper_show_name_author">true</bool>
+
+    <!-- Wallpapers grid preview quality
+    * Image quality when displaying wallpapers in grid
+    * Higher value means higher quality, more RAM usage
+    * Lower value means lower quality, minimal RAM usage -->
+    <integer name="wallpaper_grid_preview_quality">4</integer>
 
     <!-- CONFIG: ABOUT -->
 
@@ -236,6 +239,6 @@
     * change to false to disable it -->
     <bool name="enable_donation">true</bool>
 
-    <!-- Take a look inside LicenseHelper.java for donation product -->
+    <!-- Take a look inside License.java for donation product -->
 
 </resources>

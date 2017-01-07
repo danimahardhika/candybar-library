@@ -40,12 +40,10 @@
     <string name="open">Open</string>
     <string name="close">Close</string>
     <string name="clear">Clear</string>
-    <string name="got_it">Got It</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="install">Install</string>
     <string name="donate">Donate</string>
-    <string name="retry">Retry</string>
 
     <string name="search_noresult">No result found for</string>
     <string name="search_faqs">Question or answer</string>
@@ -70,6 +68,7 @@
     <string name="home_features_header">Features</string>
     <string name="home_more_apps_header">More Apps</string>
     <string name="home_more_apps">Check other apps published on Google Play Store</string>
+    <string name="home_rate_and_review">Rate &amp; Review</string>
 
     <!-- Quick Apply -->
     <string name="quick_apply">Quick Apply</string>
@@ -77,15 +76,10 @@
     <string name="quick_apply_desc_1">to default launcher</string>
 
     <!-- Apply -->
-    <string name="apply">Apply</string>
-    <string name="apply_manual_tips">Apply Tips</string>
-    <string name="apply_manual">If your launcher doesn\'t listed below but listed at Play Store description as supported launcher, you can try to apply icon pack from launcher settings manually.</string>
     <string name="apply_installed">Installed Launcher</string>
     <string name="apply_supported">Supported Launcher</string>
     <string name="apply_no_launcher_installed">No Supported Launcher Installed</string>
 
-    <string name="installed">Installed</string>
-    <string name="not_installed">Not Installed</string>
     <string name="manual_apply">doesn\'t support direct apply, you can apply</string>
     <string name="manual_apply2">manually from launcher settings.</string>
     <string name="manual_apply_lg_home">To apply this Icon Pack open Settings - Display - Home Screen - Theme.</string>
@@ -114,7 +108,6 @@
     <string name="request_requested">Please check your request again.
         Because you are trying to request app that already requested.</string>
     <string name="request_email_client">Choose email client you want to use to send an email contains icon request</string>
-    <string name="request_permission_storage_denied">Storage permission needed to build icon request data.</string>
 
     <string name="request_limit">You only able to make</string>
     <string name="request_limit_1">request with Regular Request. You can buy Premium Request to request more icons.</string>
@@ -129,8 +122,8 @@
     <string name="premium_request_build_failed">Unable to build Premium Request</string>
     <string name="premium_request_no_internet">Make sure your phone connected to internet before sending premium request.</string>
     <string name="premium_request_desc">Get your requested icon faster with premium request.</string>
-    <string name="premium_request_package">Buy Package</string>
-    <string name="premium_request_count">Premium Request Count :</string>
+    <string name="premium_request_buy">Buy</string>
+    <string name="premium_request_count">Packages :</string>
     <string name="premium_request_already_purchased">You still have</string>
     <string name="premium_request_already_purchased_1">Premium Request. You need to use all of them before buying Premium Request Package again.</string>
     <string name="premium_request_limit">You only have</string>
@@ -147,11 +140,10 @@
     <string name="premium_request_exist">You still has Premium Icon Request package.
         Open Settings, choose \"Restore Purchases\" to restore it.</string>
 
+    <string name="premium_request_required">You need to buy premium icon request package to make icon request.</string>
+
     <!-- Wallpapers -->
-    <string name="wallpaper_refresh_apply_tips">Wallpaper Tips</string>
-    <string name="wallpaper_refresh_apply">1. Swipe down to refresh wallpaper library
-        \n2. Press and hold on wallpaper to apply or download wallpaper
-        \n3. Press on wallpaper to preview it</string>
+    <string name="wallpaper_new_added">New Wallpaper</string>
     <string name="wallpaper_downloading">Downloading wallpaper …</string>
     <string name="wallpaper_download_failed">Unable to download wallpaper</string>
     <string name="wallpaper_download_cancelled">Wallpaper download cancelled</string>
@@ -163,6 +155,7 @@
     <string name="wallpaper_apply_cancelled">Wallpaper apply cancelled</string>
     <string name="connection_failed">Unable to fetch data from server</string>
     <string name="wallpaper_apply">Set as Wallpaper</string>
+    <string name="wallpaper_apply_scroll">Wallpaper scroll will forced to enable if you apply from this option</string>
 
     <string name="wallpaper_scroll_enable">Enable Wallpaper Scroll</string>
     <string name="wallpaper_scroll_enable_desc">Dashboard will apply wallpaper based on original resolution
@@ -171,6 +164,15 @@
     <string name="wallpaper_scroll_disable">Disable Wallpaper Scroll</string>
     <string name="wallpaper_scroll_disable_desc">Dashboard will apply wallpaper based on current view of wallpaper.
         Drag to left or right to adjust wallpaper. Pinch or double tap to zoom wallpaper.</string>
+
+    <!-- Tips -->
+    <string name="tips">Tips</string>
+    <string name="tips_wallpaper"><![CDATA[<ul>
+    <li>Swipe down to refresh wallpaper library</li>
+    <li>Press and hold on wallpaper to show wallpaper options</li>
+    <li>Press on wallpaper to preview it</li>
+    </ul>]]></string>
+    <string name="tips_apply_manual">If your launcher doesn\'t listed below but listed at Play Store description as supported launcher, you can try to apply icon pack from launcher settings manually.</string>
 
     <!-- Preferences -->
     <string name="pref_data_cache">Clear Cache</string>
@@ -193,14 +195,16 @@
     <string name="pref_wallpaper_location_desc">Try to download at least one wallpaper first.</string>
 
     <!-- Permission -->
-    <string name="permission_storage">Storage Permission</string>
-    <string name="permission_storage_denied">Storage permission needed to reading &amp; removing cache, downloading wallpaper, and building icon request.
-        With storage permission denied, you will not able to send icon request and save wallpaper to your device.</string>
+    <string name="permission_storage_denied">Storage permission needed to save wallpaper</string>
 
     <!-- Intent -->
     <string name="failed_email_app">Unable to display email application</string>
     <string name="email_client">Choose Email Client</string>
     <string name="no_email_app">No application to send email</string>
+    <string name="intent_email_supported">Supported</string>
+    <string name="intent_email_recommended">Recommended</string>
+    <string name="intent_email_not_supported">Not Supported</string>
+    <string name="intent_email_not_supported_message">Selected email client not supported, please select another email client</string>
 
     <!-- Library -->
     <string name="open_source_licenses">Open Source Licenses</string>

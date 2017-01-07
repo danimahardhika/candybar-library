@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_rate"
+        android:title="@string/home_rate_and_review"
+        android:icon="@drawable/ic_toolbar_star"
+        app:showAsAction="always" />
+
+</menu>

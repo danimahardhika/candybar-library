@@ -32,10 +32,17 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application>
-        <activity android:name="com.dm.material.dashboard.candybar.activities.CandyBarCrashReport"
+        <activity android:name=".activities.CandyBarCrashReport"
             android:launchMode="singleInstance"
             android:noHistory="true"
             android:theme="@style/Theme.AppCompat.Light.Dialog" />
+
+        <activity android:name=".activities.CandyBarWallpaperActivity"
+            android:launchMode="singleTop"
+            android:theme="@style/WallpaperTheme"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+
+        <service android:name=".services.CandyBarWallpapersService" />
     </application>
 
 </manifest>

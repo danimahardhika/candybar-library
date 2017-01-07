@@ -21,24 +21,44 @@
             android:id="@+id/apply"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:orientation="horizontal">
+            android:padding="@dimen/dialog_content_padding"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
             <ImageView
                 android:id="@+id/apply_icon"
                 android:layout_width="28dp"
                 android:layout_height="28dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/wallpaper_apply"
-                android:textSize="16sp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="16dp"
-                android:layout_marginStart="16dp"
-                android:textColor="?android:attr/textColorPrimary"
-                fontPath="fonts/Font-Regular.ttf"/>
+                android:orientation="vertical"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/wallpaper_apply"
+                    android:textSize="@dimen/text_content_title"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/content_margin"
+                    android:layout_marginStart="@dimen/content_margin"
+                    android:textColor="?android:attr/textColorPrimary"
+                    fontPath="fonts/Font-Medium.ttf"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/wallpaper_apply_scroll"
+                    android:textSize="@dimen/text_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/content_margin"
+                    android:layout_marginStart="@dimen/content_margin"
+                    android:textColor="?android:attr/textColorSecondary"
+                    fontPath="fonts/Font-Regular.ttf"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -70,12 +90,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/menu_save"
-                android:textSize="16sp"
+                android:textSize="@dimen/text_content_title"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="16dp"
-                android:layout_marginStart="16dp"
+                android:layout_marginLeft="@dimen/content_margin"
+                android:layout_marginStart="@dimen/content_margin"
                 android:textColor="?android:attr/textColorPrimary"
-                fontPath="fonts/Font-Regular.ttf"/>
+                fontPath="fonts/Font-Medium.ttf"/>
 
         </LinearLayout>
 

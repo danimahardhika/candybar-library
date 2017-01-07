@@ -47,9 +47,8 @@
                     android:id="@+id/name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Name"
                     android:textColor="?android:attr/textColorPrimary"
-                    android:textSize="16sp"
+                    android:textSize="@dimen/text_content_title"
                     android:singleLine="true"
                     android:ellipsize="end"
                     fontPath="fonts/Font-Medium.ttf"/>
@@ -58,9 +57,8 @@
                     android:id="@+id/activity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Activity"
                     android:textColor="?android:attr/textColorSecondary"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/text_content"
                     android:singleLine="true"
                     android:ellipsize="end"
                     fontPath="fonts/Font-Regular.ttf"/>
@@ -71,7 +69,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/request_not_requested"
                     android:textColor="?android:attr/textColorSecondary"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/text_content"
                     android:singleLine="true"
                     android:ellipsize="end"
                     fontPath="fonts/Font-Regular.ttf"/>
@@ -85,7 +83,8 @@
                 android:layout_marginLeft="6dp"
                 android:layout_marginStart="6dp"
                 android:clickable="false"
-                android:background="@android:color/transparent"/>
+                android:background="@android:color/transparent"
+                app:theme="@style/CheckBoxStyle"/>
 
         </LinearLayout>
 

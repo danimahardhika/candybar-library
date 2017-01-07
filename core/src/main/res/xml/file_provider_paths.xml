@@ -3,7 +3,4 @@
     <cache-path
         name="cache"
         path="/" />
-    <external-cache-path
-        name="cache"
-        path="/" />
 </paths>

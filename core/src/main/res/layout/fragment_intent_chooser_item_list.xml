@@ -33,18 +33,37 @@
                 android:layout_height="34dp"
                 android:layout_gravity="center_vertical" />
 
-            <TextView
-                android:id="@+id/name"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/intent_content_padding"
-                android:layout_marginStart="@dimen/intent_content_padding"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Medium Text"
-                android:singleLine="true"
-                android:ellipsize="end"
-                android:textColor="?android:attr/textColorSecondary"
-                fontPath="fonts/Font-Medium.ttf"/>
+                android:orientation="vertical"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/intent_content_padding"
+                    android:layout_marginStart="@dimen/intent_content_padding"
+                    android:textSize="@dimen/text_content_title"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:textColor="?android:attr/textColorPrimary"
+                    fontPath="fonts/Font-Medium.ttf"/>
+
+                <TextView
+                    android:id="@+id/type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/intent_content_padding"
+                    android:layout_marginStart="@dimen/intent_content_padding"
+                    android:textSize="@dimen/text_content"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:textColor="?android:attr/textColorSecondary"
+                    fontPath="fonts/Font-Regular.ttf"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 

@@ -8,11 +8,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:paddingTop="@dimen/home_content_padding"
-    android:paddingLeft="@dimen/home_content_padding"
-    android:paddingStart="@dimen/home_content_padding"
-    android:paddingRight="@dimen/home_content_padding"
-    android:paddingEnd="@dimen/home_content_padding">
+    android:paddingTop="@dimen/card_padding"
+    android:paddingLeft="@dimen/card_padding"
+    android:paddingStart="@dimen/card_padding"
+    android:paddingRight="@dimen/card_padding"
+    android:paddingEnd="@dimen/card_padding">
 
     <ImageView
         android:id="@+id/icon"
@@ -23,9 +23,9 @@
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:layout_marginLeft="@dimen/home_content_padding"
-        android:layout_marginStart="@dimen/home_content_padding"
+        android:textSize="@dimen/text_content"
+        android:layout_marginLeft="@dimen/card_padding"
+        android:layout_marginStart="@dimen/card_padding"
         android:textColor="?android:attr/textColorSecondary"
         fontPath="fonts/Font-Regular.ttf"/>
 
