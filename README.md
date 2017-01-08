@@ -11,7 +11,7 @@
 * Latest version of Android Support Library</li>
 * Java SE Development Kit 8</li>
 
-<p>Take a look on this <a href="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/requirements.jpg">screenshot</a> for requirements
+<p>Take a look on this <a href="https://raw.githubusercontent.com/danimahardhika/candybar-library/698d102f504f5a843af4f5bc67a340a09b3c5889/screenshots/requirements.jpg">screenshot</a> for requirements
 <p>The minimum API level supported by this library is API 15</p>
 Add JitPack repository to root ```build.gradle```
 ```Gradle
