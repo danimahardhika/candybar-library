@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.util.SparseArrayCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -26,12 +25,16 @@ import android.widget.Toast;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.helpers.ColorHelper;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
+import com.dm.material.dashboard.candybar.helpers.IconsHelper;
 import com.dm.material.dashboard.candybar.items.Icon;
 import com.dm.material.dashboard.candybar.utils.Animator;
 import com.dm.material.dashboard.candybar.utils.Tag;
 import com.dm.material.dashboard.candybar.utils.listeners.SearchListener;
 
 import org.xmlpull.v1.XmlPullParser;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /*
  * CandyBar - Material Dashboard
@@ -117,13 +120,18 @@ public class IconsBaseFragment extends Fragment {
                                 Fragment prev = fm.findFragmentByTag("home");
                                 if (prev != null) return;
 
+                                PagerIconsAdapter adapter = (PagerIconsAdapter) mPager.getAdapter();
+                                if (adapter == null) return;
+
                                 try {
                                     SearchListener listener = (SearchListener) getActivity();
                                     listener.OnSearchExpanded(true);
                                 } catch (Exception ignored) {}
 
                                 fm.beginTransaction()
-                                        .replace(R.id.container, new IconsSearchFragment(), IconsSearchFragment.TAG)
+                                        .replace(R.id.container,
+                                                IconsSearchFragment.newInstance(adapter.mIcons),
+                                                IconsSearchFragment.TAG)
                                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                                         .addToBackStack(null)
                                         .commit();
@@ -149,12 +157,12 @@ public class IconsBaseFragment extends Fragment {
     private void getIcons() {
         mGetIcons = new AsyncTask<Void, Void, Boolean>() {
 
-            SparseArrayCompat<Icon> sections;
+            List<Icon> sections;
 
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                sections = new SparseArrayCompat<>();
+                sections = new ArrayList<>();
                 mProgress.setVisibility(View.VISIBLE);
             }
 
@@ -165,30 +173,37 @@ public class IconsBaseFragment extends Fragment {
                         Thread.sleep(1);
                         XmlResourceParser parser = getActivity().getResources().getXml(R.xml.drawable);
                         int eventType = parser.getEventType();
-                        String category = "";
-                        int count = 0;
+                        String section = "";
+                        List<Icon> icons = new ArrayList<>();
 
                         while (eventType != XmlPullParser.END_DOCUMENT) {
                             if (eventType == XmlPullParser.START_TAG) {
                                 if (parser.getName().equals("category")) {
                                     String title = parser.getAttributeValue(null, "title");
-                                    if (!category.equals(title)) {
-                                        if (category.length() > 0)
-                                            sections.append(sections.size(), new Icon(category, count));
-                                        category = title;
-                                        count = 0;
+                                    if (!section.equals(title)) {
+                                        if (section.length() > 0)
+                                            sections.add(new Icon(section, icons));
                                     }
+                                    section = title;
+                                    icons = new ArrayList<>();
                                 } else if (parser.getName().equals("item")) {
                                     String name = parser.getAttributeValue(null, "drawable");
                                     int id = DrawableHelper.getResourceId(getActivity(), name);
-                                    if (id > 0) count += 1;
+                                    if (id > 0) {
+                                        if (getActivity().getResources().getBoolean(R.bool.show_icon_name)) {
+                                            boolean iconNameReplacer = getActivity().getResources().getBoolean(
+                                                    R.bool.enable_icon_name_replacer);
+                                            name = IconsHelper.replaceIconName(getActivity(), iconNameReplacer, name);
+                                        }
+                                        icons.add(new Icon(name, id));
+                                    }
                                 }
                             }
 
                             eventType = parser.next();
                         }
 
-                        sections.append(sections.size(), new Icon(category, count));
+                        sections.add(new Icon(section, icons));
                         parser.close();
                         return true;
                     } catch (Exception e) {
@@ -202,8 +217,6 @@ public class IconsBaseFragment extends Fragment {
             @Override
             protected void onPostExecute(Boolean aBoolean) {
                 super.onPostExecute(aBoolean);
-                if (getActivity().isFinishing()) return;
-
                 mProgress.setVisibility(View.GONE);
                 if (aBoolean) {
                     setHasOptionsMenu(true);
@@ -220,21 +233,21 @@ public class IconsBaseFragment extends Fragment {
 
     private class PagerIconsAdapter extends FragmentStatePagerAdapter {
 
-        private final SparseArrayCompat<Icon> mIcons;
+        private final List<Icon> mIcons;
 
-        PagerIconsAdapter(FragmentManager fm, SparseArrayCompat<Icon> icons) {
+        PagerIconsAdapter(FragmentManager fm, List<Icon> icons) {
             super(fm);
             mIcons = icons;
         }
 
         @Override
         public CharSequence getPageTitle(int position){
-            return mIcons.get(position).getTitle() +" ("+ mIcons.get(position).getRes() +")";
+            return mIcons.get(position).getTitle() +" ("+ mIcons.get(position).getIcons().size() +")";
         }
 
         @Override
         public Fragment getItem(int position) {
-            return IconsFragment.newInstance(mIcons.get(position).getTitle());
+            return IconsFragment.newInstance(mIcons.get(position).getIcons());
         }
 
         @Override

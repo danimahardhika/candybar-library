@@ -74,7 +74,7 @@ public class WallpapersAdapter extends RecyclerView.Adapter<WallpapersAdapter.Vi
         Drawable failed = DrawableHelper.getTintedDrawable(
                 mContext, R.drawable.ic_default_image_failed, color,
                 mContext.getResources().getDimensionPixelSize(R.dimen.default_image_padding));
-        mOptions = ImageConfig.getRawImageOptions();
+        mOptions = ImageConfig.getRawDefaultImageOptions();
         mOptions.resetViewBeforeLoading(true);
         mOptions.cacheInMemory(false);
         mOptions.cacheOnDisk(true);

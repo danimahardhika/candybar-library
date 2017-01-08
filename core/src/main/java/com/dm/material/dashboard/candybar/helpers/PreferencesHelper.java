@@ -53,8 +53,6 @@ public class PreferencesHelper {
     private static final String KEY_LATEST_CRASHLOG = "last_crashlog";
     private static final String KEY_PREMIUM_REQUEST_ENABLED = "premium_request_enabled";
     private static final String KEY_AVAILABLE_WALLPAPERS_COUNT = "available_wallpapers_count";
-    private static final String KEY_APPFILTER = "appfilter";
-    private static final String KEY_APPFILTER_VERSION = "appfilter_version";
 
     public PreferencesHelper(@NonNull Context context) {
         mContext = context;
@@ -218,27 +216,7 @@ public class PreferencesHelper {
         getSharedPreferences().edit().putInt(KEY_AVAILABLE_WALLPAPERS_COUNT, count).apply();
     }
 
-    int getAppFilterVersion() {
-        return getSharedPreferences().getInt(KEY_APPFILTER_VERSION, -1);
-    }
-
-    void setAppFilterVersion(int version) {
-        getSharedPreferences().edit().putInt(KEY_APPFILTER_VERSION, version).apply();
-    }
-
-    public boolean isSameAppFilterVersion() {
-        return getAppFilterVersion() == getVersion();
-    }
-
-    StringBuilder getAppFilter() {
-        return new StringBuilder(getSharedPreferences().getString(KEY_APPFILTER, ""));
-    }
-
-    void setAppFilter(String appFilter) {
-        getSharedPreferences().edit().putString(KEY_APPFILTER, appFilter).apply();
-    }
-
-    public int getVersion() {
+    private int getVersion() {
         return getSharedPreferences().getInt(KEY_APP_VERSION, 0);
     }
 

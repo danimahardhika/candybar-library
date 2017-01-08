@@ -318,9 +318,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                 super.onPreExecute();
                 mAdapter = new RequestAdapter(getActivity(), new SparseArrayCompat<>());
                 mRequestList.setAdapter(mAdapter);
-
-                if (!Preferences.getPreferences(getActivity()).isSameAppFilterVersion())
-                    mProgress.setVisibility(View.VISIBLE);
+                mProgress.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -330,12 +328,13 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                         Thread.sleep(1);
                         Database database = new Database(getActivity());
                         PackageManager packageManager = getActivity().getPackageManager();
-                        StringBuilder activities = RequestHelper.loadAppFilter(getActivity());
+                        String activities = RequestHelper.loadAppFilter(getActivity());
 
                         Intent intent = new Intent(Intent.ACTION_MAIN);
                         intent.addCategory(Intent.CATEGORY_LAUNCHER);
                         List<ResolveInfo> apps = packageManager.queryIntentActivities(
                                 intent, PackageManager.GET_RESOLVED_FILTER);
+
                         try {
                             Collections.sort(apps, new ResolveInfo.DisplayNameComparator(
                                     getActivity().getPackageManager()));
@@ -343,14 +342,14 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 
                         for (ResolveInfo app : apps) {
                             String packageName = app.activityInfo.packageName;
-                            String name = app.activityInfo.loadLabel(packageManager).toString();
-
-                            String localizedLabel = LocaleHelper.getOtherAppLocaleName(
-                                    getActivity(), new Locale("en-US"), packageName);
-                            if (localizedLabel != null) name = localizedLabel;
-
                             String activity = packageName +"/"+ app.activityInfo.name;
-                            if (!activities.toString().contains(activity)) {
+
+                            if (!activities.contains(activity)) {
+                                String name = LocaleHelper.getOtherAppLocaleName(
+                                        getActivity(), new Locale("en-US"), packageName);
+                                if (name == null)
+                                    name = app.activityInfo.loadLabel(packageManager).toString();
+
                                 Drawable drawable = DrawableHelper.getAppIcon(getActivity(), app);
                                 byte[] bytes = DrawableHelper.getBitmapByte(drawable);
                                 boolean requested = database.isRequested(activity);

@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.dm.material.dashboard.candybar.R;
+import com.dm.material.dashboard.candybar.helpers.IconsHelper;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -97,6 +98,12 @@ public class IconPreviewFragment extends DialogFragment {
         if (savedInstanceState != null) {
             mIconName = savedInstanceState.getString(NAME);
             mIconId = savedInstanceState.getInt(ID);
+        }
+
+        if (!getActivity().getResources().getBoolean(R.bool.show_icon_name)) {
+            boolean iconNameReplacer = getActivity().getResources().getBoolean(
+                    R.bool.enable_icon_name_replacer);
+            mIconName = IconsHelper.replaceIconName(getActivity(), iconNameReplacer, mIconName);
         }
 
         mName.setText(mIconName);

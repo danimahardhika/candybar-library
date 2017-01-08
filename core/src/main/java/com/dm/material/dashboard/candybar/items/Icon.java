@@ -1,5 +1,10 @@
 package com.dm.material.dashboard.candybar.items;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.List;
+
 /*
  * CandyBar - Material Dashboard
  *
@@ -18,11 +23,12 @@ package com.dm.material.dashboard.candybar.items;
  * limitations under the License.
  */
 
-public class Icon {
+public class Icon implements Parcelable {
 
     private final String mTitle;
-    private final int mRes;
+    private int mRes;
     private String mPackageName;
+    private List<Icon> mIcons;
 
     public Icon(String title, int res) {
         mTitle = title;
@@ -33,6 +39,11 @@ public class Icon {
         mTitle = title;
         mRes = res;
         mPackageName = packageName;
+    }
+
+    public Icon(String title, List<Icon> icons) {
+        mTitle = title;
+        mIcons = icons;
     }
 
     public String getTitle() {
@@ -47,4 +58,37 @@ public class Icon {
         return mPackageName;
     }
 
+    public List<Icon> getIcons() {
+        return mIcons;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.mTitle);
+        dest.writeInt(this.mRes);
+        dest.writeString(this.mPackageName);
+    }
+
+    protected Icon(Parcel in) {
+        this.mTitle = in.readString();
+        this.mRes = in.readInt();
+        this.mPackageName = in.readString();
+    }
+
+    public static final Parcelable.Creator<Icon> CREATOR = new Parcelable.Creator<Icon>() {
+        @Override
+        public Icon createFromParcel(Parcel source) {
+            return new Icon(source);
+        }
+
+        @Override
+        public Icon[] newArray(int size) {
+            return new Icon[size];
+        }
+    };
 }

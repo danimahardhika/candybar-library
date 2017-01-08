@@ -71,10 +71,18 @@ public class ImageConfig {
         return options.build();
     }
 
-    public static DisplayImageOptions.Builder getRawImageOptions() {
+    public static DisplayImageOptions.Builder getRawDefaultImageOptions() {
         DisplayImageOptions.Builder options = new DisplayImageOptions.Builder();
         options.delayBeforeLoading(10)
                 .bitmapConfig(Bitmap.Config.RGB_565)
+                .imageScaleType(ImageScaleType.EXACTLY);
+        return options;
+    }
+
+    public static DisplayImageOptions.Builder getRawImageOptions() {
+        DisplayImageOptions.Builder options = new DisplayImageOptions.Builder();
+        options.delayBeforeLoading(10)
+                .bitmapConfig(Bitmap.Config.ARGB_8888)
                 .imageScaleType(ImageScaleType.EXACTLY);
         return options;
     }

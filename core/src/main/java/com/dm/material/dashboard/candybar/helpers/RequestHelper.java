@@ -3,7 +3,6 @@ package com.dm.material.dashboard.candybar.helpers;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.res.AssetManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -12,15 +11,7 @@ import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.Tag;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import java.io.InputStream;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+import org.xmlpull.v1.XmlPullParser;
 
 /*
  * CandyBar - Material Dashboard
@@ -42,40 +33,25 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 public class RequestHelper {
 
-    public static StringBuilder loadAppFilter(@NonNull Context context) {
+    @NonNull
+    public static String loadAppFilter(@NonNull Context context) {
         try {
-            if (Preferences.getPreferences(context).getVersion() >
-                    Preferences.getPreferences(context).getAppFilterVersion()) {
-                Preferences.getPreferences(context).setAppFilterVersion(
-                        Preferences.getPreferences(context).getVersion());
+            StringBuilder sb = new StringBuilder();
+            XmlPullParser xpp = context.getResources().getXml(R.xml.appfilter);
 
-                StringBuilder sb = new StringBuilder();
-                AssetManager asset = context.getAssets();
-                InputStream stream = asset.open("appfilter.xml");
-                DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-                DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-                Document doc = docBuilder.parse(stream);
-                NodeList list = doc.getElementsByTagName("item");
-
-                for (int i = 0; i < list.getLength(); i++) {
-                    Node nNode = list.item(i);
-                    if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-                        Element element = (Element) nNode;
-                        String activity = element.getAttribute("component")
-                                .replace("ComponentInfo{", "").replace("}", "");
-                        sb.append(activity).append(", ");
+            while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
+                if (xpp.getEventType() == XmlPullParser.START_TAG) {
+                    if (xpp.getName().equals("item")) {
+                        sb.append(xpp.getAttributeValue(null, "component"));
                     }
                 }
-
-                Preferences.getPreferences(context).setAppFilter(sb.toString());
-                return sb;
+                xpp.next();
             }
-            return Preferences.getPreferences(context).getAppFilter();
+            return sb.toString();
         } catch (Exception e) {
             Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
         }
-        Preferences.getPreferences(context).setAppFilterVersion(-1);
-        return new StringBuilder();
+        return "";
     }
 
     public static void showAlreadyRequestedDialog(@NonNull Context context) {

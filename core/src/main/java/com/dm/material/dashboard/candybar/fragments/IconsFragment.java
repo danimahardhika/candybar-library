@@ -1,12 +1,10 @@
 package com.dm.material.dashboard.candybar.fragments;
 
 import android.content.res.Configuration;
-import android.content.res.XmlResourceParser;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.util.SparseArrayCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.util.Log;
@@ -16,16 +14,16 @@ import android.view.ViewGroup;
 
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.IconsAdapter;
-import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
-import com.dm.material.dashboard.candybar.helpers.IconsHelper;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.items.Icon;
-import com.dm.material.dashboard.candybar.utils.SparseArrayUtils;
+import com.dm.material.dashboard.candybar.utils.AlphanumComparator;
 import com.dm.material.dashboard.candybar.utils.Tag;
 import com.dm.material.dashboard.candybar.utils.views.AutoFitRecyclerView;
 import com.pluscubed.recyclerfastscroll.RecyclerFastScroller;
 
-import org.xmlpull.v1.XmlPullParser;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /*
  * CandyBar - Material Dashboard
@@ -50,10 +48,10 @@ public class IconsFragment extends Fragment {
     private AutoFitRecyclerView mIconsGrid;
     private RecyclerFastScroller mFastScroll;
 
-    private String mTitle;
+    private List<Icon> mIcons;
     private AsyncTask<Void, Void, Boolean> mGetIcons;
 
-    private static final String TITLE = "title";
+    private static final String ICONS = "icons";
 
     @Nullable
     @Override
@@ -65,10 +63,10 @@ public class IconsFragment extends Fragment {
         return view;
     }
 
-    public static IconsFragment newInstance(String title) {
+    public static IconsFragment newInstance(List<Icon> icons) {
         IconsFragment fragment = new IconsFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(TITLE, title);
+        bundle.putParcelableArrayList(ICONS, new ArrayList<>(icons));
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -76,7 +74,7 @@ public class IconsFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mTitle = getArguments().getString(TITLE);
+        mIcons = getArguments().getParcelableArrayList(ICONS);
     }
 
     @Override
@@ -109,62 +107,26 @@ public class IconsFragment extends Fragment {
     private void getIcons() {
         mGetIcons = new AsyncTask<Void, Void, Boolean>() {
 
-            SparseArrayCompat<Icon> icons;
-            boolean iconReplacer;
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                icons = new SparseArrayCompat<>();
-                iconReplacer = getActivity().getResources().getBoolean(
-                        R.bool.enable_icon_name_replacer);
-            }
-
             @Override
             protected Boolean doInBackground(Void... voids) {
                 while (!isCancelled()) {
                     try {
                         Thread.sleep(1);
-                        XmlResourceParser parser = getActivity().getResources().getXml(R.xml.drawable);
-                        int eventType = parser.getEventType();
-                        String title = "";
-                        boolean filled = false;
+                        if (!getActivity().getResources().getBoolean(R.bool.enable_icons_sort))
+                            return true;
 
-                        while (eventType != XmlPullParser.END_DOCUMENT) {
-                            if (eventType == XmlPullParser.START_TAG) {
-                                if (parser.getName().equals("category")) {
-                                    title = parser.getAttributeValue(null, "title");
-                                } else if (parser.getName().equals("item")) {
-                                    if (title.equals(mTitle)) {
-                                        String name = parser.getAttributeValue(null, "drawable");
-                                        int id = DrawableHelper.getResourceId(getActivity(), name);
-                                        if (id > 0) {
-                                            name = IconsHelper.replaceIconName(
-                                                    getActivity(), iconReplacer, name);
-                                            Icon icon = new Icon(name, id);
-                                            icons.append(icons.size(), icon);
-                                        }
-                                        filled = true;
-                                    } else {
-                                        if (filled) break;
-                                    }
-                                }
+                        Collections.sort(mIcons, new AlphanumComparator() {
+                            @Override
+                            public int compare(Object o1, Object o2) {
+                                String s1 = ((Icon) o1).getTitle();
+                                String s2 = ((Icon) o2).getTitle();
+                                return super.compare(s1, s2);
                             }
-
-                            eventType = parser.next();
-                        }
-
-                        parser.close();
-
-                        try {
-                            SparseArrayUtils utils = new SparseArrayUtils();
-                            utils.sort(icons);
-                        } catch (Exception ignored) {}
-                        return true;
+                        });
                     } catch (Exception e) {
                         Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
-                        return false;
                     }
+                    return true;
                 }
                 return false;
             }
@@ -173,12 +135,12 @@ public class IconsFragment extends Fragment {
             protected void onPostExecute(Boolean aBoolean) {
                 super.onPostExecute(aBoolean);
                 if (aBoolean) {
-                    IconsAdapter adapter = new IconsAdapter(getActivity(), icons, false);
+                    IconsAdapter adapter = new IconsAdapter(getActivity(), mIcons, false);
                     mIconsGrid.setAdapter(adapter);
                 }
+
                 mGetIcons = null;
             }
-
         }.execute();
     }
 

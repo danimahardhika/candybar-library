@@ -12,6 +12,7 @@ import android.util.Log;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.fragments.dialog.IconPreviewFragment;
 import com.dm.material.dashboard.candybar.items.Icon;
+import com.dm.material.dashboard.candybar.utils.ImageConfig;
 import com.dm.material.dashboard.candybar.utils.Tag;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -56,7 +57,7 @@ public class IconsHelper {
         if (action == IntentHelper.ICON_PICKER) {
             Intent intent = new Intent();
             Bitmap bitmap = ImageLoader.getInstance().loadImageSync(
-                    "drawable://" + icon.getRes());
+                    "drawable://" + icon.getRes(), ImageConfig.getRawImageOptions().build());
 
             intent.putExtra("icon", bitmap);
             ((AppCompatActivity) context).setResult(bitmap != null ?
@@ -65,7 +66,7 @@ public class IconsHelper {
         } else if (action == IntentHelper.IMAGE_PICKER) {
             Intent intent = new Intent();
             Bitmap bitmap = ImageLoader.getInstance().loadImageSync(
-                    "drawable://" + icon.getRes());
+                    "drawable://" + icon.getRes(), ImageConfig.getRawImageOptions().build());
             if (bitmap != null) {
                 File file = new File(context.getCacheDir(), icon.getTitle() + ".png");
                 FileOutputStream outStream;

@@ -1,12 +1,10 @@
 package com.dm.material.dashboard.candybar.fragments;
 
-import android.content.res.XmlResourceParser;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.util.SparseArrayCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -20,24 +18,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.IconsAdapter;
 import com.dm.material.dashboard.candybar.helpers.ColorHelper;
-import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
-import com.dm.material.dashboard.candybar.helpers.IconsHelper;
 import com.dm.material.dashboard.candybar.helpers.SoftKeyboardHelper;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.items.Icon;
-import com.dm.material.dashboard.candybar.utils.SparseArrayUtils;
+import com.dm.material.dashboard.candybar.utils.AlphanumComparator;
 import com.dm.material.dashboard.candybar.utils.Tag;
 import com.dm.material.dashboard.candybar.utils.views.AutoFitRecyclerView;
 import com.pluscubed.recyclerfastscroll.RecyclerFastScroller;
 
-import org.xmlpull.v1.XmlPullParser;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /*
  * CandyBar - Material Dashboard
@@ -63,12 +60,13 @@ public class IconsSearchFragment extends Fragment {
     private RecyclerFastScroller mFastScroll;
     private TextView mSearchResult;
     private SearchView mSearchView;
-    private ProgressBar mProgress;
 
+    private List<Icon> mIcons;
     private IconsAdapter mAdapter;
     private AsyncTask<Void, Void, Boolean> mGetIcons;
 
     public static final String TAG = "icons_search";
+    private static final String ICONS = "icons";
 
     @Nullable
     @Override
@@ -78,8 +76,24 @@ public class IconsSearchFragment extends Fragment {
         mIconsGrid = (AutoFitRecyclerView) view.findViewById(R.id.icons_grid);
         mFastScroll = (RecyclerFastScroller) view.findViewById(R.id.fastscroll);
         mSearchResult = (TextView) view.findViewById(R.id.search_result);
-        mProgress = (ProgressBar) view.findViewById(R.id.progress);
         return view;
+    }
+
+    public static IconsSearchFragment newInstance(List<Icon> icons) {
+        IconsSearchFragment fragment = new IconsSearchFragment();
+        Bundle bundle = new Bundle();
+        ArrayList<Icon> allIcons = new ArrayList<>();
+        for (Icon icon : icons)
+            allIcons.addAll(icon.getIcons());
+        bundle.putParcelableArrayList(ICONS, allIcons);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mIcons = getArguments().getParcelableArrayList(ICONS);
     }
 
     @Override
@@ -166,54 +180,23 @@ public class IconsSearchFragment extends Fragment {
     private void getIcons() {
         mGetIcons = new AsyncTask<Void, Void, Boolean>() {
 
-            SparseArrayCompat<Icon> icons;
-            boolean iconReplacer;
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                icons = new SparseArrayCompat<>();
-                iconReplacer = getActivity().getResources().getBoolean(
-                        R.bool.enable_icon_name_replacer);
-                mProgress.setVisibility(View.VISIBLE);
-            }
-
             @Override
             protected Boolean doInBackground(Void... voids) {
                 while (!isCancelled()) {
                     try {
                         Thread.sleep(1);
-                        XmlResourceParser parser = getActivity().getResources().getXml(R.xml.drawable);
-                        int eventType = parser.getEventType();
-
-                        while (eventType != XmlPullParser.END_DOCUMENT) {
-                            if (eventType == XmlPullParser.START_TAG) {
-                                if (parser.getName().equals("item")) {
-                                    String name = parser.getAttributeValue(null, "drawable");
-                                    int id = DrawableHelper.getResourceId(getActivity(), name);
-                                    if (id > 0) {
-                                        name = IconsHelper.replaceIconName(
-                                                getActivity(), iconReplacer, name);
-                                        Icon icon = new Icon(name, id);
-                                        icons.append(icons.size(), icon);
-                                    }
-                                }
+                        Collections.sort(mIcons, new AlphanumComparator() {
+                            @Override
+                            public int compare(Object o1, Object o2) {
+                                String s1 = ((Icon) o1).getTitle();
+                                String s2 = ((Icon) o2).getTitle();
+                                return super.compare(s1, s2);
                             }
-
-                            eventType = parser.next();
-                        }
-
-                        parser.close();
-
-                        try {
-                            SparseArrayUtils utils = new SparseArrayUtils();
-                            utils.sort(icons);
-                        } catch (Exception ignored) {}
-                        return true;
+                        });
                     } catch (Exception e) {
                         Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
-                        return false;
                     }
+                    return true;
                 }
                 return false;
             }
@@ -221,13 +204,13 @@ public class IconsSearchFragment extends Fragment {
             @Override
             protected void onPostExecute(Boolean aBoolean) {
                 super.onPostExecute(aBoolean);
-                mProgress.setVisibility(View.GONE);
                 if (aBoolean) {
-                    mAdapter = new IconsAdapter(getActivity(), icons, true);
+                    mAdapter = new IconsAdapter(getActivity(), mIcons, true);
                     mIconsGrid.setAdapter(mAdapter);
                     mSearchView.requestFocus();
                     SoftKeyboardHelper.openKeyboard(getActivity());
                 } else {
+                    //Unable to load all icons
                     Toast.makeText(getActivity(), R.string.icons_load_failed,
                             Toast.LENGTH_LONG).show();
                 }

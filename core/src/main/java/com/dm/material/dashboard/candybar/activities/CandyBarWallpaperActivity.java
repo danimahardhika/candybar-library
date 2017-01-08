@@ -178,7 +178,7 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
         }
 
         mRunnable = () -> {
-            Animator.startSlideDownAnimation(this, toolbar, null);
+            toolbar.setVisibility(View.VISIBLE);
             loadWallpaper(mUrl);
         };
         mHandler = new Handler();
@@ -270,7 +270,7 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
     }
 
     private void loadWallpaper(String url) {
-        DisplayImageOptions.Builder options = ImageConfig.getRawImageOptions();
+        DisplayImageOptions.Builder options = ImageConfig.getRawDefaultImageOptions();
         options.cacheInMemory(false);
         options.cacheOnDisk(true);
 

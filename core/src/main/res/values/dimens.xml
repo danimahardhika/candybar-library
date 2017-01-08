@@ -26,7 +26,7 @@
     <dimen name="fab_margin">0dp</dimen>
     <dimen name="fab_margin_global">20dp</dimen>
     <dimen name="fab_size">56dp</dimen>
-    <dimen name="fab_size_mini">52dp</dimen>
+    <dimen name="fab_size_mini">56dp</dimen>
 
     <!-- Button -->
     <dimen name="button_padding">10dp</dimen>
