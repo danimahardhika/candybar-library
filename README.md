@@ -83,6 +83,7 @@ Want your icon pack listed here? Mention me at [Google Plus](https://plus.google
 * [Jono](https://play.google.com/store/apps/details?id=com.indigomadina.jono)
 * [Tabloid](https://play.google.com/store/apps/details?id=com.indigomadina.tabloid)
 * [Pixel](https://play.google.com/store/apps/details?id=com.themezilla.pixelui)
+* [Silhoutte](https://play.google.com/store/apps/details?id=com.xonyxltd.icon.silhouettedonate)
 
 # License
 ```
