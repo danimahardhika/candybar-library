@@ -134,7 +134,7 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
         if (!Preferences.getPreferences(getActivity()).isShowApplyTips()) return;
 
         int accent = ColorHelper.getAttributeColor(getActivity(), R.attr.colorAccent);
-        int textColor = ColorHelper.getTitleTextColor(getActivity(), accent);
+        int textColor = ColorHelper.getTitleTextColor(accent);
         FloatingActionButton fab = (FloatingActionButton) getActivity()
                 .findViewById(R.id.apply_tips_fab);
         fab.setImageDrawable(DrawableHelper.getTintedDrawable(getActivity(),

@@ -124,8 +124,8 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                 ColorHelper.getAttributeColor(getActivity(), R.attr.colorAccent),
                 PorterDuff.Mode.SRC_IN);
 
-        int color = ColorHelper.getTitleTextColor(getActivity(),
-                ColorHelper.getAttributeColor(getActivity(), R.attr.colorAccent));
+        int color = ColorHelper.getTitleTextColor(ColorHelper
+                .getAttributeColor(getActivity(), R.attr.colorAccent));
         mFab.setImageDrawable(DrawableHelper.getTintedDrawable(
                 getActivity(), R.drawable.ic_fab_send, color));
         mFab.setOnClickListener(this);
@@ -250,7 +250,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         if (premiumRequest) {
             int accent = ColorHelper.getAttributeColor(getActivity(), R.attr.colorAccent);
             AppCompatButton buy = (AppCompatButton) getActivity().findViewById(R.id.premium_request_buy);
-            buy.setTextColor(ColorHelper.getTitleTextColor(getActivity(), accent));
+            buy.setTextColor(ColorHelper.getTitleTextColor(accent));
             buy.setOnClickListener(this);
 
             int toolbarIcon = ColorHelper.getAttributeColor(getActivity(), R.attr.toolbar_icon);

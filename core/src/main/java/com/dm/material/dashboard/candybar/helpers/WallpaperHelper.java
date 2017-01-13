@@ -196,11 +196,13 @@ public class WallpaperHelper {
                                     downloaded +" "+ file.toString(), 6000)
                                     .setAction(context.getResources().getString(R.string.open), view -> {
                                         try {
+                                            Uri uri = FileHelper.getUriFromFile(context, context.getPackageName(), file);
+                                            if (uri == null) return;
+
                                             context.startActivity(new Intent()
                                                     .setAction(Intent.ACTION_VIEW)
-                                                    .setDataAndType(Uri.fromFile(
-                                                            new File(file.toString())),
-                                                            "image/*"));
+                                                    .setDataAndType(uri, "image/*")
+                                                    .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION));
                                         } catch (ActivityNotFoundException e) {
                                             Toast.makeText(context,
                                                     context.getResources().getString(R.string.wallpaper_noapp),

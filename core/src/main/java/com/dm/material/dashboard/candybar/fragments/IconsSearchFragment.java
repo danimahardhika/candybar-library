@@ -185,6 +185,9 @@ public class IconsSearchFragment extends Fragment {
                 while (!isCancelled()) {
                     try {
                         Thread.sleep(1);
+                        if (!getActivity().getResources().getBoolean(R.bool.enable_icons_sort))
+                            return true;
+
                         Collections.sort(mIcons, new AlphanumComparator() {
                             @Override
                             public int compare(Object o1, Object o2) {

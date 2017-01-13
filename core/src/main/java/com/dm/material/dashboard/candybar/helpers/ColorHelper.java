@@ -71,10 +71,9 @@ public class ColorHelper {
         return typedValue.data;
     }
 
-    public static int getTitleTextColor(@NonNull Context context, @ColorInt int color) {
+    public static int getTitleTextColor(@ColorInt int color) {
         double darkness = 1-(0.299*Color.red(color) + 0.587*Color.green(color) + 0.114*Color.blue(color))/255;
-        return (darkness < 0.35) ? getDarkerColor(color, 0.25f) :
-                ContextCompat.getColor(context, android.R.color.white);
+        return (darkness < 0.35) ? getDarkerColor(color, 0.25f) : Color.WHITE;
     }
 
     public static int setColorAlpha(@ColorInt int color, float alpha) {

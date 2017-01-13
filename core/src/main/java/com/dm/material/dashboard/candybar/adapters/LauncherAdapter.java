@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.helpers.LauncherHelper;
@@ -84,9 +85,17 @@ public class LauncherAdapter extends RecyclerView.Adapter<LauncherAdapter.ViewHo
             int position = getAdapterPosition();
             if (id == R.id.container) {
                 if (position < 0 || position > mLaunchers.size()) return;
-                LauncherHelper.apply(mContext,
-                        mLaunchers.get(position).getPackageName(),
-                        mLaunchers.get(position).getTitle());
+                try {
+                    LauncherHelper.apply(mContext,
+                            mLaunchers.get(position).getPackageName(),
+                            mLaunchers.get(position).getTitle());
+                } catch (SecurityException e) {
+                    Toast.makeText(mContext, mContext.getResources().getString(R.string.unable_launch)
+                                    + " " +mLaunchers.get(position).getTitle()+ " " +
+                                    mContext.getResources().getString(R.string.unable_launch2),
+                            Toast.LENGTH_LONG).show();
+                }
+
             }
         }
     }

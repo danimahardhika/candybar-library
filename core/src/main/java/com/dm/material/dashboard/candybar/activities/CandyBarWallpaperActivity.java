@@ -180,6 +180,8 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
         mRunnable = () -> {
             toolbar.setVisibility(View.VISIBLE);
             loadWallpaper(mUrl);
+            mRunnable = null;
+            mHandler = null;
         };
         mHandler = new Handler();
         mHandler.postDelayed(mRunnable, 700);
@@ -286,7 +288,7 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
                 super.onLoadingFailed(imageUri, view, failReason);
-                int text = ColorHelper.getTitleTextColor(CandyBarWallpaperActivity.this, mColor);
+                int text = ColorHelper.getTitleTextColor(mColor);
                 OnWallpaperLoaded(text);
 
                 int color = ColorHelper.getAttributeColor(CandyBarWallpaperActivity.this, R.attr.main_background);
@@ -311,7 +313,7 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
                                 CandyBarWallpaperActivity.this, R.attr.colorAccent);
                         int color = palette.getVibrantColor(accent);
                         mColor = color;
-                        int text = ColorHelper.getTitleTextColor(CandyBarWallpaperActivity.this, color);
+                        int text = ColorHelper.getTitleTextColor(color);
                         mFab.setBackgroundTintList(ColorHelper.getColorStateList(
                                 android.R.attr.state_pressed,
                                 color, ColorHelper.getDarkerColor(color, 0.9f)));

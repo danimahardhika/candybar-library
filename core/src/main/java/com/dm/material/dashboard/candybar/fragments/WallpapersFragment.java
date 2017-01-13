@@ -179,7 +179,7 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
         if (!Preferences.getPreferences(getActivity()).isShowWallpaperTips()) return;
 
         int accent = ColorHelper.getAttributeColor(getActivity(), R.attr.colorAccent);
-        int textColor = ColorHelper.getTitleTextColor(getActivity(), accent);
+        int textColor = ColorHelper.getTitleTextColor(accent);
         FloatingActionButton fab = (FloatingActionButton) getActivity()
                 .findViewById(R.id.wallpaper_tips_fab);
         fab.setImageDrawable(DrawableHelper.getTintedDrawable(getActivity(),

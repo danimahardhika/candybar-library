@@ -480,7 +480,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
 
                     ViewCompat.setBackground(counter, DrawableHelper.getTintedDrawable(this,
                             R.drawable.ic_toolbar_circle, accent));
-                    counter.setTextColor(ColorHelper.getTitleTextColor(this, accent));
+                    counter.setTextColor(ColorHelper.getTitleTextColor(accent));
                     int newItem = (size - offlineSize);
                     counter.setText(String.valueOf(newItem > 99 ? "99+" : newItem));
                     container.setVisibility(View.VISIBLE);
@@ -680,8 +680,8 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
     }
 
     private void initRateReviewFab() {
-        int color = ColorHelper.getTitleTextColor(this,
-                ColorHelper.getAttributeColor(this, R.attr.colorAccent));
+        int color = ColorHelper.getTitleTextColor(ColorHelper
+                .getAttributeColor(this, R.attr.colorAccent));
         Drawable icon = DrawableHelper.getTintedDrawable(this,
                 R.drawable.ic_fab_star, color);
         mFab.setImageDrawable(icon);

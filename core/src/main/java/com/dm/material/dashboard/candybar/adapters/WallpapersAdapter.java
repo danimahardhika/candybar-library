@@ -130,7 +130,7 @@ public class WallpapersAdapter extends RecyclerView.Adapter<WallpapersAdapter.Vi
                                     if (color == vibrant)
                                         color = palette.getMutedColor(vibrant);
                                     holder.card.setCardBackgroundColor(color);
-                                    int text = ColorHelper.getTitleTextColor(mContext, color);
+                                    int text = ColorHelper.getTitleTextColor(color);
                                     holder.name.setTextColor(text);
                                     holder.author.setTextColor(text);
                                 });
