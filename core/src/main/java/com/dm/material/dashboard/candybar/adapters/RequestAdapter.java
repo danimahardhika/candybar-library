@@ -1,8 +1,6 @@
 package com.dm.material.dashboard.candybar.adapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.NonNull;
 import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.widget.AppCompatCheckBox;
@@ -17,10 +15,15 @@ import android.widget.TextView;
 
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.helpers.ColorHelper;
-import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
+import com.dm.material.dashboard.candybar.utils.ImageConfig;
 import com.dm.material.dashboard.candybar.utils.listeners.RequestListener;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 
 /*
  * CandyBar - Material Dashboard
@@ -45,6 +48,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
     private final Context mContext;
     private final SparseBooleanArray mSelectedItems;
     private final SparseArrayCompat<Request> mRequests;
+    private DisplayImageOptions.Builder mOptions;
 
     private final int mTextColorSecondary;
     private final int mTextColorAccent;
@@ -56,6 +60,13 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
                 android.R.attr.textColorSecondary);
         mTextColorAccent = ColorHelper.getAttributeColor(mContext, R.attr.colorAccent);
         mSelectedItems = new SparseBooleanArray();
+
+        mOptions = ImageConfig.getRawDefaultImageOptions();
+        mOptions.resetViewBeforeLoading(true);
+        mOptions.cacheInMemory(false);
+        mOptions.cacheOnDisk(false);
+        mOptions.showImageOnFail(R.drawable.ic_app_default);
+        mOptions.displayer(new FadeInBitmapDisplayer(700));
     }
 
     @Override
@@ -68,17 +79,13 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
     @Override
     public void onViewRecycled(ViewHolder holder) {
         super.onViewRecycled(holder);
-        Bitmap bitmap = ((BitmapDrawable) holder.icon.getDrawable()).getBitmap();
-        if (bitmap != null) bitmap.recycle();
-
         holder.requested.setTextColor(mTextColorSecondary);
-        holder.icon.setImageBitmap(null);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.icon.setImageBitmap(DrawableHelper.getBitmap(
-                mRequests.get(position).getIcon(), true));
+        ImageLoader.getInstance().displayImage(mRequests.get(position).getPackageName(),
+                new ImageViewAware(holder.icon), mOptions.build(), new ImageSize(114, 114), null, null);
 
         holder.name.setText(mRequests.get(position).getName());
         holder.activity.setText(mRequests.get(position).getActivity());

@@ -6,7 +6,6 @@ import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -51,9 +50,11 @@ import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.Animator;
+import com.dm.material.dashboard.candybar.utils.ImageConfig;
 import com.dm.material.dashboard.candybar.utils.Tag;
 import com.dm.material.dashboard.candybar.utils.listeners.InAppBillingListener;
 import com.dm.material.dashboard.candybar.utils.listeners.RequestListener;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pluscubed.recyclerfastscroll.RecyclerFastScroller;
 
 import java.io.BufferedWriter;
@@ -350,11 +351,8 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                                 if (name == null)
                                     name = app.activityInfo.loadLabel(packageManager).toString();
 
-                                Drawable drawable = DrawableHelper.getAppIcon(getActivity(), app);
-                                byte[] bytes = DrawableHelper.getBitmapByte(drawable);
                                 boolean requested = database.isRequested(activity);
                                 publishProgress(new Request(
-                                        bytes,
                                         name,
                                         app.activityInfo.packageName,
                                         activity,
@@ -471,7 +469,10 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 
                             Bitmap bitmap = DrawableHelper.getHighQualityIcon(
                                     getActivity(), item.getPackageName());
-                            if (bitmap == null) bitmap = DrawableHelper.getBitmap(item.getIcon(), false);
+                            if (bitmap == null) {
+                                bitmap = ImageLoader.getInstance().loadImageSync(item.getPackageName(),
+                                        ImageConfig.getDefaultImageOptions(false));
+                            }
 
                             String icon = FileHelper.saveIcon(directory, bitmap, item.getName());
                             if (icon != null) files.append(files.size(), icon);

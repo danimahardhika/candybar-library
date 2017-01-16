@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
@@ -149,21 +148,6 @@ public class DrawableHelper {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.PNG, 10, stream);
             return stream.toByteArray();
-        } catch (Exception | OutOfMemoryError e) {
-            Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
-        }
-        return null;
-    }
-
-    @Nullable
-    public static Bitmap getBitmap(byte[] bytes, boolean compress) {
-        try {
-            if (compress) {
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inSampleSize = 2;
-                return BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
-            }
-            return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
         } catch (Exception | OutOfMemoryError e) {
             Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
         }

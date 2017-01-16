@@ -16,6 +16,8 @@ import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.helpers.LauncherHelper;
 import com.dm.material.dashboard.candybar.items.Icon;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
+import com.dm.material.dashboard.candybar.utils.ImageConfig;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 /*
  * CandyBar - Material Dashboard
@@ -55,7 +57,8 @@ public class LauncherAdapter extends RecyclerView.Adapter<LauncherAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.name.setText(mLaunchers.get(position).getTitle());
-        holder.icon.setImageResource(mLaunchers.get(position).getRes());
+        ImageLoader.getInstance().displayImage("drawable://" +mLaunchers.get(position).getRes(),
+                holder.icon, ImageConfig.getDefaultImageOptions(false));
     }
 
     @Override

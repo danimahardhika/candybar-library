@@ -220,7 +220,16 @@ public class IconsBaseFragment extends Fragment {
                 mProgress.setVisibility(View.GONE);
                 if (aBoolean) {
                     setHasOptionsMenu(true);
-                    mPager.setAdapter(new PagerIconsAdapter(getChildFragmentManager(), sections));
+                    PagerIconsAdapter adapter = new PagerIconsAdapter(getChildFragmentManager(), sections);
+                    mPager.setAdapter(adapter);
+
+                    for (int i = 0; i < adapter.getCount(); i++) {
+                        TabLayout.Tab tab = mTabLayout.getTabAt(i);
+                        if (tab != null) {
+                            tab.setCustomView(R.layout.fragment_icons_base_tab);
+                            tab.setText(adapter.getPageTitle(i));
+                        }
+                    }
                 } else {
                     Toast.makeText(getActivity(), R.string.icons_load_failed,
                             Toast.LENGTH_LONG).show();

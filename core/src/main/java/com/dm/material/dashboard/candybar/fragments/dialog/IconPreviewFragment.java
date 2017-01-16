@@ -62,7 +62,7 @@ public class IconPreviewFragment extends DialogFragment {
         try {
             DialogFragment dialog = IconPreviewFragment.newInstance(name, id);
             dialog.show(ft, TAG);
-        } catch (IllegalArgumentException ignored) {}
+        } catch (IllegalArgumentException | IllegalStateException ignored) {}
     }
 
     private TextView mName;

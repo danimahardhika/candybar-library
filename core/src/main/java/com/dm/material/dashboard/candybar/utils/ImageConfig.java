@@ -44,6 +44,7 @@ public class ImageConfig {
                 .threadPriority(Thread.NORM_PRIORITY - 2)
                 .threadPoolSize(3)
                 .tasksProcessingOrder(QueueProcessingType.FIFO)
+                .imageDownloader(new ImageDownloader(context))
                 .diskCache(new UnlimitedDiskCache(new File(
                         context.getCacheDir().toString() + "/uil-images")))
                 .build();
@@ -55,7 +56,7 @@ public class ImageConfig {
                 .resetViewBeforeLoading(true)
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .imageScaleType(ImageScaleType.EXACTLY)
-                .displayer(new FadeInBitmapDisplayer(650))
+                .displayer(new FadeInBitmapDisplayer(700))
                 .cacheOnDisk(cacheOnDisk)
                 .cacheInMemory(false);
         return options.build();

@@ -214,7 +214,6 @@ public class IconsSearchFragment extends Fragment {
                     Toast.makeText(getActivity(), R.string.icons_load_failed,
                             Toast.LENGTH_LONG).show();
                 }
-
                 mGetIcons = null;
             }
         }.execute();

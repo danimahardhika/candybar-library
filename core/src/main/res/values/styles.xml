@@ -133,11 +133,6 @@
         <item name="android:listPreferredItemHeightSmall">48dp</item>
     </style>
 
-    <style name="TabsTextStyle" parent="@android:style/TextAppearance.Widget.TabWidget">
-        <item name="android:textSize">@dimen/text_content</item>
-        <item name="android:textAllCaps">true</item>
-    </style>
-
     <style name="ButtonStyle">
         <item name="colorButtonNormal">?attr/colorAccent</item>
     </style>

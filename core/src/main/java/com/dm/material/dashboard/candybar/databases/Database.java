@@ -167,7 +167,6 @@ public class Database extends SQLiteOpenHelper {
             if (cursor.moveToFirst()) {
                 do {
                     Request request = new Request(
-                            null,
                             cursor.getString(1),
                             cursor.getString(2),
                             cursor.getString(3),

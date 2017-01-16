@@ -20,7 +20,6 @@ package com.dm.material.dashboard.candybar.items;
 
 public class Request {
 
-    private byte[] mBytes;
     private String mName;
     private String mActivity;
     private String mPackageName;
@@ -34,8 +33,7 @@ public class Request {
     private boolean mRequested;
     private int mRequestCount;
 
-    public Request(byte[] bytes, String name, String packageName, String activity, boolean requested) {
-        mBytes = bytes;
+    public Request(String name, String packageName, String activity, boolean requested) {
         mName = name;
         mPackageName = packageName;
         mActivity = activity;
@@ -60,10 +58,6 @@ public class Request {
         mProductId = productId;
         mRequest = request;
         mRequestedOn = requestedOn;
-    }
-
-    public byte[] getIcon() {
-        return mBytes;
     }
 
     public String getName() {
