@@ -28,7 +28,6 @@
     <!-- Menu -->
     <string name="menu_changelog">Changelog</string>
     <string name="menu_licenses">Credits &amp; Licenses</string>
-    <string name="menu_rebuild_premium">Rebuild Premium Request</string>
     <string name="menu_search">Search</string>
     <string name="menu_save">Save to Device</string>
     <string name="menu_wallpaper_settings">Wallpaper Settings</string>
@@ -190,6 +189,9 @@
     <string name="pref_restore_purchases_success">Premium Request Restored</string>
     <string name="pref_restore_purchases_failed">Unable to restore purchases</string>
     <string name="pref_restore_purchases_empty">You don\'t have any purchased package</string>
+    
+    <string name="pref_rebuild_premium_request">Rebuild Premium Request</string>
+    <string name="pref_rebuild_premium_request_desc">Collect all premium icon request data to resend them.</string>
 
     <string name="pref_wallpaper_location">Wallpaper Save Location</string>
     <string name="pref_wallpaper_location_desc">Try to download at least one wallpaper first.</string>

@@ -39,7 +39,6 @@ import com.anjlab.android.iab.v3.TransactionDetails;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.RequestAdapter;
 import com.dm.material.dashboard.candybar.databases.Database;
-import com.dm.material.dashboard.candybar.fragments.dialog.IntentChooserFragment;
 import com.dm.material.dashboard.candybar.helpers.ColorHelper;
 import com.dm.material.dashboard.candybar.helpers.DeviceHelper;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
@@ -158,8 +157,6 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_request, menu);
-        MenuItem rebuild = menu.findItem(R.id.menu_rebuild_premium);
-        rebuild.setVisible(Preferences.getPreferences(getActivity()).isPremiumRequestEnabled());
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -172,10 +169,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.menu_rebuild_premium) {
-            rebuildPremiumRequest();
-            return true;
-        } else if (id == R.id.menu_select_all) {
+        if (id == R.id.menu_select_all) {
             if (mAdapter == null) return false;
             mAdapter.selectAll();
             return true;
@@ -526,75 +520,4 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 
         }.execute();
     }
-
-    private void rebuildPremiumRequest() {
-        new AsyncTask<Void, Void, Boolean>() {
-
-            MaterialDialog dialog;
-            StringBuilder sb;
-            SparseArrayCompat<Request> requests;
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                sb = new StringBuilder();
-
-                MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-                builder.content(R.string.premium_request_rebuilding);
-                builder.cancelable(false);
-                builder.canceledOnTouchOutside(false);
-                builder.progress(true, 0);
-                builder.progressIndeterminateStyle(true);
-                dialog = builder.build();
-                dialog.show();
-            }
-
-            @Override
-            protected Boolean doInBackground(Void... voids) {
-                while (!isCancelled()) {
-                    try {
-                        Thread.sleep(1);
-                        Database database = new Database(getActivity());
-                        requests = database.getPremiumRequest();
-                        sb.append(DeviceHelper.getDeviceInfo(getActivity()));
-
-                        for (int i = 0; i < requests.size(); i++) {
-                            sb.append("\n\nOrder Id : ").append(requests.get(i).getOrderId())
-                                    .append("\nProduct Id : ").append(requests.get(i).getProductId())
-                                    .append(requests.get(i).getRequest());
-                        }
-                        return true;
-                    } catch (Exception e) {
-                        Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
-                        return false;
-                    }
-                }
-                return false;
-            }
-
-            @Override
-            protected void onPostExecute(Boolean aBoolean) {
-                super.onPostExecute(aBoolean);
-                dialog.dismiss();
-                if (aBoolean) {
-                    if (requests.size() == 0) {
-                        Toast.makeText(getActivity(), R.string.premium_request_rebuilding_empty,
-                                Toast.LENGTH_LONG).show();
-                        return;
-                    }
-
-                    String subject = "Rebuild Premium Icon Request "+
-                            getActivity().getResources().getString(R.string.app_name);
-
-                    Request request = new Request(subject, sb.toString(), "");
-                    IntentChooserFragment.showIntentChooserDialog(getActivity()
-                            .getSupportFragmentManager(), request);
-                }
-                dialog = null;
-                sb.setLength(0);
-            }
-
-        }.execute();
-    }
-
 }

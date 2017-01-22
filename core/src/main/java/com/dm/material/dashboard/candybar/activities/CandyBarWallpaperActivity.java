@@ -136,8 +136,6 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
                 .duration(300)
                 .start(savedInstanceState);
 
-        toolbar.setVisibility(View.VISIBLE);
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && savedInstanceState == null) {
             Transition transition = getWindow().getSharedElementEnterTransition();
 

@@ -1,9 +1,11 @@
 package com.dm.material.dashboard.candybar.fragments;
 
 import android.content.res.Configuration;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.SparseArrayCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.AppCompatCheckBox;
@@ -17,7 +19,11 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.dm.material.dashboard.candybar.R;
+import com.dm.material.dashboard.candybar.databases.Database;
+import com.dm.material.dashboard.candybar.fragments.dialog.IntentChooserFragment;
+import com.dm.material.dashboard.candybar.helpers.DeviceHelper;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
+import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.Tag;
 import com.dm.material.dashboard.candybar.utils.listeners.InAppBillingListener;
@@ -52,6 +58,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     private LinearLayout mDarkTheme;
     private AppCompatCheckBox mDarkThemeCheck;
     private LinearLayout mRestorePurchases;
+    private LinearLayout mRebuildRequest;
     private TextView mWallsDirectory;
     private NestedScrollView mScrollView;
 
@@ -67,6 +74,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         mDarkTheme = (LinearLayout) view.findViewById(R.id.pref_dark_theme);
         mDarkThemeCheck = (AppCompatCheckBox) view.findViewById(R.id.pref_dark_theme_check);
         mRestorePurchases = (LinearLayout) view.findViewById(R.id.pref_restore_purchases);
+        mRebuildRequest = (LinearLayout) view.findViewById(R.id.pref_rebuild_premium_request);
         mWallsDirectory = (TextView) view.findViewById(R.id.pref_walls_directory);
         mScrollView = (NestedScrollView) view.findViewById(R.id.scrollview);
         return view;
@@ -91,10 +99,17 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         mRestorePurchases.setBackgroundResource(Preferences.getPreferences(getActivity()).isDarkTheme() ?
                 R.drawable.item_grid_dark : R.drawable.item_grid);
 
+        mRebuildRequest.setOnClickListener(this);
+        mRebuildRequest.setBackgroundResource(Preferences.getPreferences(getActivity()).isDarkTheme() ?
+                R.drawable.item_grid_dark : R.drawable.item_grid);
+
         if (!Preferences.getPreferences(getActivity()).isPremiumRequestEnabled()) {
             mRestorePurchases.setVisibility(View.GONE);
+            mRebuildRequest.setVisibility(View.GONE);
             View view = getActivity().findViewById(R.id.pref_restore_purchases_divider);
             if (view != null) view.setVisibility(View.GONE);
+            View view2 = getActivity().findViewById(R.id.pref_rebuild_premium_request_divider);
+            if (view2 != null) view2.setVisibility(View.GONE);
         }
 
         if (Preferences.getPreferences(getActivity()).getWallsDirectory().length() > 0) {
@@ -145,6 +160,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 InAppBillingListener listener = (InAppBillingListener) getActivity();
                 listener.OnRestorePurchases();
             } catch (Exception ignored) {}
+        } else if (id == R.id.pref_rebuild_premium_request) {
+            rebuildPremiumRequest();
         }
     }
 
@@ -207,6 +224,76 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             return result;
         }
         return 0;
+    }
+
+    private void rebuildPremiumRequest() {
+        new AsyncTask<Void, Void, Boolean>() {
+
+            MaterialDialog dialog;
+            StringBuilder sb;
+            SparseArrayCompat<Request> requests;
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                sb = new StringBuilder();
+
+                MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+                builder.content(R.string.premium_request_rebuilding);
+                builder.cancelable(false);
+                builder.canceledOnTouchOutside(false);
+                builder.progress(true, 0);
+                builder.progressIndeterminateStyle(true);
+                dialog = builder.build();
+                dialog.show();
+            }
+
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+                while (!isCancelled()) {
+                    try {
+                        Thread.sleep(1);
+                        Database database = new Database(getActivity());
+                        requests = database.getPremiumRequest();
+                        sb.append(DeviceHelper.getDeviceInfo(getActivity()));
+
+                        for (int i = 0; i < requests.size(); i++) {
+                            sb.append("\n\nOrder Id : ").append(requests.get(i).getOrderId())
+                                    .append("\nProduct Id : ").append(requests.get(i).getProductId())
+                                    .append(requests.get(i).getRequest());
+                        }
+                        return true;
+                    } catch (Exception e) {
+                        Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+                        return false;
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean aBoolean) {
+                super.onPostExecute(aBoolean);
+                dialog.dismiss();
+                if (aBoolean) {
+                    if (requests.size() == 0) {
+                        Toast.makeText(getActivity(), R.string.premium_request_rebuilding_empty,
+                                Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
+                    String subject = "Rebuild Premium Icon Request "+
+                            getActivity().getResources().getString(R.string.app_name);
+
+                    Request request = new Request(subject, sb.toString(), "");
+                    IntentChooserFragment.showIntentChooserDialog(getActivity()
+                            .getSupportFragmentManager(), request);
+                }
+                dialog = null;
+                sb.setLength(0);
+            }
+
+        }.execute();
     }
 
 }

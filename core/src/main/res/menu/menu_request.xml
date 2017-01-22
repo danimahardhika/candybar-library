@@ -8,9 +8,4 @@
         android:icon="@drawable/ic_toolbar_select_all"
         app:showAsAction="always" />
 
-    <item
-        android:id="@+id/menu_rebuild_premium"
-        android:title="@string/menu_rebuild_premium"
-        app:showAsAction="never"/>
-
 </menu>
