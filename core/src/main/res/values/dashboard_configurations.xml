@@ -62,9 +62,9 @@
     <!-- Home description
     - If you don't want to show description, just leave this empty -->
     <string name="home_description"><![CDATA[
-        Description now support html formatting, <b>bold description</b>,
+        Description now supports html formatting, <b>bold description</b>,
         <i>italic description</i>, <u>underline description</u>,
-        <a href="https://github.com/danimahardhika">link inside description</a>.
+        <a href="https://github.com/danimahardhika">links inside description</a>.
         ]]></string>
 
     <!-- Icon Pack features (will be visible in home)
@@ -73,18 +73,18 @@
         <!-- 1. This part must be about number of icons included -->
         <item>More than 1000 custom icons included</item>
         <!-- 2. This part must be about icon quality -->
-        <item>192x192 pixels vector based icon</item>
+        <item>192x192 pixels vector based icons</item>
         <!-- 3. This part must be about number of wallpapers included
         * If your icon pack doesn't contains wallpaper just ignore this -->
         <item>100+ cloud wallpapers</item>
         <!-- 4. This part must be about muzei live wallpaper
         * If your icon pack doesn't contains wallpaper just ignore this -->
-        <item>Support muzei live wallpaper</item>
+        <item>Supports Muzei live wallpaper</item>
         <!-- 5. This part must be about number of launchers supported -->
-        <item>Support more than 20 custom launchers</item>
+        <item>Supports more than 20 custom launchers</item>
         <!-- You can add another features here -->
         <item>More features</item>
-        <item>Another features</item>
+        <item>Another feature</item>
         <item>Another one</item>
     </string-array>
 
