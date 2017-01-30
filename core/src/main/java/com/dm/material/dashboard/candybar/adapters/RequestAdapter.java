@@ -52,6 +52,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
 
     private final int mTextColorSecondary;
     private final int mTextColorAccent;
+    private boolean mSelectedAll = false;
 
     public RequestAdapter(@NonNull Context context, @NonNull SparseArrayCompat<Request> requests) {
         mContext = context;
@@ -174,11 +175,13 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
     }
 
     public void selectAll() {
-        if (mSelectedItems.size() == mRequests.size()) {
+        if (mSelectedAll) {
+            mSelectedAll = false;
             resetSelectedItems();
             return;
         }
 
+        mSelectedAll = true;
         mSelectedItems.clear();
         for (int i = 0; i < mRequests.size(); i++) {
             mSelectedItems.put(i, true);

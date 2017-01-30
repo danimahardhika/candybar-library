@@ -37,6 +37,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.anjlab.android.iab.v3.BillingProcessor;
 import com.anjlab.android.iab.v3.TransactionDetails;
 import com.dm.material.dashboard.candybar.R;
+import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
 import com.dm.material.dashboard.candybar.adapters.RequestAdapter;
 import com.dm.material.dashboard.candybar.databases.Database;
 import com.dm.material.dashboard.candybar.helpers.ColorHelper;
@@ -62,7 +63,6 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Collections;
-import java.util.List;
 import java.util.Locale;
 
 /*
@@ -102,14 +102,6 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         mFab = (FloatingActionButton) view.findViewById(R.id.fab);
         mFastScroll = (RecyclerFastScroller) view.findViewById(R.id.fastscroll);
         mProgress = (ProgressBar) view.findViewById(R.id.progress);
-
-        LinearLayout premiumRequestBar = (LinearLayout) view.findViewById(R.id.premium_request_bar);
-        if (Preferences.getPreferences(getActivity()).isPremiumRequestEnabled()) {
-            Animator.startSlideDownAnimation(getActivity(), premiumRequestBar, view.findViewById(R.id.shadow));
-        } else {
-            premiumRequestBar.setVisibility(View.GONE);
-            Animator.startAlphaAnimation(view.findViewById(R.id.shadow), 200, View.VISIBLE);
-        }
         return view;
     }
 
@@ -243,6 +235,9 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     private void initPremiumRequest() {
         boolean premiumRequest = Preferences.getPreferences(getActivity()).isPremiumRequestEnabled();
         if (premiumRequest) {
+            LinearLayout premiumRequestBar = (LinearLayout) getActivity().findViewById(R.id.premium_request_bar);
+            premiumRequestBar.setVisibility(View.VISIBLE);
+
             int accent = ColorHelper.getAttributeColor(getActivity(), R.attr.colorAccent);
             AppCompatButton buy = (AppCompatButton) getActivity().findViewById(R.id.premium_request_buy);
             buy.setTextColor(ColorHelper.getTitleTextColor(accent));
@@ -313,7 +308,9 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                 super.onPreExecute();
                 mAdapter = new RequestAdapter(getActivity(), new SparseArrayCompat<>());
                 mRequestList.setAdapter(mAdapter);
-                mProgress.setVisibility(View.VISIBLE);
+
+                if (CandyBarMainActivity.sInstalledApps == null)
+                    mProgress.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -322,20 +319,21 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                     try {
                         Thread.sleep(1);
                         Database database = new Database(getActivity());
-                        PackageManager packageManager = getActivity().getPackageManager();
                         String activities = RequestHelper.loadAppFilter(getActivity());
+                        PackageManager packageManager = getActivity().getPackageManager();
 
-                        Intent intent = new Intent(Intent.ACTION_MAIN);
-                        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-                        List<ResolveInfo> apps = packageManager.queryIntentActivities(
-                                intent, PackageManager.GET_RESOLVED_FILTER);
+                        if (CandyBarMainActivity.sInstalledApps == null) {
+                            Intent intent = new Intent(Intent.ACTION_MAIN);
+                            intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                            CandyBarMainActivity.sInstalledApps = packageManager.queryIntentActivities(
+                                    intent, PackageManager.GET_RESOLVED_FILTER);
+                            try {
+                                Collections.sort(CandyBarMainActivity.sInstalledApps,
+                                        new ResolveInfo.DisplayNameComparator(getActivity().getPackageManager()));
+                            } catch (Exception ignored) {}
+                        }
 
-                        try {
-                            Collections.sort(apps, new ResolveInfo.DisplayNameComparator(
-                                    getActivity().getPackageManager()));
-                        } catch (Exception ignored) {}
-
-                        for (ResolveInfo app : apps) {
+                        for (ResolveInfo app : CandyBarMainActivity.sInstalledApps) {
                             String packageName = app.activityInfo.packageName;
                             String activity = packageName +"/"+ app.activityInfo.name;
 
@@ -434,10 +432,10 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 
                         SparseArrayCompat<Integer> selectedItems = mAdapter.getSelectedItems();
                         SparseArrayCompat<String> files = new SparseArrayCompat<>();
-                        File fileDir = new File(directory.toString() + "/" + "appfilter.xml");
+                        File appFilter = new File(directory.toString() + "/" + "appfilter.xml");
 
                         Writer out = new BufferedWriter(new OutputStreamWriter(
-                                new FileOutputStream(fileDir), "UTF8"));
+                                new FileOutputStream(appFilter), "UTF8"));
                         StringBuilder activity = new StringBuilder();
                         for (int i = 0; i < selectedItems.size(); i++) {
                             Request item = mAdapter.getRequest(selectedItems.get(i));
@@ -480,7 +478,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 
                         out.flush();
                         out.close();
-                        files.append(files.size(), fileDir.toString());
+                        files.append(files.size(), appFilter.toString());
 
                         zipFile = directory.toString() + "/" + "icon_request.zip";
                         FileHelper.createZip(files, zipFile);

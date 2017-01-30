@@ -43,6 +43,7 @@
     <string name="cancel">Cancel</string>
     <string name="install">Install</string>
     <string name="donate">Donate</string>
+    <string name="gotit">Got It</string>
 
     <string name="search_noresult">No result found for</string>
     <string name="search_faqs">Question or answer</string>
@@ -189,7 +190,7 @@
     <string name="pref_restore_purchases_success">Premium Request Restored</string>
     <string name="pref_restore_purchases_failed">Unable to restore purchases</string>
     <string name="pref_restore_purchases_empty">You don\'t have any purchased packages</string>
-    
+
     <string name="pref_rebuild_premium_request">Rebuild Premium Request</string>
     <string name="pref_rebuild_premium_request_desc">Collect all premium icon request data to resend them.</string>
 

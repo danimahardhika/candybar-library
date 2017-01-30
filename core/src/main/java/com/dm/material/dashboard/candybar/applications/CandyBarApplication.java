@@ -59,6 +59,7 @@ public class CandyBarApplication extends Application {
             String dateTime = dateFormat.format(new Date());
             sb.append("Crash Time : ").append(dateTime).append("\n");
             sb.append("Class Name : ").append(throwable.getClass().getName()).append("\n");
+            sb.append("Caused By : ").append(throwable.toString()).append("\n");
 
             for (StackTraceElement element : throwable.getStackTrace()) {
                 sb.append("\n");

@@ -173,6 +173,7 @@ public class IntentChooserFragment extends DialogFragment {
                                     apps.add(new IntentChooser(resolveInfo, IntentChooser.TYPE_NOT_SUPPORTED));
                                     break;
                                 case "com.android.fallback":
+                                case "com.paypal.android.p2pmobile":
                                     break;
                                 default:
                                     apps.add(new IntentChooser(resolveInfo, IntentChooser.TYPE_SUPPORTED));

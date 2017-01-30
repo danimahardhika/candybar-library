@@ -57,6 +57,10 @@ public class LauncherHelper {
     private static final int SOLO = 19;
     private static final int ZENUI = 20;
     private static final int NOUGAT = 21;
+    private static final int NEW = 22;
+    private static final int M = 23;
+    private static final int MN = 24;
+    private static final int ITOP = 25;
 
     public static int getLauncherId(String packageName) {
         if (packageName == null) return UNKNOWN;
@@ -110,6 +114,14 @@ public class LauncherHelper {
                 return ZENUI;
             case "me.craftsapp.nlauncher":
                 return NOUGAT;
+            case "com.inew.launcher":
+                return NEW;
+            case "com.uprui.launcher.marshmallow":
+                return M;
+            case "com.kkmlauncher":
+                return MN;
+            case "com.itop.launcher":
+                return ITOP;
             default:
                 return UNKNOWN;
         }
@@ -344,6 +356,78 @@ public class LauncherHelper {
                     nougat.putExtra("me.craftsapp.nlauncher.theme.NAME", context.getPackageName());
                     nougat.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(nougat);
+                    ((AppCompatActivity) context).finish();
+                } catch (ActivityNotFoundException | NullPointerException e) {
+                    openGooglePlay(context, launcherPackage, launcherName);
+                }
+                break;
+            case NEW:
+                try {
+                    /*
+                     * Just want to let anyone who is going to copy
+                     * It's not easy searching for this
+                     * I will be grateful if you take this with a proper credit
+                     * Thank you
+                     */
+                    final Intent newLauncher = new Intent("com.inew.launcher");
+                    newLauncher.setAction("com.inew.launcher.APPLY_ICON_THEME");
+                    newLauncher.putExtra("com.inew.launcher.theme.EXTRA_PKG", context.getPackageName());
+                    newLauncher.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(newLauncher);
+                    ((AppCompatActivity) context).finish();
+                } catch (ActivityNotFoundException | NullPointerException e) {
+                    openGooglePlay(context, launcherPackage, launcherName);
+                }
+                break;
+            case M:
+                try {
+                    /*
+                     * Just want to let anyone who is going to copy
+                     * It's not easy searching for this
+                     * I will be grateful if you take this with a proper credit
+                     * Thank you
+                     */
+                    final Intent newLauncher = new Intent("com.uprui.launcher.marshmallow");
+                    newLauncher.setAction("com.uprui.launcher.marshmallow.SET_THEME");
+                    newLauncher.putExtra("com.uprui.launcher.marshmallow.theme.NAME", context.getPackageName());
+                    newLauncher.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(newLauncher);
+                    ((AppCompatActivity) context).finish();
+                } catch (ActivityNotFoundException | NullPointerException e) {
+                    openGooglePlay(context, launcherPackage, launcherName);
+                }
+                break;
+            case MN:
+                try {
+                    /*
+                     * Just want to let anyone who is going to copy
+                     * It's not easy searching for this
+                     * I will be grateful if you take this with a proper credit
+                     * Thank you
+                     */
+                    final Intent newLauncher = new Intent("com.kkmlauncher");
+                    newLauncher.setAction("com.kkmlauncher.APPLY_ICON_THEME");
+                    newLauncher.putExtra("com.kkmlauncher.theme.EXTRA_PKG", context.getPackageName());
+                    newLauncher.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(newLauncher);
+                    ((AppCompatActivity) context).finish();
+                } catch (ActivityNotFoundException | NullPointerException e) {
+                    openGooglePlay(context, launcherPackage, launcherName);
+                }
+                break;
+            case ITOP:
+                try {
+                    /*
+                     * Just want to let anyone who is going to copy
+                     * It's not easy searching for this
+                     * I will be grateful if you take this with a proper credit
+                     * Thank you
+                     */
+                    final Intent newLauncher = new Intent("com.itop.launcher");
+                    newLauncher.setAction("com.itop.launcher.APPLY_ICON_THEME");
+                    newLauncher.putExtra("com.itop.launcher.theme.EXTRA_PKG", context.getPackageName());
+                    newLauncher.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(newLauncher);
                     ((AppCompatActivity) context).finish();
                 } catch (ActivityNotFoundException | NullPointerException e) {
                     openGooglePlay(context, launcherPackage, launcherName);

@@ -82,7 +82,7 @@ public class InAppBillingFragment extends DialogFragment {
         try {
             DialogFragment dialog = InAppBillingFragment.newInstance(type, key, productId, productCount);
             dialog.show(ft, TAG);
-        } catch (IllegalArgumentException ignored) {}
+        } catch (IllegalArgumentException | IllegalStateException ignored) {}
     }
 
     private ListView mInAppList;
@@ -171,14 +171,12 @@ public class InAppBillingFragment extends DialogFragment {
 
             InAppBilling[] inAppBillings;
             boolean isBillingNotReady = false;
-            String appname;
 
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
                 mProgress.setVisibility(View.VISIBLE);
                 inAppBillings = new InAppBilling[mProductsId.length];
-                appname = " ("+ getActivity().getResources().getString(R.string.app_name) +")";
             }
 
             @Override
@@ -196,7 +194,7 @@ public class InAppBillingFragment extends DialogFragment {
                                     .getPurchaseListingDetails(mProductsId[i]);
                             if (product != null) {
                                 InAppBilling inAppBilling;
-                                String title = product.title.replace(appname, "");
+                                String title = product.title.substring(0, product.title.lastIndexOf("("));
                                 if (mProductsCount != null) {
                                     inAppBilling = new InAppBilling(product.priceText, mProductsId[i],
                                             title, mProductsCount[i]);

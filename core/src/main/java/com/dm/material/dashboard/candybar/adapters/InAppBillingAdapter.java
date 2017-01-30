@@ -68,18 +68,21 @@ public class InAppBillingAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) view.getTag();
         }
+        if (position > 0 && position < mInAppBillings.length) {
+            final InAppBilling inAppBilling = mInAppBillings[position];
+            if (inAppBilling != null) {
+                holder.radio.setChecked(mSelectedPosition == position);
 
-        holder.radio.setChecked(mSelectedPosition == position);
+                String product = inAppBilling.getPrice() +" - "+
+                        inAppBilling.getProductName();
+                holder.name.setText(product);
 
-        String product = mInAppBillings[position].getPrice() +" - "+
-                mInAppBillings[position].getProductName();
-        holder.name.setText(product);
-
-        holder.container.setOnClickListener(v -> {
-            mSelectedPosition = position;
-            notifyDataSetChanged();
-        });
-
+                holder.container.setOnClickListener(v -> {
+                    mSelectedPosition = position;
+                    notifyDataSetChanged();
+                });
+            }
+        }
         return view;
     }
 

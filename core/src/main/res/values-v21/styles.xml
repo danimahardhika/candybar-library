@@ -26,6 +26,17 @@
         <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
+    <!-- Splash Screen Theme -->
+    <style name="SplashTheme" parent="@style/Theme.AppCompat.Light">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@color/splashColor</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+
     <style name="ButtonStyle">
         <item name="android:colorButtonNormal">?attr/colorAccent</item>
     </style>

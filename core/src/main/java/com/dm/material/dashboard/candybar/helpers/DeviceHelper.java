@@ -49,14 +49,14 @@ public class DeviceHelper {
                 .append(width).append(" x ").append(height).append(" pixels")
                 .append("\nAndroid Version : ").append(Build.VERSION.RELEASE)
                 .append("\nApp Version : ").append(appVersion)
+                .append("\nCandyBar Version : ").append(BuildConfig.VERSION_NAME)
                 .append("\n");
         return sb.toString();
     }
 
     @NonNull
     public static String getDeviceInfoForCrashReport(@NonNull Context context) {
-        return "CandyBar Version : " +BuildConfig.VERSION_NAME +
-                "\nIcon Pack Name : " +context.getResources().getString(R.string.app_name)
+        return "Icon Pack Name : " +context.getResources().getString(R.string.app_name)
                 + "\n"+ getDeviceInfo(context);
     }
 

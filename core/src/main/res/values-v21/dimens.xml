@@ -11,6 +11,5 @@
 
     <!-- FAB -->
     <dimen name="fab_margin">20dp</dimen>
-    <dimen name="fab_size_mini">52dp</dimen>
 
 </resources>

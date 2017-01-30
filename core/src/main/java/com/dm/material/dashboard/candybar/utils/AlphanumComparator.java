@@ -25,6 +25,7 @@ package com.dm.material.dashboard.candybar.utils;
  */
 
 import java.util.Comparator;
+import java.util.Locale;
 
 /**
  * This is an updated version with enhancements made by Daniel Migowski,
@@ -75,8 +76,8 @@ public class AlphanumComparator implements Comparator<Object> {
         if (!(o1 instanceof String) || !(o2 instanceof String)) {
             return 0;
         }
-        String s1 = (String)o1;
-        String s2 = (String)o2;
+        String s1 = ((String) o1).toLowerCase(Locale.getDefault());
+        String s2 = ((String) o2).toLowerCase(Locale.getDefault());
 
         int thisMarker = 0;
         int thatMarker = 0;

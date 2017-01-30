@@ -15,6 +15,9 @@ import com.dm.material.dashboard.candybar.items.Wallpaper;
 import com.dm.material.dashboard.candybar.items.WallpaperJSON;
 import com.dm.material.dashboard.candybar.utils.Tag;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /*
  * CandyBar - Material Dashboard
  *
@@ -36,7 +39,7 @@ import com.dm.material.dashboard.candybar.utils.Tag;
 public class Database extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "candybar_database";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     private static final String TABLE_REQUEST = "icon_request";
     private static final String TABLE_PREMIUM_REQUEST = "premium_request";
@@ -66,7 +69,7 @@ public class Database extends SQLiteOpenHelper {
         String CREATE_TABLE_REQUEST = "CREATE TABLE IF NOT EXISTS " +TABLE_REQUEST+ "(" +
                 KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
                 KEY_NAME + " TEXT NOT NULL, " +
-                KEY_ACTIVITY + " TEXT NOT NULL, " +
+                KEY_ACTIVITY + " TEXT NOT NULL UNIQUE, " +
                 KEY_REQUESTED_ON + " DATETIME DEFAULT CURRENT_TIMESTAMP" + ")";
         String CREATE_TABLE_PREMIUM_REQUEST = "CREATE TABLE IF NOT EXISTS " +TABLE_PREMIUM_REQUEST+ "(" +
                 KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
@@ -78,7 +81,7 @@ public class Database extends SQLiteOpenHelper {
                 KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
                 KEY_NAME+ " TEXT NOT NULL, " +
                 KEY_AUTHOR + " TEXT NOT NULL, " +
-                KEY_URL + " TEXT NOT NULL, " +
+                KEY_URL + " TEXT NOT NULL UNIQUE, " +
                 KEY_THUMB_URL + " TEXT NOT NULL, " +
                 KEY_ADDED_ON + " TEXT NOT NULL" + ")";
         db.execSQL(CREATE_TABLE_REQUEST);
@@ -107,6 +110,7 @@ public class Database extends SQLiteOpenHelper {
         cursor.close();
 
         SparseArrayCompat<Request> requests = getRequestedApps(db);
+        SparseArrayCompat<Request> premiumRequest = getPremiumRequest(db);
 
         for (int i = 0; i < tables.size(); i++) {
             try {
@@ -118,9 +122,18 @@ public class Database extends SQLiteOpenHelper {
         onCreate(db);
 
         for (int i = 0; i < requests.size(); i++) {
-            addRequest(db, requests.get(i).getName(),
+            addRequest(db,
+                    requests.get(i).getName(),
                     requests.get(i).getPackageName(),
                     requests.get(i).getActivity());
+        }
+
+        for (int i = 0; i < premiumRequest.size(); i++) {
+            addPremiumRequest(db,
+                    premiumRequest.get(i).getOrderId(),
+                    premiumRequest.get(i).getProductId(),
+                    premiumRequest.get(i).getRequest(),
+                    premiumRequest.get(i).getRequestedOn());
         }
     }
 
@@ -192,6 +205,21 @@ public class Database extends SQLiteOpenHelper {
         db.close();
     }
 
+    private void addPremiumRequest(SQLiteDatabase db, String orderId, String productId, String request, String requestedOn) {
+        if (db == null) return;
+        try {
+            ContentValues values = new ContentValues();
+            values.put(KEY_ORDER_ID, orderId);
+            values.put(KEY_PRODUCT_ID, productId);
+            values.put(KEY_REQUEST, request);
+            values.put(KEY_REQUESTED_ON, requestedOn);
+
+            db.insert(TABLE_PREMIUM_REQUEST, null, values);
+        } catch (Exception e) {
+            Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+        }
+    }
+
     public SparseArrayCompat<Request> getPremiumRequest() {
         SparseArrayCompat<Request> requests = new SparseArrayCompat<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -212,16 +240,30 @@ public class Database extends SQLiteOpenHelper {
         return requests;
     }
 
-    public int getWallpapersCount() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_WALLPAPERS, null, null, null, null, null, null, null);
-        int rowCount = cursor.getCount();
-        cursor.close();
-        db.close();
-        return rowCount;
+    private SparseArrayCompat<Request> getPremiumRequest(SQLiteDatabase db) {
+        SparseArrayCompat<Request> requests = new SparseArrayCompat<>();
+        if (db == null) return requests;
+        try {
+            Cursor cursor = db.query(TABLE_PREMIUM_REQUEST,
+                    null, null, null, null, null, null);
+            if (cursor.moveToFirst()) {
+                do {
+                    Request request = new Request(
+                            cursor.getString(1),
+                            cursor.getString(2),
+                            cursor.getString(3),
+                            cursor.getString(4));
+                    requests.append(requests.size(), request);
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+        } catch (Exception e) {
+            Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+        }
+        return requests;
     }
 
-    public void addAllWallpapers(WallpaperJSON wallpaper) {
+    public void addWallpapers(WallpaperJSON wallpaper) {
         SQLiteDatabase db = this.getWritableDatabase();
         for (int i = 0; i < wallpaper.getWalls.size(); i++) {
             ContentValues values = new ContentValues();
@@ -236,8 +278,32 @@ public class Database extends SQLiteOpenHelper {
         db.close();
     }
 
-    public SparseArrayCompat<Wallpaper> getWallpapers() {
-        SparseArrayCompat<Wallpaper> wallpapers = new SparseArrayCompat<>();
+    public void addWallpapers(List<Wallpaper> wallpapers) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        for (int i = 0; i < wallpapers.size(); i++) {
+            ContentValues values = new ContentValues();
+            values.put(KEY_NAME, wallpapers.get(i).getName());
+            values.put(KEY_AUTHOR, wallpapers.get(i).getAuthor());
+            values.put(KEY_URL, wallpapers.get(i).getURL());
+            values.put(KEY_THUMB_URL, wallpapers.get(i).getThumbUrl());
+            values.put(KEY_ADDED_ON, TimeHelper.getDateTime());
+
+            db.insert(TABLE_WALLPAPERS, null, values);
+        }
+        db.close();
+    }
+
+    public int getWallpapersCount() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_WALLPAPERS, null, null, null, null, null, null, null);
+        int rowCount = cursor.getCount();
+        cursor.close();
+        db.close();
+        return rowCount;
+    }
+
+    public List<Wallpaper> getWallpapers() {
+        List<Wallpaper> wallpapers = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_WALLPAPERS,
                 null, null, null, null, null, KEY_ADDED_ON + " DESC, " +KEY_ID);
@@ -248,7 +314,7 @@ public class Database extends SQLiteOpenHelper {
                         cursor.getString(2),
                         cursor.getString(3),
                         cursor.getString(4));
-                wallpapers.append(wallpapers.size(), wallpaper);
+                wallpapers.add(wallpaper);
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -275,33 +341,16 @@ public class Database extends SQLiteOpenHelper {
         return wallpaper;
     }
 
-    public SparseArrayCompat<Wallpaper> getWallpaperAddedOn() {
-        SparseArrayCompat<Wallpaper> dates = new SparseArrayCompat<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_WALLPAPERS, new String[]{
-                KEY_URL, KEY_ADDED_ON}, null, null, null, null, null);
-        if (cursor.moveToFirst()) {
-            do {
-                Wallpaper item = new Wallpaper(
-                        cursor.getString(0),
-                        cursor.getString(1));
-                dates.append(dates.size(), item);
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        db.close();
-        return dates;
-    }
-
-    public void setWallpaperAddedOn (String url, String date) {
+    public void deleteWallpapers(List<Wallpaper> wallpapers) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(KEY_ADDED_ON, date);
-        db.update(TABLE_WALLPAPERS, values, KEY_URL + " = ?", new String[]{url});
+        for (int i = 0; i < wallpapers.size(); i++) {
+            db.delete(TABLE_WALLPAPERS, KEY_URL +" = ?",
+                    new String[]{wallpapers.get(i).getURL()});
+        }
         db.close();
     }
 
-    public void deleteAllWalls() {
+    public void deleteWallpapers() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete("SQLITE_SEQUENCE", "NAME = ?", new String[]{TABLE_WALLPAPERS});
         db.delete(TABLE_WALLPAPERS, null, null);

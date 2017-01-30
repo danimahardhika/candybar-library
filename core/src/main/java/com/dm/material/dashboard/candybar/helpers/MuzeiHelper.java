@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 import java.util.Random;
 
 /*
@@ -73,12 +74,12 @@ public class MuzeiHelper {
     @Nullable
     public Wallpaper getRandomDownloadedWallpaper() throws Exception {
         SparseArrayCompat<Wallpaper> downloaded = new SparseArrayCompat<>();
-        SparseArrayCompat<Wallpaper> wallpapers = mDatabase.getWallpapers();
-        for (int i = 0; i < wallpapers.size(); i++) {
-            File file = new File(mDirectory + File.separator + wallpapers.get(i).getName() +
+        List<Wallpaper> wallpapers = mDatabase.getWallpapers();
+        for (Wallpaper wallpaper : wallpapers) {
+            File file = new File(mDirectory + File.separator + wallpaper.getName() +
                     FileHelper.IMAGE_EXTENSION);
             if (file.exists()) {
-                downloaded.append(downloaded.size(), wallpapers.get(i));
+                downloaded.append(downloaded.size(), wallpaper);
             }
         }
 

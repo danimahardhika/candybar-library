@@ -2,7 +2,6 @@ package com.dm.material.dashboard.candybar.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +17,8 @@ import com.dm.material.dashboard.candybar.items.Icon;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
+import java.util.List;
 
 /*
  * CandyBar - Material Dashboard
@@ -40,9 +41,9 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 public class LauncherAdapter extends RecyclerView.Adapter<LauncherAdapter.ViewHolder> {
 
     private final Context mContext;
-    private final SparseArrayCompat<Icon> mLaunchers;
+    private final List<Icon> mLaunchers;
 
-    public LauncherAdapter(@NonNull Context context, @NonNull SparseArrayCompat<Icon> launchers) {
+    public LauncherAdapter(@NonNull Context context, @NonNull List<Icon> launchers) {
         mContext = context;
         mLaunchers = launchers;
     }

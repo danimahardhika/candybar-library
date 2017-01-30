@@ -23,17 +23,6 @@
     <!-- Muzei base color -->
     <color name="muzei_color">#43C0FF</color>
 
-    <!-- CONFIG: SPLASH SCREEN -->
-
-    <!-- Show splash screen when the app opened
-    * default: true
-    * change to false to disable it -->
-    <bool name="use_splash_screen">true</bool>
-
-    <!-- Splash screen duration in milliseconds
-    * default: 1000 milliseconds -> 1 seconds -->
-    <integer name="splash_screen_duration">1000</integer>
-
     <!-- CONFIG: HOME -->
 
     <!-- Quick Apply for default launcher
@@ -64,7 +53,7 @@
     <string name="home_description"><![CDATA[
         Description now supports html formatting, <b>bold description</b>,
         <i>italic description</i>, <u>underline description</u>,
-        <a href="https://github.com/danimahardhika">links inside description</a>.
+        <a href="https://github.com/danimahardhika">link inside description</a>.
         ]]></string>
 
     <!-- Icon Pack features (will be visible in home)
@@ -79,11 +68,10 @@
         <item>100+ cloud wallpapers</item>
         <!-- 4. This part must be about muzei live wallpaper
         * If your icon pack doesn't contains wallpaper just ignore this -->
-        <item>Supports Muzei live wallpaper</item>
+        <item>Supports muzei live wallpaper</item>
         <!-- 5. This part must be about number of launchers supported -->
-        <item>Supports more than 20 custom launchers</item>
+        <item>Supports more than 24 custom launchers</item>
         <!-- You can add another features here -->
-        <item>More features</item>
         <item>Another feature</item>
         <item>Another one</item>
     </string-array>
@@ -145,7 +133,7 @@
     <!-- Enable or disable premium request
     * default: false
     * change to true to enable it -->
-    <bool name="enable_premium_request">true</bool>
+    <bool name="enable_premium_request">false</bool>
 
     <!-- Take a look inside LicenseHelper.java for premium request product -->
 
@@ -237,7 +225,7 @@
     * Show support development option in navigation view
     * default: true
     * change to false to disable it -->
-    <bool name="enable_donation">true</bool>
+    <bool name="enable_donation">false</bool>
 
     <!-- Take a look inside License.java for donation product -->
 

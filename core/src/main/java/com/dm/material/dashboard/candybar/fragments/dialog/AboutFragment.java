@@ -60,8 +60,10 @@ public class AboutFragment extends DialogFragment implements View.OnClickListene
         }
         ft.addToBackStack(null);
 
-        DialogFragment dialog = AboutFragment.newInstance();
-        dialog.show(ft, TAG);
+        try {
+            DialogFragment dialog = AboutFragment.newInstance();
+            dialog.show(ft, TAG);
+        } catch (IllegalArgumentException | IllegalStateException ignored) {}
     }
 
     private ImageView mImageView;

@@ -7,12 +7,11 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.util.SparseArrayCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -35,6 +34,7 @@ import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.items.Wallpaper;
 import com.dm.material.dashboard.candybar.items.WallpaperJSON;
 import com.dm.material.dashboard.candybar.utils.Animator;
+import com.dm.material.dashboard.candybar.utils.ListUtils;
 import com.dm.material.dashboard.candybar.utils.Tag;
 import com.dm.material.dashboard.candybar.utils.listeners.WallpapersListener;
 import com.pluscubed.recyclerfastscroll.RecyclerFastScroller;
@@ -45,6 +45,8 @@ import org.sufficientlysecure.htmltextview.HtmlTextView;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
  * CandyBar - Material Dashboard
@@ -141,10 +143,7 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
     @Override
     public void onClick(View view) {
         int id = view.getId();
-        if (id == R.id.wallpaper_tips_fab) {
-            Animator.hideFab((FloatingActionButton) getActivity()
-                    .findViewById(R.id.wallpaper_tips_fab));
-
+        if (id == R.id.wallpaper_tips_dismiss) {
             LinearLayout wallpaperTips = (LinearLayout) getActivity()
                     .findViewById(R.id.wallpaper_tips_bar);
             wallpaperTips.setVisibility(View.GONE);
@@ -173,19 +172,12 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
         HtmlTextView desc = (HtmlTextView) getActivity().findViewById(R.id.wallpaper_tips_desc);
         desc.setTextColor(ColorHelper.setColorAlpha(toolbarIcon, 0.6f));
         desc.setHtml(getActivity().getResources().getString(R.string.tips_wallpaper));
-    }
-
-    private void initWallpaperTipsFab() {
-        if (!Preferences.getPreferences(getActivity()).isShowWallpaperTips()) return;
 
         int accent = ColorHelper.getAttributeColor(getActivity(), R.attr.colorAccent);
         int textColor = ColorHelper.getTitleTextColor(accent);
-        FloatingActionButton fab = (FloatingActionButton) getActivity()
-                .findViewById(R.id.wallpaper_tips_fab);
-        fab.setImageDrawable(DrawableHelper.getTintedDrawable(getActivity(),
-                R.drawable.ic_fab_check, textColor));
-        fab.setOnClickListener(this);
-        Animator.showFab(fab);
+        AppCompatButton dismiss = (AppCompatButton) getActivity().findViewById(R.id.wallpaper_tips_dismiss);
+        dismiss.setTextColor(textColor);
+        dismiss.setOnClickListener(this);
     }
 
     private void initPopupBubble() {
@@ -222,7 +214,7 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
         mGetWallpapers = new AsyncTask<Void, Void, Boolean>() {
 
             WallpaperJSON wallpapersJSON;
-            SparseArrayCompat<Wallpaper> wallpapers;
+            List<Wallpaper> wallpapers;
 
             @Override
             protected void onPreExecute() {
@@ -255,19 +247,28 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
 
                             if (wallpapersJSON == null) return false;
                             if (refreshing) {
-                                SparseArrayCompat<Wallpaper> dates = database.getWallpaperAddedOn();
-
-                                database.deleteAllWalls();
-                                database.addAllWallpapers(wallpapersJSON);
-
-                                for (int i = 0; i < dates.size(); i++) {
-                                    database.setWallpaperAddedOn(
-                                            dates.get(i).getURL(),
-                                            dates.get(i).getDate());
+                                wallpapers = database.getWallpapers();
+                                List<Wallpaper> newWallpapers = new ArrayList<>();
+                                for (WallpaperJSON wallpaper : wallpapersJSON.getWalls) {
+                                    newWallpapers.add(new Wallpaper(
+                                            wallpaper.name,
+                                            wallpaper.author,
+                                            wallpaper.url,
+                                            wallpaper.thumbUrl));
                                 }
+
+                                List<Wallpaper> intersection = (List<Wallpaper>)
+                                        ListUtils.intersect(newWallpapers, wallpapers);
+                                List<Wallpaper> deleted = (List<Wallpaper>)
+                                        ListUtils.difference(intersection, wallpapers);
+                                List<Wallpaper> newlyAdded = (List<Wallpaper>)
+                                        ListUtils.difference(intersection, newWallpapers);
+
+                                database.deleteWallpapers(deleted);
+                                database.addWallpapers(newlyAdded);
                             } else {
-                                if (database.getWallpapersCount() > 0) database.deleteAllWalls();
-                                database.addAllWallpapers(wallpapersJSON);
+                                if (database.getWallpapersCount() > 0) database.deleteWallpapers();
+                                database.addWallpapers(wallpapersJSON);
                             }
 
                             wallpapers = database.getWallpapers();
@@ -284,7 +285,6 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
             @Override
             protected void onPostExecute(Boolean aBoolean) {
                 super.onPostExecute(aBoolean);
-                initWallpaperTipsFab();
                 if (!refreshing) mProgress.setVisibility(View.GONE);
                 else mSwipe.setRefreshing(false);
                 if (aBoolean) {

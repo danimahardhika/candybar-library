@@ -16,7 +16,7 @@
         android:orientation="horizontal"
         android:padding="@dimen/card_padding"
         android:background="?attr/colorPrimary"
-        android:visibility="invisible">
+        android:visibility="gone">
 
         <ImageView
             android:layout_width="48dp"
@@ -116,11 +116,9 @@
             app:backgroundTint="?attr/colorAccent" />
 
         <View
-            android:id="@+id/shadow"
             android:layout_width="match_parent"
             android:layout_height="@dimen/toolbar_shadow"
-            android:background="@drawable/toolbar_shadow"
-            android:visibility="invisible"/>
+            android:background="@drawable/toolbar_shadow" />
 
     </FrameLayout>
 

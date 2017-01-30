@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -127,6 +128,8 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
     private String[] mPremiumRequestProductsId;
     private int[] mPremiumRequestProductsCount;
 
+    public static List<ResolveInfo> sInstalledApps;
+
     private static final String TAG_HOME = "home";
     private static final String TAG_APPLY = "apply";
     private static final String TAG_ICONS = "icons";
@@ -246,6 +249,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
             mBillingProcessor = null;
         }
         if (mReceiver != null) unregisterReceiver(mReceiver);
+        sInstalledApps = null;
         super.onDestroy();
     }
 
@@ -468,7 +472,8 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
     public void OnWallpapersChecked(@Nullable Intent intent) {
         if (intent != null) {
             int size = intent.getIntExtra("size", 0);
-            int offlineSize = new Database(this).getWallpapersCount();
+            Database database = new Database(this);
+            int offlineSize = database.getWallpapersCount();
             Preferences.getPreferences(this).setAvailableWallpapersCount(size);
 
             if (size > offlineSize) {

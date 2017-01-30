@@ -7,11 +7,10 @@ import android.content.res.TypedArray;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.util.SparseArrayCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,14 +22,16 @@ import android.widget.TextView;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.LauncherAdapter;
 import com.dm.material.dashboard.candybar.helpers.ColorHelper;
-import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.items.Icon;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
-import com.dm.material.dashboard.candybar.utils.Animator;
-import com.dm.material.dashboard.candybar.utils.SparseArrayUtils;
+import com.dm.material.dashboard.candybar.utils.AlphanumComparator;
 import com.dm.material.dashboard.candybar.utils.Tag;
 import com.dm.material.dashboard.candybar.utils.views.AutoFitRecyclerView;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /*
  * CandyBar - Material Dashboard
@@ -113,9 +114,7 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         int id = view.getId();
-        if (id == R.id.apply_tips_fab) {
-            Animator.hideFab((FloatingActionButton) getActivity().findViewById(R.id.apply_tips_fab));
-
+        if (id == R.id.apply_tips_dismiss) {
             LinearLayout applyTips = (LinearLayout) getActivity()
                     .findViewById(R.id.apply_tips_bar);
             applyTips.setVisibility(View.GONE);
@@ -135,26 +134,24 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
 
         int accent = ColorHelper.getAttributeColor(getActivity(), R.attr.colorAccent);
         int textColor = ColorHelper.getTitleTextColor(accent);
-        FloatingActionButton fab = (FloatingActionButton) getActivity()
-                .findViewById(R.id.apply_tips_fab);
-        fab.setImageDrawable(DrawableHelper.getTintedDrawable(getActivity(),
-                R.drawable.ic_fab_check, textColor));
-        fab.setOnClickListener(this);
-        Animator.showFab(fab);
+        AppCompatButton dismiss = (AppCompatButton) getActivity()
+                .findViewById(R.id.apply_tips_dismiss);
+        dismiss.setTextColor(textColor);
+        dismiss.setOnClickListener(this);
     }
 
 
     private void getLaunchers() {
         mGetLaunchers = new AsyncTask<Void, Void, Boolean>() {
 
-            SparseArrayCompat<Icon> installed;
-            SparseArrayCompat<Icon> supported;
+            List<Icon> installed;
+            List<Icon> supported;
 
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                installed = new SparseArrayCompat<>();
-                supported = new SparseArrayCompat<>();
+                installed = new ArrayList<>();
+                supported = new ArrayList<>();
             }
 
             @Override
@@ -190,18 +187,30 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
                             }
 
                             Icon launcher = new Icon(launcherNames[i], icon, launcherPackage);
-                            if (isInstalled) installed.append(installed.size(), launcher);
-                            else supported.append(supported.size(), launcher);
+                            if (isInstalled) installed.add(launcher);
+                            else supported.add(launcher);
                         }
 
                         try {
-                            SparseArrayUtils utils = new SparseArrayUtils();
-                            utils.sort(installed);
+                            Collections.sort(installed, new AlphanumComparator() {
+                                @Override
+                                public int compare(Object o1, Object o2) {
+                                    String s1 = ((Icon) o1).getTitle();
+                                    String s2 = ((Icon) o2).getTitle();
+                                    return super.compare(s1, s2);
+                                }
+                            });
                         } catch (Exception ignored) {}
 
                         try {
-                            SparseArrayUtils utils = new SparseArrayUtils();
-                            utils.sort(supported);
+                            Collections.sort(supported, new AlphanumComparator() {
+                                @Override
+                                public int compare(Object o1, Object o2) {
+                                    String s1 = ((Icon) o1).getTitle();
+                                    String s2 = ((Icon) o2).getTitle();
+                                    return super.compare(s1, s2);
+                                }
+                            });
                         } catch (Exception ignored) {}
 
                         launcherIcons.recycle();
