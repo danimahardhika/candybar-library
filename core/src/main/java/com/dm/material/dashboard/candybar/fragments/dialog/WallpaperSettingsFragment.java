@@ -51,8 +51,10 @@ public class WallpaperSettingsFragment extends DialogFragment implements View.On
         }
         ft.addToBackStack(null);
 
-        DialogFragment dialog = WallpaperSettingsFragment.newInstance();
-        dialog.show(ft, TAG);
+        try {
+            DialogFragment dialog = WallpaperSettingsFragment.newInstance();
+            dialog.show(ft, TAG);
+        } catch (IllegalArgumentException | IllegalStateException ignored) {}
     }
 
     private AppCompatRadioButton mEnableScrollRadio;

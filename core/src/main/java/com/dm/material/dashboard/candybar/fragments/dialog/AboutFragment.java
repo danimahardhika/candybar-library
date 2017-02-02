@@ -26,6 +26,8 @@ import com.mikhaellopez.circularimageview.CircularImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 
+import org.sufficientlysecure.htmltextview.HtmlTextView;
+
 /*
  * CandyBar - Material Dashboard
  *
@@ -68,6 +70,7 @@ public class AboutFragment extends DialogFragment implements View.OnClickListene
 
     private ImageView mImageView;
     private CircularImageView mProfile;
+    private HtmlTextView mDescription;
     private MaterialRippleLayout mEmailContainer;
     private TextView mEmail;
     private TextView mLink1;
@@ -86,6 +89,7 @@ public class AboutFragment extends DialogFragment implements View.OnClickListene
 
         mImageView = (ImageView) dialog.findViewById(R.id.image);
         mProfile = (CircularImageView) dialog.findViewById(R.id.profile);
+        mDescription = (HtmlTextView) dialog.findViewById(R.id.about_desc);
         mEmailContainer = (MaterialRippleLayout) dialog.findViewById(R.id.container_email);
         mEmail = (TextView) dialog.findViewById(R.id.email);
         mLink1 = (TextView) dialog.findViewById(R.id.link1);
@@ -184,6 +188,9 @@ public class AboutFragment extends DialogFragment implements View.OnClickListene
     }
 
     private void initAbout() {
+        String desc = getActivity().getResources().getString(R.string.about_desc);
+        mDescription.setHtml(desc);
+
         String email = getActivity().getResources().getString(R.string.about_email);
         if (email.length() == 0) mEmailContainer.setVisibility(View.GONE);
         String link2 = getActivity().getResources().getString(R.string.about_link_2_url);

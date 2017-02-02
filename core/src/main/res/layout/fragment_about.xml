@@ -51,7 +51,8 @@
                 android:textSize="16sp"
                 fontPath="fonts/Font-Medium.ttf"/>
 
-            <TextView
+            <org.sufficientlysecure.htmltextview.HtmlTextView
+                android:id="@+id/about_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/about_content_padding"
@@ -60,9 +61,8 @@
                 android:layout_marginEnd="@dimen/about_content_padding"
                 android:layout_marginTop="2dp"
                 android:gravity="center"
-                android:text="@string/about_desc"
                 android:textColor="?android:attr/textColorSecondary"
-                android:textSize="14sp"
+                android:textSize="@dimen/text_content"
                 fontPath="fonts/Font-Regular.ttf"/>
 
             <LinearLayout

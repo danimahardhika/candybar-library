@@ -181,11 +181,12 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
             return;
         }
 
-        mSelectedAll = true;
         mSelectedItems.clear();
         for (int i = 0; i < mRequests.size(); i++) {
-            mSelectedItems.put(i, true);
+            if (!mRequests.get(i).isRequested())
+                mSelectedItems.put(i, true);
         }
+        mSelectedAll = mSelectedItems.size() > 0;
         notifyDataSetChanged();
         try {
             RequestListener listener = (RequestListener) mContext;

@@ -4,6 +4,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.res.XmlResourceParser;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -23,7 +24,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.dm.material.dashboard.candybar.R;
-import com.dm.material.dashboard.candybar.helpers.ColorHelper;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.helpers.IconsHelper;
 import com.dm.material.dashboard.candybar.items.Icon;
@@ -98,9 +98,6 @@ public class IconsBaseFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_search, menu);
         MenuItem search = menu.findItem(R.id.menu_search);
-        int color = ColorHelper.getAttributeColor(getActivity(), R.attr.toolbar_icon);
-        search.setIcon(DrawableHelper.getTintedDrawable(getActivity(),
-                R.drawable.ic_toolbar_search, color));
 
         MenuItemCompat.setOnActionExpandListener(search, new MenuItemCompat.OnActionExpandListener() {
             @Override
@@ -123,18 +120,21 @@ public class IconsBaseFragment extends Fragment {
                                 PagerIconsAdapter adapter = (PagerIconsAdapter) mPager.getAdapter();
                                 if (adapter == null) return;
 
-                                try {
-                                    SearchListener listener = (SearchListener) getActivity();
-                                    listener.OnSearchExpanded(true);
-                                } catch (Exception ignored) {}
+                                SearchListener listener = (SearchListener) getActivity();
+                                listener.OnSearchExpanded(true);
 
-                                fm.beginTransaction()
+                                FragmentTransaction ft = fm.beginTransaction()
                                         .replace(R.id.container,
-                                                IconsSearchFragment.newInstance(adapter.mIcons),
+                                                IconsSearchFragment.newInstance(adapter.getIcons()),
                                                 IconsSearchFragment.TAG)
                                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                                        .addToBackStack(null)
-                                        .commit();
+                                        .addToBackStack(null);
+
+                                try {
+                                    ft.commit();
+                                } catch (Exception e) {
+                                    ft.commitAllowingStateLoss();
+                                }
                             }
                         }).start();
 
@@ -226,8 +226,10 @@ public class IconsBaseFragment extends Fragment {
                     for (int i = 0; i < adapter.getCount(); i++) {
                         TabLayout.Tab tab = mTabLayout.getTabAt(i);
                         if (tab != null) {
-                            tab.setCustomView(R.layout.fragment_icons_base_tab);
-                            tab.setText(adapter.getPageTitle(i));
+                            if (i < adapter.getCount()) {
+                                tab.setCustomView(R.layout.fragment_icons_base_tab);
+                                tab.setText(adapter.getPageTitle(i));
+                            }
                         }
                     }
                 } else {
@@ -244,7 +246,7 @@ public class IconsBaseFragment extends Fragment {
 
         private final List<Icon> mIcons;
 
-        PagerIconsAdapter(FragmentManager fm, List<Icon> icons) {
+        PagerIconsAdapter(@NonNull FragmentManager fm, @NonNull List<Icon> icons) {
             super(fm);
             mIcons = icons;
         }
@@ -262,6 +264,10 @@ public class IconsBaseFragment extends Fragment {
         @Override
         public int getCount() {
             return mIcons.size();
+        }
+
+        public List<Icon> getIcons() {
+            return mIcons;
         }
 
     }

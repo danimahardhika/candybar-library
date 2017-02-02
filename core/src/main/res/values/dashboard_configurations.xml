@@ -186,12 +186,11 @@
     <string name="about_title">CandyBar Material Dashboard</string>
 
     <!-- About description below title -->
-    <string name="about_desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-        eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-        nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
-        deserunt mollit anim id est laborum.</string>
+    <string name="about_desc"><![CDATA[
+        About description now supports html formatting, <b>bold description</b>,
+        <i>italic description</i>, <u>underline description</u>,
+        <a href="https://github.com/danimahardhika">link inside description</a>.
+        ]]></string>
 
     <!-- Email that showed in about
     * This part must be email

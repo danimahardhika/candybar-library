@@ -77,7 +77,7 @@ public class IntentChooserFragment extends DialogFragment {
         try {
             DialogFragment dialog = IntentChooserFragment.newInstance(request);
             dialog.show(ft, TAG);
-        } catch (IllegalArgumentException ignored) {}
+        } catch (IllegalArgumentException | IllegalStateException ignored) {}
     }
 
     private ListView mIntentList;

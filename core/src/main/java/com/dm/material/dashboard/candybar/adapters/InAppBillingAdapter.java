@@ -68,7 +68,7 @@ public class InAppBillingAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) view.getTag();
         }
-        if (position > 0 && position < mInAppBillings.length) {
+        if (position >= 0 && position < mInAppBillings.length) {
             final InAppBilling inAppBilling = mInAppBillings[position];
             if (inAppBilling != null) {
                 holder.radio.setChecked(mSelectedPosition == position);
