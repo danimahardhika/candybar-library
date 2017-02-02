@@ -46,8 +46,8 @@ android {
     defaultConfig {
         minSdkVersion rootProject.ext.MinSdk
         targetSdkVersion rootProject.ext.TargetSdk
-        versionCode 160
-        versionName "1.6.0"
+        versionCode 161
+        versionName "1.6.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -98,6 +98,4 @@ dependencies {
     compile 'com.google.android.apps.muzei:muzei-api:2.0'
     compile 'com.github.rafakob:DrawMe:0.1.6'
     compile 'org.sufficientlysecure:html-textview:3.1'
-
-    testCompile 'junit:junit:4.12'
 }
