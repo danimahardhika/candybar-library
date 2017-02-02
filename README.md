@@ -78,12 +78,10 @@ Support development by making donation through demo app at Google Play.
 Want your icon pack listed here? Mention me at [Google Plus](https://plus.google.com/u/1/+DaniMahardhika).
 * [Delta](https://play.google.com/store/apps/details?id=website.leifs.delta)
 * [Simpax](https://play.google.com/store/apps/details?id=com.sikebo.simpax.icons)
-* [Retrorika](https://play.google.com/store/apps/details?id=com.sikebox.retrorika.material.icons)
-* [Materialistik](https://play.google.com/store/apps/details?id=com.sikebo.materialistik.material.icons)
-* [Jono](https://play.google.com/store/apps/details?id=com.indigomadina.jono)
 * [Tabloid](https://play.google.com/store/apps/details?id=com.indigomadina.tabloid)
 * [Pixel](https://play.google.com/store/apps/details?id=com.themezilla.pixelui)
 * [Silhoutte](https://play.google.com/store/apps/details?id=com.xonyxltd.icon.silhouettedonate)
+* [Apollo](https://play.google.com/store/apps/details?id=com.solarium.apollo)
 
 # License
 ```
