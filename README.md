@@ -29,6 +29,9 @@ dependencies {
     compile 'com.github.danimahardhika.candybar-library:core:1.6.1'
 }
 ```
+# How to Use
+Take a look inside <a href="https://github.com/danimahardhika/candybar-library/wiki" target="_blank">Wiki Site</a>.
+
 # Previews
 <img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/home.jpg" width="215">
 <img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/navigation_drawer.jpg" width="215">
@@ -38,9 +41,6 @@ dependencies {
 <img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/wallpaper_preview.jpg" width="215">
 <img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/icons.jpg" width="215">
 <img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/settings.jpg" width="215">
-
-# How to Use
-Take a look inside <a href="https://github.com/danimahardhika/candybar-library/wiki" target="_blank">Wiki Site</a>.
 
 # Why CandyBar?
 * Very Light &#8594; Compared to other dashboard, CandyBar has smallest size, only around 2 MB.
