@@ -42,12 +42,6 @@ Take a look inside <a href="https://github.com/danimahardhika/candybar-library/w
 <img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/icons.jpg" width="215">
 <img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/settings.jpg" width="215">
 
-# Why CandyBar?
-* Very Light &#8594; Compared to other dashboard, CandyBar has smallest size, only around 2 MB.
-* Premium Icon Request &#8594; CandyBar has premium icon request feature (pay to request).
-* Customization &#8594; CandyBar has a lot of options and easy to customize.</li>
-* CandyBar Tools &#8594; CandyBar provide several tools to help you creating Icon Pack.
-
 # Features
 * License Checker
 * Apply: 24 launchers
