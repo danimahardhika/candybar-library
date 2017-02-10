@@ -1,5 +1,5 @@
 # CandyBar <img src="https://drive.google.com/uc?id=0B0f4ypHfNKm5b0w5SklmMldvajg" width="30">
-[![](https://jitpack.io/v/danimahardhika/candybar-library.svg)](https://jitpack.io/#danimahardhika/candybar-library) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![](https://jitpack.io/v/danimahardhika/candybar-library.svg)](https://jitpack.io/#danimahardhika/candybar-library) [![License](https://img.shields.io/badge/License-Apache%202.0-yellowgreen.svg)](https://opensource.org/licenses/Apache-2.0)
 <br>Android Icon Pack Material Dashboard
 <p><a href='https://play.google.com/store/apps/details?id=com.material.dashboard.candybar.demo&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width="200"/></a></p>
 
@@ -26,22 +26,32 @@ Add the dependency
 ```Gradle
 dependencies {
     //...
-    compile 'com.github.danimahardhika.candybar-library:core:1.6.1'
+    compile 'com.github.danimahardhika.candybar-library:core:2.0.0'
 }
 ```
 # How to Use
 Take a look inside <a href="https://github.com/danimahardhika/candybar-library/wiki" target="_blank">Wiki Site</a>.
 
+# Previews
+<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/home.jpg" width="215">
+<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/navigation_drawer.jpg" width="215">
+<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/changelog.jpg" width="215">
+<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/icon_request.jpg" width="215">
+<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/cloud_wallpapers.jpg" width="215">
+<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/wallpaper_preview.jpg" width="215">
+<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/icons.jpg" width="215">
+<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/settings.jpg" width="215">
+
 # Features
 * License Checker
-* Apply: 24 launchers
+* Apply: 26 launchers
 * Icon Picker: see all icons included with sections and search
 * Icon Request
  * Regular Request: free to request
  * Premium Request: pay to request
 * Cloud Based Wallpaper
  * Preview wallpaper
- * Apply wallpaper: enable or disable wallpaper scroll
+ * Apply wallpaper: inbuilt wallpaper crop
  * Download wallpaper
 * Settings
  * Clear Cache
