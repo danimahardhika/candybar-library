@@ -2,7 +2,6 @@ package com.dm.material.dashboard.candybar.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
@@ -16,7 +15,6 @@ import android.widget.TextView;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.helpers.ColorHelper;
 import com.dm.material.dashboard.candybar.items.Request;
-import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
 import com.dm.material.dashboard.candybar.utils.listeners.RequestListener;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -24,6 +22,9 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /*
  * CandyBar - Material Dashboard
@@ -47,14 +48,14 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
 
     private final Context mContext;
     private final SparseBooleanArray mSelectedItems;
-    private final SparseArrayCompat<Request> mRequests;
+    private final List<Request> mRequests;
     private DisplayImageOptions.Builder mOptions;
 
     private final int mTextColorSecondary;
     private final int mTextColorAccent;
     private boolean mSelectedAll = false;
 
-    public RequestAdapter(@NonNull Context context, @NonNull SparseArrayCompat<Request> requests) {
+    public RequestAdapter(@NonNull Context context, @NonNull List<Request> requests) {
         mContext = context;
         mRequests = requests;
         mTextColorSecondary = ColorHelper.getAttributeColor(mContext,
@@ -64,7 +65,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
 
         mOptions = ImageConfig.getRawDefaultImageOptions();
         mOptions.resetViewBeforeLoading(true);
-        mOptions.cacheInMemory(false);
+        mOptions.cacheInMemory(true);
         mOptions.cacheOnDisk(false);
         mOptions.showImageOnFail(R.drawable.ic_app_default);
         mOptions.displayer(new FadeInBitmapDisplayer(700));
@@ -105,7 +106,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
 
     @Override
     public int getItemCount() {
-        return mRequests.size();
+        return mRequests == null ? 0 : mRequests.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
@@ -126,8 +127,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
             icon = (ImageView) itemView.findViewById(R.id.icon);
             checkbox = (AppCompatCheckBox) itemView.findViewById(R.id.checkbox);
             container = (LinearLayout) itemView.findViewById(R.id.container);
-            container.setBackgroundResource(Preferences.getPreferences(mContext).isDarkTheme() ?
-                    R.drawable.card_item_list_dark : R.drawable.card_item_list);
+
             container.setOnClickListener(this);
             container.setOnLongClickListener(this);
         }
@@ -153,11 +153,6 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
             }
             return false;
         }
-    }
-
-    public void addRequest(Request request) {
-        mRequests.append(mRequests.size(), request);
-        notifyItemInserted(getItemCount() - 1);
     }
 
     private boolean toggleSelection(int position) {
@@ -202,10 +197,10 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         return mSelectedItems.size();
     }
 
-    public SparseArrayCompat<Integer> getSelectedItems() {
-        SparseArrayCompat<Integer> selected = new SparseArrayCompat<>();
+    public List<Integer> getSelectedItems() {
+        List<Integer> selected = new ArrayList<>();
         for (int i = 0; i < mSelectedItems.size(); i++) {
-            selected.append(selected.size(), mSelectedItems.keyAt(i));
+            selected.add(mSelectedItems.keyAt(i));
         }
         return selected;
     }
@@ -223,20 +218,20 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         return mRequests.get(position);
     }
 
-    private SparseArrayCompat<Request> getSelectedApps() {
-        SparseArrayCompat<Request> items = new SparseArrayCompat<>(mSelectedItems.size());
+    private List<Request> getSelectedApps() {
+        List<Request> items = new ArrayList<>(mSelectedItems.size());
         for (int i = 0; i < mSelectedItems.size(); i++) {
             int position = mSelectedItems.keyAt(i);
             if (position >= 0 && position < mRequests.size()) {
                 Request request = mRequests.get(mSelectedItems.keyAt(i));
-                items.append(items.size(), request);
+                items.add(request);
             }
         }
         return items;
     }
 
     public boolean isContainsRequested() {
-        SparseArrayCompat<Request> requests = getSelectedApps();
+        List<Request> requests = getSelectedApps();
         boolean requested = false;
         for (int i = 0; i < requests.size(); i++) {
             if (requests.get(i).isRequested()) {

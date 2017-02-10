@@ -26,7 +26,6 @@ import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.helpers.FileHelper;
 import com.dm.material.dashboard.candybar.items.IntentChooser;
 import com.dm.material.dashboard.candybar.items.Request;
-import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.Tag;
 
 import java.io.File;
@@ -147,8 +146,6 @@ public class IntentAdapter extends BaseAdapter {
             icon = (ImageView) view.findViewById(R.id.icon);
             container = (LinearLayout) view.findViewById(R.id.container);
             divider = view.findViewById(R.id.divider);
-            container.setBackgroundResource(Preferences.getPreferences(mContext).isDarkTheme() ?
-                    R.drawable.card_item_list_dark : R.drawable.card_item_list);
         }
     }
 

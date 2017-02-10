@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Toolbar -->
+    <dimen name="tab_text">16sp</dimen>
+
+    <!-- Splash Screen -->
+    <dimen name="splash_screen_logo">114dp</dimen>
+    <dimen name="splash_screen_text">16sp</dimen>
+
+    <!-- Home -->
+    <dimen name="home_image_height">320dp</dimen>
+
+    <!-- Icons -->
+    <dimen name="icon_thumbnail_padding">22dp</dimen>
+    <dimen name="icon_preview">180dp</dimen>
+
+    <!-- About -->
+    <dimen name="about_profile">120dp</dimen>
+    <dimen name="about_profile_border">6dp</dimen>
+    <dimen name="about_profile_margin_top">62dp</dimen>
+    <dimen name="about_profile_margin_bottom">-60dp</dimen>
+    <dimen name="about_profile_margin_right">40dp</dimen>
+    <dimen name="about_header_text">26sp</dimen>
+    <dimen name="about_image_height">240dp</dimen>
+
+</resources>

@@ -123,4 +123,12 @@ public class ColorHelper {
         }
     }
 
+    public static boolean isValidColor(String string) {
+        try {
+            Color.parseColor(string);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

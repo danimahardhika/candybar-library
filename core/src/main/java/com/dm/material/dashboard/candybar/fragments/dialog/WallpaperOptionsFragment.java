@@ -18,7 +18,6 @@ import com.dm.material.dashboard.candybar.helpers.ColorHelper;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.helpers.PermissionHelper;
 import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
-import com.dm.material.dashboard.candybar.preferences.Preferences;
 
 /*
  * CandyBar - Material Dashboard
@@ -60,7 +59,6 @@ public class WallpaperOptionsFragment extends DialogFragment implements View.OnC
         if (prev != null) {
             ft.remove(prev);
         }
-        ft.addToBackStack(null);
 
         try {
             DialogFragment dialog = WallpaperOptionsFragment.newInstance(url, name);
@@ -113,13 +111,8 @@ public class WallpaperOptionsFragment extends DialogFragment implements View.OnC
                 getActivity(), R.drawable.ic_toolbar_save, color));
 
         mApply.setOnClickListener(this);
-        mApply.setBackgroundResource(Preferences.getPreferences(getActivity()).isDarkTheme() ?
-                R.drawable.item_grid_dark : R.drawable.item_grid);
-
         if (getActivity().getResources().getBoolean(R.bool.enable_wallpaper_download)) {
             mSave.setOnClickListener(this);
-            mSave.setBackgroundResource(Preferences.getPreferences(getActivity()).isDarkTheme() ?
-                    R.drawable.item_grid_dark : R.drawable.item_grid);
             return;
         }
         mSave.setVisibility(View.GONE);
@@ -133,7 +126,8 @@ public class WallpaperOptionsFragment extends DialogFragment implements View.OnC
             WallpaperHelper.applyWallpaper(getActivity(), null, color, mUrl, mName);
         } else if (id == R.id.save) {
             if (PermissionHelper.isPermissionStorageGranted(getActivity())) {
-                WallpaperHelper.downloadWallpaper(getActivity(), color, mUrl, mName, -1);
+                WallpaperHelper.downloadWallpaper(getActivity(), color, mUrl, mName);
+                dismiss();
                 return;
             }
             PermissionHelper.requestStoragePermission(getActivity());

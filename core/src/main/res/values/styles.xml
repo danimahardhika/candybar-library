@@ -21,19 +21,19 @@
         <item name="windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowContentOverlay">@null</item>
-        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="android:textColorPrimary">@color/primaryText</item>
         <item name="android:textColorSecondary">@color/secondaryText</item>
-        <item name="color_accent_secondary">@color/colorAccentSecondary</item>
+        <item name="android:listDivider">@color/dividerList</item>
+
         <item name="card_background">@color/cardBackground</item>
-        <item name="card_ripple">@color/cardRipple</item>
+        <item name="ripple_color">@color/rippleColor</item>
         <item name="ripple_accent">@color/rippleAccent</item>
         <item name="main_background">@color/mainBackground</item>
         <item name="toolbar_icon">@color/toolbarIcon</item>
         <item name="toolbar_accent">@color/colorAccent</item>
         <item name="divider_list">@color/dividerList</item>
+        <item name="home_feature_line">@color/homeFeatureLine</item>
         <item name="hint_text">@color/hintText</item>
-        <item name="error_text">@color/errorText</item>
         <item name="tab_indicator">@color/tabIndicator</item>
         <item name="tab_text">@color/tabText</item>
         <item name="tab_text_selected">@color/tabTextSelected</item>
@@ -41,6 +41,7 @@
         <item name="search_toolbar">@color/searchToolbar</item>
         <item name="search_toolbar_icon">@color/searchToolbarIcon</item>
         <item name="search_toolbar_hint">@color/searchToolbarHintText</item>
+
         <item name="md_positive_color">@color/colorAccent</item>
         <item name="md_neutral_color">@color/primaryText</item>
         <item name="md_negative_color">@color/primaryText</item>
@@ -59,19 +60,19 @@
         <item name="windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowContentOverlay">@null</item>
-        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="android:textColorPrimary">@color/primaryTextDark</item>
         <item name="android:textColorSecondary">@color/secondaryTextDark</item>
-        <item name="color_accent_secondary">@color/darkColorAccentSecondary</item>
+        <item name="android:listDivider">@color/dividerListDark</item>
+
         <item name="card_background">@color/cardBackgroundDark</item>
-        <item name="card_ripple">@color/cardRippleDark</item>
+        <item name="ripple_color">@color/rippleColorDark</item>
         <item name="main_background">@color/mainBackgroundDark</item>
         <item name="ripple_accent">@color/rippleAccentDark</item>
         <item name="toolbar_icon">@color/toolbarIconDark</item>
         <item name="toolbar_accent">@color/darkColorAccent</item>
         <item name="divider_list">@color/dividerListDark</item>
+        <item name="home_feature_line">@color/homeFeatureLineDark</item>
         <item name="hint_text">@color/hintTextDark</item>
-        <item name="error_text">@color/errorTextDark</item>
         <item name="tab_indicator">@color/tabIndicatorDark</item>
         <item name="tab_text">@color/tabTextDark</item>
         <item name="tab_text_selected">@color/tabTextSelectedDark</item>
@@ -79,6 +80,7 @@
         <item name="search_toolbar">@color/searchToolbarDark</item>
         <item name="search_toolbar_icon">@color/searchToolbarIconDark</item>
         <item name="search_toolbar_hint">@color/searchToolbarHintTextDark</item>
+
         <item name="md_background_color">@color/cardBackgroundDark</item>
         <item name="md_positive_color">@color/darkColorAccent</item>
         <item name="md_neutral_color">@color/primaryTextDark</item>
@@ -111,14 +113,17 @@
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
-    <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
-        <item name="spinBars">true</item>
-        <item name="color">?attr/toolbar_icon</item>
-    </style>
-
     <style name="NavigationViewStyle">
         <item name="android:textSize">@dimen/text_content_subtitle</item>
         <item name="android:listPreferredItemHeightSmall">48dp</item>
+    </style>
+
+    <style name="RippleStyle">
+        <item name="colorControlHighlight">?attr/ripple_color</item>
+    </style>
+
+    <style name="RippleAccentStyle">
+        <item name="colorControlHighlight">?attr/ripple_accent</item>
     </style>
 
     <style name="ButtonStyle">
@@ -126,7 +131,7 @@
     </style>
 
     <style name="CheckBoxStyle">
-        <item name="colorControlActivated">?attr/color_accent_secondary</item>
+        <item name="colorControlActivated">?attr/colorAccent</item>
     </style>
 
     <style name="ToolbarStyle" parent="@style/Theme.AppCompat.Light.DarkActionBar">

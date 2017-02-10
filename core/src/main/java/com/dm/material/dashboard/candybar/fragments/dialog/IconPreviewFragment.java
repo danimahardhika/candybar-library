@@ -57,7 +57,6 @@ public class IconPreviewFragment extends DialogFragment {
         if (prev != null) {
             ft.remove(prev);
         }
-        ft.addToBackStack(null);
 
         try {
             DialogFragment dialog = IconPreviewFragment.newInstance(name, id);
@@ -103,7 +102,7 @@ public class IconPreviewFragment extends DialogFragment {
         if (!getActivity().getResources().getBoolean(R.bool.show_icon_name)) {
             boolean iconNameReplacer = getActivity().getResources().getBoolean(
                     R.bool.enable_icon_name_replacer);
-            mIconName = IconsHelper.replaceIconName(getActivity(), iconNameReplacer, mIconName);
+            mIconName = IconsHelper.replaceName(getActivity(), iconNameReplacer, mIconName);
         }
 
         mName.setText(mIconName);

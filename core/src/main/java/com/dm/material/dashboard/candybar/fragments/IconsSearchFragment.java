@@ -1,5 +1,6 @@
 package com.dm.material.dashboard.candybar.fragments;
 
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -8,6 +9,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,14 +25,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dm.material.dashboard.candybar.R;
+import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
 import com.dm.material.dashboard.candybar.adapters.IconsAdapter;
 import com.dm.material.dashboard.candybar.helpers.ColorHelper;
+import com.dm.material.dashboard.candybar.helpers.IconsHelper;
 import com.dm.material.dashboard.candybar.helpers.SoftKeyboardHelper;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.items.Icon;
 import com.dm.material.dashboard.candybar.utils.AlphanumComparator;
 import com.dm.material.dashboard.candybar.utils.Tag;
-import com.dm.material.dashboard.candybar.utils.views.AutoFitRecyclerView;
 import com.pluscubed.recyclerfastscroll.RecyclerFastScroller;
 
 import java.util.ArrayList;
@@ -56,44 +60,25 @@ import java.util.List;
 
 public class IconsSearchFragment extends Fragment {
 
-    private AutoFitRecyclerView mIconsGrid;
+    private RecyclerView mIconsGrid;
     private RecyclerFastScroller mFastScroll;
     private TextView mSearchResult;
     private SearchView mSearchView;
 
-    private List<Icon> mIcons;
     private IconsAdapter mAdapter;
     private AsyncTask<Void, Void, Boolean> mGetIcons;
 
     public static final String TAG = "icons_search";
-    private static final String ICONS = "icons";
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_icons_search, container, false);
-        mIconsGrid = (AutoFitRecyclerView) view.findViewById(R.id.icons_grid);
+        mIconsGrid = (RecyclerView) view.findViewById(R.id.icons_grid);
         mFastScroll = (RecyclerFastScroller) view.findViewById(R.id.fastscroll);
         mSearchResult = (TextView) view.findViewById(R.id.search_result);
         return view;
-    }
-
-    public static IconsSearchFragment newInstance(List<Icon> icons) {
-        IconsSearchFragment fragment = new IconsSearchFragment();
-        Bundle bundle = new Bundle();
-        ArrayList<Icon> allIcons = new ArrayList<>();
-        for (Icon icon : icons)
-            allIcons.addAll(icon.getIcons());
-        bundle.putParcelableArrayList(ICONS, allIcons);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mIcons = getArguments().getParcelableArrayList(ICONS);
     }
 
     @Override
@@ -101,11 +86,13 @@ public class IconsSearchFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
         ViewCompat.setNestedScrollingEnabled(mIconsGrid, false);
-        ViewHelper.resetNavigationBarBottomMargin(getActivity(), mIconsGrid,
+        ViewHelper.resetNavigationBarBottomPadding(getActivity(), mIconsGrid,
                 getActivity().getResources().getConfiguration().orientation);
 
         mIconsGrid.setHasFixedSize(true);
         mIconsGrid.setItemAnimator(new DefaultItemAnimator());
+        mIconsGrid.setLayoutManager(new GridLayoutManager(getActivity(),
+                getActivity().getResources().getInteger(R.integer.icons_column_count)));
         mFastScroll.attachRecyclerView(mIconsGrid);
 
         getIcons();
@@ -157,6 +144,14 @@ public class IconsSearchFragment extends Fragment {
     }
 
     @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        ViewHelper.resetNavigationBarBottomPadding(
+                getActivity(), mIconsGrid, newConfig.orientation);
+        ViewHelper.resetSpanCount(getActivity(), mIconsGrid, R.integer.icons_column_count);
+    }
+
+    @Override
     public void onDestroy() {
         if (mGetIcons != null) mGetIcons.cancel(true);
         super.onDestroy();
@@ -166,8 +161,8 @@ public class IconsSearchFragment extends Fragment {
         try {
             mAdapter.search(query);
             if (mAdapter.getItemCount()==0) {
-                String text = getActivity().getResources().getString(R.string.search_noresult) + " " +
-                        "\"" +query+ "\"";
+                String text = String.format(getActivity().getResources().getString(
+                        R.string.search_noresult), query);
                 mSearchResult.setText(text);
                 mSearchResult.setVisibility(View.VISIBLE);
             }
@@ -180,12 +175,41 @@ public class IconsSearchFragment extends Fragment {
     private void getIcons() {
         mGetIcons = new AsyncTask<Void, Void, Boolean>() {
 
+            List<Icon> icons;
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                icons = new ArrayList<>();
+            }
+
             @Override
             protected Boolean doInBackground(Void... voids) {
                 while (!isCancelled()) {
                     try {
                         Thread.sleep(1);
-                        Collections.sort(mIcons, new AlphanumComparator() {
+                        if (CandyBarMainActivity.sSections == null) {
+                            CandyBarMainActivity.sSections = IconsHelper.getIconsList(getActivity());
+                            CandyBarMainActivity.sIconsCount = 0;
+
+                            for (Icon section : CandyBarMainActivity.sSections) {
+                                CandyBarMainActivity.sIconsCount += section.getIcons().size();
+
+                                if (getActivity().getResources().getBoolean(R.bool.show_icon_name)) {
+                                    for (Icon icon : section.getIcons()) {
+                                        String name = IconsHelper.replaceName(getActivity(),
+                                                getActivity().getResources().getBoolean(R.bool.enable_icon_name_replacer),
+                                                icon.getTitle());
+                                        icon.setTitle(name);
+                                    }
+                                }
+                            }
+                        }
+
+                        for (Icon icon : CandyBarMainActivity.sSections)
+                            icons.addAll(icon.getIcons());
+
+                        Collections.sort(icons, new AlphanumComparator() {
                             @Override
                             public int compare(Object o1, Object o2) {
                                 String s1 = ((Icon) o1).getTitle();
@@ -205,7 +229,7 @@ public class IconsSearchFragment extends Fragment {
             protected void onPostExecute(Boolean aBoolean) {
                 super.onPostExecute(aBoolean);
                 if (aBoolean) {
-                    mAdapter = new IconsAdapter(getActivity(), mIcons, true);
+                    mAdapter = new IconsAdapter(getActivity(), icons, true);
                     mIconsGrid.setAdapter(mAdapter);
                     mSearchView.requestFocus();
                     SoftKeyboardHelper.openKeyboard(getActivity());

@@ -4,11 +4,8 @@ import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
@@ -35,7 +32,7 @@ import com.dm.material.dashboard.candybar.R;
 
 public class LauncherHelper {
 
-    public static final int UNKNOWN = -1;
+    private static final int UNKNOWN = -1;
     private static final int ACTION = 1;
     private static final int ADW = 2;
     private static final int APEX = 3;
@@ -61,8 +58,10 @@ public class LauncherHelper {
     private static final int M = 23;
     private static final int MN = 24;
     private static final int ITOP = 25;
+    private static final int ZERO = 26;
+    private static final int V = 27;
 
-    public static int getLauncherId(String packageName) {
+    private static int getLauncherId(String packageName) {
         if (packageName == null) return UNKNOWN;
         switch (packageName) {
             case "com.actionlauncher.playstore":
@@ -122,6 +121,10 @@ public class LauncherHelper {
                 return MN;
             case "com.itop.launcher":
                 return ITOP;
+            case "com.zeroteam.zerolauncher":
+                return ZERO;
+            case "com.vivid.launcher":
+                return V;
             default:
                 return UNKNOWN;
         }
@@ -209,7 +212,7 @@ public class LauncherHelper {
                     final Intent goex = context.getPackageManager().getLaunchIntentForPackage(
                             "com.gau.go.launcherex");
                     final Intent go = new Intent("com.gau.go.launcherex.MyThemes.mythemeaction");
-                    go.putExtra("type",1);
+                    go.putExtra("type", 1);
                     go.putExtra("pkgname", context.getPackageName());
                     goex.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.sendBroadcast(go);
@@ -433,16 +436,56 @@ public class LauncherHelper {
                     openGooglePlay(context, launcherPackage, launcherName);
                 }
                 break;
+            case ZERO:
+                try {
+                     /*
+                     * Just want to let anyone who is going to copy
+                     * It's not easy searching for this
+                     * I will be grateful if you take this with a proper credit
+                     * Thank you
+                     */
+                    final Intent zero = context.getPackageManager().getLaunchIntentForPackage(
+                            "com.zeroteam.zerolauncher");
+                    final Intent zero1 = new Intent("com.zeroteam.zerolauncher.MyThemes.mythemeaction");
+                    zero1.putExtra("type", 1);
+                    zero1.putExtra("pkgname", context.getPackageName());
+                    zero.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.sendBroadcast(zero1);
+                    context.startActivity(zero);
+                    ((AppCompatActivity) context).finish();
+                } catch (ActivityNotFoundException | NullPointerException e) {
+                    openGooglePlay(context, launcherPackage, launcherName);
+                }
+                break;
+            case V:
+                try {
+                     /*
+                     * Just want to let anyone who is going to copy
+                     * It's not easy searching for this
+                     * I will be grateful if you take this with a proper credit
+                     * Thank you
+                     */
+                    final Intent v = context.getPackageManager().getLaunchIntentForPackage(
+                            "com.vivid.launcher");
+                    final Intent v1 = new Intent("com.vivid.launcher.MyThemes.mythemeaction");
+                    v1.putExtra("type", 1);
+                    v1.putExtra("pkgname", context.getPackageName());
+                    v.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.sendBroadcast(v1);
+                    context.startActivity(v);
+                    ((AppCompatActivity) context).finish();
+                } catch (ActivityNotFoundException | NullPointerException e) {
+                    openGooglePlay(context, launcherPackage, launcherName);
+                }
+                break;
         }
     }
 
     private static void applyManual(Context context, String launcherPackage, String launcherName, String activity) {
         new MaterialDialog.Builder(context)
                 .title(launcherName)
-                .content(launcherName + " " +
-                        context.getResources().getString(R.string.manual_apply) + " " +
-                        context.getResources().getString(R.string.app_name) + " " +
-                        context.getResources().getString(R.string.manual_apply2))
+                .content(launcherName +" "+ String.format(context.getResources().getString(
+                        R.string.apply_manual), context.getResources().getString(R.string.app_name)))
                 .positiveText(context.getResources().getString(R.string.ok))
                 .onPositive((dialog, which) -> {
                     try{
@@ -455,9 +498,8 @@ public class LauncherHelper {
                     } catch (ActivityNotFoundException | NullPointerException e) {
                         openGooglePlay(context, launcherPackage, launcherName);
                     } catch (SecurityException | IllegalArgumentException e) {
-                        Toast.makeText(context, context.getResources().getString(R.string.unable_launch)
-                                        + " " +launcherName+ " " +
-                                        context.getResources().getString(R.string.unable_launch2),
+                        Toast.makeText(context, String.format(context.getResources().getString(
+                                R.string.apply_launch_failed),launcherName),
                                 Toast.LENGTH_LONG).show();
                     }
                 })
@@ -468,11 +510,9 @@ public class LauncherHelper {
     private static void applyLgHome(Context context, String launcherPackage, String launcherName, String activity) {
         new MaterialDialog.Builder(context)
                 .title(launcherName)
-                .content(launcherName + " " +
-                        context.getResources().getString(R.string.manual_apply) +" "+
-                        context.getResources().getString(R.string.app_name) +" "+
-                        context.getResources().getString(R.string.manual_apply2) +"\n\n"+
-                        context.getResources().getString(R.string.manual_apply_lg_home))
+                .content(launcherName +" "+ String.format(context.getResources().getString(
+                        R.string.apply_manual), context.getResources().getString(R.string.app_name))
+                        +"\n\n"+ context.getResources().getString(R.string.apply_lg_home))
                 .positiveText(context.getResources().getString(R.string.ok))
                 .onPositive((dialog, which) -> {
                     try{
@@ -483,10 +523,10 @@ public class LauncherHelper {
                         context.startActivity(intent);
                         ((AppCompatActivity) context).finish();
                     } catch (ActivityNotFoundException | NullPointerException e) {
-                        Toast.makeText(context, R.string.manual_apply_lg_home_not_available,
+                        Toast.makeText(context, R.string.apply_lg_home_not_available,
                                 Toast.LENGTH_LONG).show();
                     } catch (SecurityException | IllegalArgumentException e) {
-                        Toast.makeText(context, context.getResources().getString(R.string.apply_lghome_failed),
+                        Toast.makeText(context, context.getResources().getString(R.string.apply_lg_home_failed),
                                 Toast.LENGTH_LONG).show();
                     }
                 })
@@ -497,7 +537,8 @@ public class LauncherHelper {
     private static void openGooglePlay(Context context, String packageName, String launcherName) {
         new MaterialDialog.Builder(context)
                 .title(launcherName)
-                .content(launcherName + " " + context.getResources().getString(R.string.launcher_not_installed))
+                .content(String.format(context.getResources().getString(
+                        R.string.apply_launcher_not_installed), launcherName))
                 .positiveText(context.getString(R.string.install))
                 .onPositive((dialog, which) -> {
                     try {
@@ -512,20 +553,4 @@ public class LauncherHelper {
                 .negativeText(R.string.cancel)
                 .show();
     }
-
-    @Nullable
-    public static String[] getDefaultLauncher(Context context) {
-        try {
-            PackageManager packageManager = context.getPackageManager();
-            Intent intent = new Intent("android.intent.action.MAIN");
-            intent.addCategory("android.intent.category.HOME");
-            ResolveInfo resolveInfo = packageManager.resolveActivity(
-                    intent, PackageManager.MATCH_DEFAULT_ONLY);
-            return new String[]{resolveInfo.activityInfo.packageName,
-                    resolveInfo.activityInfo.loadLabel(packageManager).toString()};
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
 }

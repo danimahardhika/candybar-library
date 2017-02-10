@@ -49,7 +49,6 @@ public class WallpaperSettingsFragment extends DialogFragment implements View.On
         if (prev != null) {
             ft.remove(prev);
         }
-        ft.addToBackStack(null);
 
         try {
             DialogFragment dialog = WallpaperSettingsFragment.newInstance();
@@ -83,13 +82,7 @@ public class WallpaperSettingsFragment extends DialogFragment implements View.On
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mEnableScroll.setOnClickListener(this);
-        mEnableScroll.setBackgroundResource(Preferences.getPreferences(getActivity()).isDarkTheme() ?
-                R.drawable.item_grid_dark : R.drawable.item_grid);
-
         mDisableScroll.setOnClickListener(this);
-        mDisableScroll.setBackgroundResource(Preferences.getPreferences(getActivity()).isDarkTheme() ?
-                R.drawable.item_grid_dark : R.drawable.item_grid);
-
         toggleRadio();
     }
 

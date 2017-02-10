@@ -72,7 +72,6 @@ public class IntentChooserFragment extends DialogFragment {
         if (prev != null) {
             ft.remove(prev);
         }
-        ft.addToBackStack(null);
 
         try {
             DialogFragment dialog = IntentChooserFragment.newInstance(request);
@@ -208,7 +207,7 @@ public class IntentChooserFragment extends DialogFragment {
                     }
                 } else {
                     dismiss();
-                    Toast.makeText(getActivity(), R.string.failed_email_app,
+                    Toast.makeText(getActivity(), R.string.intent_email_failed,
                             Toast.LENGTH_LONG).show();
                 }
                 mLoadIntentChooser = null;

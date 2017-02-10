@@ -1,7 +1,9 @@
 package com.dm.material.dashboard.candybar.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,11 +14,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dm.material.dashboard.candybar.R;
+import com.dm.material.dashboard.candybar.helpers.ColorHelper;
 import com.dm.material.dashboard.candybar.helpers.LauncherHelper;
 import com.dm.material.dashboard.candybar.items.Icon;
-import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import java.util.List;
 
@@ -43,6 +46,9 @@ public class LauncherAdapter extends RecyclerView.Adapter<LauncherAdapter.ViewHo
     private final Context mContext;
     private final List<Icon> mLaunchers;
 
+    private static final int TYPE_HEADER = 0;
+    private static final int TYPE_CONTENT = 1;
+
     public LauncherAdapter(@NonNull Context context, @NonNull List<Icon> launchers) {
         mContext = context;
         mLaunchers = launchers;
@@ -50,16 +56,54 @@ public class LauncherAdapter extends RecyclerView.Adapter<LauncherAdapter.ViewHo
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(
-                R.layout.fragment_apply_item_grid, parent, false);
-        return new ViewHolder(view);
+        View view = null;
+        if (viewType == TYPE_HEADER) {
+            view = LayoutInflater.from(mContext).inflate(
+                    R.layout.fragment_apply_item_header, parent, false);
+        } else if (viewType == TYPE_CONTENT) {
+            view = LayoutInflater.from(mContext).inflate(
+                    R.layout.fragment_apply_item_grid, parent, false);
+        }
+        return new ViewHolder(view, viewType);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.name.setText(mLaunchers.get(position).getTitle());
-        ImageLoader.getInstance().displayImage("drawable://" +mLaunchers.get(position).getRes(),
-                holder.icon, ImageConfig.getDefaultImageOptions(false));
+        if (holder.holderId == TYPE_HEADER) {
+            holder.name.setText(mLaunchers.get(position).getTitle());
+        } else if (holder.holderId == TYPE_CONTENT) {
+            holder.name.setText(mLaunchers.get(position).getTitle());
+            ImageLoader.getInstance().displayImage("drawable://" +mLaunchers.get(position).getRes(),
+                    holder.icon, ImageConfig.getDefaultImageOptions(false),
+                    new SimpleImageLoadingListener() {
+
+                        @Override
+                        public void onLoadingStarted(String imageUri, View view) {
+                            super.onLoadingStarted(imageUri, view);
+                            int color = ColorHelper.getAttributeColor(
+                                    mContext, android.R.attr.textColorSecondary);
+                            holder.name.setBackgroundColor(color);
+                            holder.name.setTextColor(ColorHelper.getTitleTextColor(color));
+                        }
+
+                        @Override
+                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                            super.onLoadingComplete(imageUri, view, loadedImage);
+                            Palette.from(loadedImage).generate(palette -> {
+                                int defaultColor = ColorHelper.getAttributeColor(
+                                        mContext, android.R.attr.textColorSecondary);
+                                int color = palette.getVibrantColor(defaultColor);
+                                if (color == defaultColor)
+                                    color = palette.getMutedColor(defaultColor);
+                                holder.name.setBackgroundColor(
+                                        ColorHelper.getDarkerColor(color, 0.8f));
+                                int text = ColorHelper.getTitleTextColor(
+                                        ColorHelper.getDarkerColor(color, 0.8f));
+                                holder.name.setTextColor(text);
+                            });
+                        }
+                    });
+        }
     }
 
     @Override
@@ -67,20 +111,34 @@ public class LauncherAdapter extends RecyclerView.Adapter<LauncherAdapter.ViewHo
         return mLaunchers.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        if (position == getFirstHeaderPosition() || position == getLastHeaderPosition())
+            return TYPE_HEADER;
+        return TYPE_CONTENT;
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        final TextView name;
-        final ImageView icon;
-        final LinearLayout container;
+        TextView name;
+        ImageView icon;
+        LinearLayout container;
 
-        ViewHolder(View itemView) {
+        int holderId;
+
+        ViewHolder(View itemView, int viewType) {
             super(itemView);
-            icon = (ImageView) itemView.findViewById(R.id.icon);
-            name = (TextView) itemView.findViewById(R.id.name);
-            container = (LinearLayout) itemView.findViewById(R.id.container);
-            container.setOnClickListener(this);
-            container.setBackgroundResource(Preferences.getPreferences(mContext).isDarkTheme() ?
-                    R.drawable.item_grid_dark : R.drawable.item_grid);
+            if (viewType == TYPE_HEADER) {
+                name = (TextView) itemView.findViewById(R.id.name);
+                holderId = TYPE_HEADER;
+            } else if (viewType == TYPE_CONTENT) {
+                icon = (ImageView) itemView.findViewById(R.id.icon);
+                name = (TextView) itemView.findViewById(R.id.name);
+                container = (LinearLayout) itemView.findViewById(R.id.container);
+                container.setOnClickListener(this);
+
+                holderId = TYPE_CONTENT;
+            }
         }
 
         @Override
@@ -88,15 +146,14 @@ public class LauncherAdapter extends RecyclerView.Adapter<LauncherAdapter.ViewHo
             int id = view.getId();
             int position = getAdapterPosition();
             if (id == R.id.container) {
-                if (position < 0 || position > mLaunchers.size()) return;
+                if (position < 0 || position > getItemCount()) return;
                 try {
                     LauncherHelper.apply(mContext,
                             mLaunchers.get(position).getPackageName(),
                             mLaunchers.get(position).getTitle());
-                } catch (SecurityException e) {
-                    Toast.makeText(mContext, mContext.getResources().getString(R.string.unable_launch)
-                                    + " " +mLaunchers.get(position).getTitle()+ " " +
-                                    mContext.getResources().getString(R.string.unable_launch2),
+                } catch (Exception e) {
+                    Toast.makeText(mContext, String.format(mContext.getResources().getString(
+                            R.string.apply_launch_failed), mLaunchers.get(position).getTitle()),
                             Toast.LENGTH_LONG).show();
                 }
 
@@ -104,4 +161,13 @@ public class LauncherAdapter extends RecyclerView.Adapter<LauncherAdapter.ViewHo
         }
     }
 
+    public int getFirstHeaderPosition() {
+        return mLaunchers.indexOf(new Icon(
+                mContext.getResources().getString(R.string.apply_installed), -1, null));
+    }
+
+    public int getLastHeaderPosition() {
+        return mLaunchers.indexOf(new Icon(
+                mContext.getResources().getString(R.string.apply_supported), -2, null));
+    }
 }

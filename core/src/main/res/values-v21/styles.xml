@@ -37,12 +37,4 @@
         <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
-    <style name="ButtonStyle">
-        <item name="android:colorButtonNormal">?attr/colorAccent</item>
-    </style>
-
-    <style name="CheckBoxStyle">
-        <item name="android:colorControlActivated">?attr/color_accent_secondary</item>
-    </style>
-
 </resources>

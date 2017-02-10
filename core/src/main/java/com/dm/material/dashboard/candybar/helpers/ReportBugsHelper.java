@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.util.SparseArrayCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -29,6 +28,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -84,18 +84,18 @@ public class ReportBugsHelper {
                 while (!isCancelled()) {
                     try {
                         Thread.sleep(1);
-                        SparseArrayCompat<String> files = new SparseArrayCompat<>();
+                        List<String> files = new ArrayList<>();
                         sb.append(DeviceHelper.getDeviceInfo(context));
 
                         String brokenAppFilter = buildBrokenAppFilter(context, folder);
-                        if (brokenAppFilter != null) files.append(files.size(), brokenAppFilter);
+                        if (brokenAppFilter != null) files.add(brokenAppFilter);
 
                         String activityList = buildActivityList(context, folder);
-                        if (activityList != null) files.append(files.size(), activityList);
+                        if (activityList != null) files.add(activityList);
 
                         String stackTrace = Preferences.getPreferences(context).getLatestCrashLog();
                         String crashLog = buildCrashLog(context, folder, stackTrace);
-                        if (crashLog != null) files.append(files.size(), crashLog);
+                        if (crashLog != null) files.add(crashLog);
 
                         FileHelper.createZip(files, file);
                         return true;

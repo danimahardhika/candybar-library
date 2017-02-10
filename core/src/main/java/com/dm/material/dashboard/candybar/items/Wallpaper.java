@@ -21,7 +21,6 @@ package com.dm.material.dashboard.candybar.items;
 public class Wallpaper {
 
     private final String mUrl;
-    private String mDate;
     private String mThumbUrl;
     private String mAuthor;
     private String mName;
@@ -31,11 +30,6 @@ public class Wallpaper {
         mAuthor = author;
         mUrl = url;
         mThumbUrl = thumbUrl;
-    }
-
-    public Wallpaper(String url, String date) {
-        mUrl = url;
-        mDate = date;
     }
 
     public String getName() {
@@ -54,8 +48,13 @@ public class Wallpaper {
         return mUrl;
     }
 
-    public String getDate() {
-        return mDate;
-    }
 
+    @Override
+    public boolean equals(Object object) {
+        boolean equals = false;
+        if (object != null && object instanceof Wallpaper) {
+            equals = mUrl.equals(((Wallpaper) object).getURL());
+        }
+        return equals;
+    }
 }

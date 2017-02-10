@@ -21,15 +21,9 @@
     <string name="muzei_art_source_desc">Your Art Source Description</string>
 
     <!-- Muzei base color -->
-    <color name="muzei_color">#43C0FF</color>
+    <color name="muzei_color">#0082B4</color>
 
     <!-- CONFIG: HOME -->
-
-    <!-- Quick Apply for default launcher
-    * Enable or disable quick apply Icon Pack for default launcher if supported
-    * Enable -> true
-    * Disable -> false -->
-    <bool name="enable_quick_apply">false</bool>
 
     <!-- Home title must be defined -->
     <string name="home_title">CandyBar</string>
@@ -41,12 +35,11 @@
     <!-- Home image
     * If you want to use image from url, just put the url here
     * If you want to use image stored in project (drawable folder)
-    * just put image name here without the extension (ex: home_image.png -> home_image) -->
-    <string name="home_image">https://drive.google.com/uc?id=0B0f4ypHfNKm5UFhmaTB0TGJLRDA</string>
-
-    <!-- Home image height
-    * default: 256dp -->
-    <dimen name="home_image_height">220dp</dimen>
+    * just put image name here without the extension (ex: home_image.png -> home_image)
+    *
+    * If you want to use solid color, you can put hex color code here
+    * ex: <string name="navigation_view_header">#000000</string> -->
+    <string name="home_image">https://drive.google.com/uc?id=0B0f4ypHfNKm5VHVjbXZNSS1TUUU</string>
 
     <!-- Home description
     - If you don't want to show description, just leave this empty -->
@@ -55,26 +48,6 @@
         <i>italic description</i>, <u>underline description</u>,
         <a href="https://github.com/danimahardhika">link inside description</a>.
         ]]></string>
-
-    <!-- Icon Pack features (will be visible in home)
-    * Number 1 - 5 must be included, after that only optional -->
-    <string-array name="home_features">
-        <!-- 1. This part must be about number of icons included -->
-        <item>More than 1000 custom icons included</item>
-        <!-- 2. This part must be about icon quality -->
-        <item>192x192 pixels vector based icons</item>
-        <!-- 3. This part must be about number of wallpapers included
-        * If your icon pack doesn't contains wallpaper just ignore this -->
-        <item>100+ cloud wallpapers</item>
-        <!-- 4. This part must be about muzei live wallpaper
-        * If your icon pack doesn't contains wallpaper just ignore this -->
-        <item>Supports muzei live wallpaper</item>
-        <!-- 5. This part must be about number of launchers supported -->
-        <item>Supports more than 24 custom launchers</item>
-        <!-- You can add another features here -->
-        <item>Another feature</item>
-        <item>Another one</item>
-    </string-array>
 
     <!-- More apps at Google Play Store
     * Link to google play store developer
@@ -87,8 +60,11 @@
     * If you want to use image from url, just put the url here
     * If you want to use image stored in project (drawable folder)
     * just put image name here without the extension
-    * (ex: navigation_view_header.png -> navigation_view_header) -->
-    <string name="navigation_view_header">https://drive.google.com/uc?id=0B0f4ypHfNKm5UFhmaTB0TGJLRDA</string>
+    * (ex: navigation_view_header.png -> navigation_view_header)
+    *
+    * If you want to use solid color, you can put hex color code here
+    * ex: <string name="navigation_view_header">#000000</string> -->
+    <string name="navigation_view_header">https://drive.google.com/uc?id=0B0f4ypHfNKm5VHVjbXZNSS1TUUU</string>
 
     <!-- Navigation view header height
     * default: 200dp -->
@@ -101,8 +77,23 @@
     <!-- Navigation view width -->
     <dimen name="navigation_view_width">300dp</dimen>
 
-    <!-- CONFIG: ICONS
-    * Take a look inside dashboard_icons.xml -->
+    <!-- CONFIG: ICONS -->
+
+    <!-- Sort
+    * Enable or disable icons sort
+    * Disabling this will improve icons section performance, icons will load faster
+    * You can use CandyBar drawable.xml builder to sort icons
+    * Enable -> true
+    * Disable -> false -->
+    <bool name="enable_icons_sort">true</bool>
+
+    <!-- Icon picker icon name text below icon
+    * default: true
+    * Change to false to disable it -->
+    <bool name="show_icon_name">true</bool>
+
+    <!-- Icons section will read icons from drawable.xml same as Nova Launcher
+    * Put drawable.xml inside xml folder -->
 
     <!-- CONFIG: ICON REQUEST -->
 
@@ -114,7 +105,7 @@
     <!-- Enable regular icon request limit
     * default: false
     * change to true to enable it -->
-    <bool name="enable_icon_request_limit">true</bool>
+    <bool name="enable_icon_request_limit">false</bool>
 
     <!-- Limit regular icon request
     * IGNORE if icon request limit is disabled
@@ -128,24 +119,30 @@
     * but you also want user able to make 10 request again after update, then enable this option
     * default: false
     * change to true to enable it -->
-    <bool name="reset_icon_request_limit">true</bool>
+    <bool name="reset_icon_request_limit">false</bool>
 
     <!-- Enable or disable premium request
     * default: false
     * change to true to enable it -->
     <bool name="enable_premium_request">false</bool>
 
-    <!-- Take a look inside LicenseHelper.java for premium request product -->
+    <!-- Take a look inside License.java for premium request product -->
 
     <!-- Email that will be used to send icon request and report bugs -->
     <string name="dev_email">your@email.com</string>
 
     <!-- CONFIG: CLOUD WALLPAPERS -->
 
-    <!-- WallpaperJSON json link
+    <!-- Wallpaper json link
     * If your icon pack doesn't contains any wallpaper, just leave this empty
-    * <string name="wallpaper_json"></string>-->
-    <string name="wallpaper_json">https://drive.google.com/uc?id=0B0f4ypHfNKm5NkFoNzB1anZPc28</string>
+    * <string name="wallpaper_json"></string>
+    *
+    * If you want to separate wallpaper app from icon pack and keep wallpapers section shown in navigation drawer,
+    * but instead open wallpapers section pressing it will open your wallpaper app
+    * just put your wallpaper app package name here
+    * example: com.dm.wallpaper.board.demo
+    * <string name="wallpaper_json">com.dm.wallpaper.board.demo</string> -->
+    <string name="wallpaper_json">https://drive.google.com/uc?id=0B0f4ypHfNKm5TmRMSnhpb2JSalE</string>
 
     <!-- Allow to download wallpaper
     * If disabled user only able to apply wallpaper from dashboard -->
@@ -173,17 +170,20 @@
     <!-- About header image
     * If you want to use image from url, just put the url here
     * If you want to use image stored in project (drawable folder)
-    * just put image name here without the extension (ex: about_image.png -> about_image) -->
-    <string name="about_image">https://drive.google.com/uc?id=0B0f4ypHfNKm5UFhmaTB0TGJLRDA</string>
+    * just put image name here without the extension (ex: about_image.png -> about_image)
+    *
+    * If you want to use solid color, you can put hex color code here
+    * ex: <string name="navigation_view_header">#000000</string> -->
+    <string name="about_image">https://drive.google.com/uc?id=0B0f4ypHfNKm5VHVjbXZNSS1TUUU</string>
 
     <!-- About profile image
     * If you want to use image from url, just put the url here
     * If you want to use image stored in project (drawable folder)
     * just put image name here without the extension (ex: about_profile_image.png -> about_profile_image) -->
-    <string name="about_profile_image">ic_app_default</string>
+    <string name="about_profile_image">https://lh3.googleusercontent.com/-KBI2HdgNtN0/AAAAAAAAAAI/AAAAAAAABpc/icnuAgrjOT4/s256-p-rw-no/photo.jpg</string>
 
     <!-- About title above description -->
-    <string name="about_title">CandyBar Material Dashboard</string>
+    <string name="about_title">CandyBar \nMaterial Dashboard</string>
 
     <!-- About description below title -->
     <string name="about_desc"><![CDATA[
@@ -217,6 +217,10 @@
     * <string name="about_link_2_url">http://facebook.com/yourlink</string> -->
     <string name="about_link_2_title">Website</string>
     <string name="about_link_2_url">http://yourwebsite.com</string>
+
+    <!-- Contributors dialog
+    * Take a look inside values/xml/contributors.xml to add contributors -->
+    <bool name="show_contributors_dialog">false</bool>
 
     <!-- CONFIG: DONATE -->
 

@@ -69,8 +69,8 @@ public class DrawableHelper {
     }
 
     @Nullable
-    public static Drawable getTintedDrawable(@NonNull Context context, @DrawableRes int res,
-                                             @ColorInt int color, int padding) {
+    public static Drawable getDefaultImage(@NonNull Context context, @DrawableRes int res,
+                                           @ColorInt int color, int padding) {
         try {
             Drawable drawable = AppCompatDrawableManager.get().getDrawable(context, res);
             drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);
@@ -89,9 +89,11 @@ public class DrawableHelper {
                     bitmap.getHeight() + padding,
                     Bitmap.Config.ARGB_8888);
             Canvas tintedCanvas = new Canvas(tintedBitmap);
+            int background = ColorHelper.getAttributeColor(context, R.attr.card_background);
             Paint paint = new Paint();
             paint.setFilterBitmap(true);
             paint.setAntiAlias(true);
+            tintedCanvas.drawColor(background, PorterDuff.Mode.ADD);
             tintedCanvas.drawBitmap(bitmap,
                     (tintedCanvas.getWidth() - bitmap.getWidth())/2,
                     (tintedCanvas.getHeight() - bitmap.getHeight())/2, paint);

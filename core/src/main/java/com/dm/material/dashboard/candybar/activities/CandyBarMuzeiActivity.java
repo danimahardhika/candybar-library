@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.URLUtil;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.Toast;
@@ -21,6 +20,7 @@ import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.helpers.ColorHelper;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
+import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.Tag;
 
@@ -116,8 +116,7 @@ public class CandyBarMuzeiActivity extends AppCompatActivity implements View.OnC
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.menu_save) {
-            String url = getResources().getString(R.string.wallpaper_json);
-            if (!URLUtil.isValidUrl(url)) {
+            if (WallpaperHelper.getWallpaperType(this) != WallpaperHelper.CLOUD_WALLPAPERS) {
                 Toast.makeText(this, R.string.muzei_settings_ignored,
                         Toast.LENGTH_SHORT).show();
                 finish();

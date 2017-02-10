@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="colorPrimary">#373C48</color>
-    <color name="colorPrimaryDark">#2B2F37</color>
-    <color name="colorAccent">#7C4DFF</color>
-    <color name="colorAccentSecondary">#1DE9B6</color>
+    <color name="colorPrimary">#0082B4</color>
+    <color name="colorPrimaryDark">#006EA0</color>
+    <color name="colorAccent">#23BEA5</color>
 
-    <color name="darkColorPrimary">#373C48</color>
-    <color name="darkColorPrimaryDark">#2B2F37</color>
-    <color name="darkColorAccent">#7C4DFF</color>
-    <color name="darkColorAccentSecondary">#1DE9B6</color>
+    <color name="darkColorPrimary">#0082B4</color>
+    <color name="darkColorPrimaryDark">#006EA0</color>
+    <color name="darkColorAccent">#23BEA5</color>
 
     <!-- Splash Screen -->
-    <color name="splashColor">#373C48</color>
+    <color name="splashColor">#F0F0F0</color>
 
     <!-- Navigation View -->
     <color name="navigationViewTitle">#FFFFFF</color>
     <color name="navigationViewTitleBack">#33000000</color>
-    <color name="navigationViewText">#484848</color>
+    <color name="navigationViewText">#505A64</color>
     <color name="navigationViewTextDark">#DDFFFFFF</color>
-    <color name="navigationViewTextSelected">#7C4DFF</color>
-    <color name="navigationViewTextSelectedDark">#7C4DFF</color>
+    <color name="navigationViewTextSelected">#0082B4</color>
+    <color name="navigationViewTextSelectedDark">#0082B4</color>
+    <color name="navigationViewSelectedBackground">#00000000</color>
+    <color name="navigationViewSelectedBackgroundDark">#00000000</color>
 
     <!-- Swipe Refresh -->
-    <color name="swipeRefresh">#7C4DFF</color>
+    <color name="swipeRefresh">#23BEA5</color>
 
     <!-- Toolbar -->
     <color name="toolbarIcon">#FFFFFFFF</color>
@@ -41,21 +41,33 @@
     <color name="homeTitle">#FFFFFF</color>
     <color name="homeTitleDark">#FFFFFF</color>
 
+    <color name="homeFeatureLine">#EEEEEE</color>
+    <color name="homeFeatureLineDark">#22FFFFFF</color>
+
+    <color name="homeFeatureIcons">#8BC34A</color>
+    <color name="homeFeatureDimensions">#009688</color>
+    <color name="homeFeatureCloudWallpapers">#F44336</color>
+    <color name="homeFeatureMuzei">#3577D7</color>
+    <color name="homeFeatureLaunchers">#FFC107</color>
+    <color name="homeFeaturesIconRequest">#9C27B0</color>
+
     <!-- Tab -->
-    <color name="tabIndicator">#7C4DFF</color>
-    <color name="tabIndicatorDark">#7C4DFF</color>
+    <color name="tabIndicator">#FFFFFFFF</color>
+    <color name="tabIndicatorDark">#FFFFFFFF</color>
     <color name="tabText">#44FFFFFF</color>
     <color name="tabTextDark">#44FFFFFF</color>
-    <color name="tabTextSelected">#1DE9B6</color>
-    <color name="tabTextSelectedDark">#1DE9B6</color>
+    <color name="tabTextSelected">#FFFFFFFF</color>
+    <color name="tabTextSelectedDark">#FFFFFFFF</color>
 
     <!-- Card -->
     <color name="cardBackground">#FFFFFF</color>
     <color name="cardBackgroundDark">#181818</color>
-    <color name="cardRipple">#10000000</color>
-    <color name="cardRippleDark">#10FFFFFF</color>
-    <color name="rippleAccent">#227C4DFF</color>
-    <color name="rippleAccentDark">#227C4DFF</color>
+
+    <!-- Ripple -->
+    <color name="rippleColor">#55000000</color>
+    <color name="rippleColorDark">#55FFFFFF</color>
+    <color name="rippleAccent">#3323BEA5</color>
+    <color name="rippleAccentDark">#3323BEA5</color>
 
     <!-- Attributes -->
     <color name="mainBackground">#FAFAFA</color>
@@ -68,15 +80,13 @@
     <color name="hintTextDark">#44FFFFFF</color>
     <color name="dividerList">#EEEEEE</color>
     <color name="dividerListDark">#22FFFFFF</color>
-    <color name="errorText">#F44336</color>
-    <color name="errorTextDark">#F44336</color>
 
     <!-- Popup Bubble -->
-    <color name="popupBubble">#1DE9B6</color>
-    <color name="popupBubbleText">#093f41</color>
+    <color name="popupBubble">#23BEA5</color>
+    <color name="popupBubbleText">#FFFFFF</color>
 
     <!-- Wallpaper Preview -->
-    <color name="wallpaperStatusBar">#88000000</color>
+    <color name="wallpaperStatusBar">#99000000</color>
     <color name="wallpaperToolbar">#66000000</color>
 
 </resources>

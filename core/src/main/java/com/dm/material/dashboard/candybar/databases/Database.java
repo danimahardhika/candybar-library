@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
-import android.support.v4.util.SparseArrayCompat;
 import android.util.Log;
 
 import com.dm.material.dashboard.candybar.helpers.TimeHelper;
@@ -39,7 +38,7 @@ import java.util.List;
 public class Database extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "candybar_database";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     private static final String TABLE_REQUEST = "icon_request";
     private static final String TABLE_PREMIUM_REQUEST = "premium_request";
@@ -49,7 +48,6 @@ public class Database extends SQLiteOpenHelper {
 
     private static final String KEY_ORDER_ID = "order_id";
     private static final String KEY_PRODUCT_ID = "product_id";
-    private static final String KEY_REQUEST = "request";
 
     private static final String KEY_NAME = "name";
     private static final String KEY_ACTIVITY = "activity";
@@ -75,7 +73,8 @@ public class Database extends SQLiteOpenHelper {
                 KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
                 KEY_ORDER_ID + " TEXT NOT NULL, " +
                 KEY_PRODUCT_ID + " TEXT NOT NULL, " +
-                KEY_REQUEST + " TEXT NOT NULL, " +
+                KEY_NAME + " TEXT NOT NULL, " +
+                KEY_ACTIVITY + " TEXT NOT NULL UNIQUE, " +
                 KEY_REQUESTED_ON + " DATETIME DEFAULT CURRENT_TIMESTAMP" + ")";
         String CREATE_TABLE_WALLPAPER = "CREATE TABLE IF NOT EXISTS " +TABLE_WALLPAPERS+ "(" +
                 KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
@@ -91,26 +90,26 @@ public class Database extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        resetDatabase(db);
+        resetDatabase(db, oldVersion);
     }
 
     @Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        resetDatabase(db);
+        resetDatabase(db, oldVersion);
     }
 
-    private void resetDatabase(SQLiteDatabase db) {
+    private void resetDatabase(SQLiteDatabase db, int oldVersion) {
         Cursor cursor = db.rawQuery("SELECT name FROM sqlite_master WHERE type=\'table\'", null);
-        SparseArrayCompat<String> tables = new SparseArrayCompat<>();
+        List<String> tables = new ArrayList<>();
         if (cursor.moveToFirst()) {
             do {
-                tables.append(tables.size(), cursor.getString(0));
+                tables.add(cursor.getString(0));
             } while (cursor.moveToNext());
         }
         cursor.close();
 
-        SparseArrayCompat<Request> requests = getRequestedApps(db);
-        SparseArrayCompat<Request> premiumRequest = getPremiumRequest(db);
+        List<Request> requests = getRequestedApps(db);
+        List<Request> premiumRequest = getPremiumRequest(db);
 
         for (int i = 0; i < tables.size(); i++) {
             try {
@@ -128,11 +127,14 @@ public class Database extends SQLiteOpenHelper {
                     requests.get(i).getActivity());
         }
 
+        if (oldVersion <= 3) return;
+
         for (int i = 0; i < premiumRequest.size(); i++) {
             addPremiumRequest(db,
                     premiumRequest.get(i).getOrderId(),
                     premiumRequest.get(i).getProductId(),
-                    premiumRequest.get(i).getRequest(),
+                    premiumRequest.get(i).getName(),
+                    premiumRequest.get(i).getActivity(),
                     premiumRequest.get(i).getRequestedOn());
         }
     }
@@ -172,8 +174,8 @@ public class Database extends SQLiteOpenHelper {
         return rowCount > 0;
     }
 
-    private SparseArrayCompat<Request> getRequestedApps(SQLiteDatabase db) {
-        SparseArrayCompat<Request> requests = new SparseArrayCompat<>();
+    private List<Request> getRequestedApps(SQLiteDatabase db) {
+        List<Request> requests = new ArrayList<>();
         if (db == null) return requests;
         try {
             Cursor cursor = db.query(TABLE_REQUEST, null, null, null, null, null, null);
@@ -184,7 +186,7 @@ public class Database extends SQLiteOpenHelper {
                             cursor.getString(2),
                             cursor.getString(3),
                             true);
-                    requests.append(requests.size(), request);
+                    requests.add(request);
                 } while (cursor.moveToNext());
             }
             cursor.close();
@@ -194,24 +196,27 @@ public class Database extends SQLiteOpenHelper {
         return requests;
     }
 
-    public void addPremiumRequest(String orderId, String productId, String request) {
+    public void addPremiumRequest(String orderId, String productId, String name, String activity) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_ORDER_ID, orderId);
         values.put(KEY_PRODUCT_ID, productId);
-        values.put(KEY_REQUEST, request);
+        values.put(KEY_NAME, name);
+        values.put(KEY_ACTIVITY, activity);
 
         db.insert(TABLE_PREMIUM_REQUEST, null, values);
         db.close();
     }
 
-    private void addPremiumRequest(SQLiteDatabase db, String orderId, String productId, String request, String requestedOn) {
+    private void addPremiumRequest(SQLiteDatabase db, String orderId, String productId, String name,
+                                   String activity, String requestedOn) {
         if (db == null) return;
         try {
             ContentValues values = new ContentValues();
             values.put(KEY_ORDER_ID, orderId);
             values.put(KEY_PRODUCT_ID, productId);
-            values.put(KEY_REQUEST, request);
+            values.put(KEY_NAME, name);
+            values.put(KEY_ACTIVITY, activity);
             values.put(KEY_REQUESTED_ON, requestedOn);
 
             db.insert(TABLE_PREMIUM_REQUEST, null, values);
@@ -220,8 +225,8 @@ public class Database extends SQLiteOpenHelper {
         }
     }
 
-    public SparseArrayCompat<Request> getPremiumRequest() {
-        SparseArrayCompat<Request> requests = new SparseArrayCompat<>();
+    public List<Request> getPremiumRequest() {
+        List<Request> requests = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_PREMIUM_REQUEST,
                 null, null, null, null, null, null);
@@ -232,7 +237,7 @@ public class Database extends SQLiteOpenHelper {
                         cursor.getString(2),
                         cursor.getString(3),
                         cursor.getString(4));
-                requests.append(requests.size(), request);
+                requests.add(request);
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -240,8 +245,8 @@ public class Database extends SQLiteOpenHelper {
         return requests;
     }
 
-    private SparseArrayCompat<Request> getPremiumRequest(SQLiteDatabase db) {
-        SparseArrayCompat<Request> requests = new SparseArrayCompat<>();
+    private List<Request> getPremiumRequest(SQLiteDatabase db) {
+        List<Request> requests = new ArrayList<>();
         if (db == null) return requests;
         try {
             Cursor cursor = db.query(TABLE_PREMIUM_REQUEST,
@@ -253,7 +258,7 @@ public class Database extends SQLiteOpenHelper {
                             cursor.getString(2),
                             cursor.getString(3),
                             cursor.getString(4));
-                    requests.append(requests.size(), request);
+                    requests.add(request);
                 } while (cursor.moveToNext());
             }
             cursor.close();
@@ -339,6 +344,13 @@ public class Database extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return wallpaper;
+    }
+
+    public void deleteIconRequestData() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete("SQLITE_SEQUENCE", "NAME = ?", new String[]{TABLE_REQUEST});
+        db.delete(TABLE_REQUEST, null, null);
+        db.close();
     }
 
     public void deleteWallpapers(List<Wallpaper> wallpapers) {

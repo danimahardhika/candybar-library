@@ -1,8 +1,5 @@
 package com.dm.material.dashboard.candybar.items;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import java.util.List;
 
 /*
@@ -23,9 +20,9 @@ import java.util.List;
  * limitations under the License.
  */
 
-public class Icon implements Parcelable {
+public class Icon {
 
-    private final String mTitle;
+    private String mTitle;
     private int mRes;
     private String mPackageName;
     private List<Icon> mIcons;
@@ -50,6 +47,10 @@ public class Icon implements Parcelable {
         return mTitle;
     }
 
+    public void setTitle(String title) {
+        mTitle = title;
+    }
+
     public int getRes() {
         return mRes;
     }
@@ -63,32 +64,13 @@ public class Icon implements Parcelable {
     }
 
     @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.mTitle);
-        dest.writeInt(this.mRes);
-        dest.writeString(this.mPackageName);
-    }
-
-    protected Icon(Parcel in) {
-        this.mTitle = in.readString();
-        this.mRes = in.readInt();
-        this.mPackageName = in.readString();
-    }
-
-    public static final Parcelable.Creator<Icon> CREATOR = new Parcelable.Creator<Icon>() {
-        @Override
-        public Icon createFromParcel(Parcel source) {
-            return new Icon(source);
+    public boolean equals(Object object) {
+        boolean res = false;
+        boolean title = false;
+        if (object != null && object instanceof Icon) {
+            res = mRes == ((Icon) object).getRes();
+            title = mTitle.equals(((Icon) object).getTitle());
         }
-
-        @Override
-        public Icon[] newArray(int size) {
-            return new Icon[size];
-        }
-    };
+        return res && title;
+    }
 }

@@ -53,10 +53,11 @@ public class LicensesFragment extends DialogFragment {
         if (prev != null) {
             ft.remove(prev);
         }
-        ft.addToBackStack(null);
 
-        DialogFragment dialog = LicensesFragment.newInstance();
-        dialog.show(ft, TAG);
+        try {
+            DialogFragment dialog = LicensesFragment.newInstance();
+            dialog.show(ft, TAG);
+        } catch (IllegalArgumentException | IllegalStateException ignored) {}
     }
 
     private WebView mWebView;
@@ -68,7 +69,7 @@ public class LicensesFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
         builder.customView(R.layout.fragment_licenses, false);
-        builder.title(R.string.open_source_licenses);
+        builder.title(R.string.about_open_source_licenses);
         MaterialDialog dialog = builder.build();
         dialog.show();
 

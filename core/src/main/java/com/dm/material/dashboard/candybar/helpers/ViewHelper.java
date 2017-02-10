@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Build;
 import android.support.annotation.AttrRes;
+import android.support.annotation.IntegerRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -17,6 +18,8 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,6 +68,14 @@ public class ViewHelper {
         }
     }
 
+    public static int getStatusBarHeight(@NonNull Context context) {
+        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            return context.getResources().getDimensionPixelSize(resourceId);
+        }
+        return 0;
+    }
+
     public static int getNavigationBarHeight(@NonNull Context context) {
         Resources resources = context.getResources();
         int orientation = resources.getConfiguration().orientation;
@@ -76,8 +87,8 @@ public class ViewHelper {
         return 0;
     }
 
-    public static void resetNavigationBarBottomMargin(@NonNull Context context, @Nullable View view,
-                                                      int orientation) {
+    public static void resetNavigationBarBottomPadding(@NonNull Context context, @Nullable View view,
+                                                       int orientation) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (view != null) {
                 if (orientation == Configuration.ORIENTATION_PORTRAIT)
@@ -197,4 +208,13 @@ public class ViewHelper {
         }
     }
 
+    public static void resetSpanCount(@NonNull Context context, @NonNull RecyclerView recyclerView, @IntegerRes int id) {
+        try {
+            GridLayoutManager manager = (GridLayoutManager) recyclerView.getLayoutManager();
+            manager.setSpanCount(context.getResources().getInteger(id));
+            manager.requestLayout();
+        } catch (Exception e) {
+            Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+        }
+    }
 }

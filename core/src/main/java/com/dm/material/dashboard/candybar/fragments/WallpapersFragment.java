@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,7 +18,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -39,8 +37,6 @@ import com.dm.material.dashboard.candybar.utils.Tag;
 import com.dm.material.dashboard.candybar.utils.listeners.WallpapersListener;
 import com.pluscubed.recyclerfastscroll.RecyclerFastScroller;
 import com.rafakob.drawme.DrawMeButton;
-
-import org.sufficientlysecure.htmltextview.HtmlTextView;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -85,12 +81,6 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
         mSwipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe);
         mProgress = (ProgressBar) view.findViewById(R.id.progress);
         mFastScroll = (RecyclerFastScroller) view.findViewById(R.id.fastscroll);
-
-        if (Preferences.getPreferences(getActivity()).isShowWallpaperTips()) {
-            LinearLayout wallpaperTips = (LinearLayout) view.findViewById(
-                    R.id.wallpaper_tips_bar);
-            wallpaperTips.setVisibility(View.VISIBLE);
-        }
         return view;
     }
 
@@ -108,8 +98,8 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
 
         mWallpapersGrid.setItemAnimator(new DefaultItemAnimator());
         mWallpapersGrid.setHasFixedSize(false);
-        mWallpapersGrid.setLayoutManager(new GridLayoutManager(getActivity(), getActivity().getResources()
-                .getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT ? 2 : 3));
+        mWallpapersGrid.setLayoutManager(new GridLayoutManager(getActivity(),
+                getActivity().getResources().getInteger(R.integer.wallpapers_column_count)));
         mFastScroll.attachRecyclerView(mWallpapersGrid);
 
         mSwipe.setOnRefreshListener(() -> {
@@ -118,14 +108,13 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
             else mSwipe.setRefreshing(false);
         });
 
-        initWallpaperTips();
         getWallpapers(false);
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        resetSpanCount(newConfig);
+        ViewHelper.resetSpanCount(getActivity(), mWallpapersGrid, R.integer.wallpapers_column_count);
         resetNavigationBarMargin();
     }
 
@@ -143,41 +132,10 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
     @Override
     public void onClick(View view) {
         int id = view.getId();
-        if (id == R.id.wallpaper_tips_dismiss) {
-            LinearLayout wallpaperTips = (LinearLayout) getActivity()
-                    .findViewById(R.id.wallpaper_tips_bar);
-            wallpaperTips.setVisibility(View.GONE);
-            Preferences.getPreferences(getActivity()).showWallpaperTips(false);
-        } else if (id == R.id.popup_bubble) {
+        if (id == R.id.popup_bubble) {
             Animator.startAlphaAnimation(getActivity().findViewById(R.id.popup_bubble), 200, View.GONE);
             getWallpapers(true);
         }
-    }
-
-    private void resetSpanCount(Configuration configuration) {
-        try {
-            GridLayoutManager manager = (GridLayoutManager) mWallpapersGrid.getLayoutManager();
-            manager.setSpanCount(configuration.orientation ==
-                    Configuration.ORIENTATION_PORTRAIT ? 2 : 3);
-            manager.requestLayout();
-        } catch (Exception e) {
-            Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
-        }
-    }
-
-    private void initWallpaperTips() {
-        if (!Preferences.getPreferences(getActivity()).isShowWallpaperTips()) return;
-
-        int toolbarIcon = ColorHelper.getAttributeColor(getActivity(), R.attr.toolbar_icon);
-        HtmlTextView desc = (HtmlTextView) getActivity().findViewById(R.id.wallpaper_tips_desc);
-        desc.setTextColor(ColorHelper.setColorAlpha(toolbarIcon, 0.6f));
-        desc.setHtml(getActivity().getResources().getString(R.string.tips_wallpaper));
-
-        int accent = ColorHelper.getAttributeColor(getActivity(), R.attr.colorAccent);
-        int textColor = ColorHelper.getTitleTextColor(accent);
-        AppCompatButton dismiss = (AppCompatButton) getActivity().findViewById(R.id.wallpaper_tips_dismiss);
-        dismiss.setTextColor(textColor);
-        dismiss.setOnClickListener(this);
     }
 
     private void initPopupBubble() {
@@ -266,6 +224,9 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
 
                                 database.deleteWallpapers(deleted);
                                 database.addWallpapers(newlyAdded);
+
+                                Preferences.getPreferences(getActivity()).setAvailableWallpapersCount(
+                                        database.getWallpapersCount());
                             } else {
                                 if (database.getWallpapersCount() > 0) database.deleteWallpapers();
                                 database.addWallpapers(wallpapersJSON);

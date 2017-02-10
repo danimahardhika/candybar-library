@@ -144,8 +144,8 @@ public class FAQsFragment extends Fragment {
         try {
             mAdapter.search(query);
             if (mAdapter.getItemCount()==0) {
-                String text = getActivity().getResources().getString(R.string.search_noresult) + " " +
-                        "\"" +query+ "\"";
+                String text = String.format(getActivity().getResources().getString(
+                        R.string.search_noresult), query);
                 mSearchResult.setText(text);
                 mSearchResult.setVisibility(View.VISIBLE);
             }

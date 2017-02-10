@@ -3,10 +3,10 @@ package com.dm.material.dashboard.candybar.services;
 import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
-import android.webkit.URLUtil;
 
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.dm.material.dashboard.candybar.R;
+import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
 import com.dm.material.dashboard.candybar.items.WallpaperJSON;
 import com.dm.material.dashboard.candybar.receivers.CandyBarBroadcastReceiver;
 import com.dm.material.dashboard.candybar.utils.Tag;
@@ -44,10 +44,10 @@ public class CandyBarWallpapersService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         try {
-            Thread.sleep(1);
-            String wallpaperUrl = getResources().getString(R.string.wallpaper_json);
-            if (!URLUtil.isValidUrl(wallpaperUrl)) return;
+            if (WallpaperHelper.getWallpaperType(this) != WallpaperHelper.CLOUD_WALLPAPERS)
+                return;
 
+            String wallpaperUrl = getResources().getString(R.string.wallpaper_json);
             URL url = new URL(wallpaperUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setConnectTimeout(15000);

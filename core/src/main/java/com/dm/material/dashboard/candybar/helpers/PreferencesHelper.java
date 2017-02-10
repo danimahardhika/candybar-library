@@ -36,8 +36,6 @@ public class PreferencesHelper {
     private static final String KEY_FIRST_RUN = "first_run";
     private static final String KEY_DARK_THEME = "dark_theme";
     private static final String KEY_APP_VERSION = "app_version";
-    private static final String KEY_APPLY_TIPS = "apply_tips";
-    private static final String KEY_WALLPAPER_TIPS = "wallpaper_tips";
     private static final String KEY_ROTATE_TIME = "rotate_time";
     private static final String KEY_ROTATE_MINUTE = "rotate_minute";
     private static final String KEY_WIFI_ONLY = "wifi_only";
@@ -77,22 +75,6 @@ public class PreferencesHelper {
 
     public void setDarkTheme(boolean bool) {
         getSharedPreferences().edit().putBoolean(KEY_DARK_THEME, bool).apply();
-    }
-
-    public boolean isShowApplyTips() {
-        return getSharedPreferences().getBoolean(KEY_APPLY_TIPS, true);
-    }
-
-    public void showApplyTips(boolean bool) {
-        getSharedPreferences().edit().putBoolean(KEY_APPLY_TIPS, bool).apply();
-    }
-
-    public boolean isShowWallpaperTips() {
-        return getSharedPreferences().getBoolean(KEY_WALLPAPER_TIPS, true);
-    }
-
-    public void showWallpaperTips(boolean bool) {
-        getSharedPreferences().edit().putBoolean(KEY_WALLPAPER_TIPS, bool).apply();
     }
 
     public void setRotateTime (int time) {

@@ -6,13 +6,13 @@ import android.support.annotation.NonNull;
 
 import com.dm.material.dashboard.candybar.R;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
+import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
-import com.nostra13.universalimageloader.utils.L;
 
 import java.io.File;
 
@@ -37,12 +37,12 @@ import java.io.File;
 public class ImageConfig {
 
     public static ImageLoaderConfiguration getImageLoaderConfiguration(@NonNull Context context) {
-        L.writeLogs(false);
-        L.writeDebugLogs(false);
         return new ImageLoaderConfiguration.Builder(context)
-                .diskCacheSize(100 * 1024 * 1024)
+                .diskCacheSize(200 * 1024 * 1024)
+                .memoryCache(new LruMemoryCache(2 * 1024 * 1024))
+                .memoryCacheSize(2 * 2014 * 1024)
                 .threadPriority(Thread.NORM_PRIORITY - 2)
-                .threadPoolSize(3)
+                .threadPoolSize(4)
                 .tasksProcessingOrder(QueueProcessingType.FIFO)
                 .imageDownloader(new ImageDownloader(context))
                 .diskCache(new UnlimitedDiskCache(new File(

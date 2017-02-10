@@ -1,8 +1,5 @@
 package com.dm.material.dashboard.candybar.fragments;
 
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
@@ -12,7 +9,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.util.SparseArrayCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.AppCompatButton;
@@ -44,17 +40,14 @@ import com.dm.material.dashboard.candybar.helpers.ColorHelper;
 import com.dm.material.dashboard.candybar.helpers.DeviceHelper;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.helpers.FileHelper;
-import com.dm.material.dashboard.candybar.helpers.LocaleHelper;
 import com.dm.material.dashboard.candybar.helpers.RequestHelper;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.Animator;
-import com.dm.material.dashboard.candybar.utils.ImageConfig;
 import com.dm.material.dashboard.candybar.utils.Tag;
 import com.dm.material.dashboard.candybar.utils.listeners.InAppBillingListener;
 import com.dm.material.dashboard.candybar.utils.listeners.RequestListener;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pluscubed.recyclerfastscroll.RecyclerFastScroller;
 
 import java.io.BufferedWriter;
@@ -62,8 +55,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.Collections;
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
  * CandyBar - Material Dashboard
@@ -89,6 +82,9 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     private FloatingActionButton mFab;
     private RecyclerFastScroller mFastScroll;
     private ProgressBar mProgress;
+    private AppCompatButton mBuy;
+    private TextView mDesc;
+    private TextView mCount;
 
     private RequestAdapter mAdapter;
     private AsyncTask<Void, Request, Boolean> mGetMissingApps;
@@ -102,6 +98,9 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         mFab = (FloatingActionButton) view.findViewById(R.id.fab);
         mFastScroll = (RecyclerFastScroller) view.findViewById(R.id.fastscroll);
         mProgress = (ProgressBar) view.findViewById(R.id.progress);
+        mBuy = (AppCompatButton) view.findViewById(R.id.premium_request_buy);
+        mDesc = (TextView) view.findViewById(R.id.premium_request_desc);
+        mCount = (TextView) view.findViewById(R.id.premium_request_count);
         return view;
     }
 
@@ -126,8 +125,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         mRequestList.getItemAnimator().setChangeDuration(0);
         mRequestList.setHasFixedSize(false);
         mRequestList.setLayoutManager(new GridLayoutManager(getActivity(),
-                getActivity().getResources().getConfiguration().orientation ==
-                        Configuration.ORIENTATION_PORTRAIT ? 1 : 2));
+                getActivity().getResources().getInteger(R.integer.request_column_count)));
         mFastScroll.attachRecyclerView(mRequestList);
 
         initPremiumRequest();
@@ -138,12 +136,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         resetNavigationBarMargin();
-        if (mRequestList == null) return;
-        if (mRequestList.getLayoutManager() == null) return;
-
-        GridLayoutManager manager = (GridLayoutManager) mRequestList.getLayoutManager();
-        if (manager != null) manager.setSpanCount(newConfig.orientation ==
-                Configuration.ORIENTATION_PORTRAIT ? 1 : 2);
+        ViewHelper.resetSpanCount(getActivity(), mRequestList, R.integer.request_column_count);
     }
 
     @Override
@@ -239,33 +232,28 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
             premiumRequestBar.setVisibility(View.VISIBLE);
 
             int accent = ColorHelper.getAttributeColor(getActivity(), R.attr.colorAccent);
-            AppCompatButton buy = (AppCompatButton) getActivity().findViewById(R.id.premium_request_buy);
-            buy.setTextColor(ColorHelper.getTitleTextColor(accent));
-            buy.setOnClickListener(this);
+            mBuy.setTextColor(ColorHelper.getTitleTextColor(accent));
+            mBuy.setOnClickListener(this);
 
             int toolbarIcon = ColorHelper.getAttributeColor(getActivity(), R.attr.toolbar_icon);
-            TextView desc = (TextView) getActivity().findViewById(R.id.premium_request_desc);
-            desc.setTextColor(ColorHelper.setColorAlpha(toolbarIcon, 0.6f));
+            mDesc.setTextColor(ColorHelper.setColorAlpha(toolbarIcon, 0.6f));
 
             initPremiumRequestCount();
         }
     }
 
     private void initPremiumRequestCount() {
-        TextView count = (TextView) getActivity().findViewById(R.id.premium_request_count);
         if (Preferences.getPreferences(getActivity()).isPremiumRequest()) {
             String countText = getActivity().getResources().getString(R.string.premium_request_count)
                     +" "+ Preferences.getPreferences(getActivity()).getPremiumRequestCount();
-            count.setText(countText);
-            count.setVisibility(View.VISIBLE);
-            AppCompatButton buy = (AppCompatButton) getActivity().findViewById(R.id.premium_request_buy);
-            buy.setVisibility(View.GONE);
+            mCount.setText(countText);
+            mCount.setVisibility(View.VISIBLE);
+            mBuy.setVisibility(View.GONE);
             return;
         }
 
-        count.setVisibility(View.GONE);
-        AppCompatButton buy = (AppCompatButton) getActivity().findViewById(R.id.premium_request_buy);
-        buy.setVisibility(View.VISIBLE);
+        mCount.setVisibility(View.GONE);
+        mBuy.setVisibility(View.VISIBLE);
     }
 
     public void OnInAppBillingSent(BillingProcessor billingProcessor) {
@@ -303,13 +291,12 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     private void getMissingApps() {
         mGetMissingApps = new AsyncTask<Void, Request, Boolean>() {
 
+            List<Request> requests;
+
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                mAdapter = new RequestAdapter(getActivity(), new SparseArrayCompat<>());
-                mRequestList.setAdapter(mAdapter);
-
-                if (CandyBarMainActivity.sInstalledApps == null)
+                if (CandyBarMainActivity.sMissingApps == null)
                     mProgress.setVisibility(View.VISIBLE);
             }
 
@@ -318,39 +305,11 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                 while (!isCancelled()) {
                     try {
                         Thread.sleep(1);
-                        Database database = new Database(getActivity());
-                        String activities = RequestHelper.loadAppFilter(getActivity());
-                        PackageManager packageManager = getActivity().getPackageManager();
-
-                        if (CandyBarMainActivity.sInstalledApps == null) {
-                            Intent intent = new Intent(Intent.ACTION_MAIN);
-                            intent.addCategory(Intent.CATEGORY_LAUNCHER);
-                            CandyBarMainActivity.sInstalledApps = packageManager.queryIntentActivities(
-                                    intent, PackageManager.GET_RESOLVED_FILTER);
-                            try {
-                                Collections.sort(CandyBarMainActivity.sInstalledApps,
-                                        new ResolveInfo.DisplayNameComparator(getActivity().getPackageManager()));
-                            } catch (Exception ignored) {}
+                        if (CandyBarMainActivity.sMissingApps == null) {
+                            CandyBarMainActivity.sMissingApps = RequestHelper.loadMissingApps(getActivity());
                         }
 
-                        for (ResolveInfo app : CandyBarMainActivity.sInstalledApps) {
-                            String packageName = app.activityInfo.packageName;
-                            String activity = packageName +"/"+ app.activityInfo.name;
-
-                            if (!activities.contains(activity)) {
-                                String name = LocaleHelper.getOtherAppLocaleName(
-                                        getActivity(), new Locale("en-US"), packageName);
-                                if (name == null)
-                                    name = app.activityInfo.loadLabel(packageManager).toString();
-
-                                boolean requested = database.isRequested(activity);
-                                publishProgress(new Request(
-                                        name,
-                                        app.activityInfo.packageName,
-                                        activity,
-                                        requested));
-                            }
-                        }
+                        requests = CandyBarMainActivity.sMissingApps;
                         return true;
                     } catch (Exception e) {
                         Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
@@ -361,17 +320,13 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
             }
 
             @Override
-            protected void onProgressUpdate(Request... values) {
-                super.onProgressUpdate(values);
-                mAdapter.addRequest(values[0]);
-            }
-
-            @Override
             protected void onPostExecute(Boolean aBoolean) {
                 super.onPostExecute(aBoolean);
                 mProgress.setVisibility(View.GONE);
                 if (aBoolean) {
                     setHasOptionsMenu(true);
+                    mAdapter = new RequestAdapter(getActivity(), requests);
+                    mRequestList.setAdapter(mAdapter);
                     Animator.showFab(mFab);
                 } else {
                     mRequestList.setAdapter(null);
@@ -430,55 +385,38 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                             }
                         }
 
-                        SparseArrayCompat<Integer> selectedItems = mAdapter.getSelectedItems();
-                        SparseArrayCompat<String> files = new SparseArrayCompat<>();
+                        List<Integer> selectedItems = mAdapter.getSelectedItems();
+                        List<String> files = new ArrayList<>();
                         File appFilter = new File(directory.toString() + "/" + "appfilter.xml");
 
                         Writer out = new BufferedWriter(new OutputStreamWriter(
                                 new FileOutputStream(appFilter), "UTF8"));
-                        StringBuilder activity = new StringBuilder();
+
                         for (int i = 0; i < selectedItems.size(); i++) {
                             Request item = mAdapter.getRequest(selectedItems.get(i));
                             database.addRequest(item.getName(), item.getActivity(), null);
                             mAdapter.setRequested(selectedItems.get(i), true);
 
-                            String link = "https://play.google.com/store/apps/details?id=";
-                            activity.append("\n\n")
-                                    .append(item.getName())
-                                    .append("\n")
-                                    .append(item.getActivity())
-                                    .append("\n")
-                                    .append(link).append(item.getPackageName());
+                            String string = RequestHelper.writeRequest(item);
+                            sb.append(string);
 
-                            out.append("<!-- ").append(item.getName()).append(" -->");
-                            out.append("\n");
-                            out.append("<item component=\"ComponentInfo{")
-                                    .append(item.getActivity())
-                                    .append("}\" drawable=\"")
-                                    .append(item.getName().toLowerCase().replace(" ", "_"))
-                                    .append("\" />");
-                            out.append("\n\n");
+                            String string1 = RequestHelper.writeAppFilter(item);
+                            out.append(string1);
 
                             Bitmap bitmap = DrawableHelper.getHighQualityIcon(
                                     getActivity(), item.getPackageName());
-                            if (bitmap == null) {
-                                bitmap = ImageLoader.getInstance().loadImageSync(item.getPackageName(),
-                                        ImageConfig.getDefaultImageOptions(false));
-                            }
 
                             String icon = FileHelper.saveIcon(directory, bitmap, item.getName());
-                            if (icon != null) files.append(files.size(), icon);
-                        }
+                            if (icon != null) files.add(icon);
 
-                        sb.append(activity.toString());
-
-                        if (Preferences.getPreferences(getActivity()).isPremiumRequest()) {
-                            database.addPremiumRequest(orderId, productId, activity.toString());
+                            if (Preferences.getPreferences(getActivity()).isPremiumRequest()) {
+                                database.addPremiumRequest(orderId, productId, item.getName(), item.getActivity());
+                            }
                         }
 
                         out.flush();
                         out.close();
-                        files.append(files.size(), appFilter.toString());
+                        files.add(appFilter.toString());
 
                         zipFile = directory.toString() + "/" + "icon_request.zip";
                         FileHelper.createZip(files, zipFile);

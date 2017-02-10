@@ -1,14 +1,15 @@
 package com.dm.material.dashboard.candybar.fragments;
 
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.util.SparseArrayCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.AppCompatCheckBox;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,18 +20,28 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.dm.material.dashboard.candybar.R;
+import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
 import com.dm.material.dashboard.candybar.databases.Database;
 import com.dm.material.dashboard.candybar.fragments.dialog.IntentChooserFragment;
 import com.dm.material.dashboard.candybar.helpers.DeviceHelper;
+import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
+import com.dm.material.dashboard.candybar.helpers.FileHelper;
+import com.dm.material.dashboard.candybar.helpers.RequestHelper;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
+import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
 import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.Tag;
 import com.dm.material.dashboard.candybar.utils.listeners.InAppBillingListener;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -53,14 +64,18 @@ import java.util.List;
 
 public class SettingsFragment extends Fragment implements View.OnClickListener {
 
+    private NestedScrollView mScrollView;
     private LinearLayout mClearCache;
     private TextView mCacheSize;
-    private LinearLayout mDarkTheme;
-    private AppCompatCheckBox mDarkThemeCheck;
+    private LinearLayout mIconRequestClear;
     private LinearLayout mRestorePurchases;
     private LinearLayout mRebuildRequest;
+    private LinearLayout mDarkTheme;
+    private AppCompatCheckBox mDarkThemeCheck;
     private TextView mWallsDirectory;
-    private NestedScrollView mScrollView;
+    private CardView mPrefPremiumRequest;
+    private CardView mPrefWallpaper;
+    private View mDivider;
 
     private File mCache;
 
@@ -69,14 +84,18 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
+        mScrollView = (NestedScrollView) view.findViewById(R.id.scrollview);
         mClearCache = (LinearLayout) view.findViewById(R.id.pref_cache_clear);
         mCacheSize = (TextView) view.findViewById(R.id.pref_cache_size);
-        mDarkTheme = (LinearLayout) view.findViewById(R.id.pref_dark_theme);
-        mDarkThemeCheck = (AppCompatCheckBox) view.findViewById(R.id.pref_dark_theme_check);
+        mIconRequestClear = (LinearLayout) view.findViewById(R.id.pref_request_clear);
         mRestorePurchases = (LinearLayout) view.findViewById(R.id.pref_restore_purchases);
         mRebuildRequest = (LinearLayout) view.findViewById(R.id.pref_rebuild_premium_request);
         mWallsDirectory = (TextView) view.findViewById(R.id.pref_walls_directory);
-        mScrollView = (NestedScrollView) view.findViewById(R.id.scrollview);
+        mDarkTheme = (LinearLayout) view.findViewById(R.id.pref_dark_theme);
+        mDarkThemeCheck = (AppCompatCheckBox) view.findViewById(R.id.pref_dark_theme_check);
+        mPrefPremiumRequest = (CardView) view.findViewById(R.id.pref_premium_request);
+        mPrefWallpaper = (CardView) view.findViewById(R.id.pref_wallpaper);
+        mDivider = view.findViewById(R.id.pref_request_clear_divider);
         return view;
     }
 
@@ -84,47 +103,42 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ViewCompat.setNestedScrollingEnabled(mScrollView, false);
-        ViewHelper.resetNavigationBarBottomMargin(getActivity(), mScrollView,
+        ViewHelper.resetNavigationBarBottomPadding(getActivity(), mScrollView,
                 getActivity().getResources().getConfiguration().orientation);
 
-        mClearCache.setOnClickListener(this);
-        mClearCache.setBackgroundResource(Preferences.getPreferences(getActivity()).isDarkTheme() ?
-                R.drawable.item_grid_dark : R.drawable.item_grid);
-
-        mDarkTheme.setOnClickListener(this);
-        mDarkTheme.setBackgroundResource(Preferences.getPreferences(getActivity()).isDarkTheme() ?
-                R.drawable.item_grid_dark : R.drawable.item_grid);
-
-        mRestorePurchases.setOnClickListener(this);
-        mRestorePurchases.setBackgroundResource(Preferences.getPreferences(getActivity()).isDarkTheme() ?
-                R.drawable.item_grid_dark : R.drawable.item_grid);
-
-        mRebuildRequest.setOnClickListener(this);
-        mRebuildRequest.setBackgroundResource(Preferences.getPreferences(getActivity()).isDarkTheme() ?
-                R.drawable.item_grid_dark : R.drawable.item_grid);
-
-        if (!Preferences.getPreferences(getActivity()).isPremiumRequestEnabled()) {
-            mRestorePurchases.setVisibility(View.GONE);
-            mRebuildRequest.setVisibility(View.GONE);
-            View view = getActivity().findViewById(R.id.pref_restore_purchases_divider);
-            if (view != null) view.setVisibility(View.GONE);
-            View view2 = getActivity().findViewById(R.id.pref_rebuild_premium_request_divider);
-            if (view2 != null) view2.setVisibility(View.GONE);
-        }
-
-        if (Preferences.getPreferences(getActivity()).getWallsDirectory().length() > 0) {
-            String directory = Preferences.getPreferences(
-                    getActivity()).getWallsDirectory() + File.separator;
-            mWallsDirectory.setText(directory);
-        }
-
         initSettings();
+        mClearCache.setOnClickListener(this);
+        mDarkTheme.setOnClickListener(this);
+
+        if (getActivity().getResources().getBoolean(R.bool.enable_icon_request) &&
+                !getActivity().getResources().getBoolean(R.bool.enable_icon_request_limit)) {
+            mDivider.setVisibility(View.VISIBLE);
+            mIconRequestClear.setVisibility(View.VISIBLE);
+            mIconRequestClear.setOnClickListener(this);
+        }
+
+        if (Preferences.getPreferences(getActivity()).isPremiumRequestEnabled()) {
+            mPrefPremiumRequest.setVisibility(View.VISIBLE);
+            mRestorePurchases.setOnClickListener(this);
+            mRebuildRequest.setOnClickListener(this);
+        }
+
+        if (WallpaperHelper.getWallpaperType(getActivity()) == WallpaperHelper.CLOUD_WALLPAPERS) {
+            if (Preferences.getPreferences(getActivity()).getWallsDirectory().length() > 0) {
+                String directory = Preferences.getPreferences(
+                        getActivity()).getWallsDirectory() + File.separator;
+                mWallsDirectory.setText(directory);
+            }
+
+            mPrefWallpaper.setVisibility(View.VISIBLE);
+        }
+
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        ViewHelper.resetNavigationBarBottomMargin(getActivity(),
+        ViewHelper.resetNavigationBarBottomPadding(getActivity(),
                 mScrollView, newConfig.orientation);
     }
 
@@ -151,10 +165,21 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                         }
                     })
                     .show();
-        } else if (id == R.id.pref_dark_theme) {
-            Preferences.getPreferences(getActivity()).setDarkTheme(!mDarkThemeCheck.isChecked());
-            mDarkThemeCheck.setChecked(!mDarkThemeCheck.isChecked());
-            getActivity().recreate();
+        } else if (id == R.id.pref_request_clear) {
+            new MaterialDialog.Builder(getActivity())
+                    .title(R.string.pref_data_request)
+                    .content(R.string.pref_data_request_clear_dialog)
+                    .positiveText(R.string.clear)
+                    .negativeText(android.R.string.cancel)
+                    .onPositive((dialog, which) -> {
+                        Database database = new Database(getActivity());
+                        database.deleteIconRequestData();
+                        CandyBarMainActivity.sMissingApps = null;
+
+                        Toast.makeText(getActivity(), R.string.pref_data_request_cleared,
+                                Toast.LENGTH_LONG).show();
+                    })
+                    .show();
         } else if (id == R.id.pref_restore_purchases) {
             try {
                 InAppBillingListener listener = (InAppBillingListener) getActivity();
@@ -162,6 +187,10 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             } catch (Exception ignored) {}
         } else if (id == R.id.pref_rebuild_premium_request) {
             rebuildPremiumRequest();
+        } else if (id == R.id.pref_dark_theme) {
+            Preferences.getPreferences(getActivity()).setDarkTheme(!mDarkThemeCheck.isChecked());
+            mDarkThemeCheck.setChecked(!mDarkThemeCheck.isChecked());
+            getActivity().recreate();
         }
     }
 
@@ -185,8 +214,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             }
         }
         int message = index > -1 ?
-                R.string.pref_restore_purchases_success :
-                R.string.pref_restore_purchases_empty;
+                R.string.pref_premium_request_restore_success :
+                R.string.pref_premium_request_restore_empty;
         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 
@@ -231,7 +260,10 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
             MaterialDialog dialog;
             StringBuilder sb;
-            SparseArrayCompat<Request> requests;
+            List<Request> requests;
+            String zipFile;
+
+            String log = "";
 
             @Override
             protected void onPreExecute() {
@@ -254,16 +286,52 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                     try {
                         Thread.sleep(1);
                         Database database = new Database(getActivity());
+                        File directory = getActivity().getCacheDir();
+                        File appFilter = new File(directory.toString() + "/" + "appfilter.xml");
+
                         requests = database.getPremiumRequest();
+
+                        if (requests.size() == 0) return true;
+
                         sb.append(DeviceHelper.getDeviceInfo(getActivity()));
 
+                        List<String> files = new ArrayList<>();
+                        Writer out = new BufferedWriter(new OutputStreamWriter(
+                                new FileOutputStream(appFilter), "UTF8"));
+
                         for (int i = 0; i < requests.size(); i++) {
-                            sb.append("\n\nOrder Id : ").append(requests.get(i).getOrderId())
-                                    .append("\nProduct Id : ").append(requests.get(i).getProductId())
-                                    .append(requests.get(i).getRequest());
+                            String activity = requests.get(i).getActivity();
+                            String packageName = activity.substring(0, activity.lastIndexOf("/"));
+                            Request request = new Request(
+                                    requests.get(i).getName(),
+                                    packageName,
+                                    activity,
+                                    true);
+
+                            String string = RequestHelper.writeRequest(request);
+                            sb.append(string);
+                            sb.append("\n").append("Order Id : ").append(requests.get(i).getOrderId());
+                            sb.append("\n").append("Product Id : ").append(requests.get(i).getProductId());
+
+                            String string1 = RequestHelper.writeAppFilter(request);
+                            out.append(string1);
+
+                            Bitmap bitmap = DrawableHelper.getHighQualityIcon(
+                                    getActivity(), request.getPackageName());
+
+                            String icon = FileHelper.saveIcon(directory, bitmap, request.getName());
+                            if (icon != null) files.add(icon);
                         }
+
+                        out.flush();
+                        out.close();
+                        files.add(appFilter.toString());
+
+                        zipFile = directory.toString() + "/" + "icon_request.zip";
+                        FileHelper.createZip(files, zipFile);
                         return true;
                     } catch (Exception e) {
+                        log = e.toString();
                         Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
                         return false;
                     }
@@ -285,9 +353,11 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                     String subject = "Rebuild Premium Icon Request "+
                             getActivity().getResources().getString(R.string.app_name);
 
-                    Request request = new Request(subject, sb.toString(), "");
+                    Request request = new Request(subject, sb.toString(), zipFile);
                     IntentChooserFragment.showIntentChooserDialog(getActivity()
                             .getSupportFragmentManager(), request);
+                } else {
+                    Toast.makeText(getActivity(), "Failed " +log, Toast.LENGTH_LONG).show();
                 }
                 dialog = null;
                 sb.setLength(0);

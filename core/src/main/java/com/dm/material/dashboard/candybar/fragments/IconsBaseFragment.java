@@ -1,7 +1,6 @@
 package com.dm.material.dashboard.candybar.fragments;
 
 import android.animation.AnimatorListenerAdapter;
-import android.content.res.XmlResourceParser;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,20 +19,21 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.dm.material.dashboard.candybar.R;
-import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
+import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
 import com.dm.material.dashboard.candybar.helpers.IconsHelper;
 import com.dm.material.dashboard.candybar.items.Icon;
+import com.dm.material.dashboard.candybar.utils.AlphanumComparator;
 import com.dm.material.dashboard.candybar.utils.Animator;
 import com.dm.material.dashboard.candybar.utils.Tag;
 import com.dm.material.dashboard.candybar.utils.listeners.SearchListener;
 
-import org.xmlpull.v1.XmlPullParser;
-
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /*
@@ -70,9 +70,8 @@ public class IconsBaseFragment extends Fragment {
         mTabLayout = (TabLayout) view.findViewById(R.id.tab);
         mPager = (ViewPager) view.findViewById(R.id.pager);
         mProgress = (ProgressBar) view.findViewById(R.id.progress);
-        Animator.startSlideDownAnimation(getActivity(),
-                mTabLayout, view.findViewById(R.id.shadow));
-        getIcons();
+        initTabs();
+        mPager.setOffscreenPageLimit(2);
         mTabLayout.setupWithViewPager(mPager);
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -124,9 +123,7 @@ public class IconsBaseFragment extends Fragment {
                                 listener.OnSearchExpanded(true);
 
                                 FragmentTransaction ft = fm.beginTransaction()
-                                        .replace(R.id.container,
-                                                IconsSearchFragment.newInstance(adapter.getIcons()),
-                                                IconsSearchFragment.TAG)
+                                        .replace(R.id.container, new IconsSearchFragment(), IconsSearchFragment.TAG)
                                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                                         .addToBackStack(null);
 
@@ -154,16 +151,37 @@ public class IconsBaseFragment extends Fragment {
         super.onDestroy();
     }
 
+    private void initTabs() {
+        Animation slideDown = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_down_from_top);
+        slideDown.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                Animator.startAlphaAnimation(getActivity().findViewById(R.id.shadow), 200, View.VISIBLE);
+                getIcons();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        mTabLayout.startAnimation(slideDown);
+        mTabLayout.setVisibility(View.VISIBLE);
+    }
+
     private void getIcons() {
         mGetIcons = new AsyncTask<Void, Void, Boolean>() {
-
-            List<Icon> sections;
 
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                sections = new ArrayList<>();
-                mProgress.setVisibility(View.VISIBLE);
+                if (CandyBarMainActivity.sSections == null)
+                    mProgress.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -171,40 +189,34 @@ public class IconsBaseFragment extends Fragment {
                 while (!isCancelled()) {
                     try {
                         Thread.sleep(1);
-                        XmlResourceParser parser = getActivity().getResources().getXml(R.xml.drawable);
-                        int eventType = parser.getEventType();
-                        String section = "";
-                        List<Icon> icons = new ArrayList<>();
+                        if (CandyBarMainActivity.sSections == null) {
+                            CandyBarMainActivity.sSections = IconsHelper.getIconsList(getActivity());
+                            CandyBarMainActivity.sIconsCount = 0;
 
-                        while (eventType != XmlPullParser.END_DOCUMENT) {
-                            if (eventType == XmlPullParser.START_TAG) {
-                                if (parser.getName().equals("category")) {
-                                    String title = parser.getAttributeValue(null, "title");
-                                    if (!section.equals(title)) {
-                                        if (section.length() > 0)
-                                            sections.add(new Icon(section, icons));
-                                    }
-                                    section = title;
-                                    icons = new ArrayList<>();
-                                } else if (parser.getName().equals("item")) {
-                                    String name = parser.getAttributeValue(null, "drawable");
-                                    int id = DrawableHelper.getResourceId(getActivity(), name);
-                                    if (id > 0) {
-                                        if (getActivity().getResources().getBoolean(R.bool.show_icon_name)) {
-                                            boolean iconNameReplacer = getActivity().getResources().getBoolean(
-                                                    R.bool.enable_icon_name_replacer);
-                                            name = IconsHelper.replaceIconName(getActivity(), iconNameReplacer, name);
-                                        }
-                                        icons.add(new Icon(name, id));
+                            for (Icon section : CandyBarMainActivity.sSections) {
+                                CandyBarMainActivity.sIconsCount += section.getIcons().size();
+
+                                if (getActivity().getResources().getBoolean(R.bool.show_icon_name)) {
+                                    for (Icon icon : section.getIcons()) {
+                                        String name = IconsHelper.replaceName(getActivity(),
+                                                getActivity().getResources().getBoolean(R.bool.enable_icon_name_replacer),
+                                                icon.getTitle());
+                                        icon.setTitle(name);
                                     }
                                 }
+
+                                if (getActivity().getResources().getBoolean(R.bool.enable_icons_sort)) {
+                                    Collections.sort(section.getIcons(), new AlphanumComparator() {
+                                        @Override
+                                        public int compare(Object o1, Object o2) {
+                                            String s1 = ((Icon) o1).getTitle();
+                                            String s2 = ((Icon) o2).getTitle();
+                                            return super.compare(s1, s2);
+                                        }
+                                    });
+                                }
                             }
-
-                            eventType = parser.next();
                         }
-
-                        sections.add(new Icon(section, icons));
-                        parser.close();
                         return true;
                     } catch (Exception e) {
                         Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
@@ -220,24 +232,63 @@ public class IconsBaseFragment extends Fragment {
                 mProgress.setVisibility(View.GONE);
                 if (aBoolean) {
                     setHasOptionsMenu(true);
-                    PagerIconsAdapter adapter = new PagerIconsAdapter(getChildFragmentManager(), sections);
+                    PagerIconsAdapter adapter = new PagerIconsAdapter(
+                            getChildFragmentManager(), CandyBarMainActivity.sSections);
                     mPager.setAdapter(adapter);
 
-                    for (int i = 0; i < adapter.getCount(); i++) {
-                        TabLayout.Tab tab = mTabLayout.getTabAt(i);
-                        if (tab != null) {
-                            if (i < adapter.getCount()) {
-                                tab.setCustomView(R.layout.fragment_icons_base_tab);
-                                tab.setText(adapter.getPageTitle(i));
-                            }
-                        }
-                    }
+                    updateTabTypeface();
                 } else {
                     Toast.makeText(getActivity(), R.string.icons_load_failed,
                             Toast.LENGTH_LONG).show();
                 }
 
                 mGetIcons = null;
+            }
+        }.execute();
+    }
+
+    private void updateTabTypeface() {
+        new AsyncTask<Void, Integer, Void>() {
+
+            PagerIconsAdapter adapter;
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                adapter = (PagerIconsAdapter) mPager.getAdapter();
+            }
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                while (!isCancelled()) {
+                    try {
+                        Thread.sleep(1);
+                        for (int i = 0; i < adapter.getCount(); i++) {
+                            publishProgress(i);
+                        }
+                        return null;
+                    } catch (Exception ignored) {
+                        return null;
+                    }
+                }
+                return null;
+            }
+
+            @Override
+            protected void onProgressUpdate(Integer... values) {
+                super.onProgressUpdate(values);
+                int position = values[0];
+                if (mTabLayout == null) return;
+
+                if (position >= 0 && position < mTabLayout.getTabCount()) {
+                    TabLayout.Tab tab = mTabLayout.getTabAt(position);
+                    if (tab != null) {
+                        if (position < adapter.getCount()) {
+                            tab.setCustomView(R.layout.fragment_icons_base_tab);
+                            tab.setText(adapter.getPageTitle(position));
+                        }
+                    }
+                }
             }
         }.execute();
     }
@@ -253,12 +304,12 @@ public class IconsBaseFragment extends Fragment {
 
         @Override
         public CharSequence getPageTitle(int position){
-            return mIcons.get(position).getTitle() +" ("+ mIcons.get(position).getIcons().size() +")";
+            return mIcons.get(position).getTitle();
         }
 
         @Override
         public Fragment getItem(int position) {
-            return IconsFragment.newInstance(mIcons.get(position).getIcons());
+            return IconsFragment.newInstance(position);
         }
 
         @Override

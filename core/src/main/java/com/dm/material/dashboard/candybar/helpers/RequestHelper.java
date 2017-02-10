@@ -1,17 +1,26 @@
 package com.dm.material.dashboard.candybar.helpers;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.dm.material.dashboard.candybar.R;
+import com.dm.material.dashboard.candybar.databases.Database;
+import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.Tag;
 
 import org.xmlpull.v1.XmlPullParser;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 /*
  * CandyBar - Material Dashboard
@@ -34,7 +43,7 @@ import org.xmlpull.v1.XmlPullParser;
 public class RequestHelper {
 
     @NonNull
-    public static String loadAppFilter(@NonNull Context context) {
+    private static String loadAppFilter(@NonNull Context context) {
         try {
             StringBuilder sb = new StringBuilder();
             XmlPullParser xpp = context.getResources().getXml(R.xml.appfilter);
@@ -54,6 +63,65 @@ public class RequestHelper {
         return "";
     }
 
+    @NonNull
+    public static List<Request> loadMissingApps(@NonNull Context context) {
+        List<Request> requests = new ArrayList<>();
+        Database database = new Database(context);
+        String activities = RequestHelper.loadAppFilter(context);
+        PackageManager packageManager = context.getPackageManager();
+
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        List<ResolveInfo> installedApps = packageManager.queryIntentActivities(
+                intent, PackageManager.GET_RESOLVED_FILTER);
+
+        try {
+            Collections.sort(installedApps,
+                    new ResolveInfo.DisplayNameComparator(packageManager));
+        } catch (Exception ignored) {}
+
+        for (ResolveInfo app : installedApps) {
+            String packageName = app.activityInfo.packageName;
+            String activity = packageName +"/"+ app.activityInfo.name;
+
+            if (!activities.contains(activity)) {
+                String name = LocaleHelper.getOtherAppLocaleName(
+                        context, new Locale("en-US"), packageName);
+                if (name == null)
+                    name = app.activityInfo.loadLabel(packageManager).toString();
+
+                boolean requested = database.isRequested(activity);
+                requests.add(new Request(
+                        name,
+                        app.activityInfo.packageName,
+                        activity,
+                        requested));
+            }
+        }
+        return requests;
+    }
+
+    public static String writeRequest(@NonNull Request request) {
+        String link = "https://play.google.com/store/apps/details?id=";
+        return "\n\n" +
+                request.getName() +
+                "\n" +
+                request.getActivity() +
+                "\n" +
+                link + request.getPackageName();
+    }
+
+    public static String writeAppFilter(@NonNull Request request) {
+        return  "<!-- " + request.getName() + " -->" +
+                "\n" +
+                "<item component=\"ComponentInfo{" +
+                request.getActivity() +
+                "}\" drawable=\"" +
+                request.getName().toLowerCase().replace(" ", "_") +
+                "\" />" +
+                "\n\n";
+    }
+
     public static void showAlreadyRequestedDialog(@NonNull Context context) {
         new MaterialDialog.Builder(context)
                 .title(R.string.request_title)
@@ -65,12 +133,14 @@ public class RequestHelper {
     public static void showIconRequestLimitDialog(@NonNull Context context) {
         boolean reset = context.getResources().getBoolean(R.bool.reset_icon_request_limit);
         int limit = context.getResources().getInteger(R.integer.icon_request_limit);
-        String message = context.getResources().getString(R.string.request_limit) +" "+ limit +" "+
-                context.getResources().getString(R.string.request_limit_1) +" "+
-                context.getResources().getString(R.string.request_limit_2) +" "+
-                Preferences.getPreferences(context).getRegularRequestUsed() +" "+
-                context.getResources().getString(R.string.request_limit_3);
-        if (reset) message = message +"\n\n"+ context.getResources().getString(R.string.request_limit_reset);
+        String message = String.format(context.getResources().getString(R.string.request_limit), limit);
+        message += " "+ String.format(context.getResources().getString(R.string.request_used),
+                Preferences.getPreferences(context).getRegularRequestUsed());
+
+        if (Preferences.getPreferences(context).isPremiumRequestEnabled())
+            message += " "+ context.getResources().getString(R.string.request_limit_buy);
+
+        if (reset) message += "\n\n"+ context.getResources().getString(R.string.request_limit_reset);
         new MaterialDialog.Builder(context)
                 .title(R.string.request_title)
                 .content(message)
@@ -87,11 +157,10 @@ public class RequestHelper {
     }
 
     public static void showPremiumRequestLimitDialog(@NonNull Context context, int selected) {
-        String message = context.getResources().getString(R.string.premium_request_limit) +" "+
-                Preferences.getPreferences(context).getPremiumRequestCount() +" "+
-                context.getResources().getString(R.string.premium_request_limit_1) +" "+
-                selected +" "+ context.getResources().getString(R.string.premium_request_limit_2) +
-                "\n\n"+ context.getResources().getString(R.string.premium_request_limit_3);
+        String message = String.format(context.getResources().getString(R.string.premium_request_limit),
+                Preferences.getPreferences(context).getPremiumRequestCount());
+        message += " "+ String.format(context.getResources().getString(R.string.premium_request_limit1),
+                selected);
         new MaterialDialog.Builder(context)
                 .title(R.string.premium_request)
                 .content(message)
@@ -100,9 +169,9 @@ public class RequestHelper {
     }
 
     public static void showPremiumRequestStillAvailable(@NonNull Context context) {
-        String message = context.getResources().getString(R.string.premium_request_already_purchased)
-                +" "+ Preferences.getPreferences(context).getPremiumRequestCount() +" "+
-                context.getResources().getString(R.string.premium_request_already_purchased_1);
+        String message = String.format(context.getResources().getString(
+                R.string.premium_request_already_purchased),
+                Preferences.getPreferences(context).getPremiumRequestCount());
         new MaterialDialog.Builder(context)
                 .title(R.string.premium_request)
                 .content(message)

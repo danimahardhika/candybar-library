@@ -13,7 +13,7 @@
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="2"
-        android:textSize="@dimen/text_content_subtitle"
+        android:textSize="@dimen/tab_text"
         android:textColor="@drawable/tab_text"
         android:textAllCaps="true"
         tools:text="User Profile"

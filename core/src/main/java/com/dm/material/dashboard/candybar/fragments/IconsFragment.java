@@ -1,28 +1,25 @@
 package com.dm.material.dashboard.candybar.fragments;
 
 import android.content.res.Configuration;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.util.Log;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.dm.material.dashboard.candybar.R;
+import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
 import com.dm.material.dashboard.candybar.adapters.IconsAdapter;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.items.Icon;
-import com.dm.material.dashboard.candybar.utils.AlphanumComparator;
-import com.dm.material.dashboard.candybar.utils.Tag;
-import com.dm.material.dashboard.candybar.utils.views.AutoFitRecyclerView;
 import com.pluscubed.recyclerfastscroll.RecyclerFastScroller;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /*
@@ -45,28 +42,27 @@ import java.util.List;
 
 public class IconsFragment extends Fragment {
 
-    private AutoFitRecyclerView mIconsGrid;
+    private RecyclerView mIconsGrid;
     private RecyclerFastScroller mFastScroll;
 
     private List<Icon> mIcons;
-    private AsyncTask<Void, Void, Boolean> mGetIcons;
 
-    private static final String ICONS = "icons";
+    private static final String INDEX = "index";
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_icons, container, false);
-        mIconsGrid = (AutoFitRecyclerView) view.findViewById(R.id.icons_grid);
+        mIconsGrid = (RecyclerView) view.findViewById(R.id.icons_grid);
         mFastScroll = (RecyclerFastScroller) view.findViewById(R.id.fastscroll);
         return view;
     }
 
-    public static IconsFragment newInstance(List<Icon> icons) {
+    public static IconsFragment newInstance(int index) {
         IconsFragment fragment = new IconsFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(ICONS, new ArrayList<>(icons));
+        bundle.putInt(INDEX, index);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -74,74 +70,34 @@ public class IconsFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mIcons = getArguments().getParcelableArrayList(ICONS);
+        mIcons = new ArrayList<>();
+        int index = getArguments().getInt(INDEX);
+        if (CandyBarMainActivity.sSections != null)
+            mIcons = CandyBarMainActivity.sSections.get(index).getIcons();
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ViewCompat.setNestedScrollingEnabled(mIconsGrid, false);
-        ViewHelper.resetNavigationBarBottomMargin(getActivity(), mIconsGrid,
+        ViewHelper.resetNavigationBarBottomPadding(getActivity(), mIconsGrid,
                 getActivity().getResources().getConfiguration().orientation);
 
         mIconsGrid.setHasFixedSize(true);
         mIconsGrid.setItemAnimator(new DefaultItemAnimator());
+        mIconsGrid.setLayoutManager(new GridLayoutManager(getActivity(),
+                getActivity().getResources().getInteger(R.integer.icons_column_count)));
         mFastScroll.attachRecyclerView(mIconsGrid);
 
-        getIcons();
+        IconsAdapter adapter = new IconsAdapter(getActivity(), mIcons, false);
+        mIconsGrid.setAdapter(adapter);
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        ViewHelper.resetNavigationBarBottomMargin(
+        ViewHelper.resetNavigationBarBottomPadding(
                 getActivity(), mIconsGrid, newConfig.orientation);
+        ViewHelper.resetSpanCount(getActivity(), mIconsGrid, R.integer.icons_column_count);
     }
-
-    @Override
-    public void onDestroy() {
-        if (mGetIcons != null) mGetIcons.cancel(true);
-        super.onDestroy();
-    }
-
-    private void getIcons() {
-        mGetIcons = new AsyncTask<Void, Void, Boolean>() {
-
-            @Override
-            protected Boolean doInBackground(Void... voids) {
-                while (!isCancelled()) {
-                    try {
-                        Thread.sleep(1);
-                        if (!getActivity().getResources().getBoolean(R.bool.enable_icons_sort))
-                            return true;
-
-                        Collections.sort(mIcons, new AlphanumComparator() {
-                            @Override
-                            public int compare(Object o1, Object o2) {
-                                String s1 = ((Icon) o1).getTitle();
-                                String s2 = ((Icon) o2).getTitle();
-                                return super.compare(s1, s2);
-                            }
-                        });
-                    } catch (Exception e) {
-                        Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
-                    }
-                    return true;
-                }
-                return false;
-            }
-
-            @Override
-            protected void onPostExecute(Boolean aBoolean) {
-                super.onPostExecute(aBoolean);
-                if (aBoolean) {
-                    IconsAdapter adapter = new IconsAdapter(getActivity(), mIcons, false);
-                    mIconsGrid.setAdapter(adapter);
-                }
-
-                mGetIcons = null;
-            }
-        }.execute();
-    }
-
 }

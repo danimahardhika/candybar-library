@@ -1,13 +1,10 @@
 package com.dm.material.dashboard.candybar.activities;
 
-import android.animation.ArgbEvaluator;
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,7 +21,6 @@ import android.transition.Transition;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -103,6 +99,7 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
         mProgress = (ProgressBar) findViewById(R.id.progress);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         TextView toolbarTitle = (TextView) findViewById(R.id.toolbar_title);
+        TextView toolbarSubTitle = (TextView) findViewById(R.id.toolbar_subtitle);
 
         ViewHelper.resetNavigationBarTranslucent(this, getResources().getConfiguration().orientation);
 
@@ -124,11 +121,11 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
         }
 
         toolbarTitle.setText(mName);
+        toolbarSubTitle.setText(mAuthor);
         toolbar.setTitle("");
         toolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
         setSupportActionBar(toolbar);
 
-        mAttacher = new PhotoViewAttacher(mWallpaper);
         mFab.setOnClickListener(this);
 
         mExitTransition = ActivityTransition.with(getIntent())
@@ -235,7 +232,7 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
             return true;
         } else if (id == R.id.menu_save) {
             if (PermissionHelper.isPermissionStorageGranted(this)) {
-                WallpaperHelper.downloadWallpaper(this, mColor, mUrl, mName, R.id.coordinator_layout);
+                WallpaperHelper.downloadWallpaper(this, mColor, mUrl, mName);
                 return true;
             }
             PermissionHelper.requestStoragePermission(this);
@@ -288,14 +285,6 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
                 super.onLoadingFailed(imageUri, view, failReason);
                 int text = ColorHelper.getTitleTextColor(mColor);
                 OnWallpaperLoaded(text);
-
-                int color = ColorHelper.getAttributeColor(CandyBarWallpaperActivity.this, R.attr.main_background);
-                FrameLayout container = (FrameLayout) findViewById(R.id.container);
-                ObjectAnimator colorFade = ObjectAnimator.ofObject(
-                        container, "backgroundColor", new ArgbEvaluator(),
-                        Color.TRANSPARENT, color);
-                colorFade.setDuration(1000);
-                colorFade.start();
             }
 
             @Override
@@ -323,13 +312,14 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
     }
 
     private void OnWallpaperLoaded(@ColorInt int textColor) {
+        mAttacher = new PhotoViewAttacher(mWallpaper);
         mAttacher.setScaleType(ImageView.ScaleType.CENTER_CROP);
         mProgress.setVisibility(View.GONE);
         mRunnable = null;
         mHandler = null;
 
         mFab.setImageDrawable(DrawableHelper.getTintedDrawable(
-                CandyBarWallpaperActivity.this, R.drawable.ic_fab_check, textColor));
+                CandyBarWallpaperActivity.this, R.drawable.ic_fab_apply, textColor));
         Animator.showFab(mFab);
     }
 

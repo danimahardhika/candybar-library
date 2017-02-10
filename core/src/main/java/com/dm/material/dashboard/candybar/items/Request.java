@@ -28,7 +28,6 @@ public class Request {
     private String mStream;
     private String mOrderId;
     private String mProductId;
-    private String mRequest;
     private String mRequestedOn;
     private boolean mRequested;
     private int mRequestCount;
@@ -53,11 +52,11 @@ public class Request {
         mRequestCount = requestCount;
     }
 
-    public Request(String orderId, String productId, String request, String requestedOn) {
+    public Request(String orderId, String productId, String name, String activity) {
         mOrderId = orderId;
         mProductId = productId;
-        mRequest = request;
-        mRequestedOn = requestedOn;
+        mName = name;
+        mActivity = activity;
     }
 
     public String getName() {
@@ -104,12 +103,7 @@ public class Request {
         return mProductId;
     }
 
-    public String getRequest() {
-        return mRequest;
-    }
-
     public String getRequestedOn() {
         return mRequestedOn;
     }
-
 }

@@ -15,10 +15,11 @@ import com.dm.material.dashboard.candybar.helpers.IconsHelper;
 import com.dm.material.dashboard.candybar.helpers.IntentHelper;
 import com.dm.material.dashboard.candybar.helpers.SoftKeyboardHelper;
 import com.dm.material.dashboard.candybar.items.Icon;
-import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 
 import java.util.ArrayList;
@@ -48,6 +49,8 @@ public class IconsAdapter extends RecyclerView.Adapter<IconsAdapter.ViewHolder> 
     private final Context mContext;
     private final List<Icon> mIcons;
     private List<Icon> mIconsAll;
+    private DisplayImageOptions.Builder mOptions;
+
     private final boolean mIsShowIconName;
 
     public IconsAdapter(@NonNull Context context, @NonNull List<Icon> icons, boolean search) {
@@ -58,6 +61,12 @@ public class IconsAdapter extends RecyclerView.Adapter<IconsAdapter.ViewHolder> 
             mIconsAll = new ArrayList<>();
             mIconsAll.addAll(mIcons);
         }
+
+        mOptions = ImageConfig.getRawDefaultImageOptions();
+        mOptions.resetViewBeforeLoading(true);
+        mOptions.cacheInMemory(true);
+        mOptions.cacheOnDisk(false);
+        mOptions.displayer(new FadeInBitmapDisplayer(700));
     }
 
     @Override
@@ -77,8 +86,8 @@ public class IconsAdapter extends RecyclerView.Adapter<IconsAdapter.ViewHolder> 
         }
 
         ImageLoader.getInstance().displayImage("drawable://" + mIcons.get(position).getRes(),
-                new ImageViewAware(holder.icon), ImageConfig.getDefaultImageOptions(false),
-                new ImageSize(114, 114), null, null);
+                new ImageViewAware(holder.icon), mOptions.build(),
+                new ImageSize(144, 144), null, null);
     }
 
     @Override
@@ -98,8 +107,6 @@ public class IconsAdapter extends RecyclerView.Adapter<IconsAdapter.ViewHolder> 
             name = (TextView) itemView.findViewById(R.id.name);
             container = (LinearLayout) itemView.findViewById(R.id.container);
             container.setOnClickListener(this);
-            container.setBackgroundResource(Preferences.getPreferences(mContext).isDarkTheme() ?
-                    R.drawable.item_grid_dark : R.drawable.item_grid);
         }
 
         @Override

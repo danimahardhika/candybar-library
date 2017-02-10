@@ -47,10 +47,11 @@ public class ChangelogFragment extends DialogFragment{
         if (prev != null) {
             ft.remove(prev);
         }
-        ft.addToBackStack(null);
 
-        DialogFragment dialog = ChangelogFragment.newInstance();
-        dialog.show(ft, TAG);
+        try {
+            DialogFragment dialog = ChangelogFragment.newInstance();
+            dialog.show(ft, TAG);
+        } catch (IllegalArgumentException | IllegalStateException ignored) {}
     }
 
     private ListView mChangelogList;

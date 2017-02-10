@@ -4,21 +4,27 @@ import android.app.WallpaperManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Environment;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
+import android.view.WindowManager;
+import android.webkit.URLUtil;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +42,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -58,6 +65,40 @@ import java.net.URL;
  */
 
 public class WallpaperHelper {
+
+    public static final int UNKNOWN = 0;
+    public static final int CLOUD_WALLPAPERS = 1;
+    public static final int EXTERNAL_APP = 2;
+
+    public static int getWallpaperType(@NonNull Context context) {
+        String url = context.getResources().getString(R.string.wallpaper_json);
+        if (URLUtil.isValidUrl(url)) {
+            return CLOUD_WALLPAPERS;
+        } else if (url.length() > 0) {
+            return EXTERNAL_APP;
+        }
+        return UNKNOWN;
+    }
+
+    public static void launchExternalApp(@NonNull Context context) {
+        String packageName = context.getResources().getString(R.string.wallpaper_json);
+
+        PackageManager pm = context.getPackageManager();
+        Intent intent = pm.getLaunchIntentForPackage(packageName);
+        if (intent != null) {
+            try {
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+                return;
+            } catch (Exception ignored) {}
+        }
+
+        try {
+            Intent store = new Intent(Intent.ACTION_VIEW, Uri.parse(
+                    "https://play.google.com/store/apps/details?id=" + packageName));
+            context.startActivity(store);
+        } catch (ActivityNotFoundException ignored) {}
+    }
 
     public static File getDefaultWallpapersDirectory(@NonNull Context context) {
         try {
@@ -84,7 +125,26 @@ public class WallpaperHelper {
     }
 
     public static void downloadWallpaper(@NonNull Context context, @ColorInt int color,
-                                         String link, String name, int res) {
+                                         String link, String name) {
+        File cache = ImageLoader.getInstance().getDiskCache().get(link);
+        if (cache != null) {
+            File target = new File(getDefaultWallpapersDirectory(context).toString()
+                    + File.separator + name + FileHelper.IMAGE_EXTENSION);
+            if (target.exists()) {
+                wallpaperSaved(context, color, target);
+                return;
+            }
+
+            if (FileHelper.copyFile(cache, target)) {
+                wallpaperSaved(context, color, target);
+
+                context.sendBroadcast(new Intent(
+                        Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(
+                        new File(target.toString()))));
+                return;
+            }
+        }
+
         new AsyncTask<Void, Integer, Boolean>() {
 
             MaterialDialog dialog;
@@ -96,7 +156,7 @@ public class WallpaperHelper {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                output = WallpaperHelper.getDefaultWallpapersDirectory(context);
+                output = getDefaultWallpapersDirectory(context);
                 file = new File(output.toString() + File.separator + name + FileHelper.IMAGE_EXTENSION);
 
                 MaterialDialog.Builder builder = new MaterialDialog.Builder(context);
@@ -130,7 +190,7 @@ public class WallpaperHelper {
                         if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                             fileLength = connection.getContentLength();
                             InputStream stream = connection.getInputStream();
-                            OutputStream output = new FileOutputStream(file.toString());
+                            OutputStream output = new FileOutputStream(file);
 
                             byte data[] = new byte[1024];
                             long total = 0;
@@ -142,9 +202,9 @@ public class WallpaperHelper {
                                 output.write(data, 0, count);
                             }
 
+                            stream.close();
                             output.flush();
                             output.close();
-                            stream.close();
                             return true;
                         }
                     } catch (Exception e) {
@@ -170,8 +230,6 @@ public class WallpaperHelper {
             @Override
             protected void onCancelled() {
                 super.onCancelled();
-                if (((AppCompatActivity) context).isFinishing()) return;
-
                 Toast.makeText(context,
                         context.getResources().getString(R.string.wallpaper_download_cancelled),
                         Toast.LENGTH_LONG).show();
@@ -180,47 +238,19 @@ public class WallpaperHelper {
             @Override
             protected void onPostExecute(Boolean aBoolean) {
                 super.onPostExecute(aBoolean);
-                dialog.dismiss();
+                try {
+                    dialog.dismiss();
+                } catch (IllegalArgumentException ignored) {}
+
                 if (aBoolean) {
                     if (Preferences.getPreferences(context).getWallsDirectory().length() == 0)
                         Preferences.getPreferences(context).setWallsDirectory(output.toString());
+
                     context.sendBroadcast(new Intent(
                             Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(
                             new File(file.toString()))));
-                    String downloaded = context.getResources().getString(
-                            R.string.wallpaper_downloaded);
-                    if (res > 0) {
-                        View rootView = ((AppCompatActivity) context).findViewById(res);
-                        if (rootView != null) {
-                            Snackbar snackbar = Snackbar.make(rootView,
-                                    downloaded +" "+ file.toString(), 6000)
-                                    .setAction(context.getResources().getString(R.string.open), view -> {
-                                        try {
-                                            Uri uri = FileHelper.getUriFromFile(context, context.getPackageName(), file);
-                                            if (uri == null) return;
 
-                                            context.startActivity(new Intent()
-                                                    .setAction(Intent.ACTION_VIEW)
-                                                    .setDataAndType(uri, "image/*")
-                                                    .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION));
-                                        } catch (ActivityNotFoundException e) {
-                                            Toast.makeText(context,
-                                                    context.getResources().getString(R.string.wallpaper_noapp),
-                                                    Toast.LENGTH_LONG).show();
-                                        }
-                                    })
-                                    .setActionTextColor(color);
-                            View snackBarView = snackbar.getView();
-                            TextView textView = (TextView) snackBarView.findViewById(
-                                    android.support.design.R.id.snackbar_text);
-                            if (textView != null) textView.setMaxLines(5);
-                            snackbar.show();
-                        }
-                    } else {
-                        Toast.makeText(context,
-                                downloaded +" "+ file.toString(),
-                                Toast.LENGTH_LONG).show();
-                    }
+                    wallpaperSaved(context, color, file);
                 } else {
                     Toast.makeText(context,
                             context.getResources().getString(R.string.wallpaper_download_failed),
@@ -231,14 +261,92 @@ public class WallpaperHelper {
         }.execute();
     }
 
-    public static void applyWallpaper(@NonNull Context context, RectF rectF, @ColorInt int color,
-                                      String url, String name) {
-        final DisplayMetrics displaymetrics = context.getResources().getDisplayMetrics();
-        final int orientation = context.getResources().getConfiguration().orientation;
-        final int height = orientation == Configuration.ORIENTATION_PORTRAIT ?
-                displaymetrics.heightPixels : displaymetrics.widthPixels;
-        final int width = orientation == Configuration.ORIENTATION_PORTRAIT ?
-                displaymetrics.widthPixels : displaymetrics.heightPixels;
+    private static void wallpaperSaved(@NonNull Context context, @ColorInt int color, @NonNull File file) {
+        String downloaded = context.getResources().getString(
+                R.string.wallpaper_downloaded);
+        View rootView = ((AppCompatActivity) context).getWindow().getDecorView().findViewById(R.id.rootview);
+
+        if (rootView != null) {
+            Snackbar snackbar = Snackbar.make(rootView,
+                    downloaded + " " + file.toString(), 6000)
+                    .setAction(context.getResources().getString(R.string.open), view -> {
+                        try {
+                            Uri uri = FileHelper.getUriFromFile(context, context.getPackageName(), file);
+                            if (uri == null) return;
+
+                            context.startActivity(new Intent()
+                                    .setAction(Intent.ACTION_VIEW)
+                                    .setDataAndType(uri, "image/*")
+                                    .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION));
+                        } catch (ActivityNotFoundException e) {
+                            Toast.makeText(context, R.string.wallpaper_noapp,
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    })
+                    .setActionTextColor(color);
+            View snackBarView = snackbar.getView();
+            TextView textView = (TextView) snackBarView.findViewById(
+                    android.support.design.R.id.snackbar_text);
+            if (textView != null) textView.setMaxLines(5);
+            snackbar.show();
+            return;
+        }
+
+        Toast.makeText(context,
+                downloaded +" "+ file.toString(),
+                Toast.LENGTH_LONG).show();
+    }
+
+    /*
+     * This code taken from http://stackoverflow.com/a/23861333
+     */
+
+    private static ImageSize getRealDeviceSize(@NonNull Context context) {
+        final WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+        int realWidth;
+        int realHeight;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1){
+            DisplayMetrics realMetrics = new DisplayMetrics();
+            display.getRealMetrics(realMetrics);
+            realWidth = realMetrics.widthPixels;
+            realHeight = realMetrics.heightPixels;
+        } else {
+            try {
+                Method mGetRawH = Display.class.getMethod("getRawHeight");
+                Method mGetRawW = Display.class.getMethod("getRawWidth");
+                realWidth = (Integer) mGetRawW.invoke(display);
+                realHeight = (Integer) mGetRawH.invoke(display);
+            } catch (Exception e) {
+                realWidth = display.getWidth();
+                realHeight = display.getHeight();
+            }
+        }
+        return new ImageSize(realWidth, realHeight);
+    }
+
+    private static ImageSize getScaledSize(@NonNull Context context, String url) {
+        ImageSize imageSize = getRealDeviceSize(context);
+        int height = imageSize.getHeight();
+        int width = imageSize.getWidth();
+
+        File file = ImageLoader.getInstance().getDiskCache().get(url);
+        if (file != null) {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+
+            double scale = (double) options.outHeight/(double) height;
+
+            width = Double.valueOf((double) options.outWidth/scale).intValue();
+        }
+        return new ImageSize(width, height);
+    }
+
+    public static void applyWallpaper(@NonNull Context context, @Nullable RectF rectF,
+                                      @ColorInt int color, String url, String name) {
+        ImageSize imageSize = getScaledSize(context, url);
 
         final MaterialDialog.Builder builder = new MaterialDialog.Builder(context);
         builder.widgetColor(color)
@@ -249,12 +357,15 @@ public class WallpaperHelper {
 
         String imageUri = getWallpaperUri(context, url, name + FileHelper.IMAGE_EXTENSION);
 
-        loadBitmap(context, dialog, 1, imageUri, rectF, width, height);
+        loadBitmap(context, dialog, 1, imageUri, rectF, imageSize.getWidth(), imageSize.getHeight());
     }
 
     private static void loadBitmap(Context context, MaterialDialog dialog, int call, String imageUri,
                                    RectF rectF, int width, int height) {
-        final AsyncTask<Bitmap, Void, Boolean> setWallpaper = getWallpaperAsync(context, dialog, rectF, width, height);
+        ImageSize imageSize = getRealDeviceSize(context);
+
+        final AsyncTask<Bitmap, Void, Boolean> setWallpaper = getWallpaperAsync(
+                context, dialog, rectF, imageSize.getWidth(), height);
         dialog.setOnCancelListener(dialogInterface -> {
             ImageLoader.getInstance().stop();
             setWallpaper.cancel(true);
@@ -313,11 +424,13 @@ public class WallpaperHelper {
                         WallpaperManager manager = WallpaperManager.getInstance(context);
                         if (bitmaps[0] != null) {
                             Bitmap bitmap = bitmaps[0];
+
                             if (!Preferences.getPreferences(context).isScrollWallpaper() && rectF != null) {
                                 bitmap = Bitmap.createBitmap(width, height, bitmaps[0].getConfig());
                                 Paint paint = new Paint();
                                 paint.setFilterBitmap(true);
                                 paint.setAntiAlias(true);
+                                paint.setDither(true);
                                 Canvas canvas = new Canvas(bitmap);
                                 canvas.drawBitmap(bitmaps[0], null, rectF, paint);
                             }
@@ -326,7 +439,7 @@ public class WallpaperHelper {
                             return true;
                         }
                         return false;
-                    } catch (Exception e) {
+                    } catch (Exception | OutOfMemoryError e) {
                         Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
                         return false;
                     }
@@ -355,5 +468,4 @@ public class WallpaperHelper {
             }
         };
     }
-
 }

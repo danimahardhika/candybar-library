@@ -2,14 +2,6 @@
 
     <dimen name="content_padding">6dp</dimen>
 
-    <!-- Home -->
-    <dimen name="home_title_padding">20dp</dimen>
-
-    <!-- Apply -->
-    <dimen name="launcher_icon_size">68dp</dimen>
-    <dimen name="launcher_icon_column_width">100dp</dimen>
-    <dimen name="launcher_icon_padding">16dp</dimen>
-
     <!-- Card Global -->
     <dimen name="card_padding">14dp</dimen>
     <dimen name="card_margin_right">3dp</dimen>
@@ -17,7 +9,7 @@
     <dimen name="card_margin_top">4dp</dimen>
     <dimen name="card_margin_bottom">1dp</dimen>
     <dimen name="card_padding_bottom">4dp</dimen>
-    <dimen name="card_elevation">2.5dp</dimen>
+    <dimen name="card_elevation">2dp</dimen>
     <dimen name="card_corner_radius">0dp</dimen>
 
     <dimen name="content_margin">16dp</dimen>
@@ -35,9 +27,34 @@
 
     <!-- Toolbar -->
     <dimen name="toolbar_shadow">8dp</dimen>
+    <dimen name="tab_text">14sp</dimen>
+
+    <!-- Splash Screen -->
+    <dimen name="splash_screen_logo">96dp</dimen>
+    <dimen name="splash_screen_text">14sp</dimen>
+
+    <!-- Home -->
+    <dimen name="home_title_padding">20dp</dimen>
+    <dimen name="home_feature_padding">8dp</dimen>
+    <dimen name="home_image_height">220dp</dimen>
+
+    <!-- Apply -->
+    <dimen name="launcher_icon_size">68dp</dimen>
+    <dimen name="launcher_icon_column_width">100dp</dimen>
+    <dimen name="launcher_icon_padding">16dp</dimen>
+
+    <!-- Icons -->
+    <dimen name="icon_thumbnail_padding">16dp</dimen>
+    <dimen name="icon_preview">90dp</dimen>
 
     <!-- About -->
-    <dimen name="about_image_height">80dp</dimen>
+    <dimen name="about_profile">100dp</dimen>
+    <dimen name="about_profile_border">4dp</dimen>
+    <dimen name="about_profile_margin_top">52dp</dimen>
+    <dimen name="about_profile_margin_bottom">-50dp</dimen>
+    <dimen name="about_profile_margin_right">16dp</dimen>
+    <dimen name="about_header_text">20sp</dimen>
+    <dimen name="about_image_height">160dp</dimen>
     <dimen name="about_content_padding">20dp</dimen>
 
     <!-- Intent Chooser -->
@@ -53,5 +70,6 @@
     <dimen name="text_content_title">16sp</dimen>
     <dimen name="text_content_subtitle">15sp</dimen>
     <dimen name="text_content">14sp</dimen>
+    <dimen name="text_content_small">13sp</dimen>
 
 </resources>

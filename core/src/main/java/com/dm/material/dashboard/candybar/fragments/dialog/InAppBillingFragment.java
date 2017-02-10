@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -77,7 +78,6 @@ public class InAppBillingFragment extends DialogFragment {
         if (prev != null) {
             ft.remove(prev);
         }
-        ft.addToBackStack(null);
 
         try {
             DialogFragment dialog = InAppBillingFragment.newInstance(type, key, productId, productCount);
@@ -110,8 +110,6 @@ public class InAppBillingFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
         builder.customView(R.layout.fragment_inapp_dialog, false)
-                .title(mType == InAppBillingHelper.DONATE ?
-                        R.string.navigation_view_donate : R.string.premium_request)
                 .positiveText(mType == InAppBillingHelper.DONATE ?
                         R.string.donate : R.string.premium_request_buy)
                 .negativeText(R.string.close)
@@ -133,8 +131,12 @@ public class InAppBillingFragment extends DialogFragment {
         dialog.show();
         setCancelable(false);
 
+        TextView header = (TextView) dialog.findViewById(R.id.header);
         mInAppList = (ListView) dialog.findViewById(R.id.inapp_list);
         mProgress = (ProgressBar) dialog.findViewById(R.id.progress);
+
+        header.setText(mType == InAppBillingHelper.DONATE ?
+                R.string.navigation_view_donate : R.string.premium_request);
         return dialog;
     }
 

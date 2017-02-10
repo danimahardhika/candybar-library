@@ -3,19 +3,18 @@ package com.dm.material.dashboard.candybar.adapters;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
-import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dm.material.dashboard.candybar.R;
-import com.dm.material.dashboard.candybar.helpers.ColorHelper;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
-import com.dm.material.dashboard.candybar.items.Icon;
+import com.dm.material.dashboard.candybar.items.Feature;
+
+import java.util.List;
 
 /*
  * CandyBar - Material Dashboard
@@ -38,12 +37,13 @@ import com.dm.material.dashboard.candybar.items.Icon;
 public class HomeFeaturesAdapter extends RecyclerView.Adapter<HomeFeaturesAdapter.ViewHolder> {
 
     private final Context mContext;
-    private final SparseArrayCompat<Icon> mFeatures;
+    private List<Feature> mFeatures;
 
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_CONTENT = 1;
+    private static final int TYPE_FOOTER = 2;
 
-    public HomeFeaturesAdapter(@NonNull Context context, @NonNull SparseArrayCompat<Icon> features) {
+    public HomeFeaturesAdapter(@NonNull Context context, @NonNull List<Feature> features) {
         mContext = context;
         mFeatures = features;
     }
@@ -57,22 +57,26 @@ public class HomeFeaturesAdapter extends RecyclerView.Adapter<HomeFeaturesAdapte
         } else  if (viewType == TYPE_CONTENT) {
             view = LayoutInflater.from(mContext).inflate(
                     R.layout.fragment_home_feature_item_list, parent, false);
+        } else  if (viewType == TYPE_FOOTER) {
+            view = LayoutInflater.from(mContext).inflate(
+                    R.layout.fragment_home_feature_footer, parent, false);
         }
         return new ViewHolder(view, viewType);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        int finalPosition = position - 1;
         if (holder.holderId == TYPE_CONTENT) {
-            int finalPosition = position - 1;
-            if (mFeatures.get(finalPosition).getTitle().length() > 0) {
-                holder.container.setVisibility(View.VISIBLE);
-                Drawable icon = DrawableHelper.getTintedDrawable(
-                        mContext, mFeatures.get(finalPosition).getRes(),
-                        ColorHelper.getAttributeColor(mContext, android.R.attr.textColorSecondary));
-                holder.icon.setImageDrawable(icon);
-                holder.title.setText(mFeatures.get(finalPosition).getTitle());
-            } else holder.container.setVisibility(View.GONE);
+            Drawable icon = DrawableHelper.getTintedDrawable(mContext,
+                    R.drawable.ic_toolbar_circle, mFeatures.get(finalPosition).getColor());
+            holder.icon.setImageDrawable(icon);
+            holder.title.setText(mFeatures.get(finalPosition).getTitle());
+        } else if (holder.holderId == TYPE_FOOTER) {
+            Drawable icon = DrawableHelper.getTintedDrawable(mContext,
+                    R.drawable.ic_toolbar_circle, mFeatures.get(finalPosition).getColor());
+            holder.icon.setImageDrawable(icon);
+            holder.title.setText(mFeatures.get(finalPosition).getTitle());
         }
     }
 
@@ -83,12 +87,26 @@ public class HomeFeaturesAdapter extends RecyclerView.Adapter<HomeFeaturesAdapte
 
     @Override
     public int getItemViewType(int position) {
-        return position == 0 ? TYPE_HEADER : TYPE_CONTENT;
+        if (position == 0) return TYPE_HEADER;
+        if (position == (getItemCount() - 1)) return TYPE_FOOTER;
+        return TYPE_CONTENT;
+    }
+
+    public void resetWallpapersCount(int count) {
+        int position = 2;
+        if (mFeatures.size() == 5) position = 2;
+        if (mFeatures.size() == 4) position = 1;
+
+        if (position < mFeatures.size()) {
+            mFeatures.get(position).setTitle(String.format(
+                    mContext.getResources().getString(R.string.home_feature_cloud_wallpaper),
+                    count));
+            notifyDataSetChanged();
+        }
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        LinearLayout container;
         ImageView icon;
         TextView title;
 
@@ -98,14 +116,15 @@ public class HomeFeaturesAdapter extends RecyclerView.Adapter<HomeFeaturesAdapte
             super(itemView);
             if (viewType == TYPE_HEADER) {
                 holderId = TYPE_HEADER;
-            } else if (viewType == TYPE_CONTENT) {
-                container = (LinearLayout) itemView.findViewById(R.id.container);
+            } if (viewType == TYPE_CONTENT) {
                 icon = (ImageView) itemView.findViewById(R.id.icon);
                 title = (TextView) itemView.findViewById(R.id.title);
-
                 holderId = TYPE_CONTENT;
+            } else if (viewType == TYPE_FOOTER) {
+                icon = (ImageView) itemView.findViewById(R.id.icon);
+                title = (TextView) itemView.findViewById(R.id.title);
+                holderId = TYPE_FOOTER;
             }
         }
     }
-
 }
