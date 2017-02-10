@@ -40,7 +40,7 @@
         <activity android:name=".activities.CandyBarWallpaperActivity"
             android:launchMode="singleTop"
             android:theme="@style/WallpaperTheme"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
+            android:configChanges="orientation|keyboardHidden|screenSize"/>
 
         <service android:name=".services.CandyBarWallpapersService" />
     </application>
