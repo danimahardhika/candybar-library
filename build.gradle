@@ -28,7 +28,7 @@ allprojects {
         MinSdk = 15
         TargetSdk = 25
         CompileSdk = 25
-        SupportLibrary = "25.1.0"
+        SupportLibrary = "25.1.1"
     }
 }
 
