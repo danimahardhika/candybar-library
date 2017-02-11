@@ -63,6 +63,10 @@ public class Icon {
         return mIcons;
     }
 
+    public void setIcons(List<Icon> icons) {
+        mIcons = icons;
+    }
+
     @Override
     public boolean equals(Object object) {
         boolean res = false;

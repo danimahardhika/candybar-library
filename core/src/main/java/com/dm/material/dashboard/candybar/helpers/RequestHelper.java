@@ -14,6 +14,7 @@ import com.dm.material.dashboard.candybar.databases.Database;
 import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.Tag;
+import com.dm.material.dashboard.candybar.utils.listeners.RequestListener;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -220,11 +221,13 @@ public class RequestHelper {
                 "com.android.vending.billing.InAppBillingService.LACK"
         };
 
+        boolean isPiracyAppInstalled = false;
         for (String string : strings) {
             try {
                 PackageInfo packageInfo = context.getPackageManager().getPackageInfo(
                         string, PackageManager.GET_ACTIVITIES);
                 if (packageInfo != null) {
+                    isPiracyAppInstalled = true;
                     Preferences.getPreferences(context).setPremiumRequestEnabled(false);
                     return;
                 }
@@ -233,6 +236,10 @@ public class RequestHelper {
 
         Preferences.getPreferences(context).setPremiumRequestEnabled(
                 context.getResources().getBoolean(R.bool.enable_premium_request));
-    }
 
+        try {
+            RequestListener listener = (RequestListener) context;
+            listener.OnPiracyAppChecked(isPiracyAppInstalled);
+        } catch (Exception ignored) {}
+    }
 }

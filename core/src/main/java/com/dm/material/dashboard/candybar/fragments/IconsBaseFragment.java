@@ -193,20 +193,21 @@ public class IconsBaseFragment extends Fragment {
                             CandyBarMainActivity.sSections = IconsHelper.getIconsList(getActivity());
                             CandyBarMainActivity.sIconsCount = 0;
 
-                            for (Icon section : CandyBarMainActivity.sSections) {
-                                CandyBarMainActivity.sIconsCount += section.getIcons().size();
+                            for (int i = 0; i < CandyBarMainActivity.sSections.size(); i++) {
+                                List<Icon> icons = CandyBarMainActivity.sSections.get(i).getIcons();
+                                CandyBarMainActivity.sIconsCount += icons.size();
 
                                 if (getActivity().getResources().getBoolean(R.bool.show_icon_name)) {
-                                    for (Icon icon : section.getIcons()) {
-                                        String name = IconsHelper.replaceName(getActivity(),
-                                                getActivity().getResources().getBoolean(R.bool.enable_icon_name_replacer),
-                                                icon.getTitle());
+                                    for (Icon icon : icons) {
+                                        boolean replacer = getActivity().getResources().getBoolean(
+                                                R.bool.enable_icon_name_replacer);
+                                        String name = IconsHelper.replaceName(getActivity(), replacer, icon.getTitle());
                                         icon.setTitle(name);
                                     }
                                 }
 
                                 if (getActivity().getResources().getBoolean(R.bool.enable_icons_sort)) {
-                                    Collections.sort(section.getIcons(), new AlphanumComparator() {
+                                    Collections.sort(icons, new AlphanumComparator() {
                                         @Override
                                         public int compare(Object o1, Object o2) {
                                             String s1 = ((Icon) o1).getTitle();
@@ -214,6 +215,8 @@ public class IconsBaseFragment extends Fragment {
                                             return super.compare(s1, s2);
                                         }
                                     });
+
+                                    CandyBarMainActivity.sSections.get(i).setIcons(icons);
                                 }
                             }
                         }

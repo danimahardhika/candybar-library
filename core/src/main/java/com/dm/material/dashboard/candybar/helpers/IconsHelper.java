@@ -91,28 +91,32 @@ public class IconsHelper {
                 while (!isCancelled()) {
                     try {
                         Thread.sleep(1);
-                        if (!context.getResources().getBoolean(R.bool.show_icon_name)) return false;
                         if (CandyBarMainActivity.sSections == null) return false;
 
-                        for (Icon section : CandyBarMainActivity.sSections) {
-                            for (Icon icon : section.getIcons()) {
-                                String name = replaceName(context,
-                                        context.getResources().getBoolean(R.bool.enable_icon_name_replacer),
-                                        icon.getTitle());
-                                icon.setTitle(name);
+                        for (int i = 0; i < CandyBarMainActivity.sSections.size(); i++) {
+                            List<Icon> icons = CandyBarMainActivity.sSections.get(i).getIcons();
+
+                            if (context.getResources().getBoolean(R.bool.show_icon_name)) {
+                                for (Icon icon : icons) {
+                                    boolean replacer = context.getResources().getBoolean(
+                                            R.bool.enable_icon_name_replacer);
+                                    String name = replaceName(context, replacer, icon.getTitle());
+                                    icon.setTitle(name);
+                                }
                             }
 
-                            if (!context.getResources().getBoolean(R.bool.enable_icons_sort))
-                                return true;
+                            if (context.getResources().getBoolean(R.bool.enable_icons_sort)) {
+                                Collections.sort(icons, new AlphanumComparator() {
+                                    @Override
+                                    public int compare(Object o1, Object o2) {
+                                        String s1 = ((Icon) o1).getTitle();
+                                        String s2 = ((Icon) o2).getTitle();
+                                        return super.compare(s1, s2);
+                                    }
+                                });
 
-                            Collections.sort(section.getIcons(), new AlphanumComparator() {
-                                @Override
-                                public int compare(Object o1, Object o2) {
-                                    String s1 = ((Icon) o1).getTitle();
-                                    String s2 = ((Icon) o2).getTitle();
-                                    return super.compare(s1, s2);
-                                }
-                            });
+                                CandyBarMainActivity.sSections.get(i).setIcons(icons);
+                            }
                         }
                         return true;
                     } catch (Exception e) {
@@ -134,9 +138,10 @@ public class IconsHelper {
                     name = name.replace(strings[0], strings.length > 1 ? strings[1] : "");
             }
         }
+        name = name.replaceAll("_", " ");
+        name = name.trim().replaceAll("\\s+", " ");
         char character = Character.toUpperCase(name.charAt(0));
-        String finalString = character + name.substring(1);
-        return finalString.replace("_", " ");
+        return character + name.substring(1);
     }
 
     public static void selectIcon(@NonNull Context context, int action, Icon icon) {

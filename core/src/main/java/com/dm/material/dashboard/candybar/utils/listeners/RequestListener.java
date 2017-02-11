@@ -22,6 +22,7 @@ import com.dm.material.dashboard.candybar.items.Request;
 
 public interface RequestListener {
 
+    void OnPiracyAppChecked(boolean isPiracyAppInstalled);
     void OnSelected(int count);
     void OnBuyPremiumRequest();
     void OnPremiumRequestBought();

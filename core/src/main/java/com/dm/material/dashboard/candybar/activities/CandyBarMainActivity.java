@@ -343,6 +343,12 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
     }
 
     @Override
+    public void OnPiracyAppChecked(boolean isPiracyAppInstalled) {
+        mNavigationView.getMenu().getItem(3).setVisible(getResources().getBoolean(
+                R.bool.enable_icon_request) || !isPiracyAppInstalled);
+    }
+
+    @Override
     public void OnSelected(int count) {
         if (mFragmentTag.equals(TAG_REQUEST)) {
             String title = getResources().getString(R.string.navigation_view_request);
@@ -664,14 +670,14 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
 
         if (titleText.length() == 0) {
             container.setVisibility(View.GONE);
-            return;
+        } else {
+            title.setText(titleText);
+            try {
+                String versionText = "v" + getPackageManager()
+                        .getPackageInfo(getPackageName(), 0).versionName;
+                version.setText(versionText);
+            } catch (Exception ignored) {}
         }
-        title.setText(titleText);
-        try {
-            String versionText = "v" + getPackageManager()
-                    .getPackageInfo(getPackageName(), 0).versionName;
-            version.setText(versionText);
-        } catch (Exception ignored) {}
 
         if (ColorHelper.isValidColor(imageUrl)) {
             image.setBackgroundColor(Color.parseColor(imageUrl));
