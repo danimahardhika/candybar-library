@@ -44,6 +44,7 @@ Take a look inside <a href="https://github.com/danimahardhika/candybar-library/w
 
 # Features
 * License Checker
+ * [List of Supported Launchers](https://github.com/danimahardhika/candybar-library/wiki/List-of-Supported-Launcher)
 * Apply: 26 launchers
 * Icon Picker: see all icons included with sections and search
 * Icon Request
