@@ -78,6 +78,7 @@ Want your icon pack listed here? Mention me at [Google Plus](https://plus.google
 * [Silhoutte](https://play.google.com/store/apps/details?id=com.xonyxltd.icon.silhouettedonate)
 * [Apollo](https://play.google.com/store/apps/details?id=com.solarium.apollo)
 * [Chord](https://play.google.com/store/apps/details?id=com.jian.chord)
+* [Minimale](https://play.google.com/store/apps/details?id=com.mowmo.minimale)
 
 # License
 ```
