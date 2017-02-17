@@ -26,7 +26,7 @@ Add the dependency
 ```Gradle
 dependencies {
     //...
-    compile 'com.github.danimahardhika.candybar-library:core:2.0.1'
+    compile 'com.github.danimahardhika.candybar-library:core:2.0.2'
 }
 ```
 # How to Use
