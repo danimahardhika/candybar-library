@@ -520,14 +520,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
         mIsMenuVisible = !expand;
 
         if (expand) {
-            int color = ColorHelper.getAttributeColor(this, R.attr.search_toolbar);
-            ViewHelper.changeSearchViewActionModeColor(this,
-                    collapsingToolbar, R.attr.colorPrimary, R.attr.search_toolbar);
-            ColorHelper.setStatusBarColor(this, color);
-
-            int icon = ColorHelper.getAttributeColor(this, R.attr.search_toolbar_icon);
-            toolbar.setNavigationIcon(DrawableHelper.getTintedDrawable(
-                    this, R.drawable.ic_toolbar_back, icon));
+            toolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
             toolbar.setNavigationOnClickListener(view -> onBackPressed());
         } else {
             SoftKeyboardHelper.closeKeyboard(this);

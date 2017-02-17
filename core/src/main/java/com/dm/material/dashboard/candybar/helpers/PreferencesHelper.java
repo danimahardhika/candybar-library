@@ -64,7 +64,7 @@ public class PreferencesHelper {
         return getSharedPreferences().getBoolean(KEY_FIRST_RUN, true);
     }
 
-    void setFirstRun(boolean bool) {
+    public void setFirstRun(boolean bool) {
         getSharedPreferences().edit().putBoolean(KEY_FIRST_RUN, bool).apply();
     }
 

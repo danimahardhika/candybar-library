@@ -28,6 +28,7 @@
         <item>Solo Launcher</item>
         <item>Zero Launcher</item>
         <item>V Launcher</item>
+        <item>ABC Launcher</item>
     </string-array>
 
     <array name="launcher_icons">
@@ -57,6 +58,7 @@
         <item>@drawable/ic_launcher_solo</item>
         <item>@drawable/ic_launcher_zero</item>
         <item>@drawable/ic_launcher_v</item>
+        <item>@drawable/ic_launcher_abc</item>
     </array>
 
     <!-- Launcher Packages -->
@@ -87,6 +89,7 @@
         <item>home.solo.launcher.free</item>			<!-- 23 -->
         <item>com.zeroteam.zerolauncher</item>          <!-- 24 -->
         <item>com.vivid.launcher</item>                 <!-- 25 -->
+        <item>com.abclauncher.launcher</item>           <!-- 26 -->
     </string-array>
 
     <string-array name="launcher_packages_2">
@@ -115,7 +118,8 @@
         <item>ginlemon.flowerpro</item>					<!-- 22 -->
         <item>none</item>								<!-- 23 -->
         <item>none</item>								<!-- 24 -->
-        <item>note</item>                               <!-- 25 -->
+        <item>none</item>                               <!-- 25 -->
+        <item>none</item>                               <!-- 26 -->
     </string-array>
 
     <string-array name="launcher_packages_3">
@@ -145,6 +149,7 @@
         <item>none</item>								<!-- 23 -->
         <item>none</item>								<!-- 24 -->
         <item>note</item>                               <!-- 25 -->
+        <item>none</item>                               <!-- 26 -->
     </string-array>
 
 </resources>

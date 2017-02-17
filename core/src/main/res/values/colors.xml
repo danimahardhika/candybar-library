@@ -29,14 +29,6 @@
     <color name="toolbarIcon">#FFFFFFFF</color>
     <color name="toolbarIconDark">#FFFFFFFF</color>
 
-    <!-- Toolbar Search -->
-    <color name="searchToolbar">#E2E2E2</color>
-    <color name="searchToolbarDark">#181818</color>
-    <color name="searchToolbarIcon">#555555</color>
-    <color name="searchToolbarIconDark">#DDFFFFFF</color>
-    <color name="searchToolbarHintText">#44000000</color>
-    <color name="searchToolbarHintTextDark">#44FFFFFF</color>
-
     <!-- Home -->
     <color name="homeTitle">#FFFFFF</color>
     <color name="homeTitleDark">#FFFFFF</color>
@@ -76,8 +68,6 @@
     <color name="primaryTextDark">#EEFFFFFF</color>
     <color name="secondaryText">#777777</color>
     <color name="secondaryTextDark">#99FFFFFF</color>
-    <color name="hintText">#44FFFFFF</color>
-    <color name="hintTextDark">#44FFFFFF</color>
     <color name="dividerList">#EEEEEE</color>
     <color name="dividerListDark">#22FFFFFF</color>
 

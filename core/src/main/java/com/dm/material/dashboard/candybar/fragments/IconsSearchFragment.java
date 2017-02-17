@@ -113,9 +113,9 @@ public class IconsSearchFragment extends Fragment {
         mSearchView.setIconifiedByDefault(false);
         mSearchView.clearFocus();
 
-        int color = ColorHelper.getAttributeColor(getActivity(), R.attr.search_toolbar_icon);
-        ViewHelper.changeSearchViewTextColor(mSearchView, color,
-                ColorHelper.getAttributeColor(getActivity(), R.attr.search_toolbar_hint));
+        int color = ColorHelper.getAttributeColor(getActivity(), R.attr.toolbar_icon);
+        ViewHelper.changeSearchViewTextColor(mSearchView,
+                color, ColorHelper.setColorAlpha(color, 0.6f));
         View view = mSearchView.findViewById(android.support.v7.appcompat.R.id.search_plate);
         if (view != null) view.setBackgroundColor(Color.TRANSPARENT);
 

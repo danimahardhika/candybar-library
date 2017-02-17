@@ -209,6 +209,10 @@ public class RequestHelper {
     }
 
     public static void checkPiracyApp(@NonNull Context context) {
+        boolean premiumRequest = context.getResources().getBoolean(R.bool.enable_premium_request);
+        //Dashboard don't need to check piracy app if premium request is disabled
+        if (!premiumRequest) return;
+
         //Lucky Patcher and Freedom package name
         String[] strings = new String[] {
                 "com.chelpus.lackypatch",
@@ -228,14 +232,12 @@ public class RequestHelper {
                         string, PackageManager.GET_ACTIVITIES);
                 if (packageInfo != null) {
                     isPiracyAppInstalled = true;
-                    Preferences.getPreferences(context).setPremiumRequestEnabled(false);
-                    return;
+                    break;
                 }
             } catch (Exception ignored) {}
         }
 
-        Preferences.getPreferences(context).setPremiumRequestEnabled(
-                context.getResources().getBoolean(R.bool.enable_premium_request));
+        Preferences.getPreferences(context).setPremiumRequestEnabled(!isPiracyAppInstalled);
 
         try {
             RequestListener listener = (RequestListener) context;

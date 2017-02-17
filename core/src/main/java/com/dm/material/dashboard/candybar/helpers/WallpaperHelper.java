@@ -195,6 +195,7 @@ public class WallpaperHelper {
                             byte data[] = new byte[1024];
                             long total = 0;
                             int count;
+
                             while ((count = stream.read(data)) != -1) {
                                 total += count;
                                 if (fileLength > 0)

@@ -60,6 +60,7 @@ public class LauncherHelper {
     private static final int ITOP = 25;
     private static final int ZERO = 26;
     private static final int V = 27;
+    private static final int ABC = 28;
 
     private static int getLauncherId(String packageName) {
         if (packageName == null) return UNKNOWN;
@@ -125,6 +126,8 @@ public class LauncherHelper {
                 return ZERO;
             case "com.vivid.launcher":
                 return V;
+            case "com.abclauncher.launcher":
+                return ABC;
             default:
                 return UNKNOWN;
         }
@@ -473,6 +476,26 @@ public class LauncherHelper {
                     v.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.sendBroadcast(v1);
                     context.startActivity(v);
+                    ((AppCompatActivity) context).finish();
+                } catch (ActivityNotFoundException | NullPointerException e) {
+                    openGooglePlay(context, launcherPackage, launcherName);
+                }
+                break;
+            case ABC:
+                try {
+                     /*
+                     * Just want to let anyone who is going to copy
+                     * It's not easy searching for this
+                     * I will be grateful if you take this with a proper credit
+                     * Thank you
+                     */
+                    final Intent abc = context.getPackageManager().getLaunchIntentForPackage(
+                            "com.abclauncher.launcher");
+                    final Intent abc1 = new Intent("com.abclauncher.launcher.themes.themeaction");
+                    abc1.putExtra("theme_package_name", context.getPackageName());
+                    abc.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.sendBroadcast(abc1);
+                    context.startActivity(abc);
                     ((AppCompatActivity) context).finish();
                 } catch (ActivityNotFoundException | NullPointerException e) {
                     openGooglePlay(context, launcherPackage, launcherName);
