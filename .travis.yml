@@ -1,5 +1,6 @@
 language: android
 jdk: oraclejdk8
+install: true
 android:
   components:
     # use the latest revision of Android SDK Tools
