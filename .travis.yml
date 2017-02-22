@@ -5,6 +5,7 @@ android:
     # use the latest revision of Android SDK Tools
     - tools
     - platform-tools
+    - tools
     
     # The BuildTools version used by your project
     - build-tools-25.0.1
@@ -27,6 +28,3 @@ android:
 
   licenses:
     - '.+'
-    
-  before_install:
-    - chmod +x gradlew
