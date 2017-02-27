@@ -9,7 +9,7 @@
     <!-- Enable or disable icon name replacer
     * Enable -> true
     * Disable -> false -->
-    <bool name="enable_icon_name_replacer">true</bool>
+    <bool name="enable_icon_name_replacer">false</bool>
 
     <string-array name="icon_name_replacer">
         <!-- Word "app_" will be replaced with "" -->

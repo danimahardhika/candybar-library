@@ -192,22 +192,6 @@ public class ViewHelper {
         }
     }
 
-    public static void changeSearchViewActionModeColor(@NonNull Context context, @Nullable View view,
-                                                       @AttrRes int original, @AttrRes int target) {
-        if (view != null) {
-            CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) view;
-            int originalColor = ColorHelper.getAttributeColor(context, original);
-            int targetColor = ColorHelper.getAttributeColor(context, target);
-
-            ColorDrawable cd1 = new ColorDrawable(originalColor);
-            ColorDrawable cd2 = new ColorDrawable(targetColor);
-
-            TransitionDrawable td = new TransitionDrawable(new Drawable[]{cd1, cd2});
-            collapsingToolbar.setContentScrim(td);
-            td.startTransition(200);
-        }
-    }
-
     public static void resetSpanCount(@NonNull Context context, @NonNull RecyclerView recyclerView, @IntegerRes int id) {
         try {
             GridLayoutManager manager = (GridLayoutManager) recyclerView.getLayoutManager();

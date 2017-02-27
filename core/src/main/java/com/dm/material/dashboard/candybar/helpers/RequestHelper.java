@@ -211,7 +211,11 @@ public class RequestHelper {
     public static void checkPiracyApp(@NonNull Context context) {
         boolean premiumRequest = context.getResources().getBoolean(R.bool.enable_premium_request);
         //Dashboard don't need to check piracy app if premium request is disabled
-        if (!premiumRequest) return;
+        if (!premiumRequest) {
+            RequestListener listener = (RequestListener) context;
+            listener.OnPiracyAppChecked(false);
+            return;
+        }
 
         //Lucky Patcher and Freedom package name
         String[] strings = new String[] {
@@ -239,9 +243,7 @@ public class RequestHelper {
 
         Preferences.getPreferences(context).setPremiumRequestEnabled(!isPiracyAppInstalled);
 
-        try {
-            RequestListener listener = (RequestListener) context;
-            listener.OnPiracyAppChecked(isPiracyAppInstalled);
-        } catch (Exception ignored) {}
+        RequestListener listener = (RequestListener) context;
+        listener.OnPiracyAppChecked(isPiracyAppInstalled);
     }
 }

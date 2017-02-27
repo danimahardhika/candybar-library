@@ -48,9 +48,10 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 public class CandyBarSplashActivity extends AppCompatActivity {
 
     private Class<?> mMainActivity;
-    private AsyncTask<Void, Void, Boolean> mPrepareIconRequest;
-    private AsyncTask<Void, Void, Boolean>  mPrepareCloudWallpapers;
     private AsyncTask<Void, Void, Boolean> mPrepareIconsList;
+    private AsyncTask<Void, Void, Boolean> mPrepareIconRequest;
+    private AsyncTask<Void, Void, Boolean> mCheckRszIo;
+    private AsyncTask<Void, Void, Boolean>  mPrepareCloudWallpapers;
 
     public void initSplashActivity(Bundle savedInstanceState, Class<?> mainActivity) {
         super.onCreate(savedInstanceState);
@@ -60,11 +61,12 @@ public class CandyBarSplashActivity extends AppCompatActivity {
         int titleColor = ColorHelper.getTitleTextColor(ContextCompat
                 .getColor(this, R.color.splashColor));
         TextView splashTitle = (TextView) findViewById(R.id.splash_title);
-        splashTitle.setTextColor(ColorHelper.setColorAlpha(titleColor, 0.6f ));
+        splashTitle.setTextColor(ColorHelper.setColorAlpha(titleColor, 0.6f));
 
+        prepareIconsList();
         prepareIconRequest(this);
+        checkRszIo();
         prepareCloudWallpapers(this);
-        loadIconsList();
     }
 
     @Override
@@ -73,11 +75,52 @@ public class CandyBarSplashActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
+    public void onBackPressed() {
         if (mPrepareIconRequest != null) mPrepareIconRequest.cancel(true);
         if (mPrepareCloudWallpapers != null) mPrepareCloudWallpapers.cancel(true);
+        if (mCheckRszIo != null) mCheckRszIo.cancel(true);
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onDestroy() {
         if (mPrepareIconsList != null) mPrepareIconsList.cancel(true);
         super.onDestroy();
+    }
+
+    private void prepareIconsList() {
+        mPrepareIconsList = new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+                while (!isCancelled()) {
+                    try {
+                        Thread.sleep(1);
+                        CandyBarMainActivity.sSections = IconsHelper
+                                .getIconsList(CandyBarSplashActivity.this);
+
+                        int count = 0;
+                        for (Icon section : CandyBarMainActivity.sSections) {
+                            count += section.getIcons().size();
+                        }
+                        CandyBarMainActivity.sIconsCount = count;
+                        return true;
+                    } catch (Exception e) {
+                        Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+                        return false;
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean aBoolean) {
+                super.onPostExecute(aBoolean);
+                mPrepareIconsList = null;
+                startActivity(new Intent(CandyBarSplashActivity.this, mMainActivity));
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                finish();
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private void prepareIconRequest(@NonNull Context context) {
@@ -106,6 +149,38 @@ public class CandyBarSplashActivity extends AppCompatActivity {
             protected void onPostExecute(Boolean aBoolean) {
                 super.onPostExecute(aBoolean);
                 mPrepareIconRequest = null;
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    private void checkRszIo() {
+        mCheckRszIo = new AsyncTask<Void, Void, Boolean>() {
+
+            final String rszio = "https://rsz.io/";
+
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+                while ((!isCancelled())) {
+                    try {
+                        Thread.sleep(1);
+                        URL url = new URL(rszio);
+                        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                        int code = connection.getResponseCode();
+                        return code == 200;
+                    } catch (Exception e) {
+                        Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+                        return false;
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean aBoolean) {
+                super.onPostExecute(aBoolean);
+                CandyBarMainActivity.sRszIoAvailable = aBoolean;
+                Log.d(Tag.LOG_TAG, "rsz.io availability: " +CandyBarMainActivity.sRszIoAvailable);
+                mCheckRszIo = null;
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
@@ -148,42 +223,7 @@ public class CandyBarSplashActivity extends AppCompatActivity {
                 super.onPostExecute(aBoolean);
                 mPrepareCloudWallpapers = null;
             }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-    }
-
-    private void loadIconsList() {
-        mPrepareIconsList = new AsyncTask<Void, Void, Boolean>() {
-            @Override
-            protected Boolean doInBackground(Void... voids) {
-                while (!isCancelled()) {
-                    try {
-                        Thread.sleep(1);
-                        CandyBarMainActivity.sSections = IconsHelper
-                                .getIconsList(CandyBarSplashActivity.this);
-
-                        int count = 0;
-                        for (Icon section : CandyBarMainActivity.sSections) {
-                            count += section.getIcons().size();
-                        }
-                        CandyBarMainActivity.sIconsCount = count;
-                        return true;
-                    } catch (Exception e) {
-                        Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
-                        return false;
-                    }
-                }
-                return false;
-            }
-
-            @Override
-            protected void onPostExecute(Boolean aBoolean) {
-                super.onPostExecute(aBoolean);
-                mPrepareIconsList = null;
-                startActivity(new Intent(CandyBarSplashActivity.this, mMainActivity));
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                finish();
-            }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
     }
 }
 

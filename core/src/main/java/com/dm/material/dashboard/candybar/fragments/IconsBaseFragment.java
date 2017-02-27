@@ -161,6 +161,8 @@ public class IconsBaseFragment extends Fragment {
 
             @Override
             public void onAnimationEnd(Animation animation) {
+                if (getActivity() == null) return;
+
                 Animator.startAlphaAnimation(getActivity().findViewById(R.id.shadow), 200, View.VISIBLE);
                 getIcons();
             }

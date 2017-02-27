@@ -53,7 +53,8 @@ public class Wallpaper {
     public boolean equals(Object object) {
         boolean equals = false;
         if (object != null && object instanceof Wallpaper) {
-            equals = mUrl.equals(((Wallpaper) object).getURL());
+            equals = mUrl.equals(((Wallpaper) object).getURL()) &&
+                    mThumbUrl.equals(((Wallpaper) object).getThumbUrl());
         }
         return equals;
     }

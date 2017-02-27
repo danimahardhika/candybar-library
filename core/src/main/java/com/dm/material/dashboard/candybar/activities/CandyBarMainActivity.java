@@ -132,6 +132,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
     public static List<Request> sMissingApps;
     public static List<Icon> sSections;
     public static int sIconsCount = 0;
+    public static boolean sRszIoAvailable;
 
     private static final String TAG_HOME = "home";
     private static final String TAG_APPLY = "apply";

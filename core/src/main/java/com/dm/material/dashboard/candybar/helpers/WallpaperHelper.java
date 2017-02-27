@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.dm.material.dashboard.candybar.R;
+import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
 import com.dm.material.dashboard.candybar.utils.Tag;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -78,6 +79,19 @@ public class WallpaperHelper {
             return EXTERNAL_APP;
         }
         return UNKNOWN;
+    }
+
+    public static String getThumbnailUrl(@NonNull Context context, String url, String thumbUrl) {
+        if (thumbUrl.equals(url) && CandyBarMainActivity.sRszIoAvailable) {
+            return getRszIoThumbnailUrl(context, url);
+        }
+        return thumbUrl;
+    }
+
+    private static String getRszIoThumbnailUrl(@NonNull Context context, String url) {
+        url = url.replaceFirst("https://|http://", "");
+        ImageSize imageSize = ImageConfig.getThumbnailSize(context);        return "https://rsz.io/" +url+ "?width=" +imageSize.getWidth();
+
     }
 
     public static void launchExternalApp(@NonNull Context context) {
@@ -231,6 +245,8 @@ public class WallpaperHelper {
             @Override
             protected void onCancelled() {
                 super.onCancelled();
+                if (file != null) file.delete();
+
                 Toast.makeText(context,
                         context.getResources().getString(R.string.wallpaper_download_cancelled),
                         Toast.LENGTH_LONG).show();

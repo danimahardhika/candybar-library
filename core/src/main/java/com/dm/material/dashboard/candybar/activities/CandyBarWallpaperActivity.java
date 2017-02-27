@@ -322,5 +322,4 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
                 CandyBarWallpaperActivity.this, R.drawable.ic_fab_apply, textColor));
         Animator.showFab(mFab);
     }
-
 }
