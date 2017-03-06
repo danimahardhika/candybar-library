@@ -62,7 +62,9 @@ public class CandyBarMuzeiActivity extends AppCompatActivity implements View.OnC
         getWindow().getDecorView().setBackgroundColor(
                 ColorHelper.getAttributeColor(this, R.attr.main_background));
         ColorHelper.setStatusBarColor(this, ColorHelper.getAttributeColor(this, R.attr.colorPrimaryDark));
-        ViewHelper.resetNavigationBarTranslucent(this, getResources().getConfiguration().orientation);
+        ViewHelper.resetNavigationBarTranslucent(this,
+                getResources().getBoolean(R.bool.use_translucent_navigation_bar),
+                getResources().getConfiguration().orientation);
 
         mMinute = (RadioButton) findViewById(R.id.minute);
         mHour = (RadioButton) findViewById(R.id.hour);
@@ -95,7 +97,9 @@ public class CandyBarMuzeiActivity extends AppCompatActivity implements View.OnC
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        ViewHelper.resetNavigationBarTranslucent(this, newConfig.orientation);
+        ViewHelper.resetNavigationBarTranslucent(this,
+                getResources().getBoolean(R.bool.use_translucent_navigation_bar),
+                newConfig.orientation);
     }
 
     @Override

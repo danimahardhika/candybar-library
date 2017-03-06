@@ -2,18 +2,13 @@ package com.dm.material.dashboard.candybar.helpers;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
+import android.graphics.Point;
 import android.os.Build;
-import android.support.annotation.AttrRes;
 import android.support.annotation.IntegerRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewCompat;
@@ -21,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -28,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.utils.Animator;
 import com.dm.material.dashboard.candybar.utils.Tag;
 
@@ -55,9 +52,17 @@ public class ViewHelper {
     private static final float PERCENTAGE_TO_HIDE_TITLE_CONTAINER = 0.7f;
     private static final int ALPHA_ANIMATIONS_DURATION = 200;
 
-    public static void resetNavigationBarTranslucent(@NonNull Context context, int orientation) {
+    public static void resetNavigationBarTranslucent(@NonNull Context context, boolean translucent, int orientation) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            if (!translucent) {
+                int color = ColorHelper.getAttributeColor(context, R.attr.colorPrimaryDark);
+                ColorHelper.setNavigationBarColor(context, color);
+                return;
+            }
+
+            boolean tabletMode = context.getResources().getBoolean(R.bool.tablet_mode);
+
+            if (tabletMode || orientation == Configuration.ORIENTATION_PORTRAIT) {
                 ((AppCompatActivity) context).getWindow().addFlags(
                         WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
             } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -77,24 +82,70 @@ public class ViewHelper {
     }
 
     public static int getNavigationBarHeight(@NonNull Context context) {
-        Resources resources = context.getResources();
-        int orientation = resources.getConfiguration().orientation;
-        int resourceId = resources.getIdentifier(orientation == Configuration.ORIENTATION_PORTRAIT ?
-                "navigation_bar_height" : "navigation_bar_height_landscape", "dimen", "android");
-        if (resourceId > 0) {
-            return resources.getDimensionPixelSize(resourceId);
+        Point appUsableSize = getAppUsableScreenSize(context);
+        Point realScreenSize = getRealScreenSize(context);
+
+        if (appUsableSize.x < realScreenSize.x) {
+            Point point = new Point(realScreenSize.x - appUsableSize.x, appUsableSize.y);
+            return point.x;
+        }
+
+        if (appUsableSize.y < realScreenSize.y) {
+            Point point = new Point(appUsableSize.x, realScreenSize.y - appUsableSize.y);
+            return point.y;
         }
         return 0;
+    }
+
+    private static Point getAppUsableScreenSize(@NonNull Context context) {
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        return size;
+    }
+
+    public static Point getRealScreenSize(@NonNull Context context) {
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+        Point size = new Point();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            display.getRealSize(size);
+        } else {
+            try {
+                size.x = (Integer) Display.class.getMethod("getRawWidth").invoke(display);
+                size.y = (Integer) Display.class.getMethod("getRawHeight").invoke(display);
+            } catch (Exception e) {
+                size.x = display.getWidth();
+                size.y = display.getHeight();
+            }
+        }
+        return size;
     }
 
     public static void resetNavigationBarBottomPadding(@NonNull Context context, @Nullable View view,
                                                        int orientation) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (!context.getResources().getBoolean(R.bool.use_translucent_navigation_bar))
+                return;
+
             if (view != null) {
-                if (orientation == Configuration.ORIENTATION_PORTRAIT)
-                    view.setPadding(0, 0, 0, getNavigationBarHeight(context));
-                else
-                    view.setPadding(0, 0, 0, 0);
+                int left = view.getPaddingLeft();
+                int right = view.getPaddingRight();
+                int bottom = view.getPaddingBottom();
+                int top = view.getPaddingTop();
+                int navBar = getNavigationBarHeight(context);
+
+                if (bottom > navBar) bottom -= navBar;
+                boolean tabletMode = context.getResources().getBoolean(R.bool.tablet_mode);
+
+                if (tabletMode || orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    view.setPadding(left, top, right, (bottom + navBar));
+                    return;
+                }
+
+                view.setPadding(left, top, right, bottom);
             }
         }
     }

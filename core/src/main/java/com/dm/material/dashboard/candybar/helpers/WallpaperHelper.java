@@ -5,11 +5,14 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -17,18 +20,15 @@ import android.os.Environment;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
-import android.view.WindowManager;
 import android.webkit.URLUtil;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.danimahardhika.cafebar.CafeBar;
+import com.danimahardhika.cafebar.CafeBarDuration;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
@@ -43,7 +43,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -90,8 +89,8 @@ public class WallpaperHelper {
 
     private static String getRszIoThumbnailUrl(@NonNull Context context, String url) {
         url = url.replaceFirst("https://|http://", "");
-        ImageSize imageSize = ImageConfig.getThumbnailSize(context);        return "https://rsz.io/" +url+ "?width=" +imageSize.getWidth();
-
+        ImageSize imageSize = ImageConfig.getThumbnailSize(context);
+        return "https://rsz.io/" +url+ "?height=" +imageSize.getWidth();
     }
 
     public static void launchExternalApp(@NonNull Context context) {
@@ -129,9 +128,9 @@ public class WallpaperHelper {
     }
 
     private static String getWallpaperUri(@NonNull Context context, String url, String filename) {
-        File directory = getDefaultWallpapersDirectory(context);
-        if (new File(directory + File.separator + filename).exists()) {
-            if (PermissionHelper.isPermissionStorageGranted(context)) {
+        if (PermissionHelper.isPermissionStorageGranted(context)) {
+            File directory = getDefaultWallpapersDirectory(context);
+            if (new File(directory + File.separator + filename).exists()) {
                 return "file://" + directory + File.separator + filename;
             }
         }
@@ -144,10 +143,6 @@ public class WallpaperHelper {
         if (cache != null) {
             File target = new File(getDefaultWallpapersDirectory(context).toString()
                     + File.separator + name + FileHelper.IMAGE_EXTENSION);
-            if (target.exists()) {
-                wallpaperSaved(context, color, target);
-                return;
-            }
 
             if (FileHelper.copyFile(cache, target)) {
                 wallpaperSaved(context, color, target);
@@ -283,88 +278,88 @@ public class WallpaperHelper {
                 R.string.wallpaper_downloaded);
         View rootView = ((AppCompatActivity) context).getWindow().getDecorView().findViewById(R.id.rootview);
 
-        if (rootView != null) {
-            Snackbar snackbar = Snackbar.make(rootView,
-                    downloaded + " " + file.toString(), 6000)
-                    .setAction(context.getResources().getString(R.string.open), view -> {
-                        try {
-                            Uri uri = FileHelper.getUriFromFile(context, context.getPackageName(), file);
-                            if (uri == null) return;
+        CafeBar.Builder builder = new CafeBar.Builder(context);
+        builder.to(rootView)
+                .duration(CafeBarDuration.LONG.getDuration())
+                .maxLines(4)
+                .floating(true)
+                .swipeToDismiss(false)
+                .content(downloaded + " " + file.toString())
+                .icon(R.drawable.ic_toolbar_download)
+                .neutralText(R.string.open)
+                .neutralTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/Font-Bold.ttf"))
+                .neutralColor(color)
+                .onNeutral(cafeBar -> {
+                    Uri uri = FileHelper.getUriFromFile(context, context.getPackageName(), file);
+                    if (uri == null) return;
 
-                            context.startActivity(new Intent()
-                                    .setAction(Intent.ACTION_VIEW)
-                                    .setDataAndType(uri, "image/*")
-                                    .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION));
-                        } catch (ActivityNotFoundException e) {
-                            Toast.makeText(context, R.string.wallpaper_noapp,
-                                    Toast.LENGTH_LONG).show();
-                        }
-                    })
-                    .setActionTextColor(color);
-            View snackBarView = snackbar.getView();
-            TextView textView = (TextView) snackBarView.findViewById(
-                    android.support.design.R.id.snackbar_text);
-            if (textView != null) textView.setMaxLines(5);
-            snackbar.show();
-            return;
+                    context.startActivity(new Intent()
+                            .setAction(Intent.ACTION_VIEW)
+                            .setDataAndType(uri, "image/*")
+                            .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION));
+
+                    cafeBar.dismiss();
+                });
+
+        if (rootView == null) {
+            builder.fitSystemWindow(R.bool.use_translucent_navigation_bar);
         }
 
-        Toast.makeText(context,
-                downloaded +" "+ file.toString(),
-                Toast.LENGTH_LONG).show();
-    }
-
-    /*
-     * This code taken from http://stackoverflow.com/a/23861333
-     */
-
-    private static ImageSize getRealDeviceSize(@NonNull Context context) {
-        final WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = windowManager.getDefaultDisplay();
-        int realWidth;
-        int realHeight;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1){
-            DisplayMetrics realMetrics = new DisplayMetrics();
-            display.getRealMetrics(realMetrics);
-            realWidth = realMetrics.widthPixels;
-            realHeight = realMetrics.heightPixels;
-        } else {
-            try {
-                Method mGetRawH = Display.class.getMethod("getRawHeight");
-                Method mGetRawW = Display.class.getMethod("getRawWidth");
-                realWidth = (Integer) mGetRawW.invoke(display);
-                realHeight = (Integer) mGetRawH.invoke(display);
-            } catch (Exception e) {
-                realWidth = display.getWidth();
-                realHeight = display.getHeight();
-            }
-        }
-        return new ImageSize(realWidth, realHeight);
+        CafeBar cafeBar = builder.build();
+        cafeBar.show();
     }
 
     private static ImageSize getScaledSize(@NonNull Context context, String url) {
-        ImageSize imageSize = getRealDeviceSize(context);
-        int height = imageSize.getHeight();
-        int width = imageSize.getWidth();
+        Point point = ViewHelper.getRealScreenSize(context);
+        int height = point.y;
+        int width = point.x;
 
+        if (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            height = point.x;
+            width = point.y;
+        }
+
+        int scaledWidth = 0;
+        int scaledHeight = 0;
         File file = ImageLoader.getInstance().getDiskCache().get(url);
         if (file != null) {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
             BitmapFactory.decodeFile(file.getAbsolutePath(), options);
 
-            double scale = (double) options.outHeight/(double) height;
+            double scale = (double) options.outHeight / (double) height;
 
-            width = Double.valueOf((double) options.outWidth/scale).intValue();
+            scaledWidth = Double.valueOf((double) options.outWidth / scale).intValue();
+            scaledHeight = Double.valueOf((double) options.outHeight / scale).intValue();
         }
-        return new ImageSize(width, height);
+
+        if (scaledWidth == 0) scaledWidth = width;
+        if (scaledHeight == 0) scaledHeight = height;
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            int statusBarHeight = ViewHelper.getStatusBarHeight(context);
+            double scale = (double) (scaledHeight - statusBarHeight) / (double) scaledHeight;
+
+            scaledWidth = Double.valueOf((double) scaledWidth * scale).intValue();
+            scaledHeight = Double.valueOf((double) scaledHeight * scale).intValue();
+        }
+        return new ImageSize(scaledWidth, scaledHeight);
+    }
+
+    @Nullable
+    private static RectF getScaledRectF(@Nullable RectF rectF, float factor) {
+        if (rectF == null) return null;
+
+        RectF scaledRectF = new RectF(rectF);
+        scaledRectF.top *= factor;
+        scaledRectF.bottom *= factor;
+        scaledRectF.left *= factor;
+        scaledRectF.right *= factor;
+        return scaledRectF;
     }
 
     public static void applyWallpaper(@NonNull Context context, @Nullable RectF rectF,
                                       @ColorInt int color, String url, String name) {
-        ImageSize imageSize = getScaledSize(context, url);
-
         final MaterialDialog.Builder builder = new MaterialDialog.Builder(context);
         builder.widgetColor(color)
                 .progress(true, 0)
@@ -374,16 +369,16 @@ public class WallpaperHelper {
 
         String imageUri = getWallpaperUri(context, url, name + FileHelper.IMAGE_EXTENSION);
 
+        ImageSize imageSize = getScaledSize(context, url);
         loadBitmap(context, dialog, 1, imageUri, rectF, imageSize.getWidth(), imageSize.getHeight());
     }
 
     private static void loadBitmap(Context context, MaterialDialog dialog, int call, String imageUri,
                                    RectF rectF, int width, int height) {
-        ImageSize imageSize = getRealDeviceSize(context);
-
         final AsyncTask<Bitmap, Void, Boolean> setWallpaper = getWallpaperAsync(
-                context, dialog, rectF, imageSize.getWidth(), height);
-        dialog.setOnCancelListener(dialogInterface -> {
+                context, dialog, rectF, width, height);
+
+        dialog.setOnDismissListener(dialogInterface -> {
             ImageLoader.getInstance().stop();
             setWallpaper.cancel(true);
         });
@@ -391,8 +386,12 @@ public class WallpaperHelper {
         ImageLoader.getInstance().handleSlowNetwork(true);
         ImageLoader.getInstance().loadImage(imageUri, new ImageSize(width, height),
                 ImageConfig.getWallpaperOptions(), new ImageLoadingListener() {
+
                     @Override
                     public void onLoadingStarted(String imageUri, View view) {
+                        if (dialog.isShowing()) return;
+
+                        dialog.setContent(R.string.wallpaper_loading);
                         dialog.show();
                     }
 
@@ -404,7 +403,8 @@ public class WallpaperHelper {
                                 int scaledWidth = Double.valueOf(width * scaleFactor).intValue();
                                 int scaledHeight = Double.valueOf(height * scaleFactor).intValue();
 
-                                loadBitmap(context, dialog, (call + 1), imageUri, rectF, scaledWidth, scaledHeight);
+                                RectF scaledRecF = getScaledRectF(rectF, (float) scaleFactor);
+                                loadBitmap(context, dialog, (call + 1), imageUri, scaledRecF, scaledWidth, scaledHeight);
                                 return;
                             }
                         }
@@ -417,6 +417,7 @@ public class WallpaperHelper {
 
                     @Override
                     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                        dialog.setContent(R.string.wallpaper_applying);
                         setWallpaper.execute(loadedImage);
                     }
 

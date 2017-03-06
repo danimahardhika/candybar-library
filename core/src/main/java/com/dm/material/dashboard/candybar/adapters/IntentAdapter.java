@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -103,7 +104,7 @@ public class IntentAdapter extends BaseAdapter {
             holder.type.setTextColor(ColorHelper.getAttributeColor(mContext, R.attr.colorAccent));
             holder.type.setText(mContext.getResources().getString(R.string.intent_email_recommended));
         } else {
-            holder.type.setTextColor(ColorHelper.getAttributeColor(mContext, R.attr.error_text));
+            holder.type.setTextColor(Color.parseColor("#F44336"));
             holder.type.setText(mContext.getResources().getString(R.string.intent_email_not_supported));
         }
 

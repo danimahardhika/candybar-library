@@ -5,6 +5,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,7 +26,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.danimahardhika.cafebar.CafeBar;
 import com.dm.material.dashboard.candybar.fragments.dialog.WallpaperSettingsFragment;
+import com.dm.material.dashboard.candybar.helpers.FileHelper;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.utils.Animator;
 import com.kogitune.activitytransition.ActivityTransition;
@@ -42,6 +45,8 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+
+import java.io.File;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 import uk.co.senab.photoview.PhotoViewAttacher;
@@ -101,7 +106,8 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
         TextView toolbarTitle = (TextView) findViewById(R.id.toolbar_title);
         TextView toolbarSubTitle = (TextView) findViewById(R.id.toolbar_subtitle);
 
-        ViewHelper.resetNavigationBarTranslucent(this, getResources().getConfiguration().orientation);
+        ViewHelper.resetNavigationBarTranslucent(this,
+                true, getResources().getConfiguration().orientation);
 
         ColorHelper.setTransparentStatusBar(this,
                 ContextCompat.getColor(this, R.color.wallpaperStatusBar));
@@ -185,7 +191,8 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        ViewHelper.resetNavigationBarTranslucent(this, newConfig.orientation);
+        ViewHelper.resetNavigationBarTranslucent(this,
+                true, newConfig.orientation);
     }
 
     @Override
@@ -232,9 +239,40 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
             return true;
         } else if (id == R.id.menu_save) {
             if (PermissionHelper.isPermissionStorageGranted(this)) {
+                File target = new File(WallpaperHelper.getDefaultWallpapersDirectory(this).toString()
+                        + File.separator + mName + FileHelper.IMAGE_EXTENSION);
+
+                if (target.exists()) {
+                    CafeBar.builder(this)
+                            .to(findViewById(R.id.rootview))
+                            .autoDismiss(false)
+                            .swipeToDismiss(false)
+                            .floating(true)
+                            .maxLines(4)
+                            .content(String.format(getResources().getString(R.string.wallpaper_download_exist),
+                                    ("\"" +mName + FileHelper.IMAGE_EXTENSION+ "\"")))
+                            .icon(R.drawable.ic_toolbar_download)
+                            .positiveText(R.string.wallpaper_download_exist_replace)
+                            .positiveColor(mColor)
+                            .positiveTypeface(Typeface.createFromAsset(getAssets(), "fonts/Font-Bold.ttf"))
+                            .onPositive(cafeBar -> {
+                                WallpaperHelper.downloadWallpaper(this, mColor, mUrl, mName);
+                                cafeBar.dismiss();
+                            })
+                            .negativeText(R.string.wallpaper_download_exist_new)
+                            .negativeTypeface(Typeface.createFromAsset(getAssets(), "fonts/Font-Bold.ttf"))
+                            .onNegative(cafeBar -> {
+                                WallpaperHelper.downloadWallpaper(this, mColor, mUrl, mName +"_"+ System.currentTimeMillis());
+                                cafeBar.dismiss();
+                            })
+                            .build().show();
+                    return true;
+                }
+
                 WallpaperHelper.downloadWallpaper(this, mColor, mUrl, mName);
                 return true;
             }
+
             PermissionHelper.requestStoragePermission(this);
             return true;
         } else if (id == R.id.menu_wallpaper_settings) {

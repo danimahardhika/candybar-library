@@ -31,10 +31,10 @@ import java.util.Locale;
  * limitations under the License.
  */
 
-public class LocaleHelper {
+class LocaleHelper {
 
     @Nullable
-    public static String getOtherAppLocaleName(Context context, Locale locale, String packageName) {
+    static String getOtherAppLocaleName(Context context, Locale locale, String packageName) {
         try {
             PackageManager packageManager = context.getPackageManager();
             ApplicationInfo info = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA);

@@ -45,12 +45,11 @@
 
     <!-- About -->
     <dimen name="about_profile">100dp</dimen>
-    <dimen name="about_profile_border">4dp</dimen>
+    <dimen name="about_profile_border">3dp</dimen>
     <dimen name="about_profile_margin_top">52dp</dimen>
     <dimen name="about_profile_margin_bottom">-50dp</dimen>
     <dimen name="about_profile_margin_right">16dp</dimen>
-    <dimen name="about_header_text">20sp</dimen>
-    <dimen name="about_image_height">160dp</dimen>
+    <dimen name="about_image_height">120dp</dimen>
     <dimen name="about_content_padding">20dp</dimen>
 
     <!-- Intent Chooser -->

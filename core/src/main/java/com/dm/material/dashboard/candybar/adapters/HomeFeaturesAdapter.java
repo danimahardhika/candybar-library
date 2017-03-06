@@ -3,6 +3,7 @@ package com.dm.material.dashboard.candybar.adapters;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.items.Feature;
+import com.dm.material.dashboard.candybar.preferences.Preferences;
 
 import java.util.List;
 
@@ -93,12 +95,15 @@ public class HomeFeaturesAdapter extends RecyclerView.Adapter<HomeFeaturesAdapte
     }
 
     public void resetWallpapersCount(int count) {
-        int position = 2;
-        if (mFeatures.size() == 5) position = 2;
-        if (mFeatures.size() == 4) position = 1;
+        Feature feature = new Feature(
+                ContextCompat.getColor(mContext, R.color.homeFeatureCloudWallpapers),
+                String.format(mContext.getResources().getString(R.string.home_feature_cloud_wallpaper),
+                        Preferences.getPreferences(mContext).getAvailableWallpapersCount()));
 
-        if (position < mFeatures.size()) {
-            mFeatures.get(position).setTitle(String.format(
+        int index = mFeatures.indexOf(feature);
+
+        if (index >= 0 && index < mFeatures.size()) {
+            mFeatures.get(index).setTitle(String.format(
                     mContext.getResources().getString(R.string.home_feature_cloud_wallpaper),
                     count));
             notifyDataSetChanged();

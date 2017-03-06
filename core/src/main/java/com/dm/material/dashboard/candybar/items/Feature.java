@@ -42,4 +42,14 @@ public class Feature {
     public int getColor() {
         return mColor;
     }
+
+    @Override
+    public boolean equals(Object object) {
+        boolean equals = false;
+        if (object != null && object instanceof Feature) {
+            equals = mColor == ((Feature) object).getColor() &&
+                    mTitle.equals(((Feature) object).getTitle());
+        }
+        return equals;
+    }
 }

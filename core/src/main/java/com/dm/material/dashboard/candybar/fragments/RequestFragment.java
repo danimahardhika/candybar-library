@@ -9,14 +9,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -272,11 +270,15 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         int navBar = 0;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            navBar = ViewHelper.getNavigationBarHeight(getActivity());
+            if (getActivity().getResources().getBoolean(R.bool.use_translucent_navigation_bar)) {
+                navBar = ViewHelper.getNavigationBarHeight(getActivity());
+            }
         }
 
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(size, size);
-        if (getActivity().getResources().getConfiguration().orientation
+        boolean tabletMode = getActivity().getResources().getBoolean(R.bool.tablet_mode);
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mFab.getLayoutParams();
+
+        if (tabletMode || getActivity().getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_PORTRAIT) {
             mRequestList.setPadding(padding, padding, padding, (padding + size + marginGlobal + navBar));
             params.setMargins(0, 0, margin, (margin + navBar));
@@ -284,7 +286,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
             mRequestList.setPadding(padding, padding, padding, (padding + size + marginGlobal));
             params.setMargins(0, 0, margin, margin);
         }
-        params.gravity = GravityCompat.END | Gravity.BOTTOM;
+
         mFab.setLayoutParams(params);
     }
 

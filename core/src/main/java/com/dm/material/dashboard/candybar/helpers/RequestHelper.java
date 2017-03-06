@@ -213,7 +213,7 @@ public class RequestHelper {
         //Dashboard don't need to check piracy app if premium request is disabled
         if (!premiumRequest) {
             RequestListener listener = (RequestListener) context;
-            listener.OnPiracyAppChecked(false);
+            listener.OnPiracyAppChecked(true);
             return;
         }
 

@@ -159,7 +159,9 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
         mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
         mFab = (FloatingActionButton) findViewById(R.id.fab);
 
-        ViewHelper.resetNavigationBarTranslucent(this, getResources().getConfiguration().orientation);
+        ViewHelper.resetNavigationBarTranslucent(this,
+                getResources().getBoolean(R.bool.use_translucent_navigation_bar),
+                getResources().getConfiguration().orientation);
         SoftKeyboardHelper helper = new SoftKeyboardHelper(this, findViewById(R.id.container));
         helper.enable();
 
@@ -225,7 +227,9 @@ public class CandyBarMainActivity extends AppCompatActivity implements AppBarLay
         super.onConfigurationChanged(newConfig);
         if (mIsMenuVisible) mDrawerToggle.onConfigurationChanged(newConfig);
         resetNavigationView(newConfig.orientation);
-        ViewHelper.resetNavigationBarTranslucent(this, newConfig.orientation);
+        ViewHelper.resetNavigationBarTranslucent(this,
+                getResources().getBoolean(R.bool.use_translucent_navigation_bar),
+                newConfig.orientation);
     }
 
     @Override

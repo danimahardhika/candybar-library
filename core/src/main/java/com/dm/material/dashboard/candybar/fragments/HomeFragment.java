@@ -140,6 +140,7 @@ public class HomeFragment extends Fragment {
         features.add(new Feature(
                 ContextCompat.getColor(getActivity(), R.color.homeFeatureIcons),
                 String.format(getActivity().getResources().getString(R.string.home_feature_icons), CandyBarMainActivity.sIconsCount)));
+
         if (CandyBarMainActivity.sSections != null) {
             if (CandyBarMainActivity.sSections.size() > 0) {
                 List<Icon> icons =  CandyBarMainActivity.sSections.get(0).getIcons();
@@ -155,6 +156,7 @@ public class HomeFragment extends Fragment {
                 }
             }
         }
+
         if (WallpaperHelper.getWallpaperType(getActivity()) == WallpaperHelper.CLOUD_WALLPAPERS) {
             features.add(new Feature(
                     ContextCompat.getColor(getActivity(), R.color.homeFeatureCloudWallpapers),
@@ -164,6 +166,7 @@ public class HomeFragment extends Fragment {
                     ContextCompat.getColor(getActivity(), R.color.homeFeatureMuzei),
                     getActivity().getResources().getString(R.string.home_feature_muzei)));
         }
+
         String[] launchers = getActivity().getResources().getStringArray(R.array.launcher_names);
         features.add(new Feature(
                 ContextCompat.getColor(getActivity(), R.color.homeFeatureLaunchers),

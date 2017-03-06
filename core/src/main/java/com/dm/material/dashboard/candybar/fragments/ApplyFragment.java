@@ -5,7 +5,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -66,7 +65,8 @@ public class ApplyFragment extends Fragment{
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ViewCompat.setNestedScrollingEnabled(mRecyclerView, false);
-        resetNavigationBarMargin();
+        ViewHelper.resetNavigationBarBottomPadding(getActivity(), mRecyclerView,
+                getActivity().getResources().getConfiguration().orientation);
 
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setNestedScrollingEnabled(false);
@@ -80,7 +80,7 @@ public class ApplyFragment extends Fragment{
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        resetNavigationBarMargin();
+        ViewHelper.resetNavigationBarBottomPadding(getActivity(), mRecyclerView, newConfig.orientation);
         resetSpanSizeLookUp();
     }
 
@@ -107,22 +107,6 @@ public class ApplyFragment extends Fragment{
                 }
             });
         } catch (Exception ignored) {}
-    }
-
-    private void resetNavigationBarMargin() {
-        int padding = getActivity().getResources().getDimensionPixelSize(R.dimen.content_padding);
-        int navBar = 0;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            navBar = ViewHelper.getNavigationBarHeight(getActivity());
-        }
-
-        if (getActivity().getResources().getConfiguration().orientation
-                == Configuration.ORIENTATION_PORTRAIT) {
-            mRecyclerView.setPadding(padding, padding, padding, (padding + navBar));
-            return;
-        }
-        mRecyclerView.setPadding(padding, padding, padding, padding);
     }
 
     private boolean isPackageInstalled(String pkg) {

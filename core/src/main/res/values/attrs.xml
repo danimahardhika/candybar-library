@@ -13,10 +13,6 @@
     <attr name="divider_list" format="color"/>
     <attr name="home_feature_line" format="color"/>
 
-    <attr name="hint_text" format="color"/>
-    <attr name="error_text" format="color"/>
-
-
     <attr name="tab_indicator" format="color"/>
     <attr name="tab_text" format="color"/>
     <attr name="tab_text_selected" format="color"/>

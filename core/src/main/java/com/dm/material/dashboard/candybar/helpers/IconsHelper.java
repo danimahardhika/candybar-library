@@ -126,7 +126,7 @@ public class IconsHelper {
                 }
                 return false;
             }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }.execute();
     }
 
     public static String replaceName(@NonNull Context context, boolean iconReplacer, String name) {

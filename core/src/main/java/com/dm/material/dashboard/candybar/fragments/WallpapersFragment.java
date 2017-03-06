@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -88,7 +87,8 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ViewCompat.setNestedScrollingEnabled(mWallpapersGrid, false);
-        resetNavigationBarMargin();
+        ViewHelper.resetNavigationBarBottomPadding(getActivity(), mWallpapersGrid,
+                getActivity().getResources().getConfiguration().orientation);
 
         mProgress.getIndeterminateDrawable().setColorFilter(
                 ColorHelper.getAttributeColor(getActivity(), R.attr.colorAccent),
@@ -115,7 +115,7 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         ViewHelper.resetSpanCount(getActivity(), mWallpapersGrid, R.integer.wallpapers_column_count);
-        resetNavigationBarMargin();
+        ViewHelper.resetNavigationBarBottomPadding(getActivity(), mWallpapersGrid, newConfig.orientation);
     }
 
     @Override
@@ -149,21 +149,6 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
                     getActivity(), R.drawable.ic_toolbar_arrow_up, color), null, null, null);
             popupBubble.setOnClickListener(this);
             Animator.startSlideDownAnimation(getActivity(), popupBubble, null);
-        }
-    }
-
-    private void resetNavigationBarMargin() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int paddingTop = getActivity().getResources().getDimensionPixelOffset(R.dimen.card_margin_top);
-            int paddingLeft = getActivity().getResources().getDimensionPixelOffset(R.dimen.card_margin_left);
-            int paddingBottom = getActivity().getResources().getDimensionPixelOffset(R.dimen.card_margin_bottom);
-            if (getActivity().getResources().getConfiguration().orientation
-                    == Configuration.ORIENTATION_PORTRAIT) {
-                int navbar = ViewHelper.getNavigationBarHeight(getActivity());
-                mWallpapersGrid.setPadding(paddingLeft, paddingTop, 0, (paddingBottom + navbar));
-                return;
-            }
-            mWallpapersGrid.setPadding(paddingLeft, paddingTop, 0, paddingBottom);
         }
     }
 

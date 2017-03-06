@@ -147,7 +147,12 @@
     <string name="wallpaper_download_failed">Unable to download wallpaper</string>
     <string name="wallpaper_download_cancelled">Wallpaper download cancelled</string>
     <string name="wallpaper_downloaded">Wallpaper saved to</string>
+    <string name="wallpaper_download_exist">Wallpaper with name %s already exist, do you want to replace it?</string>
+    <string name="wallpaper_download_exist_replace">Replace</string>
+    <string name="wallpaper_download_exist_new">Create New</string>
+
     <string name="wallpaper_noapp">No application to open image</string>
+    <string name="wallpaper_loading">Loading wallpaper …</string>
     <string name="wallpaper_applying">Applying wallpaper …</string>
     <string name="wallpaper_applied">Wallpaper applied</string>
     <string name="wallpaper_apply_failed">Unable to apply wallpaper</string>

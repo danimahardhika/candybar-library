@@ -12,6 +12,12 @@
     <!-- Use dark theme as default theme -->
     <bool name="use_dark_theme">false</bool>
 
+    <!-- Translucent Navigation Bar (only for Lollipop and up)
+    * Choose between semi transparent navigation bar and colored navigation bar
+    * Semi transparent -> true
+    * Colored -> false -->
+    <bool name="use_translucent_navigation_bar">true</bool>
+
     <!-- CONFIG: MUZEI -->
 
     <!-- Muzei art source name -->

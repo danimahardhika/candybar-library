@@ -3,7 +3,6 @@ package com.dm.material.dashboard.candybar.fragments;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -74,7 +73,8 @@ public class FAQsFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ViewCompat.setNestedScrollingEnabled(mFAQsList, false);
-        resetNavigationBarMargin();
+        ViewHelper.resetNavigationBarBottomPadding(getActivity(), mFAQsList,
+                getActivity().getResources().getConfiguration().orientation);
 
         mFAQsList.setItemAnimator(new DefaultItemAnimator());
         mFAQsList.setHasFixedSize(false);
@@ -96,7 +96,7 @@ public class FAQsFragment extends Fragment {
         searchView.setMaxWidth(Integer.MAX_VALUE);
 
         ViewHelper.changeSearchViewTextColor(searchView, color,
-                ColorHelper.getAttributeColor(getActivity(), R.attr.hint_text));
+                ColorHelper.setColorAlpha(color, 0.6f));
         View view = searchView.findViewById(android.support.v7.appcompat.R.id.search_plate);
         if (view != null) view.setBackgroundColor(Color.TRANSPARENT);
 
@@ -120,24 +120,13 @@ public class FAQsFragment extends Fragment {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        resetNavigationBarMargin();
+        ViewHelper.resetNavigationBarBottomPadding(getActivity(), mFAQsList, newConfig.orientation);
     }
 
     @Override
     public void onDestroy() {
         if (mGetFAQs != null) mGetFAQs.cancel(true);
         super.onDestroy();
-    }
-
-    private void resetNavigationBarMargin() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int padding = getActivity().getResources().getDimensionPixelSize(R.dimen.content_padding);
-            if (getActivity().getResources().getConfiguration().orientation
-                    == Configuration.ORIENTATION_PORTRAIT) {
-                int navbar = ViewHelper.getNavigationBarHeight(getActivity());
-                mFAQsList.setPadding(padding, padding, padding, (padding + navbar));
-            } else mFAQsList.setPadding(padding, padding, padding, padding);
-        }
     }
 
     private void filterSearch(String query) {
@@ -203,5 +192,4 @@ public class FAQsFragment extends Fragment {
 
         }.execute();
     }
-
 }
