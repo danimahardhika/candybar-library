@@ -8,7 +8,7 @@ group = 'com.github.danimahardhika'
 /*
  * CandyBar - Material Dashboard
  *
- * Copyright (c) 2014-present Dani Mahardhika
+ * Copyright (c) 2014-2016 Dani Mahardhika
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,8 +46,8 @@ android {
     defaultConfig {
         minSdkVersion rootProject.ext.MinSdk
         targetSdkVersion rootProject.ext.TargetSdk
-        versionCode 203
-        versionName "2.0.3"
+        versionCode 205
+        versionName "2.0.5"
         vectorDrawables.useSupportLibrary = true
     }
 
@@ -99,5 +99,5 @@ dependencies {
     compile 'com.google.android.apps.muzei:muzei-api:2.0'
     compile 'com.github.rafakob:DrawMe:0.1.6'
     compile 'org.sufficientlysecure:html-textview:3.2'
-    compile 'com.github.florent37:diagonallayout:1.0.3'
+    compile 'com.github.danimahardhika:cafebar:1.0.3'
 }
