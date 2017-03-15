@@ -51,7 +51,7 @@ public class CandyBarSplashActivity extends AppCompatActivity {
     private AsyncTask<Void, Void, Boolean> mPrepareIconsList;
     private AsyncTask<Void, Void, Boolean> mPrepareIconRequest;
     private AsyncTask<Void, Void, Boolean> mCheckRszIo;
-    private AsyncTask<Void, Void, Boolean>  mPrepareCloudWallpapers;
+    private AsyncTask<Void, Void, Boolean> mPrepareCloudWallpapers;
 
     public void initSplashActivity(Bundle savedInstanceState, Class<?> mainActivity) {
         super.onCreate(savedInstanceState);
@@ -165,6 +165,8 @@ public class CandyBarSplashActivity extends AppCompatActivity {
                         Thread.sleep(1);
                         URL url = new URL(rszio);
                         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                        connection.setConnectTimeout(6000);
+                        connection.setReadTimeout(6000);
                         int code = connection.getResponseCode();
                         return code == 200;
                     } catch (Exception e) {

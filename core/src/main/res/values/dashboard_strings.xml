@@ -190,7 +190,7 @@
     <string name="pref_premium_request_restore_failed">Unable to restore purchases</string>
     <string name="pref_premium_request_restore_empty">You don\'t have any purchased packages</string>
     <string name="pref_premium_request_rebuild">Rebuild Premium Icon Request</string>
-    <string name="pref_premium_request_rebuild_desc">Collect all premium icon request data to resend theme</string>
+    <string name="pref_premium_request_rebuild_desc">Collect all premium icon request data to resend them</string>
 
     <string name="pref_theme_header">Theme</string>
     <string name="pref_theme_dark">Dark Theme</string>
