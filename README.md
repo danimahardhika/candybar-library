@@ -5,14 +5,16 @@
 
 # Gradle Dependency
 **Requirements**
-* Latest version of Android Studio</li>
-* Android-SDK Build tools v25</li>
-* API 25 SDK Platform</li>
-* Latest version of Android Support Library</li>
-* Java SE Development Kit 8</li>
+* Latest version of Android Studio
+* Android-SDK Build tools v25
+* API 25 SDK Platform
+* Latest version of Android Support Library
+* Java SE Development Kit 8
 
-<p>Take a look on this <a href="https://raw.githubusercontent.com/danimahardhika/candybar-library/698d102f504f5a843af4f5bc67a340a09b3c5889/screenshots/requirements.jpg">screenshot</a> for requirements
-<p>The minimum API level supported by this library is API 15</p>
+Take a look on this [screenshot](https://raw.githubusercontent.com/danimahardhika/candybar-library/698d102f504f5a843af4f5bc67a340a09b3c5889/screenshots/requirements.jpg) for requirements
+
+The minimum API level supported by this library is API 15
+
 Add JitPack repository to root ```build.gradle```
 ```Gradle
 allprojects {
