@@ -34,10 +34,6 @@ dependencies {
 # How to Use
 Take a look inside <a href="https://github.com/danimahardhika/candybar-library/wiki" target="_blank">Wiki Site</a>.
 
-# Previews
-<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/home.jpg" width="215"/> <img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/navigation_drawer.jpg" width="215"/> <img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/changelog.jpg" width="215"/> <img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/icon_request.jpg" width="215"/>
-<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/cloud_wallpapers.jpg" width="215"/> <img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/wallpaper_preview.jpg" width="215"/> <img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/icons.jpg" width="215"/> <img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/settings.jpg" width="215"/>
-
 # Features
 * License Checker
 * Apply: 27 launchers
