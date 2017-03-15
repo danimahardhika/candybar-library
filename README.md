@@ -26,7 +26,7 @@ Add the dependency
 ```Gradle
 dependencies {
     //...
-    compile 'com.github.danimahardhika.candybar-library:core:2.0.5'
+    compile 'com.github.danimahardhika.candybar-library:core:2.0.6'
 }
 ```
 # How to Use
@@ -44,7 +44,7 @@ Take a look inside <a href="https://github.com/danimahardhika/candybar-library/w
 
 # Features
 * License Checker
-* Apply: 26 launchers
+* Apply: 27 launchers
  * [List of Supported Launchers](https://github.com/danimahardhika/candybar-library/wiki/List-of-Supported-Launcher)
 * Icon Picker: see all icons included with sections and search
 * Icon Request
