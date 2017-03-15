@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+
+    <!-- ======================================================================================= -->
+    <!-- ============================== DASHBOARD CONFIGURATIONS =============================== -->
+    <!-- ======================================================================================= -->
+
+    <!-- CONFIG: DEFAULT THEME -->
+
+    <!-- Use dark theme as default theme -->
+    <bool name="use_dark_theme">false</bool>
+    
+    <!-- Translucent Navigation Bar (only for Lollipop and up)
+    * Choose between semi transparent navigation bar and colored navigation bar
+    * Semi transparent -> true
+    * Colored -> false -->
+    <bool name="use_translucent_navigation_bar">true</bool>
+
+    <!-- CONFIG: MUZEI -->
+
+    <!-- Muzei art source name -->
+    <string name="muzei_art_source_name">Your Art Source Name</string>
+
+    <!-- Muzei art source description -->
+    <string name="muzei_art_source_desc">Your Art Source Description</string>
+
+    <!-- Muzei base color -->
+    <color name="muzei_color">#0082B4</color>
+
+    <!-- CONFIG: HOME -->
+
+    <!-- Home title must be defined -->
+    <string name="home_title">CandyBar</string>
+
+    <!-- Home subtitle is optional
+    * Leave empty if you don't want to show any text -->
+    <string name="home_subtitle">Material Dashboard</string>
+
+    <!-- Home image
+    * If you want to use image from url, just put the url here
+    * If you want to use image stored in project (drawable folder)
+    * just put image name here without the extension (ex: home_image.png -> home_image)
+    *
+    * If you want to use solid color, you can put hex color code here
+    * ex: <string name="navigation_view_header">#000000</string> -->
+    <string name="home_image">https://drive.google.com/uc?id=0B0f4ypHfNKm5VHVjbXZNSS1TUUU</string>
+
+    <!-- Home description
+    - If you don't want to show description, just leave this empty -->
+    <string name="home_description"><![CDATA[
+        Description now supports html formatting, <b>bold description</b>,
+        <i>italic description</i>, <u>underline description</u>,
+        <a href="https://github.com/danimahardhika">link inside description</a>.
+        ]]></string>
+
+    <!-- More apps at Google Play Store
+    * Link to google play store developer
+    * If you don't want to show this part, just leave this empty -->
+    <string name="google_play_dev">https://play.google.com/store/apps/dev?id=your_developer_id</string>
+
+    <!-- CONFIG: NAVIGATION VIEW HEADER -->
+
+    <!-- Navigation view header image
+    * If you want to use image from url, just put the url here
+    * If you want to use image stored in project (drawable folder)
+    * just put image name here without the extension
+    * (ex: navigation_view_header.png -> navigation_view_header)
+    *
+    * If you want to use solid color, you can put hex color code here
+    * ex: <string name="navigation_view_header">#000000</string> -->
+    <string name="navigation_view_header">https://drive.google.com/uc?id=0B0f4ypHfNKm5VHVjbXZNSS1TUUU</string>
+
+    <!-- Navigation view header height
+    * default: 200dp -->
+    <dimen name="navigation_view_header_height">200dp</dimen>
+
+    <!-- Navigation view header text
+    * Leave empty if you don't want to show any text -->
+    <string name="navigation_view_header_title">CandyBar</string>
+
+    <!-- Navigation view width -->
+    <dimen name="navigation_view_width">300dp</dimen>
+
+    <!-- CONFIG: ICONS -->
+
+    <!-- Sort
+    * Enable or disable icons sort
+    * Disabling this will improve icons section performance, icons will load faster
+    * You can use CandyBar drawable.xml builder to sort icons
+    * Enable -> true
+    * Disable -> false -->
+    <bool name="enable_icons_sort">true</bool>
+
+    <!-- Icon picker icon name text below icon
+    * default: true
+    * Change to false to disable it -->
+    <bool name="show_icon_name">true</bool>
+
+    <!-- Icons section will read icons from drawable.xml same as Nova Launcher
+    * Put drawable.xml inside xml folder -->
+
+    <!-- CONFIG: ICON REQUEST -->
+
+    <!-- Enable or disable regular icon request
+    * default: true
+    * change to false to disable it -->
+    <bool name="enable_icon_request">true</bool>
+
+    <!-- Enable regular icon request limit
+    * default: false
+    * change to true to enable it -->
+    <bool name="enable_icon_request_limit">false</bool>
+
+    <!-- Limit regular icon request
+    * IGNORE if icon request limit is disabled
+    * ex: If you set icon request limit to 10, user only able to make 10 icon request in all time
+    * After making 10 icon request user not able to request again -->
+    <integer name="icon_request_limit">10</integer>
+
+    <!-- Reset regular icon request limit every update
+    * IGNORE if icon request limit is disabled
+    * ex: You want to make user only able to make 10 request, set icon request limit (above) to 10
+    * but you also want user able to make 10 request again after update, then enable this option
+    * default: false
+    * change to true to enable it -->
+    <bool name="reset_icon_request_limit">false</bool>
+
+    <!-- Enable or disable premium request
+    * default: false
+    * change to true to enable it -->
+    <bool name="enable_premium_request">false</bool>
+
+    <!-- Take a look inside License.java for premium request product -->
+
+    <!-- Email that will be used to send icon request and report bugs -->
+    <string name="dev_email">your@email.com</string>
+
+    <!-- CONFIG: CLOUD WALLPAPERS -->
+
+    <!-- Wallpaper json link
+    * If your icon pack doesn't contains any wallpaper, just leave this empty
+    * <string name="wallpaper_json"></string>
+    *
+    * If you want to separate wallpaper app from icon pack and keep wallpapers section shown in navigation drawer,
+    * but instead open wallpapers section pressing it will open your wallpaper app
+    * just put your wallpaper app package name here
+    * example: com.dm.wallpaper.board.demo
+    * <string name="wallpaper_json">com.dm.wallpaper.board.demo</string> -->
+    <string name="wallpaper_json">https://drive.google.com/uc?id=0B0f4ypHfNKm5TmRMSnhpb2JSalE</string>
+
+    <!-- Allow to download wallpaper
+    * If disabled user only able to apply wallpaper from dashboard -->
+    <bool name="enable_wallpaper_download">true</bool>
+
+    <!-- Auto generated color for wallpaper card
+    * default: true
+    * change to false to disable it -->
+    <bool name="card_wallpaper_auto_generated_color">true</bool>
+
+    <!-- Wallpaper name and author below wallpaper
+    * Show or hide name and author below wallpaper
+    * Show -> true
+    * Hide -> false -->
+    <bool name="wallpaper_show_name_author">true</bool>
+
+    <!-- Wallpapers grid preview quality
+    * Image quality when displaying wallpapers in grid
+    * Higher value means higher quality, more RAM usage
+    * Lower value means lower quality, minimal RAM usage -->
+    <integer name="wallpaper_grid_preview_quality">4</integer>
+
+    <!-- CONFIG: ABOUT -->
+
+    <!-- About header image
+    * If you want to use image from url, just put the url here
+    * If you want to use image stored in project (drawable folder)
+    * just put image name here without the extension (ex: about_image.png -> about_image)
+    *
+    * If you want to use solid color, you can put hex color code here
+    * ex: <string name="navigation_view_header">#000000</string> -->
+    <string name="about_image">https://drive.google.com/uc?id=0B0f4ypHfNKm5VHVjbXZNSS1TUUU</string>
+
+    <!-- About profile image
+    * If you want to use image from url, just put the url here
+    * If you want to use image stored in project (drawable folder)
+    * just put image name here without the extension (ex: about_profile_image.png -> about_profile_image) -->
+    <string name="about_profile_image">https://lh3.googleusercontent.com/-KBI2HdgNtN0/AAAAAAAAAAI/AAAAAAAABpc/icnuAgrjOT4/s256-p-rw-no/photo.jpg</string>
+
+    <!-- About title above description -->
+    <string name="about_title">CandyBar \nMaterial Dashboard</string>
+
+    <!-- About description below title -->
+    <string name="about_desc"><![CDATA[
+        About description now supports html formatting, <b>bold description</b>,
+        <i>italic description</i>, <u>underline description</u>,
+        <a href="https://github.com/danimahardhika">link inside description</a>.
+        ]]></string>
+
+    <!-- Email that showed in about
+    * This part must be email
+    * If you don't want to show email in about, just set about_email to empty
+    * ex: <string name="about_email"></string> -->
+    <string name="about_email_title">Email</string>
+    <string name="about_email">your@email.com</string>
+
+    <!-- Link 1 showed in about
+    * Link 1 must be included, link 2 is optional
+    * You can change this to another link, like facebook, twitter etc
+    * ex:
+    * <string name="about_link_1_title">Facebook</string>
+    * <string name="about_link_1_url">http://facebook.com/yourlink</string> -->
+    <string name="about_link_1_title">Google+</string>
+    <string name="about_link_1_url">http://plus.google.com/xxxx</string>
+
+    <!-- Link 2 showed in about
+    * Link 2 is optional, if you don't want to show link 2, just set about_link_2_url to empty
+    * ex: <string name="about_link_2_url"></string>
+    * You can change this to another link, like facebook, twitter etc
+    * ex:
+    * <string name="about_link_2_title">Facebook</string>
+    * <string name="about_link_2_url">http://facebook.com/yourlink</string> -->
+    <string name="about_link_2_title">Website</string>
+    <string name="about_link_2_url">http://yourwebsite.com</string>
+
+    <!-- Contributors dialog
+    * Take a look inside values/xml/contributors.xml to add contributors -->
+    <bool name="show_contributors_dialog">false</bool>
+
+    <!-- CONFIG: DONATE -->
+
+    <!-- DONATION
+    * Show support development option in navigation view
+    * default: true
+    * change to false to disable it -->
+    <bool name="enable_donation">false</bool>
+
+    <!-- Take a look inside License.java for donation product -->
+
+</resources>

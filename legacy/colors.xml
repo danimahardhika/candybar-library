@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorPrimary">#0082B4</color>
+    <color name="colorPrimaryDark">#006EA0</color>
+    <color name="colorAccent">#23BEA5</color>
+
+    <color name="darkColorPrimary">#0082B4</color>
+    <color name="darkColorPrimaryDark">#006EA0</color>
+    <color name="darkColorAccent">#23BEA5</color>
+
+    <!-- Splash Screen -->
+    <color name="splashColor">#F0F0F0</color>
+
+    <!-- Navigation View -->
+    <color name="navigationViewTitle">#FFFFFF</color>
+    <color name="navigationViewTitleBack">#33000000</color>
+
+    <color name="navigationViewText">#505A64</color>
+    <color name="navigationViewTextDark">#DDFFFFFF</color>
+    <color name="navigationViewTextSelected">#0082B4</color>
+    <color name="navigationViewTextSelectedDark">#0082B4</color>
+    <color name="navigationViewSelectedBackground">#00000000</color>
+    <color name="navigationViewSelectedBackgroundDark">#00000000</color>
+
+    <!-- Swipe Refresh -->
+    <color name="swipeRefresh">#23BEA5</color>
+
+    <!-- Toolbar -->
+    <color name="toolbarIcon">#FFFFFFFF</color>
+    <color name="toolbarIconDark">#FFFFFFFF</color>
+
+    <!-- Home -->
+    <color name="homeTitle">#FFFFFF</color>
+    <color name="homeTitleDark">#FFFFFF</color>
+
+    <color name="homeFeatureIcons">#8BC34A</color>
+    <color name="homeFeatureDimensions">#009688</color>
+    <color name="homeFeatureCloudWallpapers">#F44336</color>
+    <color name="homeFeatureMuzei">#3577D7</color>
+    <color name="homeFeatureLaunchers">#FFC107</color>
+    <color name="homeFeaturesIconRequest">#9C27B0</color>
+
+    <!-- Tab -->
+    <color name="tabIndicator">#FFFFFFFF</color>
+    <color name="tabIndicatorDark">#FFFFFFFF</color>
+    <color name="tabText">#44FFFFFF</color>
+    <color name="tabTextDark">#44FFFFFF</color>
+    <color name="tabTextSelected">#FFFFFFFF</color>
+    <color name="tabTextSelectedDark">#FFFFFFFF</color>
+
+    <!-- Card -->
+    <color name="cardBackground">#FFFFFF</color>
+    <color name="cardBackgroundDark">#181818</color>
+
+    <!-- Ripple -->
+    <color name="rippleColor">#55000000</color>
+    <color name="rippleColorDark">#55FFFFFF</color>
+    <color name="rippleAccent">#3323BEA5</color>
+    <color name="rippleAccentDark">#3323BEA5</color>
+
+    <!-- Attributes -->
+    <color name="mainBackground">#FAFAFA</color>
+    <color name="mainBackgroundDark">#000000</color>
+    <color name="primaryText">#484848</color>
+    <color name="primaryTextDark">#EEFFFFFF</color>
+    <color name="secondaryText">#777777</color>
+    <color name="secondaryTextDark">#99FFFFFF</color>
+    <color name="dividerList">#EEEEEE</color>
+    <color name="dividerListDark">#22FFFFFF</color>
+
+    <!-- Popup Bubble -->
+    <color name="popupBubble">#23BEA5</color>
+    <color name="popupBubbleText">#FFFFFF</color>
+
+</resources>
