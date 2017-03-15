@@ -212,6 +212,7 @@ public class RequestHelper {
         boolean premiumRequest = context.getResources().getBoolean(R.bool.enable_premium_request);
         //Dashboard don't need to check piracy app if premium request is disabled
         if (!premiumRequest) {
+            Preferences.getPreferences(context).setPremiumRequestEnabled(false);
             RequestListener listener = (RequestListener) context;
             listener.OnPiracyAppChecked(true);
             return;
