@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingPrefix"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/colorPrimary">
 
-    <ImageView
+    <com.dm.material.dashboard.candybar.utils.views.HeaderView
         android:id="@+id/header_image"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/navigation_view_header_height"
-        android:scaleType="centerCrop"/>
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        app:widthRatio="4"
+        app:heightRatio="3"/>
 
     <LinearLayout
         android:id="@+id/header_title_container"
@@ -18,7 +21,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_gravity="bottom|start"
-        android:padding="16dp"
+        android:padding="@dimen/content_margin"
         android:background="@color/navigationViewTitleBack">
 
         <TextView
@@ -39,6 +42,5 @@
             fontPath="fonts/Font-Regular.ttf"/>
 
     </LinearLayout>
-
 
 </FrameLayout>

@@ -5,6 +5,5 @@
         android:viewportHeight="24.0">
     <path
         android:fillColor="?attr/toolbar_icon"
-        android:pathData="M19.9,8.1H3V5.9h16.9C20.505,5.9,21,6.395,21,7S20.505,8.1,19.9,8.1z M18,12c0-0.605-0.495-1.1-1.1-1.1H3v2.2h13.9
-	C17.505,13.1,18,12.605,18,12z M19.9,15.9H3V18.1h16.9c0.604,0,1.1-0.494,1.1-1.1S20.505,15.9,19.9,15.9z"/>
+        android:pathData="M21,8.1H3V5.9h18V8.1z M18,10.9H3v2.2h15V10.9z M21,15.9H3V18.1h18V15.9z"/>
 </vector>

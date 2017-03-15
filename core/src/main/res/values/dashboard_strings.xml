@@ -26,14 +26,10 @@
     <string name="muzei_apply_no_wallpapers">Unable to apply, Icon Pack doesn\'t contain wallpapers.</string>
 
     <!-- Menu -->
-    <string name="menu_changelog">Changelog</string>
-    <string name="menu_licenses">Credits &amp; Licenses</string>
     <string name="menu_search">Search</string>
     <string name="menu_save">Save to Device</string>
     <string name="menu_wallpaper_settings">Wallpaper Settings</string>
     <string name="menu_select_all">Select All</string>
-    <string name="menu_deselect_all">Clear Selection</string>
-    <string name="menu_report_bugs">Report Bugs</string>
 
     <!-- Dialog -->
     <string name="open">Open</string>
@@ -43,9 +39,8 @@
     <string name="cancel">Cancel</string>
     <string name="install">Install</string>
     <string name="donate">Donate</string>
-    <string name="gotit">Got It</string>
 
-    <string name="search_noresult">No result found for %s</string>
+    <string name="search_noresult">No result found for \"%s\"</string>
     <string name="search_faqs">Question or answer</string>
     <string name="search_icon">Icon Name</string>
 
@@ -64,20 +59,26 @@
     <string name="license_check_error">Unable to check license</string>
     <string name="license_check_retry">Unable to check license, please try again in a few moments.</string>
 
-    <!-- Home -->
-    <string name="home_feature_header">Features</string>
-    <string name="home_feature_icons">%d custom icons</string>
-    <string name="home_feature_dimensions">%s pixels icon dimension</string>
-    <string name="home_feature_cloud_wallpaper">%d cloud wallpapers</string>
-    <string name="home_feature_muzei">Supports Muzei live wallpaper</string>
-    <string name="home_feature_launchers">Supports more than %d custom launchers</string>
-    <string name="home_features_icon_request">Icon request</string>
-    <string name="home_features_icon_request_with">with</string>
-    <string name="home_features_icon_request_premium">Premium icon request (pay to request)</string>
+    <!-- Share -->
+    <string name="share_app_title">Yo! Check out %s</string>
+    <string name="share_app_content">This Icon Pack is really cool %s</string>
 
+    <!-- Home -->
     <string name="home_more_apps_header">More Apps</string>
     <string name="home_more_apps">Check other apps published on Google Play Store</string>
     <string name="home_rate_and_review">Rate &amp; Review</string>
+
+    <string name="home_apply_icon_pack">Apply %s</string>
+    <string name="home_donate">Donate</string>
+    <string name="home_donate_desc">Support development for the icon pack</string>
+    <string name="home_icons">Custom icons</string>
+    <string name="home_icon_dimension">%s pixels icon dimension</string>
+    <string name="home_loud_wallpapers">%d cloud wallpapers</string>
+    <string name="home_muzei">Muzei live wallpaper</string>
+
+    <string name="home_icon_request_installed_apps">Total\n%d installed apps</string>
+    <string name="home_icon_request_themed_apps">Themed\n%d apps</string>
+    <string name="home_icon_request_missed_apps">Missed\n%d apps</string>
 
     <!-- Apply -->
     <string name="apply_installed">Installed Launcher</string>
@@ -123,7 +124,9 @@
     <string name="premium_request_no_internet">Make sure your phone connected to internet before sending a premium request</string>
     <string name="premium_request_desc">Get your requested icon faster with premium requests</string>
     <string name="premium_request_buy">Buy</string>
-    <string name="premium_request_count">Packages :</string>
+    <string name="premium_request_count">Total\n%d request</string>
+    <string name="premium_request_used">Used\n%d request</string>
+    <string name="premium_request_available">Available\n%d request</string>
     <string name="premium_request_already_purchased">You still have %d premium request.
         You need to use all of them before buying a premium request package again.</string>
     <string name="premium_request_limit">You only have %d premium request(s),</string>
@@ -173,13 +176,13 @@
     <string name="pref_data_header">Data &amp; Cache</string>
     <string name="pref_data_cache">Clear Cache</string>
     <string name="pref_data_cache_desc">Remove image cache from your storage, created when picking an image
-	    from this app, requesting missing apps, and after loading cloud wallpaper thumbnails.</string>
-    <string name="pref_data_cache_size">Cache Size :</string>
+	    from this app, requesting missed apps, and after loading cloud wallpaper thumbnails.</string>
+    <string name="pref_data_cache_size">Cache Size: %s</string>
     <string name="pref_data_cache_clear_dialog">Do you really want to clear cache?</string>
     <string name="pref_data_cache_cleared">Cache cleared</string>
     <string name="pref_data_request">Clear Icon Request Data</string>
     <string name="pref_data_request_desc">Remove icon request data, created after requesting
-        missing apps from icon request.</string>
+        missed apps from icon request.</string>
     <string name="pref_data_request_clear_dialog">Do you really want to clear icon request data?</string>
     <string name="pref_data_request_cleared">Icon request data cleared</string>
 
@@ -198,7 +201,11 @@
 
     <string name="pref_wallpaper_header">Wallpaper</string>
     <string name="pref_wallpaper_location">Wallpaper Save Location</string>
-    <string name="pref_wallpaper_location_desc">Try to download at least one wallpaper first.</string>
+    <string name="pref_wallpaper_location_desc">Try to download at least one wallpaper first</string>
+
+    <string name="pref_others_header">Others</string>
+    <string name="pref_others_report_bugs">Report Bugs</string>
+    <string name="pref_others_report_changelog">Changelog</string>
 
     <!-- Permission -->
     <string name="permission_storage_denied">Storage permission needed to save wallpaper</string>
@@ -231,7 +238,7 @@
 
     <!-- Please don't modify this -->
     <string name="about_dashboard">CandyBar</string>
-    <string name="about_dashboard_dev">CandyBar is open source icon pack dashboard for
+    <string name="about_dashboard_dev">CandyBar is open source icon pack dashboard licensed under Apache License 2.0 for
         Android available at GitHub and free to use, developed by Dani Mahardhika.
         \n\nCopyright © 2014-2016</string>
     <string name="about_dashboard_dev_google_plus_title">Google+</string>

@@ -15,12 +15,14 @@
     app:cardUseCompatPadding="@bool/card_use_compat_padding"
     app:cardCornerRadius="0dp">
 
-    <com.dm.material.dashboard.candybar.utils.views.WallpaperView
+    <com.dm.material.dashboard.candybar.utils.views.HeaderView
         android:id="@+id/image"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:scaleType="centerCrop"
         android:foreground="?attr/selectableItemBackgroundBorderless"
-        android:theme="@style/RippleStyle"/>
+        android:theme="@style/RippleStyle"
+        app:heightRatio="5"
+        app:widthRatio="4"/>
 
 </android.support.v7.widget.CardView>

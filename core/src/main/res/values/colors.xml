@@ -1,47 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="colorPrimary">#0082B4</color>
-    <color name="colorPrimaryDark">#006EA0</color>
-    <color name="colorAccent">#23BEA5</color>
+    <color name="colorPrimary">#20AC6B</color>
+    <color name="colorPrimaryDark">#258854</color>
+    <color name="colorAccent">#FE9700</color>
 
-    <color name="darkColorPrimary">#0082B4</color>
-    <color name="darkColorPrimaryDark">#006EA0</color>
-    <color name="darkColorAccent">#23BEA5</color>
+    <color name="darkColorPrimary">#20AC6B</color>
+    <color name="darkColorPrimaryDark">#258854</color>
+    <color name="darkColorAccent">#FE9700</color>
+
+    <!-- Navigation Bar
+    * Must be solid color, no alpha -->
+    <color name="navigationBar">#000000</color>
+    <color name="navigationBarDark">#000000</color>
 
     <!-- Splash Screen -->
-    <color name="splashColor">#F0F0F0</color>
+    <color name="splashColor">#FAFAFA</color>
 
     <!-- Navigation View -->
     <color name="navigationViewTitle">#FFFFFF</color>
     <color name="navigationViewTitleBack">#33000000</color>
-    <color name="navigationViewText">#505A64</color>
-    <color name="navigationViewTextDark">#DDFFFFFF</color>
-    <color name="navigationViewTextSelected">#0082B4</color>
-    <color name="navigationViewTextSelectedDark">#0082B4</color>
+
+    <color name="navigationViewText">#D9000000</color>
+    <color name="navigationViewTextDark">#FFFFFF</color>
+    <color name="navigationViewTextSelected">#20AC6B</color>
+    <color name="navigationViewTextSelectedDark">#20AC6B</color>
     <color name="navigationViewSelectedBackground">#00000000</color>
     <color name="navigationViewSelectedBackgroundDark">#00000000</color>
 
     <!-- Swipe Refresh -->
-    <color name="swipeRefresh">#23BEA5</color>
+    <color name="swipeRefresh">#20AC6B</color>
 
     <!-- Toolbar -->
     <color name="toolbarIcon">#FFFFFFFF</color>
     <color name="toolbarIconDark">#FFFFFFFF</color>
-
-    <!-- Home -->
-    <color name="homeTitle">#FFFFFF</color>
-    <color name="homeTitleDark">#FFFFFF</color>
-
-    <color name="homeFeatureLine">#EEEEEE</color>
-    <color name="homeFeatureLineDark">#22FFFFFF</color>
-
-    <color name="homeFeatureIcons">#8BC34A</color>
-    <color name="homeFeatureDimensions">#009688</color>
-    <color name="homeFeatureCloudWallpapers">#F44336</color>
-    <color name="homeFeatureMuzei">#3577D7</color>
-    <color name="homeFeatureLaunchers">#FFC107</color>
-    <color name="homeFeaturesIconRequest">#9C27B0</color>
 
     <!-- Tab -->
     <color name="tabIndicator">#FFFFFFFF</color>
@@ -53,26 +45,31 @@
 
     <!-- Card -->
     <color name="cardBackground">#FFFFFF</color>
-    <color name="cardBackgroundDark">#181818</color>
+    <color name="cardBackgroundDark">#222222</color>
 
     <!-- Ripple -->
-    <color name="rippleColor">#55000000</color>
-    <color name="rippleColorDark">#55FFFFFF</color>
-    <color name="rippleAccent">#3323BEA5</color>
-    <color name="rippleAccentDark">#3323BEA5</color>
+    <color name="rippleColor">#4D000000</color>
+    <color name="rippleColorDark">#4DFFFFFF</color>
+    <color name="rippleAccent">#33FE9700</color>
+    <color name="rippleAccentDark">#33FE9700</color>
 
     <!-- Attributes -->
-    <color name="mainBackground">#FAFAFA</color>
-    <color name="mainBackgroundDark">#000000</color>
-    <color name="primaryText">#484848</color>
-    <color name="primaryTextDark">#EEFFFFFF</color>
-    <color name="secondaryText">#777777</color>
-    <color name="secondaryTextDark">#99FFFFFF</color>
-    <color name="dividerList">#EEEEEE</color>
-    <color name="dividerListDark">#22FFFFFF</color>
+    <color name="mainBackground">#EAEAEA</color>
+    <color name="mainBackgroundDark">#181818</color>
+    <color name="primaryText">#D9000000</color>
+    <color name="primaryTextDark">#FFFFFF</color>
+    <color name="secondaryText">#8C000000</color>
+    <color name="secondaryTextDark">#B3FFFFFF</color>
+
+    <color name="dividerList">#18000000</color>
+    <color name="dividerListDark">#18FFFFFF</color>
+
+    <!-- Fast Scroll -->
+    <color name="fastScrollHandle">#757575</color>
+    <color name="fastScrollHandleDark">#B2B2B2</color>
 
     <!-- Popup Bubble -->
-    <color name="popupBubble">#23BEA5</color>
+    <color name="popupBubble">#FE9700</color>
     <color name="popupBubbleText">#FFFFFF</color>
 
     <!-- Wallpaper Preview -->

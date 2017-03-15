@@ -9,8 +9,6 @@
         <item name="android:windowSharedElementExitTransition">@android:transition/move</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="android:windowTranslucentNavigation">@bool/use_translucent_navigation_bar</item>
     </style>
 
     <!-- Base Application Theme -->
@@ -22,8 +20,6 @@
         <item name="android:windowSharedElementExitTransition">@android:transition/move</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="android:windowTranslucentNavigation">@bool/use_translucent_navigation_bar</item>
     </style>
 
     <!-- Splash Screen Theme -->

@@ -3,25 +3,24 @@
 
     <!-- Toolbar -->
     <dimen name="tab_text">16sp</dimen>
-    <dimen name="tab_padding">14dp</dimen>
+
+    <!-- Default Image -->
+    <dimen name="default_image_padding">60dp</dimen>
 
     <!-- Splash Screen -->
     <dimen name="splash_screen_logo">114dp</dimen>
     <dimen name="splash_screen_text">16sp</dimen>
 
-    <!-- Home -->
-    <dimen name="home_image_height">320dp</dimen>
+    <!-- Navigation view width -->
+    <dimen name="navigation_view_width">320dp</dimen>
 
     <!-- Icons -->
     <dimen name="icon_thumbnail_padding">22dp</dimen>
     <dimen name="icon_preview">180dp</dimen>
 
     <!-- About -->
-    <dimen name="about_profile">120dp</dimen>
+    <dimen name="about_profile">140dp</dimen>
     <dimen name="about_profile_border">4dp</dimen>
-    <dimen name="about_profile_margin_top">62dp</dimen>
-    <dimen name="about_profile_margin_bottom">-60dp</dimen>
-    <dimen name="about_profile_margin_right">40dp</dimen>
-    <dimen name="about_image_height">200dp</dimen>
+    <dimen name="about_profile_margin_top">-70dp</dimen>
 
 </resources>

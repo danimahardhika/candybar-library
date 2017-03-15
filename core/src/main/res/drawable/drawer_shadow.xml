@@ -7,6 +7,6 @@
         android:endColor="#00000000"
         android:angle="0" />
     <size
-        android:width="14dp">
+        android:width="16dp">
     </size>
 </shape>

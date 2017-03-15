@@ -3,13 +3,11 @@
     <!-- Base Application Theme -->
     <style name="AppBaseTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar">
         <item name="android:windowAnimationStyle">@null</item>
-        <item name="windowActionModeOverlay">true</item>
     </style>
 
     <!-- Base Application Theme -->
     <style name="AppBaseThemeDark" parent="@style/Theme.AppCompat">
         <item name="android:windowAnimationStyle">@null</item>
-        <item name="windowActionModeOverlay">true</item>
     </style>
 
     <!-- App Theme-->
@@ -17,10 +15,12 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorControlNormal">@color/toolbarIcon</item>
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:windowBackground">@color/mainBackground</item>
         <item name="android:windowNoTitle">true</item>
-        <item name="android:windowContentOverlay">@null</item>
         <item name="android:textColorPrimary">@color/primaryText</item>
         <item name="android:textColorSecondary">@color/secondaryText</item>
         <item name="android:listDivider">@color/dividerList</item>
@@ -31,12 +31,9 @@
         <item name="main_background">@color/mainBackground</item>
         <item name="toolbar_icon">@color/toolbarIcon</item>
         <item name="toolbar_accent">@color/colorAccent</item>
-        <item name="divider_list">@color/dividerList</item>
-        <item name="home_feature_line">@color/homeFeatureLine</item>
         <item name="tab_indicator">@color/tabIndicator</item>
         <item name="tab_text">@color/tabText</item>
         <item name="tab_text_selected">@color/tabTextSelected</item>
-        <item name="home_title">@color/homeTitle</item>
 
         <item name="md_positive_color">@color/colorAccent</item>
         <item name="md_neutral_color">@color/primaryText</item>
@@ -52,8 +49,10 @@
         <item name="colorPrimary">@color/darkColorPrimary</item>
         <item name="colorPrimaryDark">@color/darkColorPrimaryDark</item>
         <item name="colorAccent">@color/darkColorAccent</item>
+        <item name="colorControlNormal">@color/toolbarIconDark</item>
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
+        <item name="android:windowBackground">@color/mainBackgroundDark</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:textColorPrimary">@color/primaryTextDark</item>
@@ -66,12 +65,9 @@
         <item name="ripple_accent">@color/rippleAccentDark</item>
         <item name="toolbar_icon">@color/toolbarIconDark</item>
         <item name="toolbar_accent">@color/darkColorAccent</item>
-        <item name="divider_list">@color/dividerListDark</item>
-        <item name="home_feature_line">@color/homeFeatureLineDark</item>
         <item name="tab_indicator">@color/tabIndicatorDark</item>
         <item name="tab_text">@color/tabTextDark</item>
         <item name="tab_text_selected">@color/tabTextSelectedDark</item>
-        <item name="home_title">@color/homeTitleDark</item>
 
         <item name="md_background_color">@color/cardBackgroundDark</item>
         <item name="md_positive_color">@color/darkColorAccent</item>
@@ -123,12 +119,8 @@
     </style>
 
     <style name="CheckBoxStyle">
+        <item name="colorControlNormal">?android:attr/textColorSecondary</item>
         <item name="colorControlActivated">?attr/colorAccent</item>
-    </style>
-
-    <style name="ToolbarStyle" parent="@style/Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorAccent">?attr/toolbar_accent</item>
-        <item name="colorControlNormal">?attr/toolbar_icon</item>
     </style>
 
 </resources>

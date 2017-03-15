@@ -28,10 +28,7 @@
         android:id="@+id/fastscroll"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="end"
-        app:rfs_barColor="?android:attr/textColorSecondary"
-        app:rfs_handleNormalColor="?android:attr/textColorSecondary"
-        app:rfs_handlePressedColor="?attr/colorAccent"/>
+        android:layout_gravity="end" />
 
     <ProgressBar
         android:id="@+id/progress"

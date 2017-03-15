@@ -51,8 +51,7 @@
        	<item>The problem might come from the launcher that you used when handling big resolution.
        	    You can fix it by increasing icon size to 115 - 120%.
        	    Alternatively you might change your launcher.</item>
-       	<item>Press options menu (on top right corner or use hardware button on your phone),
-       	    then choose \"Report Bugs\".</item>
+       	<item>Open settings, scroll down, then choose \"Report Bugs\".</item>
         <item>\"Report Bugs\" is used to report bugs related to the icon pack, not the dashboard.</item>
       	<item>Not every launcher supports direct apply, and some of them can\'t be accessed directly from this dashboard.
       	    You can apply this icon pack manually from the individual launcher settings.</item>

@@ -6,7 +6,7 @@
     <dimen name="card_margin_top">4dp</dimen>
     <dimen name="card_margin_bottom">4dp</dimen>
     <dimen name="card_padding_bottom">4dp</dimen>
-    <dimen name="card_elevation">2dp</dimen>
+
     <dimen name="card_corner_radius">2dp</dimen>
 
     <!-- FAB -->

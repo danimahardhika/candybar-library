@@ -34,10 +34,6 @@
     <!-- Home title must be defined -->
     <string name="home_title">CandyBar</string>
 
-    <!-- Home subtitle is optional
-    * Leave empty if you don't want to show any text -->
-    <string name="home_subtitle">Material Dashboard</string>
-
     <!-- Home image
     * If you want to use image from url, just put the url here
     * If you want to use image stored in project (drawable folder)
@@ -45,7 +41,8 @@
     *
     * If you want to use solid color, you can put hex color code here
     * ex: <string name="navigation_view_header">#000000</string> -->
-    <string name="home_image">https://drive.google.com/uc?id=0B0f4ypHfNKm5VHVjbXZNSS1TUUU</string>
+
+    <string name="home_image">https://drive.google.com/uc?id=0B0f4ypHfNKm5bVo5aHFOLVZpNlE</string>
 
     <!-- Home description
     - If you don't want to show description, just leave this empty -->
@@ -70,18 +67,11 @@
     *
     * If you want to use solid color, you can put hex color code here
     * ex: <string name="navigation_view_header">#000000</string> -->
-    <string name="navigation_view_header">https://drive.google.com/uc?id=0B0f4ypHfNKm5VHVjbXZNSS1TUUU</string>
-
-    <!-- Navigation view header height
-    * default: 200dp -->
-    <dimen name="navigation_view_header_height">200dp</dimen>
+    <string name="navigation_view_header">https://drive.google.com/uc?id=0B0f4ypHfNKm5VXlwejdaZ3ZRYVE</string>
 
     <!-- Navigation view header text
     * Leave empty if you don't want to show any text -->
     <string name="navigation_view_header_title">CandyBar</string>
-
-    <!-- Navigation view width -->
-    <dimen name="navigation_view_width">300dp</dimen>
 
     <!-- CONFIG: ICONS -->
 
@@ -130,7 +120,7 @@
     <!-- Enable or disable premium request
     * default: false
     * change to true to enable it -->
-    <bool name="enable_premium_request">false</bool>
+    <bool name="enable_premium_request">true</bool>
 
     <!-- Take a look inside License.java for premium request product -->
 
@@ -148,7 +138,7 @@
     * just put your wallpaper app package name here
     * example: com.dm.wallpaper.board.demo
     * <string name="wallpaper_json">com.dm.wallpaper.board.demo</string> -->
-    <string name="wallpaper_json">https://drive.google.com/uc?id=0B0f4ypHfNKm5TmRMSnhpb2JSalE</string>
+    <string name="wallpaper_json">https://drive.google.com/uc?id=0B0f4ypHfNKm5YXFvQ201ZmJjMGM</string>
 
     <!-- Allow to download wallpaper
     * If disabled user only able to apply wallpaper from dashboard -->
@@ -180,7 +170,7 @@
     *
     * If you want to use solid color, you can put hex color code here
     * ex: <string name="navigation_view_header">#000000</string> -->
-    <string name="about_image">https://drive.google.com/uc?id=0B0f4ypHfNKm5VHVjbXZNSS1TUUU</string>
+    <string name="about_image">https://drive.google.com/uc?id=0B0f4ypHfNKm5WV9JOG9Fb2h2Qms</string>
 
     <!-- About profile image
     * If you want to use image from url, just put the url here
@@ -189,7 +179,7 @@
     <string name="about_profile_image">https://lh3.googleusercontent.com/-KBI2HdgNtN0/AAAAAAAAAAI/AAAAAAAABpc/icnuAgrjOT4/s256-p-rw-no/photo.jpg</string>
 
     <!-- About title above description -->
-    <string name="about_title">CandyBar \nMaterial Dashboard</string>
+    <string name="about_title">CandyBar Material Dashboard</string>
 
     <!-- About description below title -->
     <string name="about_desc"><![CDATA[
@@ -234,7 +224,7 @@
     * Show support development option in navigation view
     * default: true
     * change to false to disable it -->
-    <bool name="enable_donation">false</bool>
+    <bool name="enable_donation">true</bool>
 
     <!-- Take a look inside License.java for donation product -->
 

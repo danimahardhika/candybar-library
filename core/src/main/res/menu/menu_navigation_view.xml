@@ -51,14 +51,5 @@
             android:icon="@drawable/ic_drawer_about"
             android:title="@string/navigation_view_about"/>
 
-        <item
-            android:id="@+id/navigation_view_donate"
-            android:icon="@drawable/ic_drawer_donate"
-            android:title="@string/navigation_view_donate"/>
-
-        <item
-            android:id="@+id/padding"
-            android:title=""/>
-
     </group>
 </menu>
