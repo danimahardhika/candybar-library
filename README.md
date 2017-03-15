@@ -35,25 +35,25 @@ dependencies {
 Take a look inside <a href="https://github.com/danimahardhika/candybar-library/wiki" target="_blank">Wiki Site</a>.
 
 # Previews
-<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/home.jpg" width="215"> <img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/navigation_drawer.jpg" width="215"> <img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/changelog.jpg" width="215"> <img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/icon_request.jpg" width="215">
-<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/cloud_wallpapers.jpg" width="215"> <img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/wallpaper_preview.jpg" width="215"> <img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/icons.jpg" width="215"> <img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/settings.jpg" width="215">
+<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/home.jpg" width="215"/> <img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/navigation_drawer.jpg" width="215"/> <img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/changelog.jpg" width="215"/> <img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/icon_request.jpg" width="215"/>
+<img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/cloud_wallpapers.jpg" width="215"/> <img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/wallpaper_preview.jpg" width="215"/> <img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/icons.jpg" width="215"/> <img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/settings.jpg" width="215"/>
 
 # Features
 * License Checker
 * Apply: 27 launchers
- * [List of Supported Launchers](https://github.com/danimahardhika/candybar-library/wiki/List-of-Supported-Launcher)
+  * [List of Supported Launchers](https://github.com/danimahardhika/candybar-library/wiki/List-of-Supported-Launcher)
 * Icon Picker: see all icons included with sections and search
 * Icon Request
- * Regular Request: free to request
- * Premium Request: pay to request
+  * Regular Request: free to request
+  * Premium Request: pay to request
 * Cloud Based Wallpaper
- * Preview wallpaper
- * Apply wallpaper: inbuilt wallpaper crop
- * Download wallpaper
+  * Preview wallpaper
+  * Apply wallpaper: inbuilt wallpaper crop
+  * Download wallpaper
 * Settings
- * Clear Cache
- * Swith to Dark Theme
- * Restore Purchases: restore premium request after reinstalling
+  * Clear Cache
+  * Swith to Dark Theme
+  * Restore Purchases: restore premium request after reinstalling
 * Frequently Asked Questions: with search
 * About
 * Donation
