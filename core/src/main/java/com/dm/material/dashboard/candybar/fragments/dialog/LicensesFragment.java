@@ -15,7 +15,7 @@ import android.webkit.WebView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.dm.material.dashboard.candybar.R;
-import com.dm.material.dashboard.candybar.utils.Tag;
+import com.dm.material.dashboard.candybar.utils.LogUtil;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -118,7 +118,7 @@ public class LicensesFragment extends DialogFragment {
                         bufferedReader.close();
                         return true;
                     } catch (Exception e) {
-                        Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+                        LogUtil.e(Log.getStackTraceString(e));
                         return false;
                     }
                 }
@@ -138,7 +138,6 @@ public class LicensesFragment extends DialogFragment {
 
         }.execute();
     }
-
 }
 
 

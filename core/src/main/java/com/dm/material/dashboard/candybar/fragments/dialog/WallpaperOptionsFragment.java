@@ -141,7 +141,6 @@ public class WallpaperOptionsFragment extends DialogFragment implements View.OnC
                             .autoDismiss(false)
                             .swipeToDismiss(false)
                             .floating(true)
-                            .fitSystemWindow(R.bool.use_translucent_navigation_bar)
                             .maxLines(4)
                             .content(String.format(getResources().getString(R.string.wallpaper_download_exist),
                                     ("\"" +mName + FileHelper.IMAGE_EXTENSION+ "\"")))

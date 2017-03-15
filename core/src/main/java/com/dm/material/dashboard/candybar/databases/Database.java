@@ -12,7 +12,7 @@ import com.dm.material.dashboard.candybar.helpers.TimeHelper;
 import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.items.Wallpaper;
 import com.dm.material.dashboard.candybar.items.WallpaperJSON;
-import com.dm.material.dashboard.candybar.utils.Tag;
+import com.dm.material.dashboard.candybar.utils.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -160,7 +160,7 @@ public class Database extends SQLiteOpenHelper {
 
             db.insert(TABLE_REQUEST, null, values);
         } catch (Exception e) {
-            Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+            LogUtil.e(Log.getStackTraceString(e));
         }
     }
 
@@ -191,7 +191,7 @@ public class Database extends SQLiteOpenHelper {
             }
             cursor.close();
         } catch (Exception e) {
-            Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+            LogUtil.e(Log.getStackTraceString(e));
         }
         return requests;
     }
@@ -221,7 +221,7 @@ public class Database extends SQLiteOpenHelper {
 
             db.insert(TABLE_PREMIUM_REQUEST, null, values);
         } catch (Exception e) {
-            Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+            LogUtil.e(Log.getStackTraceString(e));
         }
     }
 
@@ -263,7 +263,7 @@ public class Database extends SQLiteOpenHelper {
             }
             cursor.close();
         } catch (Exception e) {
-            Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+            LogUtil.e(Log.getStackTraceString(e));
         }
         return requests;
     }

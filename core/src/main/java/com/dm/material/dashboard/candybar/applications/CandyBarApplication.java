@@ -7,6 +7,7 @@ import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.activities.CandyBarCrashReport;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
+import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.text.SimpleDateFormat;
@@ -46,6 +47,9 @@ public class CandyBarApplication extends Application {
                 .setDefaultFontPath("fonts/Font-Regular.ttf")
                 .setFontAttrId(R.attr.fontPath)
                 .build());
+
+        //Enable or disable logging
+        LogUtil.setLoggingEnabled(true);
 
         mHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(this::handleUncaughtException);

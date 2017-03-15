@@ -1,38 +1,33 @@
 package com.dm.material.dashboard.candybar.fragments;
 
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.AppCompatCheckBox;
-import android.support.v7.widget.CardView;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.dm.material.dashboard.candybar.R;
-import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
+import com.dm.material.dashboard.candybar.adapters.SettingsAdapter;
 import com.dm.material.dashboard.candybar.databases.Database;
 import com.dm.material.dashboard.candybar.fragments.dialog.IntentChooserFragment;
 import com.dm.material.dashboard.candybar.helpers.DeviceHelper;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.helpers.FileHelper;
 import com.dm.material.dashboard.candybar.helpers.RequestHelper;
-import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
 import com.dm.material.dashboard.candybar.items.Request;
+import com.dm.material.dashboard.candybar.items.Setting;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
-import com.dm.material.dashboard.candybar.utils.Tag;
-import com.dm.material.dashboard.candybar.utils.listeners.InAppBillingListener;
+import com.dm.material.dashboard.candybar.utils.LogUtil;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -62,136 +57,27 @@ import java.util.List;
  * limitations under the License.
  */
 
-public class SettingsFragment extends Fragment implements View.OnClickListener {
+public class SettingsFragment extends Fragment {
 
-    private NestedScrollView mScrollView;
-    private LinearLayout mClearCache;
-    private TextView mCacheSize;
-    private LinearLayout mIconRequestClear;
-    private LinearLayout mRestorePurchases;
-    private LinearLayout mRebuildRequest;
-    private LinearLayout mDarkTheme;
-    private AppCompatCheckBox mDarkThemeCheck;
-    private TextView mWallsDirectory;
-    private CardView mPrefPremiumRequest;
-    private CardView mPrefWallpaper;
-    private View mDivider;
-
-    private File mCache;
+    private RecyclerView mRecyclerView;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
-        mScrollView = (NestedScrollView) view.findViewById(R.id.scrollview);
-        mClearCache = (LinearLayout) view.findViewById(R.id.pref_cache_clear);
-        mCacheSize = (TextView) view.findViewById(R.id.pref_cache_size);
-        mIconRequestClear = (LinearLayout) view.findViewById(R.id.pref_request_clear);
-        mRestorePurchases = (LinearLayout) view.findViewById(R.id.pref_restore_purchases);
-        mRebuildRequest = (LinearLayout) view.findViewById(R.id.pref_rebuild_premium_request);
-        mWallsDirectory = (TextView) view.findViewById(R.id.pref_walls_directory);
-        mDarkTheme = (LinearLayout) view.findViewById(R.id.pref_dark_theme);
-        mDarkThemeCheck = (AppCompatCheckBox) view.findViewById(R.id.pref_dark_theme_check);
-        mPrefPremiumRequest = (CardView) view.findViewById(R.id.pref_premium_request);
-        mPrefWallpaper = (CardView) view.findViewById(R.id.pref_wallpaper);
-        mDivider = view.findViewById(R.id.pref_request_clear_divider);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ViewCompat.setNestedScrollingEnabled(mScrollView, false);
-        ViewHelper.resetNavigationBarBottomPadding(getActivity(), mScrollView,
-                getActivity().getResources().getConfiguration().orientation);
+
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         initSettings();
-        mClearCache.setOnClickListener(this);
-        mDarkTheme.setOnClickListener(this);
-
-        if (getActivity().getResources().getBoolean(R.bool.enable_icon_request) &&
-                !getActivity().getResources().getBoolean(R.bool.enable_icon_request_limit)) {
-            mDivider.setVisibility(View.VISIBLE);
-            mIconRequestClear.setVisibility(View.VISIBLE);
-            mIconRequestClear.setOnClickListener(this);
-        }
-
-        if (Preferences.getPreferences(getActivity()).isPremiumRequestEnabled()) {
-            mPrefPremiumRequest.setVisibility(View.VISIBLE);
-            mRestorePurchases.setOnClickListener(this);
-            mRebuildRequest.setOnClickListener(this);
-        }
-
-        if (WallpaperHelper.getWallpaperType(getActivity()) == WallpaperHelper.CLOUD_WALLPAPERS) {
-            if (Preferences.getPreferences(getActivity()).getWallsDirectory().length() > 0) {
-                String directory = Preferences.getPreferences(
-                        getActivity()).getWallsDirectory() + File.separator;
-                mWallsDirectory.setText(directory);
-            }
-
-            mPrefWallpaper.setVisibility(View.VISIBLE);
-        }
-
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        ViewHelper.resetNavigationBarBottomPadding(getActivity(),
-                mScrollView, newConfig.orientation);
-    }
-
-    @Override
-    public void onClick(View view) {
-        int id = view.getId();
-        if (id == R.id.pref_cache_clear) {
-            new MaterialDialog.Builder(getActivity())
-                    .title(R.string.pref_data_cache)
-                    .content(R.string.pref_data_cache_clear_dialog)
-                    .positiveText(R.string.clear)
-                    .negativeText(android.R.string.cancel)
-                    .onPositive((dialog, which) -> {
-                        try {
-                            clearCache(mCache);
-                            initSettings();
-
-                            Toast.makeText(getActivity(), getActivity()
-                                            .getResources().getString(
-                                            R.string.pref_data_cache_cleared),
-                                    Toast.LENGTH_LONG).show();
-                        } catch (Exception e) {
-                            Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
-                        }
-                    })
-                    .show();
-        } else if (id == R.id.pref_request_clear) {
-            new MaterialDialog.Builder(getActivity())
-                    .title(R.string.pref_data_request)
-                    .content(R.string.pref_data_request_clear_dialog)
-                    .positiveText(R.string.clear)
-                    .negativeText(android.R.string.cancel)
-                    .onPositive((dialog, which) -> {
-                        Database database = new Database(getActivity());
-                        database.deleteIconRequestData();
-                        CandyBarMainActivity.sMissingApps = null;
-
-                        Toast.makeText(getActivity(), R.string.pref_data_request_cleared,
-                                Toast.LENGTH_LONG).show();
-                    })
-                    .show();
-        } else if (id == R.id.pref_restore_purchases) {
-            try {
-                InAppBillingListener listener = (InAppBillingListener) getActivity();
-                listener.OnRestorePurchases();
-            } catch (Exception ignored) {}
-        } else if (id == R.id.pref_rebuild_premium_request) {
-            rebuildPremiumRequest();
-        } else if (id == R.id.pref_dark_theme) {
-            Preferences.getPreferences(getActivity()).setDarkTheme(!mDarkThemeCheck.isChecked());
-            mDarkThemeCheck.setChecked(!mDarkThemeCheck.isChecked());
-            getActivity().recreate();
-        }
     }
 
     public void restorePurchases(List<String> productsId, String[]premiumRequestProductsId,
@@ -209,6 +95,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                     Preferences.getPreferences(getActivity()).setPremiumRequestProductId(productId);
                     Preferences.getPreferences(getActivity()).setPremiumRequestCount(
                             premiumRequestProductsCount[index]);
+                    Preferences.getPreferences(getActivity()).setPremiumRequestTotal(
+                            premiumRequestProductsCount[index]);
                     Preferences.getPreferences(getActivity()).setPremiumRequest(true);
                 }
             }
@@ -220,42 +108,87 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initSettings() {
-        mCache = new File(getActivity().getCacheDir().toString());
+        List<Setting> settings = new ArrayList<>();
 
-        double cache = (double) cacheSize(mCache)/1024/1024;
+        double cache = (double) FileHelper.getCacheSize(getActivity().getCacheDir()) / FileHelper.MB;
         NumberFormat formatter = new DecimalFormat("#0.00");
-        String cacheSize = getActivity().getResources().getString(
-                R.string.pref_data_cache_size)
-                +" "+ (formatter.format(cache)) + " MB";
 
-        mCacheSize.setText(cacheSize);
-        mDarkThemeCheck.setChecked(Preferences.getPreferences(getActivity()).isDarkTheme());
-    }
+        settings.add(new Setting(R.drawable.ic_toolbar_storage,
+                getActivity().getResources().getString(R.string.pref_data_header),
+                "", "", "", Setting.Type.HEADER, -1));
 
-    private void clearCache(File fileOrDirectory) {
-        if (fileOrDirectory.isDirectory())
-            for (File child : fileOrDirectory.listFiles())
-                clearCache(child);
-        fileOrDirectory.delete();
-    }
+        settings.add(new Setting(-1, "",
+                getActivity().getResources().getString(R.string.pref_data_cache),
+                getActivity().getResources().getString(R.string.pref_data_cache_desc),
+                String.format(getActivity().getResources().getString(R.string.pref_data_cache_size),
+                        formatter.format(cache) + " MB"),
+                Setting.Type.CACHE, -1));
 
-    private long cacheSize(File dir) {
-        if (dir.exists()) {
-            long result = 0;
-            File[] fileList = dir.listFiles();
-            for (File aFileList : fileList) {
-                if (aFileList.isDirectory()) {
-                    result += cacheSize(aFileList);
-                } else {
-                    result += aFileList.length();
-                }
-            }
-            return result;
+        if (getActivity().getResources().getBoolean(R.bool.enable_icon_request) ||
+                Preferences.getPreferences(getActivity()).isPremiumRequestEnabled() &&
+                        !getActivity().getResources().getBoolean(R.bool.enable_icon_request_limit)) {
+            settings.add(new Setting(-1, "",
+                    getActivity().getResources().getString(R.string.pref_data_request),
+                    getActivity().getResources().getString(R.string.pref_data_request_desc),
+                    "", Setting.Type.ICON_REQUEST, -1));
         }
-        return 0;
+
+        if (Preferences.getPreferences(getActivity()).isPremiumRequestEnabled()) {
+            settings.add(new Setting(R.drawable.ic_toolbar_premium_request,
+                    getActivity().getResources().getString(R.string.pref_premium_request_header),
+                    "", "", "", Setting.Type.HEADER, -1));
+
+            settings.add(new Setting(-1, "",
+                    getActivity().getResources().getString(R.string.pref_premium_request_restore),
+                    getActivity().getResources().getString(R.string.pref_premium_request_restore_desc),
+                    "", Setting.Type.RESTORE, -1));
+
+            settings.add(new Setting(-1, "",
+                    getActivity().getResources().getString(R.string.pref_premium_request_rebuild),
+                    getActivity().getResources().getString(R.string.pref_premium_request_rebuild_desc),
+                    "", Setting.Type.PREMIUM_REQUEST, -1));
+        }
+
+        settings.add(new Setting(R.drawable.ic_toolbar_theme,
+                getActivity().getResources().getString(R.string.pref_theme_header),
+                "", "", "", Setting.Type.HEADER, -1));
+
+        settings.add(new Setting(-1, "",
+                getActivity().getResources().getString(R.string.pref_theme_dark),
+                getActivity().getResources().getString(R.string.pref_theme_dark_desc),
+                "", Setting.Type.THEME, Preferences.getPreferences(getActivity()).isDarkTheme() ? 1 : 0));
+
+        if (WallpaperHelper.getWallpaperType(getActivity()) == WallpaperHelper.CLOUD_WALLPAPERS) {
+            settings.add(new Setting(R.drawable.ic_toolbar_wallpapers,
+                    getActivity().getResources().getString(R.string.pref_wallpaper_header),
+                    "", "", "", Setting.Type.HEADER, -1));
+
+            String directory = getActivity().getResources().getString(R.string.pref_wallpaper_location_desc);
+            if (Preferences.getPreferences(getActivity()).getWallsDirectory().length() > 0) {
+                directory = Preferences.getPreferences(getActivity()).getWallsDirectory() + File.separator;
+            }
+
+            settings.add(new Setting(-1, "",
+                    getActivity().getResources().getString(R.string.pref_wallpaper_location),
+                    directory, "", Setting.Type.WALLPAPER, -1));
+        }
+
+        settings.add(new Setting(R.drawable.ic_toolbar_others,
+                getActivity().getResources().getString(R.string.pref_others_header),
+                "", "", "", Setting.Type.HEADER, -1));
+
+        settings.add(new Setting(-1, "",
+                getActivity().getResources().getString(R.string.pref_others_report_bugs),
+                "", "", Setting.Type.REPORT_BUGS, -1));
+
+        settings.add(new Setting(-1, "",
+                getActivity().getResources().getString(R.string.pref_others_report_changelog),
+                "", "", Setting.Type.CHANGELOG, -1));
+
+        mRecyclerView.setAdapter(new SettingsAdapter(getActivity(), settings));
     }
 
-    private void rebuildPremiumRequest() {
+    public void rebuildPremiumRequest() {
         new AsyncTask<Void, Void, Boolean>() {
 
             MaterialDialog dialog;
@@ -332,7 +265,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                         return true;
                     } catch (Exception e) {
                         log = e.toString();
-                        Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+                        LogUtil.e(Log.getStackTraceString(e));
                         return false;
                     }
                 }

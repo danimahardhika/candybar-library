@@ -32,7 +32,7 @@ import com.dm.material.dashboard.candybar.items.Wallpaper;
 import com.dm.material.dashboard.candybar.items.WallpaperJSON;
 import com.dm.material.dashboard.candybar.utils.Animator;
 import com.dm.material.dashboard.candybar.utils.ListUtils;
-import com.dm.material.dashboard.candybar.utils.Tag;
+import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.dm.material.dashboard.candybar.utils.listeners.WallpapersListener;
 import com.pluscubed.recyclerfastscroll.RecyclerFastScroller;
 import com.rafakob.drawme.DrawMeButton;
@@ -63,7 +63,7 @@ import java.util.List;
 
 public class WallpapersFragment extends Fragment implements View.OnClickListener {
 
-    private RecyclerView mWallpapersGrid;
+    private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipe;
     private ProgressBar mProgress;
     private RecyclerFastScroller mFastScroll;
@@ -76,7 +76,7 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_wallpapers, container, false);
-        mWallpapersGrid = (RecyclerView) view.findViewById(R.id.wallpapers_grid);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.wallpapers_grid);
         mSwipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe);
         mProgress = (ProgressBar) view.findViewById(R.id.progress);
         mFastScroll = (RecyclerFastScroller) view.findViewById(R.id.fastscroll);
@@ -86,9 +86,7 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ViewCompat.setNestedScrollingEnabled(mWallpapersGrid, false);
-        ViewHelper.resetNavigationBarBottomPadding(getActivity(), mWallpapersGrid,
-                getActivity().getResources().getConfiguration().orientation);
+        ViewCompat.setNestedScrollingEnabled(mRecyclerView, false);
 
         mProgress.getIndeterminateDrawable().setColorFilter(
                 ColorHelper.getAttributeColor(getActivity(), R.attr.colorAccent),
@@ -96,11 +94,13 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
         mSwipe.setColorSchemeColors(
                 ContextCompat.getColor(getActivity(), R.color.swipeRefresh));
 
-        mWallpapersGrid.setItemAnimator(new DefaultItemAnimator());
-        mWallpapersGrid.setHasFixedSize(false);
-        mWallpapersGrid.setLayoutManager(new GridLayoutManager(getActivity(),
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setHasFixedSize(false);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),
                 getActivity().getResources().getInteger(R.integer.wallpapers_column_count)));
-        mFastScroll.attachRecyclerView(mWallpapersGrid);
+
+        ViewHelper.setFastScrollColor(mFastScroll);
+        mFastScroll.attachRecyclerView(mRecyclerView);
 
         mSwipe.setOnRefreshListener(() -> {
             if (mProgress.getVisibility() == View.GONE)
@@ -114,8 +114,7 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        ViewHelper.resetSpanCount(getActivity(), mWallpapersGrid, R.integer.wallpapers_column_count);
-        ViewHelper.resetNavigationBarBottomPadding(getActivity(), mWallpapersGrid, newConfig.orientation);
+        ViewHelper.resetSpanCount(getActivity(), mRecyclerView, R.integer.wallpapers_column_count);
     }
 
     @Override
@@ -221,7 +220,7 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
                             return true;
                         }
                     } catch (Exception e) {
-                        Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+                        LogUtil.e(Log.getStackTraceString(e));
                         return false;
                     }
                 }
@@ -234,7 +233,7 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
                 if (!refreshing) mProgress.setVisibility(View.GONE);
                 else mSwipe.setRefreshing(false);
                 if (aBoolean) {
-                    mWallpapersGrid.setAdapter(new WallpapersAdapter(getActivity(), wallpapers));
+                    mRecyclerView.setAdapter(new WallpapersAdapter(getActivity(), wallpapers));
 
                     WallpapersListener listener = (WallpapersListener) getActivity();
                     listener.OnWallpapersChecked(new Intent().putExtra("size",
@@ -250,5 +249,4 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
 
         }.execute();
     }
-
 }

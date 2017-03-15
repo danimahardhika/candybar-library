@@ -5,15 +5,21 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.dm.material.dashboard.candybar.R;
+import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
 import com.dm.material.dashboard.candybar.databases.Database;
 import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
-import com.dm.material.dashboard.candybar.utils.Tag;
+import com.dm.material.dashboard.candybar.utils.LogUtil;
+import com.dm.material.dashboard.candybar.utils.listeners.HomeListener;
 import com.dm.material.dashboard.candybar.utils.listeners.RequestListener;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -59,7 +65,7 @@ public class RequestHelper {
             }
             return sb.toString();
         } catch (Exception e) {
-            Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+            LogUtil.e(Log.getStackTraceString(e));
         }
         return "";
     }
@@ -75,6 +81,7 @@ public class RequestHelper {
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
         List<ResolveInfo> installedApps = packageManager.queryIntentActivities(
                 intent, PackageManager.GET_RESOLVED_FILTER);
+        CandyBarMainActivity.sInstalledAppsCount = installedApps.size();
 
         try {
             Collections.sort(installedApps,
@@ -100,6 +107,47 @@ public class RequestHelper {
             }
         }
         return requests;
+    }
+
+    public static void prepareIconRequest(@NonNull Context context) {
+        new AsyncTask<Void, Void, Boolean>() {
+
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+                while (!isCancelled()) {
+                    try {
+                        Thread.sleep(1);
+                        if (context.getResources().getBoolean(R.bool.enable_icon_request) ||
+                                context.getResources().getBoolean(R.bool.enable_premium_request)) {
+                            CandyBarMainActivity.sMissedApps = RequestHelper
+                                    .loadMissingApps(context);
+                        }
+                        return true;
+                    } catch (Exception e) {
+                        LogUtil.e(Log.getStackTraceString(e));
+                        return false;
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean aBoolean) {
+                super.onPostExecute(aBoolean);
+                if (aBoolean) {
+                    if (context == null) return;
+
+                    FragmentManager fm = ((AppCompatActivity) context).getSupportFragmentManager();
+                    if (fm == null) return;
+
+                    Fragment fragment = fm.findFragmentByTag("home");
+                    if (fragment == null) return;
+
+                    HomeListener listener = (HomeListener) fragment;
+                    listener.OnHomeDataUpdated(null);
+                }
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public static String writeRequest(@NonNull Request request) {

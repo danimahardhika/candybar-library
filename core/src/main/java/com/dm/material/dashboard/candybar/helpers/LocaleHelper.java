@@ -9,7 +9,7 @@ import android.os.Build;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.dm.material.dashboard.candybar.utils.Tag;
+import com.dm.material.dashboard.candybar.utils.LogUtil;
 
 import java.util.Locale;
 
@@ -52,7 +52,7 @@ class LocaleHelper {
             res.updateConfiguration(configuration, context.getResources().getDisplayMetrics());
             return res.getString(info.labelRes);
         } catch (Exception e) {
-            Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+            LogUtil.e(Log.getStackTraceString(e));
         }
         return null;
     }

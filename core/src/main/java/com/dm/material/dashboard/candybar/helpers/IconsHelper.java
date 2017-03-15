@@ -5,19 +5,24 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.XmlResourceParser;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
 import com.dm.material.dashboard.candybar.fragments.dialog.IconPreviewFragment;
+import com.dm.material.dashboard.candybar.items.Home;
 import com.dm.material.dashboard.candybar.items.Icon;
 import com.dm.material.dashboard.candybar.utils.AlphanumComparator;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
-import com.dm.material.dashboard.candybar.utils.Tag;
+import com.dm.material.dashboard.candybar.utils.LogUtil;
+import com.dm.material.dashboard.candybar.utils.listeners.HomeListener;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -27,6 +32,7 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 /*
  * CandyBar - Material Dashboard
@@ -86,12 +92,22 @@ public class IconsHelper {
     public static void prepareIconsList(@NonNull Context context) {
         new AsyncTask<Void, Void, Boolean>() {
 
+            Home home = null;
+
             @Override
             protected Boolean doInBackground(Void... voids) {
                 while (!isCancelled()) {
                     try {
                         Thread.sleep(1);
-                        if (CandyBarMainActivity.sSections == null) return false;
+                        if (CandyBarMainActivity.sSections == null) {
+                            CandyBarMainActivity.sSections = IconsHelper.getIconsList(context);
+
+                            int count = 0;
+                            for (Icon section : CandyBarMainActivity.sSections) {
+                                count += section.getIcons().size();
+                            }
+                            CandyBarMainActivity.sIconsCount = count;
+                        }
 
                         for (int i = 0; i < CandyBarMainActivity.sSections.size(); i++) {
                             List<Icon> icons = CandyBarMainActivity.sSections.get(i).getIcons();
@@ -118,13 +134,53 @@ public class IconsHelper {
                                 CandyBarMainActivity.sSections.get(i).setIcons(icons);
                             }
                         }
+
+                        if (CandyBarMainActivity.sHomeIcon != null) return true;
+
+                        Random random = new Random();
+                        int index = random.nextInt(CandyBarMainActivity.sSections.size());
+                        List<Icon> icons = CandyBarMainActivity.sSections.get(index).getIcons();
+                        index = random.nextInt(icons.size());
+                        Icon icon = icons.get(index);
+
+                        BitmapFactory.Options options = new BitmapFactory.Options();
+                        options.inJustDecodeBounds = true;
+                        BitmapFactory.decodeResource(context.getResources(),
+                                icon.getRes(), options);
+
+                        home = new Home(
+                                icon.getRes(),
+                                icon.getTitle(),
+                                String.format(context.getResources().getString(R.string.home_icon_dimension),
+                                        options.outWidth +" x "+ options.outHeight),
+                                Home.Type.DIMENSION);
+                        CandyBarMainActivity.sHomeIcon = home;
                         return true;
                     } catch (Exception e) {
-                        Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+                        LogUtil.e(Log.getStackTraceString(e));
                         return false;
                     }
                 }
                 return false;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean aBoolean) {
+                super.onPostExecute(aBoolean);
+                if (aBoolean) {
+                    if (home == null) return;
+
+                    if (context == null) return;
+
+                    FragmentManager fm = ((AppCompatActivity) context).getSupportFragmentManager();
+                    if (fm == null) return;
+
+                    Fragment fragment = fm.findFragmentByTag("home");
+                    if (fragment == null) return;
+
+                    HomeListener listener = (HomeListener) fragment;
+                    listener.OnHomeDataUpdated(home);
+                }
             }
         }.execute();
     }
@@ -173,7 +229,7 @@ public class IconsHelper {
                     intent.setData(uri);
                     intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 } catch (Exception | OutOfMemoryError e) {
-                    Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+                    LogUtil.e(Log.getStackTraceString(e));
                 }
                 intent.putExtra("return-data", false);
             }

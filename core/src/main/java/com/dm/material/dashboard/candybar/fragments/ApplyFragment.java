@@ -8,7 +8,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,10 +18,9 @@ import android.view.ViewGroup;
 
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.LauncherAdapter;
-import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.items.Icon;
 import com.dm.material.dashboard.candybar.utils.AlphanumComparator;
-import com.dm.material.dashboard.candybar.utils.Tag;
+import com.dm.material.dashboard.candybar.utils.LogUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -64,12 +62,7 @@ public class ApplyFragment extends Fragment{
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ViewCompat.setNestedScrollingEnabled(mRecyclerView, false);
-        ViewHelper.resetNavigationBarBottomPadding(getActivity(), mRecyclerView,
-                getActivity().getResources().getConfiguration().orientation);
 
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setNestedScrollingEnabled(false);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),
                 getActivity().getResources().getInteger(R.integer.apply_column_count)));
@@ -80,7 +73,6 @@ public class ApplyFragment extends Fragment{
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        ViewHelper.resetNavigationBarBottomPadding(getActivity(), mRecyclerView, newConfig.orientation);
         resetSpanSizeLookUp();
     }
 
@@ -209,7 +201,7 @@ public class ApplyFragment extends Fragment{
                         launcherIcons.recycle();
                         return true;
                     } catch (Exception e) {
-                        Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+                        LogUtil.e(Log.getStackTraceString(e));
                         return false;
                     }
                 }
@@ -225,6 +217,6 @@ public class ApplyFragment extends Fragment{
                 }
                 mGetLaunchers = null;
             }
-        }.execute();
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 }

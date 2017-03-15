@@ -1,14 +1,11 @@
 package com.dm.material.dashboard.candybar.fragments;
 
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.util.SparseArrayCompat;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,8 +25,11 @@ import com.dm.material.dashboard.candybar.adapters.FAQsAdapter;
 import com.dm.material.dashboard.candybar.helpers.ColorHelper;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.items.FAQs;
-import com.dm.material.dashboard.candybar.utils.Tag;
+import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.pluscubed.recyclerfastscroll.RecyclerFastScroller;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /*
  * CandyBar - Material Dashboard
@@ -51,7 +51,7 @@ import com.pluscubed.recyclerfastscroll.RecyclerFastScroller;
 
 public class FAQsFragment extends Fragment {
 
-    private RecyclerView mFAQsList;
+    private RecyclerView mRecyclerView;
     private TextView mSearchResult;
     private RecyclerFastScroller mFastScroll;
 
@@ -63,7 +63,7 @@ public class FAQsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_faqs, container, false);
-        mFAQsList = (RecyclerView) view.findViewById(R.id.faqs_list);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.faqs_list);
         mSearchResult = (TextView) view.findViewById(R.id.search_result);
         mFastScroll = (RecyclerFastScroller) view.findViewById(R.id.fastscroll);
         return view;
@@ -72,14 +72,13 @@ public class FAQsFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ViewCompat.setNestedScrollingEnabled(mFAQsList, false);
-        ViewHelper.resetNavigationBarBottomPadding(getActivity(), mFAQsList,
-                getActivity().getResources().getConfiguration().orientation);
 
-        mFAQsList.setItemAnimator(new DefaultItemAnimator());
-        mFAQsList.setHasFixedSize(false);
-        mFAQsList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mFastScroll.attachRecyclerView(mFAQsList);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        ViewHelper.setFastScrollColor(mFastScroll);
+        mFastScroll.attachRecyclerView(mRecyclerView);
 
         getFAQs();
     }
@@ -118,12 +117,6 @@ public class FAQsFragment extends Fragment {
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        ViewHelper.resetNavigationBarBottomPadding(getActivity(), mFAQsList, newConfig.orientation);
-    }
-
-    @Override
     public void onDestroy() {
         if (mGetFAQs != null) mGetFAQs.cancel(true);
         super.onDestroy();
@@ -132,7 +125,7 @@ public class FAQsFragment extends Fragment {
     private void filterSearch(String query) {
         try {
             mAdapter.search(query);
-            if (mAdapter.getItemCount()==0) {
+            if (mAdapter.getFaqsCount() == 0) {
                 String text = String.format(getActivity().getResources().getString(
                         R.string.search_noresult), query);
                 mSearchResult.setText(text);
@@ -140,21 +133,21 @@ public class FAQsFragment extends Fragment {
             }
             else mSearchResult.setVisibility(View.GONE);
         } catch (Exception e) {
-            Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+            LogUtil.e(Log.getStackTraceString(e));
         }
     }
 
     private void getFAQs() {
         mGetFAQs = new AsyncTask<Void, Void, Boolean>() {
 
-            SparseArrayCompat<FAQs> faqs;
+            List<FAQs> faqs;
             String[] questions;
             String[] answers;
 
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                faqs = new SparseArrayCompat<>();
+                faqs = new ArrayList<>();
                 questions = getActivity().getResources().getStringArray(R.array.questions);
                 answers = getActivity().getResources().getStringArray(R.array.answers);
             }
@@ -167,12 +160,12 @@ public class FAQsFragment extends Fragment {
                         for (int i = 0; i < questions.length; i++) {
                             if (i < answers.length) {
                                 FAQs faq = new FAQs(questions[i], answers[i]);
-                                faqs.append(faqs.size(), faq);
+                                faqs.add(faq);
                             }
                         }
                         return true;
                     } catch (Exception e) {
-                        Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+                        LogUtil.e(Log.getStackTraceString(e));
                         return false;
                     }
                 }
@@ -185,11 +178,11 @@ public class FAQsFragment extends Fragment {
                 if (aBoolean) {
                     setHasOptionsMenu(true);
                     mAdapter = new FAQsAdapter(faqs);
-                    mFAQsList.setAdapter(mAdapter);
+                    mRecyclerView.setAdapter(mAdapter);
                 }
                 mGetFAQs = null;
             }
 
-        }.execute();
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 }

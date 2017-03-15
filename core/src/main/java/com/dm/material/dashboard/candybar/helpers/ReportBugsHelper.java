@@ -15,7 +15,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
-import com.dm.material.dashboard.candybar.utils.Tag;
+import com.dm.material.dashboard.candybar.utils.LogUtil;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -100,7 +100,7 @@ public class ReportBugsHelper {
                         FileHelper.createZip(files, file);
                         return true;
                     } catch (Exception e) {
-                        Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+                        LogUtil.e(Log.getStackTraceString(e));
                         return false;
                     }
                 }
@@ -184,7 +184,7 @@ public class ReportBugsHelper {
 
             return fileDir.toString();
         } catch (Exception | OutOfMemoryError e) {
-            Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+            LogUtil.e(Log.getStackTraceString(e));
         }
         return null;
     }
@@ -226,7 +226,7 @@ public class ReportBugsHelper {
 
             return fileDir.toString();
         } catch (Exception | OutOfMemoryError e) {
-            Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+            LogUtil.e(Log.getStackTraceString(e));
         }
         return null;
     }
@@ -246,7 +246,7 @@ public class ReportBugsHelper {
 
             return fileDir.toString();
         } catch (Exception | OutOfMemoryError e) {
-            Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+            LogUtil.e(Log.getStackTraceString(e));
         }
         return null;
     }

@@ -70,8 +70,10 @@ public class InAppBillingHelper implements BillingProcessor.IBillingHandler {
     public void onBillingError(int errorCode, Throwable error) {
         if (errorCode == Constants.BILLING_RESPONSE_RESULT_USER_CANCELED) {
             if (Preferences.getPreferences(mContext).getInAppBillingType()
-                    == InAppBillingHelper.PREMIUM_REQUEST)
+                    == InAppBillingHelper.PREMIUM_REQUEST) {
                 Preferences.getPreferences(mContext).setPremiumRequestCount(0);
+                Preferences.getPreferences(mContext).setPremiumRequestTotal(0);
+            }
             Preferences.getPreferences(mContext).setInAppBillingType(-1);
         } else if (errorCode == Constants.BILLING_ERROR_FAILED_TO_INITIALIZE_PURCHASE) {
             try {

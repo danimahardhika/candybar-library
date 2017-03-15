@@ -4,7 +4,6 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -42,7 +41,7 @@ import java.util.List;
 
 public class IconsFragment extends Fragment {
 
-    private RecyclerView mIconsGrid;
+    private RecyclerView mRecyclerView;
     private RecyclerFastScroller mFastScroll;
 
     private List<Icon> mIcons;
@@ -54,7 +53,7 @@ public class IconsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_icons, container, false);
-        mIconsGrid = (RecyclerView) view.findViewById(R.id.icons_grid);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.icons_grid);
         mFastScroll = (RecyclerFastScroller) view.findViewById(R.id.fastscroll);
         return view;
     }
@@ -79,25 +78,20 @@ public class IconsFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ViewCompat.setNestedScrollingEnabled(mIconsGrid, false);
-        ViewHelper.resetNavigationBarBottomPadding(getActivity(), mIconsGrid,
-                getActivity().getResources().getConfiguration().orientation);
 
-        mIconsGrid.setHasFixedSize(true);
-        mIconsGrid.setItemAnimator(new DefaultItemAnimator());
-        mIconsGrid.setLayoutManager(new GridLayoutManager(getActivity(),
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),
                 getActivity().getResources().getInteger(R.integer.icons_column_count)));
-        mFastScroll.attachRecyclerView(mIconsGrid);
+        mFastScroll.attachRecyclerView(mRecyclerView);
 
         IconsAdapter adapter = new IconsAdapter(getActivity(), mIcons, false);
-        mIconsGrid.setAdapter(adapter);
+        mRecyclerView.setAdapter(adapter);
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        ViewHelper.resetNavigationBarBottomPadding(
-                getActivity(), mIconsGrid, newConfig.orientation);
-        ViewHelper.resetSpanCount(getActivity(), mIconsGrid, R.integer.icons_column_count);
+        ViewHelper.resetSpanCount(getActivity(), mRecyclerView, R.integer.icons_column_count);
     }
 }

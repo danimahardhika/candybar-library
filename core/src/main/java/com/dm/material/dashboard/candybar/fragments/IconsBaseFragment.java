@@ -30,7 +30,7 @@ import com.dm.material.dashboard.candybar.helpers.IconsHelper;
 import com.dm.material.dashboard.candybar.items.Icon;
 import com.dm.material.dashboard.candybar.utils.AlphanumComparator;
 import com.dm.material.dashboard.candybar.utils.Animator;
-import com.dm.material.dashboard.candybar.utils.Tag;
+import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.dm.material.dashboard.candybar.utils.listeners.SearchListener;
 
 import java.util.Collections;
@@ -182,8 +182,7 @@ public class IconsBaseFragment extends Fragment {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                if (CandyBarMainActivity.sSections == null)
-                    mProgress.setVisibility(View.VISIBLE);
+                mProgress.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -224,7 +223,7 @@ public class IconsBaseFragment extends Fragment {
                         }
                         return true;
                     } catch (Exception e) {
-                        Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+                        LogUtil.e(Log.getStackTraceString(e));
                         return false;
                     }
                 }
@@ -321,11 +320,6 @@ public class IconsBaseFragment extends Fragment {
         public int getCount() {
             return mIcons.size();
         }
-
-        public List<Icon> getIcons() {
-            return mIcons;
-        }
-
     }
 
 }

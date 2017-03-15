@@ -9,7 +9,7 @@ import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
 import com.dm.material.dashboard.candybar.items.WallpaperJSON;
 import com.dm.material.dashboard.candybar.receivers.CandyBarBroadcastReceiver;
-import com.dm.material.dashboard.candybar.utils.Tag;
+import com.dm.material.dashboard.candybar.utils.LogUtil;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -56,6 +56,8 @@ public class CandyBarWallpapersService extends IntentService {
             broadcastIntent.setAction(CandyBarBroadcastReceiver.PROCESS_RESPONSE);
             broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
 
+            LogUtil.d("Wallpaper service started from: " +getPackageName());
+
             if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 InputStream stream = connection.getInputStream();
                 WallpaperJSON wallpapersJSON = LoganSquare.parse(stream, WallpaperJSON.class);
@@ -63,10 +65,11 @@ public class CandyBarWallpapersService extends IntentService {
 
                 int size = wallpapersJSON.getWalls.size();
                 broadcastIntent.putExtra("size", size);
+                broadcastIntent.putExtra("packageName", getPackageName());
                 sendBroadcast(broadcastIntent);
             }
         } catch (Exception e) {
-            Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+            LogUtil.e(Log.getStackTraceString(e));
         }
     }
 }

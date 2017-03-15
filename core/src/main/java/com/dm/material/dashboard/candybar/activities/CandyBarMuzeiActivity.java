@@ -2,7 +2,6 @@ package com.dm.material.dashboard.candybar.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -19,10 +18,9 @@ import android.widget.Toast;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.helpers.ColorHelper;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
-import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
-import com.dm.material.dashboard.candybar.utils.Tag;
+import com.dm.material.dashboard.candybar.utils.LogUtil;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -59,12 +57,11 @@ public class CandyBarMuzeiActivity extends AppCompatActivity implements View.OnC
                 R.style.AppThemeDark : R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_muzei);
-        getWindow().getDecorView().setBackgroundColor(
-                ColorHelper.getAttributeColor(this, R.attr.main_background));
+        ColorHelper.setStatusBarIconColor(this);
         ColorHelper.setStatusBarColor(this, ColorHelper.getAttributeColor(this, R.attr.colorPrimaryDark));
-        ViewHelper.resetNavigationBarTranslucent(this,
-                getResources().getBoolean(R.bool.use_translucent_navigation_bar),
-                getResources().getConfiguration().orientation);
+        ColorHelper.setNavigationBarColor(this, ContextCompat.getColor(this,
+                Preferences.getPreferences(this).isDarkTheme() ?
+                        R.color.navigationBarDark : R.color.navigationBar));
 
         mMinute = (RadioButton) findViewById(R.id.minute);
         mHour = (RadioButton) findViewById(R.id.hour);
@@ -92,14 +89,6 @@ public class CandyBarMuzeiActivity extends AppCompatActivity implements View.OnC
         int rotateTime = convertMilliToMinute(Preferences.getPreferences(this).getRotateTime());
         if (!mMinute.isChecked()) rotateTime = rotateTime / 60;
         mNumberPicker.setValue(rotateTime);
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        ViewHelper.resetNavigationBarTranslucent(this,
-                getResources().getBoolean(R.bool.use_translucent_navigation_bar),
-                newConfig.orientation);
     }
 
     @Override
@@ -134,6 +123,11 @@ public class CandyBarMuzeiActivity extends AppCompatActivity implements View.OnC
             Preferences.getPreferences(this).setRotateTime(rotateTime);
             Preferences.getPreferences(this).setWifiOnly(mWifiOnly.isChecked());
             Preferences.getPreferences(this).setDownloadedOnly(mDownloadedOnly.isChecked());
+
+            if (mMuzeiService == null) {
+                LogUtil.e("MuzeiService cannot be null");
+                return true;
+            }
 
             Intent intent = new Intent(this, mMuzeiService);
             intent.putExtra("restart", true);
@@ -183,7 +177,7 @@ public class CandyBarMuzeiActivity extends AppCompatActivity implements View.OnC
                                     R.drawable.numberpicker_divider_dark :
                                     R.drawable.numberpicker_divider));
                 } catch (Exception e) {
-                    Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+                    LogUtil.e(Log.getStackTraceString(e));
                 }
                 break;
             }

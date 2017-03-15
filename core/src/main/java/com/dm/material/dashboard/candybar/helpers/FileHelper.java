@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 
-import com.dm.material.dashboard.candybar.utils.Tag;
+import com.dm.material.dashboard.candybar.utils.LogUtil;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -42,8 +42,27 @@ import java.util.zip.ZipOutputStream;
 public class FileHelper {
 
     public static final String IMAGE_EXTENSION = ".jpeg";
+    public static final String UIL_CACHE_DIR = "uil-images";
+    public static final int MB = (1024 * 1014);
+    public static final int KB = 1024;
 
     private static final int BUFFER = 2048;
+
+    public static long getCacheSize(@NonNull File dir) {
+        if (dir.exists()) {
+            long result = 0;
+            File[] fileList = dir.listFiles();
+            for (File aFileList : fileList) {
+                if (aFileList.isDirectory()) {
+                    result += getCacheSize(aFileList);
+                } else {
+                    result += aFileList.length();
+                }
+            }
+            return result;
+        }
+        return 0;
+    }
 
     static boolean copyFile(@NonNull File file, @NonNull File target) {
         try {
@@ -65,7 +84,7 @@ public class FileHelper {
             outputStream.close();
             return true;
         } catch (Exception e) {
-            Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+            LogUtil.e(Log.getStackTraceString(e));
         }
         return false;
     }
@@ -94,7 +113,7 @@ public class FileHelper {
 
             out.close();
         } catch (Exception e) {
-            Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+            LogUtil.e(Log.getStackTraceString(e));
         }
     }
 
@@ -109,7 +128,7 @@ public class FileHelper {
             outStream.close();
             return directory.toString() + "/" + fileName;
         } catch (Exception | OutOfMemoryError e) {
-            Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+            LogUtil.e(Log.getStackTraceString(e));
         }
         return null;
     }
@@ -119,9 +138,8 @@ public class FileHelper {
         try {
             return FileProvider.getUriForFile(context, applicationId + ".fileProvider", file);
         } catch (IllegalArgumentException e) {
-            Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+            LogUtil.e(Log.getStackTraceString(e));
         }
         return null;
     }
-
 }

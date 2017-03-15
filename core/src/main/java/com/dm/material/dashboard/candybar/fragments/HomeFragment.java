@@ -1,40 +1,22 @@
 package com.dm.material.dashboard.candybar.fragments;
 
-import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
-import com.dm.material.dashboard.candybar.adapters.HomeFeaturesAdapter;
-import com.dm.material.dashboard.candybar.helpers.ColorHelper;
-import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
-import com.dm.material.dashboard.candybar.helpers.ViewHelper;
+import com.dm.material.dashboard.candybar.adapters.HomeAdapter;
 import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
-import com.dm.material.dashboard.candybar.items.Feature;
-import com.dm.material.dashboard.candybar.items.Icon;
-import com.dm.material.dashboard.candybar.preferences.Preferences;
-
-import org.sufficientlysecure.htmltextview.HtmlTextView;
+import com.dm.material.dashboard.candybar.items.Home;
+import com.dm.material.dashboard.candybar.utils.listeners.HomeListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,167 +39,116 @@ import java.util.List;
  * limitations under the License.
  */
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements HomeListener{
 
-    private RecyclerView mFeatureList;
-    private NestedScrollView mScrollView;
-    private HtmlTextView mDescription;
+    private RecyclerView mRecyclerView;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        mFeatureList = (RecyclerView) view.findViewById(R.id.home_feature_list);
-        mScrollView = (NestedScrollView) view.findViewById(R.id.scrollview);
-        mDescription = (HtmlTextView) view.findViewById(R.id.home_description);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setHasOptionsMenu(false);
-        ViewHelper.resetNavigationBarBottomPadding(getActivity(), mScrollView,
-                getActivity().getResources().getConfiguration().orientation);
 
-        initDescription();
-        initFeatures();
-        initMoreApps();
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(
+                getActivity().getResources().getInteger(R.integer.home_column_count),
+                StaggeredGridLayoutManager.VERTICAL));
+
+        initHome();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        ViewHelper.resetNavigationBarBottomPadding(getActivity(),
-                mScrollView, newConfig.orientation);
+        HomeAdapter adapter = (HomeAdapter) mRecyclerView.getAdapter();
+        adapter.setOrientation(newConfig.orientation);
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_home, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
+    public void OnHomeDataUpdated(Home home) {
+        if (mRecyclerView == null) return;
+        if (mRecyclerView.getAdapter() == null) return;
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.menu_rate) {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(
-                    "https://play.google.com/store/apps/details?id=" + getActivity().getPackageName()));
-            intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
-            startActivity(intent);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void showOptionsMenu(boolean show) {
-        setHasOptionsMenu(show);
-    }
-
-    private void initDescription() {
-        String desc = getActivity().getResources().getString(R.string.home_description);
-        CardView cardDesc = (CardView) getActivity().findViewById(R.id.card_desc);
-        if (desc.length() == 0) {
-            cardDesc.setVisibility(View.GONE);
+        if (home != null) {
+            HomeAdapter adapter = (HomeAdapter) mRecyclerView.getAdapter();
+            adapter.addNewContent(home);
             return;
         }
 
-        cardDesc.setVisibility(View.VISIBLE);
-        mDescription.setHtml(desc);
+        RecyclerView.Adapter adapter = mRecyclerView.getAdapter();
+        if (adapter.getItemCount() > 8) {
+            //Probably the original adapter already modified
+            adapter.notifyDataSetChanged();
+            return;
+        }
+
+        int index = adapter.getItemCount() - 3;
+
+        if (WallpaperHelper.getWallpaperType(getActivity()) != WallpaperHelper.CLOUD_WALLPAPERS) {
+            index += 1;
+        }
+
+        if (index >= 0 && index < adapter.getItemCount()) {
+            adapter.notifyItemChanged(index);
+        }
     }
 
-    private void initFeatures() {
-        mFeatureList.setHasFixedSize(false);
-        mFeatureList.setNestedScrollingEnabled(false);
-        mFeatureList.setItemAnimator(new DefaultItemAnimator());
-        mFeatureList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mFeatureList.setFocusable(false);
+    private void initHome() {
+        List<Home> homes = new ArrayList<>();
 
-        List<Feature> features = new ArrayList<>();
+        homes.add(new Home(
+                R.drawable.ic_toolbar_apply_launcher,
+                String.format(getActivity().getResources().getString(R.string.home_apply_icon_pack),
+                        getActivity().getResources().getString(R.string.app_name)),
+                "",
+                Home.Type.APPLY));
 
-        features.add(new Feature(
-                ContextCompat.getColor(getActivity(), R.color.homeFeatureIcons),
-                String.format(getActivity().getResources().getString(R.string.home_feature_icons), CandyBarMainActivity.sIconsCount)));
-
-        if (CandyBarMainActivity.sSections != null) {
-            if (CandyBarMainActivity.sSections.size() > 0) {
-                List<Icon> icons =  CandyBarMainActivity.sSections.get(0).getIcons();
-                if (icons.size() > 0) {
-                    BitmapFactory.Options options = new BitmapFactory.Options();
-                    options.inJustDecodeBounds = true;
-                    BitmapFactory.decodeResource(
-                            getActivity().getResources(), icons.get(0).getRes(), options);
-                    features.add(new Feature(
-                            ContextCompat.getColor(getActivity(), R.color.homeFeatureDimensions),
-                            String.format(getActivity().getResources().getString(R.string.home_feature_dimensions),
-                                    options.outWidth +" x "+ options.outHeight)));
-                }
-            }
+        if (getActivity().getResources().getBoolean(R.bool.enable_donation)) {
+            homes.add(new Home(
+                    R.drawable.ic_toolbar_donate,
+                    getActivity().getResources().getString(R.string.home_donate),
+                    getActivity().getResources().getString(R.string.home_donate_desc),
+                    Home.Type.DONATE));
         }
 
-        if (WallpaperHelper.getWallpaperType(getActivity()) == WallpaperHelper.CLOUD_WALLPAPERS) {
-            features.add(new Feature(
-                    ContextCompat.getColor(getActivity(), R.color.homeFeatureCloudWallpapers),
-                    String.format(getActivity().getResources().getString(R.string.home_feature_cloud_wallpaper),
-                            Preferences.getPreferences(getActivity()).getAvailableWallpapersCount())));
-            features.add(new Feature(
-                    ContextCompat.getColor(getActivity(), R.color.homeFeatureMuzei),
-                    getActivity().getResources().getString(R.string.home_feature_muzei)));
+        homes.add(new Home(
+                -1,
+                String.valueOf(CandyBarMainActivity.sIconsCount),
+                getActivity().getResources().getString(R.string.home_icons),
+                Home.Type.ICONS));
+
+        if (CandyBarMainActivity.sHomeIcon != null) {
+            homes.add(CandyBarMainActivity.sHomeIcon);
         }
 
-        String[] launchers = getActivity().getResources().getStringArray(R.array.launcher_names);
-        features.add(new Feature(
-                ContextCompat.getColor(getActivity(), R.color.homeFeatureLaunchers),
-                String.format(getActivity().getResources().getString(R.string.home_feature_launchers),
-                        launchers.length)));
-
-        if (getActivity().getResources().getBoolean(R.bool.enable_icon_request)) {
-            String string = getActivity().getResources().getString(R.string.home_features_icon_request);
-            if (Preferences.getPreferences(getActivity()).isPremiumRequestEnabled())
-                string += " "+ getActivity().getResources().getString(R.string.home_features_icon_request_with)
-                        +" "+ getActivity().getResources().getString(R.string.home_features_icon_request_premium);
-            features.add(new Feature(
-                    ContextCompat.getColor(getActivity(), R.color.homeFeaturesIconRequest),
-                    string));
-        } else if (Preferences.getPreferences(getActivity()).isPremiumRequestEnabled()) {
-            features.add(new Feature(
-                    ContextCompat.getColor(getActivity(), R.color.homeFeaturesIconRequest),
-                    getActivity().getResources().getString(R.string.home_features_icon_request_premium)));
-        }
-
-        mFeatureList.setAdapter(new HomeFeaturesAdapter(getActivity(), features));
-    }
-
-    private void initMoreApps() {
-        String link = getActivity().getResources().getString(R.string.google_play_dev);
-        if (link.length() > 0) {
-            CardView cardApps = (CardView) getActivity().findViewById(R.id.card_more_apps);
-            cardApps.setVisibility(View.VISIBLE);
-
-            int color = ColorHelper.getAttributeColor(getActivity(),
-                    android.R.attr.textColorSecondary);
-            Drawable drawable = DrawableHelper.getTintedDrawable(getActivity(),
-                    R.drawable.ic_google_play_more_apps, color);
-            ImageView appsIcon = (ImageView) getActivity().findViewById(R.id.more_apps_icon);
-            appsIcon.setImageDrawable(drawable);
-
-            LinearLayout moreApps = (LinearLayout) getActivity().findViewById(R.id.more_apps);
-            moreApps.setOnClickListener(view -> {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
-                intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
-                startActivity(intent);
-            });
-        }
+        mRecyclerView.setAdapter(new HomeAdapter(getActivity(), homes,
+                getActivity().getResources().getConfiguration().orientation));
     }
 
     public void resetWallpapersCount() {
         if (WallpaperHelper.getWallpaperType(getActivity()) == WallpaperHelper.CLOUD_WALLPAPERS) {
-            if (mFeatureList == null) return;
-            HomeFeaturesAdapter adapter = (HomeFeaturesAdapter) mFeatureList.getAdapter();
-            adapter.resetWallpapersCount(Preferences.getPreferences(
-                    getActivity()).getAvailableWallpapersCount());
+            if (mRecyclerView == null) return;
+            if (mRecyclerView.getAdapter() == null) return;
+
+            RecyclerView.Adapter adapter = mRecyclerView.getAdapter();
+            if (adapter.getItemCount() > 8) {
+                //Probably the original adapter already modified
+                adapter.notifyDataSetChanged();
+                return;
+            }
+
+            int index = adapter.getItemCount() - 2;
+            if (index >= 0 && index < adapter.getItemCount()) {
+                adapter.notifyItemChanged(index);
+            }
         }
     }
 }

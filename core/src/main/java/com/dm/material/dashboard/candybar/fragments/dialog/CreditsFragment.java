@@ -15,7 +15,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.CreditsAdapter;
 import com.dm.material.dashboard.candybar.items.Credit;
-import com.dm.material.dashboard.candybar.utils.Tag;
+import com.dm.material.dashboard.candybar.utils.LogUtil;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -123,7 +123,7 @@ public class CreditsFragment extends DialogFragment {
                         }
                         return true;
                     } catch (Exception e) {
-                        Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+                        LogUtil.e(Log.getStackTraceString(e));
                         return false;
                     }
                 }

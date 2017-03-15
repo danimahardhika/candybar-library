@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.items.Credit;
-import com.dm.material.dashboard.candybar.utils.Tag;
+import com.dm.material.dashboard.candybar.utils.LogUtil;
 
 import java.util.List;
 
@@ -81,7 +81,7 @@ public class CreditsAdapter extends BaseAdapter {
                 try {
                     mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(link)));
                 } catch (ActivityNotFoundException e) {
-                    Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+                    LogUtil.e(Log.getStackTraceString(e));
                 }
             }
         });

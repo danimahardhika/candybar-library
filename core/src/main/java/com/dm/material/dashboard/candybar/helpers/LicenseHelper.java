@@ -5,14 +5,13 @@ import android.content.Context;
 import android.provider.Settings.Secure;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.fragments.dialog.ChangelogFragment;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
-import com.dm.material.dashboard.candybar.utils.Tag;
+import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.google.android.vending.licensing.AESObfuscator;
 import com.google.android.vending.licensing.LicenseChecker;
 import com.google.android.vending.licensing.LicenseCheckerCallback;
@@ -62,7 +61,7 @@ public class LicenseHelper implements LicenseCheckerCallback {
             checker.checkAccess(this);
             getDialog().show();
         } else {
-            Log.d(Tag.LOG_TAG, "Unable to check license, random bytes is wrong!");
+           LogUtil.d("Unable to check license, random bytes is wrong!");
         }
     }
 
@@ -155,5 +154,4 @@ public class LicenseHelper implements LicenseCheckerCallback {
             ((AppCompatActivity) mContext).finish();
         }
     }
-
 }

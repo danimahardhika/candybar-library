@@ -15,11 +15,10 @@ import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.databases.Database;
 import com.dm.material.dashboard.candybar.helpers.ColorHelper;
 import com.dm.material.dashboard.candybar.helpers.IconsHelper;
-import com.dm.material.dashboard.candybar.helpers.RequestHelper;
 import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
 import com.dm.material.dashboard.candybar.items.Icon;
 import com.dm.material.dashboard.candybar.items.WallpaperJSON;
-import com.dm.material.dashboard.candybar.utils.Tag;
+import com.dm.material.dashboard.candybar.utils.LogUtil;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -49,7 +48,6 @@ public class CandyBarSplashActivity extends AppCompatActivity {
 
     private Class<?> mMainActivity;
     private AsyncTask<Void, Void, Boolean> mPrepareIconsList;
-    private AsyncTask<Void, Void, Boolean> mPrepareIconRequest;
     private AsyncTask<Void, Void, Boolean> mCheckRszIo;
     private AsyncTask<Void, Void, Boolean> mPrepareCloudWallpapers;
 
@@ -61,10 +59,9 @@ public class CandyBarSplashActivity extends AppCompatActivity {
         int titleColor = ColorHelper.getTitleTextColor(ContextCompat
                 .getColor(this, R.color.splashColor));
         TextView splashTitle = (TextView) findViewById(R.id.splash_title);
-        splashTitle.setTextColor(ColorHelper.setColorAlpha(titleColor, 0.6f));
+        splashTitle.setTextColor(ColorHelper.setColorAlpha(titleColor, 0.7f));
 
         prepareIconsList();
-        prepareIconRequest(this);
         checkRszIo();
         prepareCloudWallpapers(this);
     }
@@ -76,7 +73,6 @@ public class CandyBarSplashActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (mPrepareIconRequest != null) mPrepareIconRequest.cancel(true);
         if (mPrepareCloudWallpapers != null) mPrepareCloudWallpapers.cancel(true);
         if (mCheckRszIo != null) mCheckRszIo.cancel(true);
         super.onBackPressed();
@@ -105,7 +101,7 @@ public class CandyBarSplashActivity extends AppCompatActivity {
                         CandyBarMainActivity.sIconsCount = count;
                         return true;
                     } catch (Exception e) {
-                        Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+                        LogUtil.e(Log.getStackTraceString(e));
                         return false;
                     }
                 }
@@ -123,36 +119,6 @@ public class CandyBarSplashActivity extends AppCompatActivity {
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    private void prepareIconRequest(@NonNull Context context) {
-        mPrepareIconRequest = new AsyncTask<Void, Void, Boolean>() {
-
-            @Override
-            protected Boolean doInBackground(Void... voids) {
-                while (!isCancelled()) {
-                    try {
-                        Thread.sleep(1);
-                        if (getResources().getBoolean(R.bool.enable_icon_request) ||
-                                getResources().getBoolean(R.bool.enable_premium_request)) {
-                            CandyBarMainActivity.sMissingApps = RequestHelper
-                                    .loadMissingApps(context);
-                        }
-                        return true;
-                    } catch (Exception e) {
-                        Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
-                        return false;
-                    }
-                }
-                return false;
-            }
-
-            @Override
-            protected void onPostExecute(Boolean aBoolean) {
-                super.onPostExecute(aBoolean);
-                mPrepareIconRequest = null;
-            }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-    }
-
     private void checkRszIo() {
         mCheckRszIo = new AsyncTask<Void, Void, Boolean>() {
 
@@ -165,12 +131,12 @@ public class CandyBarSplashActivity extends AppCompatActivity {
                         Thread.sleep(1);
                         URL url = new URL(rszio);
                         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                        connection.setConnectTimeout(6000);
                         connection.setReadTimeout(6000);
+                        connection.setConnectTimeout(6000);
                         int code = connection.getResponseCode();
                         return code == 200;
                     } catch (Exception e) {
-                        Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+                        LogUtil.e(Log.getStackTraceString(e));
                         return false;
                     }
                 }
@@ -181,7 +147,7 @@ public class CandyBarSplashActivity extends AppCompatActivity {
             protected void onPostExecute(Boolean aBoolean) {
                 super.onPostExecute(aBoolean);
                 CandyBarMainActivity.sRszIoAvailable = aBoolean;
-                Log.d(Tag.LOG_TAG, "rsz.io availability: " +CandyBarMainActivity.sRszIoAvailable);
+                LogUtil.e("rsz.io availability: " +CandyBarMainActivity.sRszIoAvailable);
                 mCheckRszIo = null;
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -213,7 +179,7 @@ public class CandyBarSplashActivity extends AppCompatActivity {
                         }
                         return true;
                     } catch (Exception e) {
-                        Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+                        LogUtil.e(Log.getStackTraceString(e));
                         return false;
                     }
                 }

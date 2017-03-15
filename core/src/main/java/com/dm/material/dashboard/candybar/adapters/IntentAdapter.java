@@ -27,7 +27,7 @@ import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.helpers.FileHelper;
 import com.dm.material.dashboard.candybar.items.IntentChooser;
 import com.dm.material.dashboard.candybar.items.Request;
-import com.dm.material.dashboard.candybar.utils.Tag;
+import com.dm.material.dashboard.candybar.utils.LogUtil;
 
 import java.io.File;
 import java.util.List;
@@ -165,7 +165,7 @@ public class IntentAdapter extends BaseAdapter {
                         mContext.getResources().getString(R.string.email_client)));
             }
             catch (ActivityNotFoundException e1) {
-                Log.d(Tag.LOG_TAG, Log.getStackTraceString(e1));
+                LogUtil.e(Log.getStackTraceString(e1));
             }
         }
     }

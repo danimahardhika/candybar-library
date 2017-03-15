@@ -14,6 +14,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.support.annotation.ColorInt;
+import android.support.annotation.DimenRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -25,7 +26,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.dm.material.dashboard.candybar.R;
-import com.dm.material.dashboard.candybar.utils.Tag;
+import com.dm.material.dashboard.candybar.utils.LogUtil;
 
 import java.io.ByteArrayOutputStream;
 
@@ -58,12 +59,44 @@ public class DrawableHelper {
     }
 
     @Nullable
+    public static Drawable getDrawable(@NonNull Context context, @DrawableRes int res) {
+        try {
+            Drawable drawable = AppCompatDrawableManager.get().getDrawable(context, res);
+            return drawable.mutate();
+        } catch (OutOfMemoryError e) {
+            return null;
+        }
+    }
+
+    @Nullable
     public static Drawable getTintedDrawable(@NonNull Context context, @DrawableRes int res, @ColorInt int color) {
         try {
             Drawable drawable = AppCompatDrawableManager.get().getDrawable(context, res);
             drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);
             return drawable.mutate();
         } catch (OutOfMemoryError e) {
+            return null;
+        }
+    }
+
+    @Nullable
+    public static Drawable getResizedDrawable(@NonNull Context context, @DrawableRes int drawableRes, @DimenRes int dimenRes) {
+        try {
+            Drawable drawable = getDrawable(context, drawableRes);
+            if (drawable == null) return null;
+
+            int size = context.getResources().getDimensionPixelSize(dimenRes);
+
+            Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+                    drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            drawable.draw(canvas);
+
+            return new BitmapDrawable(context.getResources(),
+                    Bitmap.createScaledBitmap(bitmap, size, size, true));
+        } catch (Exception | OutOfMemoryError e) {
+            LogUtil.d(Log.getStackTraceString(e));
             return null;
         }
     }
@@ -128,7 +161,7 @@ public class DrawableHelper {
                     resources, info.icon, density, null);
             if (drawable != null) return ((BitmapDrawable) drawable).getBitmap();
         } catch (Exception | OutOfMemoryError e) {
-            Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+            LogUtil.e(Log.getStackTraceString(e));
         }
         return null;
     }
@@ -151,10 +184,9 @@ public class DrawableHelper {
             bitmap.compress(Bitmap.CompressFormat.PNG, 10, stream);
             return stream.toByteArray();
         } catch (Exception | OutOfMemoryError e) {
-            Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+            LogUtil.e(Log.getStackTraceString(e));
         }
         return null;
     }
-
 }
 

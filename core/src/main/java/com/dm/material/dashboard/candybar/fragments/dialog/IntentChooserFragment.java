@@ -24,7 +24,7 @@ import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.IntentAdapter;
 import com.dm.material.dashboard.candybar.items.IntentChooser;
 import com.dm.material.dashboard.candybar.items.Request;
-import com.dm.material.dashboard.candybar.utils.Tag;
+import com.dm.material.dashboard.candybar.utils.LogUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -182,7 +182,7 @@ public class IntentChooserFragment extends DialogFragment {
                         }
                         return true;
                     } catch (Exception e) {
-                        Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+                        LogUtil.e(Log.getStackTraceString(e));
                         return false;
                     }
                 }

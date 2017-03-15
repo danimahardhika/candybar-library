@@ -82,22 +82,4 @@ public class Animator {
         fab.animate().setDuration(200).scaleX(1).scaleY(1).alpha(1)
                 .setInterpolator(new LinearOutSlowInInterpolator());
     }
-
-    public static void hideFab(@Nullable FloatingActionButton fab) {
-        if (fab == null) return;
-
-        if (ViewCompat.isLaidOut(fab)) {
-            fab.hide();
-            return;
-        }
-
-        fab.animate().cancel();
-        fab.setScaleX(1f);
-        fab.setScaleY(1f);
-        fab.setAlpha(1f);
-        fab.setVisibility(View.GONE);
-        fab.animate().setDuration(200).scaleX(0).scaleY(0).alpha(0)
-                .setInterpolator(new LinearOutSlowInInterpolator());
-    }
-
 }

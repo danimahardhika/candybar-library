@@ -44,6 +44,7 @@ public class PreferencesHelper {
     private static final String KEY_PREMIUM_REQUEST = "premium_request";
     private static final String KEY_PREMIUM_REQUEST_PRODUCT = "premium_request_product";
     private static final String KEY_PREMIUM_REQUEST_COUNT = "premium_request_count";
+    private static final String KEY_PREMIUM_REQUEST_TOTAL = "premium_request_total";
     private static final String KEY_REGULAR_REQUEST_USED= "regular_request_used";
     private static final String KEY_INAPP_BILLING_TYPE = "inapp_billing_type";
     private static final String KEY_LICENSED = "licensed";
@@ -148,6 +149,15 @@ public class PreferencesHelper {
 
     public void setPremiumRequestCount(int count) {
         getSharedPreferences().edit().putInt(KEY_PREMIUM_REQUEST_COUNT, count).apply();
+    }
+
+    public int getPremiumRequestTotal() {
+        int count = getPremiumRequestCount();
+        return getSharedPreferences().getInt(KEY_PREMIUM_REQUEST_TOTAL, count);
+    }
+
+    public void setPremiumRequestTotal(int count) {
+        getSharedPreferences().edit().putInt(KEY_PREMIUM_REQUEST_TOTAL, count).apply();
     }
 
     public int getRegularRequestUsed() {

@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 
 import com.dm.material.dashboard.candybar.R;
+import com.dm.material.dashboard.candybar.helpers.FileHelper;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -46,7 +47,7 @@ public class ImageConfig {
                 .tasksProcessingOrder(QueueProcessingType.FIFO)
                 .imageDownloader(new ImageDownloader(context))
                 .diskCache(new UnlimitedDiskCache(new File(
-                        context.getCacheDir().toString() + "/uil-images")))
+                        context.getCacheDir().toString() + "/" + FileHelper.UIL_CACHE_DIR)))
                 .build();
     }
 

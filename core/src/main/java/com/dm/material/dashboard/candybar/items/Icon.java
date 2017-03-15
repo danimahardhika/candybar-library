@@ -1,5 +1,7 @@
 package com.dm.material.dashboard.candybar.items;
 
+import android.support.annotation.NonNull;
+
 import java.util.List;
 
 /*
@@ -38,7 +40,7 @@ public class Icon {
         mPackageName = packageName;
     }
 
-    public Icon(String title, List<Icon> icons) {
+    public Icon(String title, @NonNull List<Icon> icons) {
         mTitle = title;
         mIcons = icons;
     }
@@ -59,6 +61,7 @@ public class Icon {
         return mPackageName;
     }
 
+    @NonNull
     public List<Icon> getIcons() {
         return mIcons;
     }

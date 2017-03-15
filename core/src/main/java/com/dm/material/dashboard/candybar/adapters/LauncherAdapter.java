@@ -81,7 +81,7 @@ public class LauncherAdapter extends RecyclerView.Adapter<LauncherAdapter.ViewHo
                         public void onLoadingStarted(String imageUri, View view) {
                             super.onLoadingStarted(imageUri, view);
                             int color = ColorHelper.getAttributeColor(
-                                    mContext, android.R.attr.textColorSecondary);
+                                    mContext, R.attr.card_background);
                             holder.name.setBackgroundColor(color);
                             holder.name.setTextColor(ColorHelper.getTitleTextColor(color));
                         }
@@ -91,7 +91,7 @@ public class LauncherAdapter extends RecyclerView.Adapter<LauncherAdapter.ViewHo
                             super.onLoadingComplete(imageUri, view, loadedImage);
                             Palette.from(loadedImage).generate(palette -> {
                                 int defaultColor = ColorHelper.getAttributeColor(
-                                        mContext, android.R.attr.textColorSecondary);
+                                        mContext, R.attr.card_background);
                                 int color = palette.getVibrantColor(defaultColor);
                                 if (color == defaultColor)
                                     color = palette.getMutedColor(defaultColor);

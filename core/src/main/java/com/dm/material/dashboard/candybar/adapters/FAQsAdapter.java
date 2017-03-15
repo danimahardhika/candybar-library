@@ -1,7 +1,6 @@
 package com.dm.material.dashboard.candybar.adapters;
 
 import android.support.annotation.NonNull;
-import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +10,8 @@ import android.widget.TextView;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.items.FAQs;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 
@@ -34,59 +35,101 @@ import java.util.Locale;
 
 public class FAQsAdapter extends RecyclerView.Adapter<FAQsAdapter.ViewHolder> {
 
-    private SparseArrayCompat<FAQs> mFAQs;
-    private final SparseArrayCompat<FAQs> mFAQsAll;
+    private List<FAQs> mFAQs;
+    private final List<FAQs> mFAQsAll;
 
-    public FAQsAdapter(@NonNull SparseArrayCompat<FAQs> faqs) {
+    private static final int TYPE_CONTENT = 0;
+    private static final int TYPE_FOOTER = 1;
+
+    public FAQsAdapter(@NonNull List<FAQs> faqs) {
         mFAQs = faqs;
-        mFAQsAll = mFAQs.clone();
+        mFAQsAll = new ArrayList<>();
+        mFAQsAll.addAll(mFAQs);
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(
-                R.layout.fragment_faqs_item_list, parent, false);
-        return new ViewHolder(view);
+        View view = null;
+        if (viewType == TYPE_CONTENT) {
+            view = LayoutInflater.from(parent.getContext()).inflate(
+                    R.layout.fragment_faqs_item_list, parent, false);
+        } else if (viewType == TYPE_FOOTER) {
+            view = LayoutInflater.from(parent.getContext()).inflate(
+                    R.layout.fragment_settings_item_footer, parent, false);
+        }
+        return new ViewHolder(view, viewType);
+    }
+
+    @Override
+    public void onViewRecycled(ViewHolder holder) {
+        super.onViewRecycled(holder);
+        if (holder.holderId == TYPE_CONTENT) {
+            holder.divider.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.question.setText(mFAQs.get(position).getQuestion());
-        holder.answer.setText(mFAQs.get(position).getAnswer());
+        if (holder.holderId == TYPE_CONTENT) {
+            holder.question.setText(mFAQs.get(position).getQuestion());
+            holder.answer.setText(mFAQs.get(position).getAnswer());
+
+            if (position == (mFAQs.size() - 1)) {
+                holder.divider.setVisibility(View.GONE);
+            }
+        }
     }
 
     @Override
     public int getItemCount() {
-        return mFAQs.size();
+        return mFAQs.size() + 1;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position == getItemCount() - 1) return TYPE_FOOTER;
+        return TYPE_CONTENT;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        final TextView question;
-        final TextView answer;
+        TextView question;
+        TextView answer;
+        View divider;
 
-        ViewHolder(View itemView) {
+        int holderId;
+
+        ViewHolder(View itemView, int viewType) {
             super(itemView);
-            question = (TextView) itemView.findViewById(R.id.question);
-            answer = (TextView) itemView.findViewById(R.id.answer);
+            if (viewType == TYPE_CONTENT) {
+                question = (TextView) itemView.findViewById(R.id.question);
+                answer = (TextView) itemView.findViewById(R.id.answer);
+                divider = itemView.findViewById(R.id.divider);
+                holderId = TYPE_CONTENT;
+            } else if (viewType == TYPE_FOOTER) {
+                holderId = TYPE_FOOTER;
+            }
         }
     }
 
     public void search(String query) {
         query = query.toLowerCase(Locale.getDefault());
         mFAQs.clear();
-        if (query.length() == 0) mFAQs = mFAQsAll.clone();
+        if (query.length() == 0) mFAQs.addAll(mFAQsAll);
         else {
             for (int i = 0; i < mFAQsAll.size(); i++) {
                 FAQs faq = mFAQsAll.get(i);
                 String question = faq.getQuestion().toLowerCase(Locale.getDefault());
                 String answer = faq.getAnswer().toLowerCase(Locale.getDefault());
                 if (question.contains(query) || answer.contains(query)) {
-                    mFAQs.append(mFAQs.size(), faq);
+                    mFAQs.add(faq);
                 }
             }
         }
         notifyDataSetChanged();
     }
 
+    public int getFaqsCount() {
+        return mFAQs.size();
+    }
 }

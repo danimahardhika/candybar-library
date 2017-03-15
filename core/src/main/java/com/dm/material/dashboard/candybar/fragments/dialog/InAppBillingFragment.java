@@ -24,7 +24,7 @@ import com.dm.material.dashboard.candybar.adapters.InAppBillingAdapter;
 import com.dm.material.dashboard.candybar.helpers.InAppBillingHelper;
 import com.dm.material.dashboard.candybar.items.InAppBilling;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
-import com.dm.material.dashboard.candybar.utils.Tag;
+import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.dm.material.dashboard.candybar.utils.listeners.InAppBillingListener;
 
 /*
@@ -209,7 +209,7 @@ public class InAppBillingFragment extends DialogFragment {
                         }
                         return true;
                     } catch (Exception e) {
-                        Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+                        LogUtil.e(Log.getStackTraceString(e));
                         return false;
                     }
                 }

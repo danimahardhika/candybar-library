@@ -1,21 +1,29 @@
 package com.dm.material.dashboard.candybar.adapters;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.helpers.ColorHelper;
+import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.items.Request;
+import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
+import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.dm.material.dashboard.candybar.utils.listeners.RequestListener;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -47,21 +55,31 @@ import java.util.List;
 public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHolder> {
 
     private final Context mContext;
-    private final SparseBooleanArray mSelectedItems;
     private final List<Request> mRequests;
+    private SparseBooleanArray mSelectedItems;
     private DisplayImageOptions.Builder mOptions;
 
-    private final int mTextColorSecondary;
+    private final int mTextColorPrimary;
     private final int mTextColorAccent;
     private boolean mSelectedAll = false;
 
-    public RequestAdapter(@NonNull Context context, @NonNull List<Request> requests) {
+    private final boolean mShowShadow;
+    private final boolean mShowPremiumRequest;
+
+    private static final int TYPE_HEADER = 0;
+    private static final int TYPE_CONTENT = 1;
+    private static final int TYPE_FOOTER = 2;
+
+    public RequestAdapter(@NonNull Context context, @NonNull List<Request> requests, int spanCount) {
         mContext = context;
         mRequests = requests;
-        mTextColorSecondary = ColorHelper.getAttributeColor(mContext,
-                android.R.attr.textColorSecondary);
+        mTextColorPrimary = ColorHelper.getAttributeColor(mContext,
+                android.R.attr.textColorPrimary);
         mTextColorAccent = ColorHelper.getAttributeColor(mContext, R.attr.colorAccent);
         mSelectedItems = new SparseBooleanArray();
+
+        mShowShadow = (spanCount == 1);
+        mShowPremiumRequest = Preferences.getPreferences(mContext).isPremiumRequestEnabled();
 
         mOptions = ImageConfig.getRawDefaultImageOptions();
         mOptions.resetViewBeforeLoading(true);
@@ -73,72 +91,195 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(
-                R.layout.fragment_request_item_list, parent, false);
-        return new ViewHolder(view);
+        View view = null;
+        if (viewType == TYPE_HEADER) {
+            view = LayoutInflater.from(mContext).inflate(
+                    R.layout.fragment_request_item_header, parent, false);
+        } else if (viewType == TYPE_CONTENT) {
+            view = LayoutInflater.from(mContext).inflate(
+                    R.layout.fragment_request_item_list, parent, false);
+        } else if (viewType == TYPE_FOOTER) {
+            view = LayoutInflater.from(mContext).inflate(
+                    R.layout.fragment_request_item_footer, parent, false);
+        }
+
+        try {
+            if (view != null) {
+                StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams)
+                        view.getLayoutParams();
+
+                if (viewType == TYPE_FOOTER) {
+                    layoutParams.setFullSpan(true);
+                } else {
+                    layoutParams.setFullSpan(false);
+                }
+            }
+        } catch (Exception e) {
+            LogUtil.d(Log.getStackTraceString(e));
+        }
+        return new ViewHolder(view, viewType);
     }
 
     @Override
     public void onViewRecycled(ViewHolder holder) {
         super.onViewRecycled(holder);
-        holder.requested.setTextColor(mTextColorSecondary);
+        if (holder.holderId == TYPE_CONTENT) {
+            holder.content.setTextColor(mTextColorPrimary);
+
+            if (mShowShadow) {
+                holder.divider.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        ImageLoader.getInstance().displayImage(mRequests.get(position).getPackageName(),
-                new ImageViewAware(holder.icon), mOptions.build(), new ImageSize(114, 114), null, null);
+        if (holder.holderId == TYPE_HEADER) {
+            if (Preferences.getPreferences(mContext).isPremiumRequest()) {
+                holder.button.setVisibility(View.GONE);
+                holder.content.setVisibility(View.GONE);
+                holder.container.setVisibility(View.VISIBLE);
 
-        holder.name.setText(mRequests.get(position).getName());
-        holder.activity.setText(mRequests.get(position).getActivity());
+                int total = Preferences.getPreferences(mContext).getPremiumRequestTotal();
+                int available = Preferences.getPreferences(mContext).getPremiumRequestCount();
 
-        if (mRequests.get(position).isRequested()) {
-            holder.requested.setTextColor(mTextColorAccent);
-            holder.requested.setText(mContext.getResources().getString(
-                    R.string.request_already_requested));
-        } else {
-            holder.requested.setText(mContext.getResources().getString(
-                    R.string.request_not_requested));
+                holder.total.setText(String.format(
+                        mContext.getResources().getString(R.string.premium_request_count),
+                        total));
+                holder.available.setText(String.format(
+                        mContext.getResources().getString(R.string.premium_request_available),
+                        available));
+                holder.used.setText(String.format(
+                        mContext.getResources().getString(R.string.premium_request_used),
+                        (total - available)));
+
+                holder.progress.setMax(total);
+                holder.progress.setProgress(available);
+            } else {
+                holder.button.setVisibility(View.VISIBLE);
+                holder.content.setVisibility(View.VISIBLE);
+                holder.container.setVisibility(View.GONE);
+            }
+        } else if (holder.holderId == TYPE_CONTENT) {
+            int finalPosition = mShowPremiumRequest ? position - 1 : position;
+
+            ImageLoader.getInstance().displayImage(mRequests.get(finalPosition).getPackageName(),
+                    new ImageViewAware(holder.icon), mOptions.build(),
+                    new ImageSize(114, 114), null, null);
+
+            holder.title.setText(mRequests.get(finalPosition).getName());
+            holder.subtitle.setText(mRequests.get(finalPosition).getActivity());
+
+            if (mRequests.get(finalPosition).isRequested()) {
+                holder.content.setTextColor(mTextColorAccent);
+                holder.content.setText(mContext.getResources().getString(
+                        R.string.request_already_requested));
+            } else {
+                holder.content.setText(mContext.getResources().getString(
+                        R.string.request_not_requested));
+            }
+
+            holder.checkbox.setChecked(mSelectedItems.get(finalPosition, false));
+
+            if (finalPosition == (mRequests.size() - 1) && mShowShadow) {
+                holder.divider.setVisibility(View.GONE);
+            }
         }
-
-        holder.checkbox.setChecked(mSelectedItems.get(position, false));
     }
 
     @Override
     public int getItemCount() {
-        return mRequests == null ? 0 : mRequests.size();
+        int count = mRequests == null ? 0 : mRequests.size();
+        if (mShowShadow) count += 1;
+        if (mShowPremiumRequest) count += 1;
+        return count;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position == 0 && mShowPremiumRequest) return TYPE_HEADER;
+        if (position == (getItemCount() - 1) && mShowShadow) return TYPE_FOOTER;
+        return TYPE_CONTENT;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
             View.OnLongClickListener {
 
-        final TextView name;
-        final TextView activity;
-        final TextView requested;
-        final ImageView icon;
-        final AppCompatCheckBox checkbox;
-        final LinearLayout container;
+        TextView title;
+        TextView subtitle;
+        TextView content;
+        TextView total;
+        TextView available;
+        TextView used;
+        ImageView icon;
+        AppCompatCheckBox checkbox;
+        AppCompatButton button;
+        LinearLayout container;
+        View divider;
+        ProgressBar progress;
 
-        ViewHolder(View itemView) {
+        int holderId;
+
+        ViewHolder(View itemView, int viewType) {
             super(itemView);
-            name = (TextView) itemView.findViewById(R.id.name);
-            activity = (TextView) itemView.findViewById(R.id.activity);
-            requested = (TextView) itemView.findViewById(R.id.requested);
-            icon = (ImageView) itemView.findViewById(R.id.icon);
-            checkbox = (AppCompatCheckBox) itemView.findViewById(R.id.checkbox);
-            container = (LinearLayout) itemView.findViewById(R.id.container);
+            if (viewType == TYPE_HEADER) {
+                title = (TextView) itemView.findViewById(R.id.title);
+                content = (TextView) itemView.findViewById(R.id.content);
+                button = (AppCompatButton) itemView.findViewById(R.id.buy);
 
-            container.setOnClickListener(this);
-            container.setOnLongClickListener(this);
+                container = (LinearLayout) itemView.findViewById(R.id.premium_request);
+                total = (TextView) itemView.findViewById(R.id.premium_request_total);
+                available = (TextView) itemView.findViewById(R.id.premium_request_available);
+                used = (TextView) itemView.findViewById(R.id.premium_request_used);
+                progress = (ProgressBar) itemView.findViewById(R.id.progress);
+                holderId = TYPE_HEADER;
+
+                int padding = mContext.getResources().getDimensionPixelSize(R.dimen.content_margin) +
+                        mContext.getResources().getDimensionPixelSize(R.dimen.icon_size_small);
+                content.setPadding(padding, 0, 0, 0);
+                container.setPadding(padding, 0, padding, 0);
+
+                int color = ColorHelper.getAttributeColor(mContext, android.R.attr.textColorPrimary);
+                title.setCompoundDrawablesWithIntrinsicBounds(
+                        DrawableHelper.getTintedDrawable(mContext,
+                                R.drawable.ic_toolbar_premium_request, color),
+                        null, null, null);
+
+                int accent = ColorHelper.getAttributeColor(mContext, R.attr.colorAccent);
+                button.setTextColor(ColorHelper.getTitleTextColor(accent));
+
+                progress.getProgressDrawable().setColorFilter(accent, PorterDuff.Mode.SRC_IN);
+
+                button.setOnClickListener(this);
+            } else if (viewType == TYPE_CONTENT) {
+                title = (TextView) itemView.findViewById(R.id.name);
+                subtitle = (TextView) itemView.findViewById(R.id.activity);
+                content = (TextView) itemView.findViewById(R.id.requested);
+                icon = (ImageView) itemView.findViewById(R.id.icon);
+                checkbox = (AppCompatCheckBox) itemView.findViewById(R.id.checkbox);
+                container = (LinearLayout) itemView.findViewById(R.id.container);
+                divider = itemView.findViewById(R.id.divider);
+                holderId = TYPE_CONTENT;
+
+                container.setOnClickListener(this);
+                container.setOnLongClickListener(this);
+            } else if (viewType == TYPE_FOOTER) {
+                holderId = TYPE_FOOTER;
+            }
         }
 
         @Override
         public void onClick(View view) {
             int id = view.getId();
             if (id == R.id.container) {
-                if (toggleSelection(getAdapterPosition())) {
+                int position = mShowPremiumRequest ?
+                        getAdapterPosition() - 1 : getAdapterPosition();
+                if (toggleSelection(position)) {
                     checkbox.toggle();
                 }
+            } else if (id == R.id.buy) {
+                RequestListener listener = (RequestListener) mContext;
+                listener.OnBuyPremiumRequest();
             }
         }
 
@@ -146,7 +287,9 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         public boolean onLongClick(View view) {
             int id = view.getId();
             if (id == R.id.container) {
-                if (toggleSelection(getAdapterPosition())) {
+                int position = mShowPremiumRequest ?
+                        getAdapterPosition() - 1 : getAdapterPosition();
+                if (toggleSelection(position)) {
                     checkbox.toggle();
                     return true;
                 }
@@ -205,6 +348,15 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         return selected;
     }
 
+    public SparseBooleanArray getSelectedItemsArray() {
+        return mSelectedItems;
+    }
+
+    public void setSelectedItemsArray(SparseBooleanArray selectedItems) {
+        mSelectedItems = selectedItems;
+        notifyDataSetChanged();
+    }
+
     public void resetSelectedItems() {
         mSelectedItems.clear();
         try {
@@ -241,5 +393,4 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         }
         return requested;
     }
-
 }

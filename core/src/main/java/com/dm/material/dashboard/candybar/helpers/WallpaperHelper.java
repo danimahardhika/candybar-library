@@ -32,7 +32,7 @@ import com.danimahardhika.cafebar.CafeBarDuration;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
-import com.dm.material.dashboard.candybar.utils.Tag;
+import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -218,7 +218,7 @@ public class WallpaperHelper {
                             return true;
                         }
                     } catch (Exception e) {
-                        Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+                        LogUtil.e(Log.getStackTraceString(e));
                         return false;
                     }
                 }
@@ -300,10 +300,6 @@ public class WallpaperHelper {
 
                     cafeBar.dismiss();
                 });
-
-        if (rootView == null) {
-            builder.fitSystemWindow(R.bool.use_translucent_navigation_bar);
-        }
 
         CafeBar cafeBar = builder.build();
         cafeBar.show();
@@ -458,7 +454,7 @@ public class WallpaperHelper {
                         }
                         return false;
                     } catch (Exception | OutOfMemoryError e) {
-                        Log.d(Tag.LOG_TAG, Log.getStackTraceString(e));
+                        LogUtil.e(Log.getStackTraceString(e));
                         return false;
                     }
                 }
