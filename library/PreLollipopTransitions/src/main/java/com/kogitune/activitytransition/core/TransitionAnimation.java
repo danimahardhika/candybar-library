@@ -31,8 +31,8 @@ import android.widget.ImageView;
 import java.lang.ref.WeakReference;
 
 public class TransitionAnimation {
+
     public static final Object lock = new Object();
-    private static final String TAG = "Transition";
     private static final int MAX_TIME_TO_WAIT = 3000;
     public static WeakReference<Bitmap> bitmapCache;
     public static boolean isImageFileReady = false;
@@ -94,8 +94,7 @@ public class TransitionAnimation {
                 while (!isImageFileReady) {
                     try {
                         lock.wait(MAX_TIME_TO_WAIT);
-                    } catch (InterruptedException e) {
-                    }
+                    } catch (InterruptedException ignored) {}
                 }
             }
             // Cant get bitmap by static field

@@ -29,7 +29,6 @@ import android.view.View;
 import com.kogitune.activitytransition.core.TransitionBundleFactory;
 
 public class ActivityTransitionLauncher {
-    private static final String TAG = "TransitionLauncher";
 
     private final Activity activity;
     private String fromViewName;
