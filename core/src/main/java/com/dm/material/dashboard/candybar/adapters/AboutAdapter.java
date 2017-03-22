@@ -53,8 +53,8 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
 
     private int mItemCount;
 
-    private boolean mCardMode;
-    private boolean mShowContributors;
+    private final boolean mCardMode;
+    private final boolean mShowContributors;
 
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_SUBHEADER = 1;
@@ -114,7 +114,7 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
 
             String profileUri = mContext.getResources().getString(R.string.about_profile_image);
             if (!URLUtil.isValidUrl(profileUri)) {
-                profileUri = "drawable://" + DrawableHelper.getResourceId(mContext, imageUri);
+                profileUri = "drawable://" + DrawableHelper.getResourceId(mContext, profileUri);
             }
 
             ImageLoader.getInstance().displayImage(profileUri, holder.profile,
@@ -146,14 +146,8 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        ImageView image;
-        CircularImageView profile;
-
-        TextView title;
-        HtmlTextView subtitle;
-        AppCompatButton email;
-        AppCompatButton link1;
-        AppCompatButton link2;
+        private ImageView image;
+        private CircularImageView profile;
 
         int holderId;
 
@@ -162,10 +156,10 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
             if (viewType == TYPE_HEADER) {
                 image = (ImageView) itemView.findViewById(R.id.image);
                 profile = (CircularImageView) itemView.findViewById(R.id.profile);
-                subtitle = (HtmlTextView) itemView.findViewById(R.id.subtitle);
-                email = (AppCompatButton) itemView.findViewById(R.id.email);
-                link1 = (AppCompatButton) itemView.findViewById(R.id.link1);
-                link2 = (AppCompatButton) itemView.findViewById(R.id.link2);
+                HtmlTextView subtitle = (HtmlTextView) itemView.findViewById(R.id.subtitle);
+                AppCompatButton email = (AppCompatButton) itemView.findViewById(R.id.email);
+                AppCompatButton link1 = (AppCompatButton) itemView.findViewById(R.id.link1);
+                AppCompatButton link2 = (AppCompatButton) itemView.findViewById(R.id.link2);
                 holderId = TYPE_HEADER;
 
                 subtitle.setHtml(mContext.getResources().getString(R.string.about_desc));
@@ -188,7 +182,7 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
                 link1.setOnClickListener(this);
                 link2.setOnClickListener(this);
             } else if (viewType == TYPE_SUBHEADER) {
-                title = (TextView) itemView.findViewById(R.id.title);
+                TextView title = (TextView) itemView.findViewById(R.id.title);
                 holderId = TYPE_SUBHEADER;
 
                 int color = ColorHelper.getAttributeColor(mContext, android.R.attr.textColorPrimary);
@@ -198,7 +192,7 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
 
                 title.setOnClickListener(this);
             } else if (viewType == TYPE_SUBFOOTER) {
-                title = (TextView) itemView.findViewById(R.id.title);
+                TextView title = (TextView) itemView.findViewById(R.id.title);
                 holderId = TYPE_SUBFOOTER;
 
                 int color = ColorHelper.getAttributeColor(mContext, android.R.attr.textColorPrimary);
@@ -208,8 +202,8 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
 
                 title.setOnClickListener(this);
             } else if (viewType == TYPE_FOOTER) {
-                link2 = (AppCompatButton) itemView.findViewById(R.id.dev_google_plus);
-                link1 = (AppCompatButton) itemView.findViewById(R.id.dev_github);
+                AppCompatButton link2 = (AppCompatButton) itemView.findViewById(R.id.dev_google_plus);
+                AppCompatButton link1 = (AppCompatButton) itemView.findViewById(R.id.dev_github);
                 holderId = TYPE_FOOTER;
 
                 if (!mCardMode) {

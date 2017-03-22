@@ -178,12 +178,12 @@ public class SettingsFragment extends Fragment {
                 "", "", "", Setting.Type.HEADER, -1));
 
         settings.add(new Setting(-1, "",
-                getActivity().getResources().getString(R.string.pref_others_report_bugs),
-                "", "", Setting.Type.REPORT_BUGS, -1));
-
-        settings.add(new Setting(-1, "",
                 getActivity().getResources().getString(R.string.pref_others_report_changelog),
                 "", "", Setting.Type.CHANGELOG, -1));
+
+        settings.add(new Setting(-1, "",
+                getActivity().getResources().getString(R.string.pref_others_report_bugs),
+                "", "", Setting.Type.REPORT_BUGS, -1));
 
         mRecyclerView.setAdapter(new SettingsAdapter(getActivity(), settings));
     }
@@ -222,7 +222,7 @@ public class SettingsFragment extends Fragment {
                         File directory = getActivity().getCacheDir();
                         File appFilter = new File(directory.toString() + "/" + "appfilter.xml");
 
-                        requests = database.getPremiumRequest();
+                        requests = database.getPremiumRequest(null);
 
                         if (requests.size() == 0) return true;
 
@@ -298,5 +298,4 @@ public class SettingsFragment extends Fragment {
 
         }.execute();
     }
-
 }

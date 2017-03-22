@@ -156,11 +156,11 @@ public class WallpapersAdapter extends RecyclerView.Adapter<WallpapersAdapter.Vi
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
             View.OnLongClickListener {
 
-        CardView card;
-        LinearLayout container;
-        ImageView image;
-        TextView name;
-        TextView author;
+        private CardView card;
+        private LinearLayout container;
+        private final ImageView image;
+        private TextView name;
+        private TextView author;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -219,5 +219,4 @@ public class WallpapersAdapter extends RecyclerView.Adapter<WallpapersAdapter.Vi
         }
 
     }
-
 }

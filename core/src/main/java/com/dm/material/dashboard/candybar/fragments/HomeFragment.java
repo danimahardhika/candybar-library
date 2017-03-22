@@ -73,7 +73,7 @@ public class HomeFragment extends Fragment implements HomeListener{
     }
 
     @Override
-    public void OnHomeDataUpdated(Home home) {
+    public void onHomeDataUpdated(Home home) {
         if (mRecyclerView == null) return;
         if (mRecyclerView.getAdapter() == null) return;
 

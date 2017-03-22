@@ -23,10 +23,10 @@ import android.support.annotation.NonNull;
 
 public class Home {
 
-    private int mIcon;
-    private String mTitle;
-    private String mSubtitle;
-    private Home.Type mType;
+    private final int mIcon;
+    private final String mTitle;
+    private final String mSubtitle;
+    private final Home.Type mType;
 
     public Home(@DrawableRes int icon, String title, String subtitle, @NonNull Home.Type type) {
         mIcon = icon;
@@ -58,7 +58,7 @@ public class Home {
         ICONS(2),
         DIMENSION(3);
 
-        private int mType;
+        private final int mType;
 
         Type(int type) {
             mType = type;

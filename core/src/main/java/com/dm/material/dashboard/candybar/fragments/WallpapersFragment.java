@@ -147,7 +147,7 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
             popupBubble.setCompoundDrawablesWithIntrinsicBounds(DrawableHelper.getTintedDrawable(
                     getActivity(), R.drawable.ic_toolbar_arrow_up, color), null, null, null);
             popupBubble.setOnClickListener(this);
-            Animator.startSlideDownAnimation(getActivity(), popupBubble, null);
+            Animator.startSlideDownAnimation(getActivity(), popupBubble);
         }
     }
 
@@ -236,7 +236,7 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
                     mRecyclerView.setAdapter(new WallpapersAdapter(getActivity(), wallpapers));
 
                     WallpapersListener listener = (WallpapersListener) getActivity();
-                    listener.OnWallpapersChecked(new Intent().putExtra("size",
+                    listener.onWallpapersChecked(new Intent().putExtra("size",
                             Preferences.getPreferences(getActivity()).getAvailableWallpapersCount()));
                 } else {
                     Toast.makeText(getActivity(), R.string.connection_failed,

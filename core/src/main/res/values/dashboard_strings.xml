@@ -82,7 +82,7 @@
 
     <!-- Apply -->
     <string name="apply_installed">Installed Launcher</string>
-    <string name="apply_supported">Supported Launcher</string>
+    <string name="apply_supported">Supported Launchers</string>
 
     <string name="apply_manual">doesn\'t support direct apply, you can apply %s manually from the launchers settings.</string>
     <string name="apply_launch_failed">Unable to launch %s settings</string>
@@ -111,7 +111,7 @@
     <string name="request_appfilter_failed">Unable to read appfilter.xml</string>
     <string name="request_requested">Please check your request again.
         Because you are trying to request app that was already requested.</string>
-    <string name="request_email_client">Choose email client you want to use to send icon request</string>
+    <string name="request_email_client">Choose the email client you want to use to send the icon request</string>
 
     <string name="request_limit">You are only able to make %d request(s) with regular request.</string>
     <string name="request_used">You have requested %d icon(s).</string>
@@ -224,8 +224,12 @@
     <string name="about_open_source_licenses">Open Source Licenses</string>
 
     <!-- Report Bugs -->
+    <string name="report_bugs_desc">Please give a description about what kind of problem that you want to report</string>
+    <string name="report_bugs_desc_hint">Description</string>
+    <string name="report_bugs_desc_empty">Please give a description</string>
     <string name="report_bugs_building">Building activity list …</string>
     <string name="report_bugs_failed">Unable to build activity list</string>
+    <string name="report_bugs_send">Send Report</string>
 
     <!-- Support Development -->
     <string name="donation_success">Thank you for making a donation. I will use it for good.</string>

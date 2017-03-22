@@ -49,7 +49,7 @@ public class IconsAdapter extends RecyclerView.Adapter<IconsAdapter.ViewHolder> 
     private final Context mContext;
     private final List<Icon> mIcons;
     private List<Icon> mIconsAll;
-    private DisplayImageOptions.Builder mOptions;
+    private final DisplayImageOptions.Builder mOptions;
 
     private final boolean mIsShowIconName;
 
@@ -97,9 +97,9 @@ public class IconsAdapter extends RecyclerView.Adapter<IconsAdapter.ViewHolder> 
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        final ImageView icon;
-        final TextView name;
-        final LinearLayout container;
+        private final ImageView icon;
+        private final TextView name;
+        private final LinearLayout container;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -121,8 +121,8 @@ public class IconsAdapter extends RecyclerView.Adapter<IconsAdapter.ViewHolder> 
         }
     }
 
-    public void search(String query) {
-        query = query.toLowerCase(Locale.getDefault());
+    public void search(String string) {
+        String query = string.toLowerCase(Locale.getDefault());
         mIcons.clear();
         if (query.length() == 0) mIcons.addAll(mIconsAll);
         else {
@@ -136,5 +136,4 @@ public class IconsAdapter extends RecyclerView.Adapter<IconsAdapter.ViewHolder> 
         }
         notifyDataSetChanged();
     }
-
 }

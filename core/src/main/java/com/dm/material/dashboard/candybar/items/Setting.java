@@ -1,5 +1,9 @@
 package com.dm.material.dashboard.candybar.items;
 
+import android.support.annotation.DrawableRes;
+import android.support.annotation.IntRange;
+import android.support.annotation.NonNull;
+
 /*
  * CandyBar - Material Dashboard
  *
@@ -18,19 +22,15 @@ package com.dm.material.dashboard.candybar.items;
  * limitations under the License.
  */
 
-import android.support.annotation.DrawableRes;
-import android.support.annotation.IntRange;
-import android.support.annotation.NonNull;
-
 public class Setting {
 
-    private int mIcon;
-    private String mTitle;
-    private String mSubtitle;
-    private String mContent;
+    private final int mIcon;
+    private final String mTitle;
+    private final String mSubtitle;
+    private final String mContent;
     private String mFooter;
-    private Setting.Type mType;
-    private int mCheckState;
+    private final Setting.Type mType;
+    private final int mCheckState;
 
     public Setting(@DrawableRes int icon, String title, String subtitle, String content, String footer,
                    @NonNull Setting.Type type, @IntRange(from = -1, to = 1) int checkState) {
@@ -87,7 +87,7 @@ public class Setting {
        REPORT_BUGS(6),
        CHANGELOG(7);
 
-       private int mType;
+       private final int mType;
 
        Type(int type) {
            mType = type;

@@ -144,20 +144,19 @@ public class RequestHelper {
                     if (fragment == null) return;
 
                     HomeListener listener = (HomeListener) fragment;
-                    listener.OnHomeDataUpdated(null);
+                    listener.onHomeDataUpdated(null);
                 }
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public static String writeRequest(@NonNull Request request) {
-        String link = "https://play.google.com/store/apps/details?id=";
         return "\n\n" +
                 request.getName() +
                 "\n" +
                 request.getActivity() +
                 "\n" +
-                link + request.getPackageName();
+                "https://play.google.com/store/apps/details?id=" + request.getPackageName();
     }
 
     public static String writeAppFilter(@NonNull Request request) {
@@ -262,7 +261,7 @@ public class RequestHelper {
         if (!premiumRequest) {
             Preferences.getPreferences(context).setPremiumRequestEnabled(false);
             RequestListener listener = (RequestListener) context;
-            listener.OnPiracyAppChecked(true);
+            listener.onPiracyAppChecked(true);
             return;
         }
 
@@ -293,6 +292,6 @@ public class RequestHelper {
         Preferences.getPreferences(context).setPremiumRequestEnabled(!isPiracyAppInstalled);
 
         RequestListener listener = (RequestListener) context;
-        listener.OnPiracyAppChecked(isPiracyAppInstalled);
+        listener.onPiracyAppChecked(isPiracyAppInstalled);
     }
 }

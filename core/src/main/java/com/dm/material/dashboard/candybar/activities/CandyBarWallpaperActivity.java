@@ -106,8 +106,7 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
         TextView toolbarTitle = (TextView) findViewById(R.id.toolbar_title);
         TextView toolbarSubTitle = (TextView) findViewById(R.id.toolbar_subtitle);
 
-        ViewHelper.resetNavigationBarTranslucent(this,
-                true, getResources().getConfiguration().orientation);
+        ViewHelper.resetNavigationBarTranslucent(this, getResources().getConfiguration().orientation);
 
         ColorHelper.setTransparentStatusBar(this,
                 ContextCompat.getColor(this, R.color.wallpaperStatusBar));
@@ -153,8 +152,8 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
                     public void onTransitionEnd(Transition transition) {
                         if (mIsEnter) {
                             mIsEnter = false;
-                            Animator.startSlideDownAnimation(CandyBarWallpaperActivity.this,
-                                    toolbar, null);
+                            Animator.startSlideDownAnimation(
+                                    CandyBarWallpaperActivity.this, toolbar);
                             loadWallpaper(mUrl);
                         }
                     }
@@ -191,8 +190,7 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        ViewHelper.resetNavigationBarTranslucent(this,
-                true, newConfig.orientation);
+        ViewHelper.resetNavigationBarTranslucent(this, newConfig.orientation);
     }
 
     @Override
@@ -322,7 +320,7 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
                 super.onLoadingFailed(imageUri, view, failReason);
                 int text = ColorHelper.getTitleTextColor(mColor);
-                OnWallpaperLoaded(text);
+                onWallpaperLoaded(text);
             }
 
             @Override
@@ -340,16 +338,15 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
                         mColor = color;
                         int text = ColorHelper.getTitleTextColor(color);
                         mFab.setBackgroundTintList(ColorHelper.getColorStateList(
-                                android.R.attr.state_pressed,
                                 color, ColorHelper.getDarkerColor(color, 0.9f)));
-                        OnWallpaperLoaded(text);
+                        onWallpaperLoaded(text);
                     });
                 }
             }
         });
     }
 
-    private void OnWallpaperLoaded(@ColorInt int textColor) {
+    private void onWallpaperLoaded(@ColorInt int textColor) {
         mAttacher = new PhotoViewAttacher(mWallpaper);
         mAttacher.setScaleType(ImageView.ScaleType.CENTER_CROP);
         mProgress.setVisibility(View.GONE);

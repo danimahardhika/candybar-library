@@ -120,9 +120,9 @@ public class LauncherAdapter extends RecyclerView.Adapter<LauncherAdapter.ViewHo
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        TextView name;
-        ImageView icon;
-        LinearLayout container;
+        private TextView name;
+        private ImageView icon;
+        private LinearLayout container;
 
         int holderId;
 

@@ -198,7 +198,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 
                     try {
                         InAppBillingListener listener = (InAppBillingListener) getActivity();
-                        listener.OnInAppBillingRequest();
+                        listener.onInAppBillingRequest();
                     } catch (Exception ignored) {}
                     return;
                 }
@@ -216,7 +216,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                         return;
                     }
 
-                    Preferences.getPreferences(getActivity()).setRegularRequestUsed(selected);
+                    Preferences.getPreferences(getActivity()).setRegularRequestUsed((used + selected));
                 }
 
                 sendRequest(null);
@@ -242,7 +242,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         mRecyclerView.setPadding(padding, padding, 0, size + (marginGlobal * 2));
     }
 
-    public void OnInAppBillingSent(BillingProcessor billingProcessor) {
+    public void onInAppBillingSent(BillingProcessor billingProcessor) {
         sendRequest(billingProcessor);
     }
 
@@ -375,7 +375,13 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                             if (icon != null) files.add(icon);
 
                             if (Preferences.getPreferences(getActivity()).isPremiumRequest()) {
-                                database.addPremiumRequest(orderId, productId, item.getName(), item.getActivity());
+                                database.addPremiumRequest(
+                                        null,
+                                        orderId,
+                                        productId,
+                                        item.getName(),
+                                        item.getActivity(),
+                                        null);
                             }
                         }
 
@@ -407,7 +413,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                             zipFile, mAdapter.getSelectedItemsSize());
                     try {
                         RequestListener listener = (RequestListener) getActivity();
-                        listener.OnRequestBuilt(request);
+                        listener.onRequestBuilt(request);
                     } catch (Exception ignored) {}
                     mAdapter.resetSelectedItems();
                 } else {

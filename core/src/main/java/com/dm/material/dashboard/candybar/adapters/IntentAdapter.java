@@ -135,11 +135,11 @@ public class IntentAdapter extends BaseAdapter {
 
     private class ViewHolder {
 
-        final TextView name;
-        final TextView type;
-        final ImageView icon;
-        final LinearLayout container;
-        final View divider;
+        private final TextView name;
+        private final TextView type;
+        private final ImageView icon;
+        private final LinearLayout container;
+        private final View divider;
 
         ViewHolder(View view) {
             name = (TextView) view.findViewById(R.id.name);

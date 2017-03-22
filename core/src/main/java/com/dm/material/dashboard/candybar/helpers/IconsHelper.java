@@ -148,6 +148,11 @@ public class IconsHelper {
                         BitmapFactory.decodeResource(context.getResources(),
                                 icon.getRes(), options);
 
+                        if (!context.getResources().getBoolean(R.bool.show_icon_name)) {
+                            String name = replaceName(context, true, icon.getTitle());
+                            icon.setTitle(name);
+                        }
+
                         home = new Home(
                                 icon.getRes(),
                                 icon.getTitle(),
@@ -179,7 +184,7 @@ public class IconsHelper {
                     if (fragment == null) return;
 
                     HomeListener listener = (HomeListener) fragment;
-                    listener.OnHomeDataUpdated(home);
+                    listener.onHomeDataUpdated(home);
                 }
             }
         }.execute();

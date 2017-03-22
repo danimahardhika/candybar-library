@@ -64,6 +64,13 @@ public class FileHelper {
         return 0;
     }
 
+    public static void clearCache(@NonNull File cache) {
+        if (cache.isDirectory())
+            for (File child : cache.listFiles())
+                clearCache(child);
+        cache.delete();
+    }
+
     static boolean copyFile(@NonNull File file, @NonNull File target) {
         try {
             if (!target.getParentFile().exists()) {

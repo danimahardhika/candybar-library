@@ -23,6 +23,6 @@ import android.support.annotation.Nullable;
 
 public interface WallpapersListener {
 
-    void OnWallpapersChecked(@Nullable Intent intent);
+    void onWallpapersChecked(@Nullable Intent intent);
 
 }

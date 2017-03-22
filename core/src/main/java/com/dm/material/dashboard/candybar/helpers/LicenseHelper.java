@@ -124,7 +124,7 @@ public class LicenseHelper implements LicenseCheckerCallback {
                 .content(message)
                 .positiveText(R.string.close)
                 .onPositive((dialog, which) -> {
-                    OnLicenseChecked(reason);
+                    onLicenseChecked(reason);
                     dialog.dismiss();
                 })
                 .cancelable(false)
@@ -143,7 +143,7 @@ public class LicenseHelper implements LicenseCheckerCallback {
                 .show();
     }
 
-    private void OnLicenseChecked(int reason) {
+    private void onLicenseChecked(int reason) {
         Preferences.getPreferences(mContext).setFirstRun(false);
         if (reason == Policy.LICENSED) {
             Preferences.getPreferences(mContext).setLicensed(true);

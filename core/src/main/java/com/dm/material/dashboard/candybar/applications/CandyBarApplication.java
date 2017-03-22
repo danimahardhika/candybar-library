@@ -85,5 +85,4 @@ public class CandyBarApplication extends Application {
         }
         System.exit(1);
     }
-
 }

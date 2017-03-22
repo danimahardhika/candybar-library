@@ -90,9 +90,9 @@ public class CreditsAdapter extends BaseAdapter {
 
     class ViewHolder {
 
-        LinearLayout container;
-        TextView title;
-        TextView subtitle;
+        private final LinearLayout container;
+        private final TextView title;
+        private final TextView subtitle;
 
         ViewHolder(View view) {
             container = (LinearLayout) view.findViewById(R.id.container);

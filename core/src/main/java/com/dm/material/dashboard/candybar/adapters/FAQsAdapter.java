@@ -35,7 +35,7 @@ import java.util.Locale;
 
 public class FAQsAdapter extends RecyclerView.Adapter<FAQsAdapter.ViewHolder> {
 
-    private List<FAQs> mFAQs;
+    private final List<FAQs> mFAQs;
     private final List<FAQs> mFAQsAll;
 
     private static final int TYPE_CONTENT = 0;
@@ -93,11 +93,11 @@ public class FAQsAdapter extends RecyclerView.Adapter<FAQsAdapter.ViewHolder> {
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView question;
-        TextView answer;
-        View divider;
+        private TextView question;
+        private TextView answer;
+        private View divider;
 
-        int holderId;
+        private int holderId;
 
         ViewHolder(View itemView, int viewType) {
             super(itemView);

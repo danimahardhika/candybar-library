@@ -57,7 +57,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
     private final Context mContext;
     private final List<Request> mRequests;
     private SparseBooleanArray mSelectedItems;
-    private DisplayImageOptions.Builder mOptions;
+    private final DisplayImageOptions.Builder mOptions;
 
     private final int mTextColorPrimary;
     private final int mTextColorAccent;
@@ -205,20 +205,20 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
             View.OnLongClickListener {
 
-        TextView title;
-        TextView subtitle;
-        TextView content;
-        TextView total;
-        TextView available;
-        TextView used;
-        ImageView icon;
-        AppCompatCheckBox checkbox;
-        AppCompatButton button;
-        LinearLayout container;
-        View divider;
-        ProgressBar progress;
+        private TextView title;
+        private TextView subtitle;
+        private TextView content;
+        private TextView total;
+        private TextView available;
+        private TextView used;
+        private ImageView icon;
+        private AppCompatCheckBox checkbox;
+        private AppCompatButton button;
+        private LinearLayout container;
+        private View divider;
+        private ProgressBar progress;
 
-        int holderId;
+        private int holderId;
 
         ViewHolder(View itemView, int viewType) {
             super(itemView);
@@ -279,7 +279,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
                 }
             } else if (id == R.id.buy) {
                 RequestListener listener = (RequestListener) mContext;
-                listener.OnBuyPremiumRequest();
+                listener.onBuyPremiumRequest();
             }
         }
 
@@ -305,7 +305,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
             else mSelectedItems.put(position, true);
             try {
                 RequestListener listener = (RequestListener) mContext;
-                listener.OnSelected(getSelectedItemsSize());
+                listener.onRequestSelected(getSelectedItemsSize());
                 return true;
             } catch (Exception ignored) {}
         }
@@ -328,7 +328,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         notifyDataSetChanged();
         try {
             RequestListener listener = (RequestListener) mContext;
-            listener.OnSelected(getSelectedItemsSize());
+            listener.onRequestSelected(getSelectedItemsSize());
         } catch (Exception ignored) {}
     }
 
@@ -361,7 +361,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         mSelectedItems.clear();
         try {
             RequestListener listener = (RequestListener) mContext;
-            listener.OnSelected(getSelectedItemsSize());
+            listener.onRequestSelected(getSelectedItemsSize());
         } catch (Exception ignored) {}
         notifyDataSetChanged();
     }

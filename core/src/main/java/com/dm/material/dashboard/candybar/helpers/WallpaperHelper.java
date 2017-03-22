@@ -332,7 +332,7 @@ public class WallpaperHelper {
         if (scaledWidth == 0) scaledWidth = width;
         if (scaledHeight == 0) scaledHeight = height;
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             int statusBarHeight = ViewHelper.getStatusBarHeight(context);
             double scale = (double) (scaledHeight - statusBarHeight) / (double) scaledHeight;
 
@@ -366,13 +366,13 @@ public class WallpaperHelper {
         String imageUri = getWallpaperUri(context, url, name + FileHelper.IMAGE_EXTENSION);
 
         ImageSize imageSize = getScaledSize(context, url);
-        loadBitmap(context, dialog, 1, imageUri, rectF, imageSize.getWidth(), imageSize.getHeight());
+        loadBitmap(context, dialog, 1, imageUri, rectF, imageSize);
     }
 
     private static void loadBitmap(Context context, MaterialDialog dialog, int call, String imageUri,
-                                   RectF rectF, int width, int height) {
+                                   RectF rectF, ImageSize imageSize) {
         final AsyncTask<Bitmap, Void, Boolean> setWallpaper = getWallpaperAsync(
-                context, dialog, rectF, width, height);
+                context, dialog, rectF);
 
         dialog.setOnDismissListener(dialogInterface -> {
             ImageLoader.getInstance().stop();
@@ -380,7 +380,7 @@ public class WallpaperHelper {
         });
 
         ImageLoader.getInstance().handleSlowNetwork(true);
-        ImageLoader.getInstance().loadImage(imageUri, new ImageSize(width, height),
+        ImageLoader.getInstance().loadImage(imageUri, imageSize,
                 ImageConfig.getWallpaperOptions(), new ImageLoadingListener() {
 
                     @Override
@@ -396,11 +396,12 @@ public class WallpaperHelper {
                         if (failReason.getType() == FailReason.FailType.OUT_OF_MEMORY) {
                             if (call <= 5) {
                                 double scaleFactor = 1 - (0.1 * call);
-                                int scaledWidth = Double.valueOf(width * scaleFactor).intValue();
-                                int scaledHeight = Double.valueOf(height * scaleFactor).intValue();
+                                int scaledWidth = Double.valueOf(imageSize.getWidth() * scaleFactor).intValue();
+                                int scaledHeight = Double.valueOf(imageSize.getHeight() * scaleFactor).intValue();
 
                                 RectF scaledRecF = getScaledRectF(rectF, (float) scaleFactor);
-                                loadBitmap(context, dialog, (call + 1), imageUri, scaledRecF, scaledWidth, scaledHeight);
+                                loadBitmap(context, dialog, (call + 1), imageUri, scaledRecF,
+                                        new ImageSize(scaledWidth, scaledHeight));
                                 return;
                             }
                         }
@@ -426,8 +427,8 @@ public class WallpaperHelper {
                 });
     }
 
-    private static AsyncTask<Bitmap, Void, Boolean> getWallpaperAsync(@NonNull Context context, MaterialDialog dialog,
-                                                                      RectF rectF, int width, int height) {
+    private static AsyncTask<Bitmap, Void, Boolean> getWallpaperAsync(Context context, MaterialDialog dialog,
+                                                                      RectF rectF) {
         return new AsyncTask<Bitmap, Void, Boolean>() {
 
             @Override
@@ -440,11 +441,22 @@ public class WallpaperHelper {
                             Bitmap bitmap = bitmaps[0];
 
                             if (!Preferences.getPreferences(context).isScrollWallpaper() && rectF != null) {
-                                bitmap = Bitmap.createBitmap(width, height, bitmaps[0].getConfig());
+                                Point point = ViewHelper.getRealScreenSize(context);
+
+                                int targetWidth = Double.valueOf(
+                                        ((double) bitmaps[0].getHeight() / (double) point.y)
+                                                * (double) point.x).intValue();
+
+                                bitmap = Bitmap.createBitmap(
+                                        targetWidth,
+                                        bitmaps[0].getHeight(),
+                                        bitmaps[0].getConfig());
+
                                 Paint paint = new Paint();
                                 paint.setFilterBitmap(true);
                                 paint.setAntiAlias(true);
                                 paint.setDither(true);
+
                                 Canvas canvas = new Canvas(bitmap);
                                 canvas.drawBitmap(bitmaps[0], null, rectF, paint);
                             }

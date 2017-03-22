@@ -21,9 +21,9 @@ package com.dm.material.dashboard.candybar.items;
 public class Wallpaper {
 
     private final String mUrl;
-    private String mThumbUrl;
-    private String mAuthor;
-    private String mName;
+    private final String mThumbUrl;
+    private final String mAuthor;
+    private final String mName;
 
     public Wallpaper(String name, String author, String url, String thumbUrl) {
         mName = name;

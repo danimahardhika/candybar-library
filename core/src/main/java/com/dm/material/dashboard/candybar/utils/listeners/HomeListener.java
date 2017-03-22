@@ -1,5 +1,9 @@
 package com.dm.material.dashboard.candybar.utils.listeners;
 
+import android.support.annotation.Nullable;
+
+import com.dm.material.dashboard.candybar.items.Home;
+
 /*
  * CandyBar - Material Dashboard
  *
@@ -18,11 +22,7 @@ package com.dm.material.dashboard.candybar.utils.listeners;
  * limitations under the License.
  */
 
-import android.support.annotation.Nullable;
-
-import com.dm.material.dashboard.candybar.items.Home;
-
 public interface HomeListener {
 
-    void OnHomeDataUpdated(@Nullable Home home);
+    void onHomeDataUpdated(@Nullable Home home);
 }

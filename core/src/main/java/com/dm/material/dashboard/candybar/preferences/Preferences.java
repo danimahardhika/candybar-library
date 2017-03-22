@@ -25,8 +25,8 @@ import com.dm.material.dashboard.candybar.helpers.PreferencesHelper;
 
 public class Preferences {
 
+    @NonNull
     public static PreferencesHelper getPreferences(@NonNull Context context) {
         return new PreferencesHelper(context);
     }
-
 }

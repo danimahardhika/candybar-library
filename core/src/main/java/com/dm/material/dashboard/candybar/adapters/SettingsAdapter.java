@@ -55,10 +55,10 @@ import java.util.List;
 
 public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHolder> {
 
-    private Context mContext;
-    private List<Setting> mSettings;
+    private final Context mContext;
+    private final List<Setting> mSettings;
 
-    private File mCache;
+    private final File mCache;
 
     private static final int TYPE_CONTENT = 0;
     private static final int TYPE_FOOTER = 1;
@@ -147,15 +147,15 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        TextView title;
-        TextView subtitle;
-        TextView content;
-        TextView footer;
-        LinearLayout container;
-        AppCompatCheckBox checkBox;
-        View divider;
+        private TextView title;
+        private TextView subtitle;
+        private TextView content;
+        private TextView footer;
+        private LinearLayout container;
+        private AppCompatCheckBox checkBox;
+        private View divider;
 
-        int holderId;
+        private int holderId;
 
         public ViewHolder(View itemView, int viewType) {
             super(itemView);
@@ -192,7 +192,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
                                 .negativeText(android.R.string.cancel)
                                 .onPositive((dialog, which) -> {
                                     try {
-                                        clearCache(mCache);
+                                        FileHelper.clearCache(mCache);
 
                                         double cache = (double) FileHelper.getCacheSize(
                                                 mContext.getCacheDir()) / FileHelper.MB;
@@ -230,7 +230,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
                     case RESTORE:
                         try {
                             InAppBillingListener listener = (InAppBillingListener) mContext;
-                            listener.OnRestorePurchases();
+                            listener.onRestorePurchases();
                         } catch (Exception ignored) {}
                         break;
                     case PREMIUM_REQUEST:
@@ -249,7 +249,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
                         ((AppCompatActivity) mContext).recreate();
                         break;
                     case REPORT_BUGS:
-                        ReportBugsHelper.checkForBugs(mContext);
+                        ReportBugsHelper.prepareReportBugs(mContext);
                         break;
                     case CHANGELOG:
                         ChangelogFragment.showChangelog(((AppCompatActivity) mContext).getSupportFragmentManager());
@@ -257,12 +257,5 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
                 }
             }
         }
-    }
-
-    private void clearCache(File fileOrDirectory) {
-        if (fileOrDirectory.isDirectory())
-            for (File child : fileOrDirectory.listFiles())
-                clearCache(child);
-        fileOrDirectory.delete();
     }
 }

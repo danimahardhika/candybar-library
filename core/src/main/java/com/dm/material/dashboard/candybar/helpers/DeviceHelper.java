@@ -59,5 +59,4 @@ public class DeviceHelper {
         return "Icon Pack Name : " +context.getResources().getString(R.string.app_name)
                 + "\n"+ getDeviceInfo(context);
     }
-
 }

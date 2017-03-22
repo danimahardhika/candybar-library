@@ -3,7 +3,9 @@ package com.dm.material.dashboard.candybar.receivers;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
+import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.dm.material.dashboard.candybar.utils.listeners.WallpapersListener;
 
 /*
@@ -30,9 +32,13 @@ public class CandyBarBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent == null) return;
+        try {
+            if (intent == null) return;
 
-        WallpapersListener listener = (WallpapersListener) context;
-        listener.OnWallpapersChecked(intent);
+            WallpapersListener listener = (WallpapersListener) context;
+            listener.onWallpapersChecked(intent);
+        } catch (Exception e) {
+            LogUtil.e(Log.getStackTraceString(e));
+        }
     }
 }

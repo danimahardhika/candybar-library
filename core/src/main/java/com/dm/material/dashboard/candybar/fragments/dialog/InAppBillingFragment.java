@@ -118,7 +118,7 @@ public class InAppBillingFragment extends DialogFragment {
                     if (mLoadInAppProducts == null) {
                         try {
                             InAppBillingListener listener = (InAppBillingListener) getActivity();
-                            listener.OnInAppBillingSelected(
+                            listener.onInAppBillingSelected(
                                     mType, mAdapter.getSelectedProduct());
                         } catch (Exception ignored) {}
                         dismiss();

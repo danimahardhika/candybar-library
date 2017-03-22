@@ -48,15 +48,8 @@ import com.pluscubed.recyclerfastscroll.RecyclerFastScroller;
 
 public class ViewHelper {
 
-    public static void resetNavigationBarTranslucent(@NonNull Context context, boolean translucent, int orientation) {
+    public static void resetNavigationBarTranslucent(@NonNull Context context, int orientation) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if (!translucent) {
-                int color = ContextCompat.getColor(context, Preferences.getPreferences(context).isDarkTheme() ?
-                        R.color.navigationBarDark : R.color.navigationBar);
-                ColorHelper.setNavigationBarColor(context, color);
-                return;
-            }
-
             boolean tabletMode = context.getResources().getBoolean(R.bool.tablet_mode);
 
             if (tabletMode || orientation == Configuration.ORIENTATION_PORTRAIT) {

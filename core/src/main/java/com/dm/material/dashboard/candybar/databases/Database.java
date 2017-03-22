@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.dm.material.dashboard.candybar.helpers.TimeHelper;
@@ -174,9 +175,10 @@ public class Database extends SQLiteOpenHelper {
         return rowCount > 0;
     }
 
-    private List<Request> getRequestedApps(SQLiteDatabase db) {
+    public List<Request> getRequestedApps(@Nullable SQLiteDatabase db) {
         List<Request> requests = new ArrayList<>();
-        if (db == null) return requests;
+        if (db == null) db = this.getReadableDatabase();
+
         try {
             Cursor cursor = db.query(TABLE_REQUEST, null, null, null, null, null, null);
             if (cursor.moveToFirst()) {
@@ -196,28 +198,19 @@ public class Database extends SQLiteOpenHelper {
         return requests;
     }
 
-    public void addPremiumRequest(String orderId, String productId, String name, String activity) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(KEY_ORDER_ID, orderId);
-        values.put(KEY_PRODUCT_ID, productId);
-        values.put(KEY_NAME, name);
-        values.put(KEY_ACTIVITY, activity);
-
-        db.insert(TABLE_PREMIUM_REQUEST, null, values);
-        db.close();
-    }
-
-    private void addPremiumRequest(SQLiteDatabase db, String orderId, String productId, String name,
+    public void addPremiumRequest(@Nullable SQLiteDatabase db, String orderId, String productId, String name,
                                    String activity, String requestedOn) {
-        if (db == null) return;
+        if (db == null) db = this.getWritableDatabase();
+
         try {
             ContentValues values = new ContentValues();
             values.put(KEY_ORDER_ID, orderId);
             values.put(KEY_PRODUCT_ID, productId);
             values.put(KEY_NAME, name);
             values.put(KEY_ACTIVITY, activity);
-            values.put(KEY_REQUESTED_ON, requestedOn);
+
+            if (requestedOn != null)
+                values.put(KEY_REQUESTED_ON, requestedOn);
 
             db.insert(TABLE_PREMIUM_REQUEST, null, values);
         } catch (Exception e) {
@@ -225,29 +218,10 @@ public class Database extends SQLiteOpenHelper {
         }
     }
 
-    public List<Request> getPremiumRequest() {
+    public List<Request> getPremiumRequest(@Nullable SQLiteDatabase db) {
         List<Request> requests = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_PREMIUM_REQUEST,
-                null, null, null, null, null, null);
-        if (cursor.moveToFirst()) {
-            do {
-                Request request = new Request(
-                        cursor.getString(1),
-                        cursor.getString(2),
-                        cursor.getString(3),
-                        cursor.getString(4));
-                requests.add(request);
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        db.close();
-        return requests;
-    }
+        if (db == null) db = this.getReadableDatabase();
 
-    private List<Request> getPremiumRequest(SQLiteDatabase db) {
-        List<Request> requests = new ArrayList<>();
-        if (db == null) return requests;
         try {
             Cursor cursor = db.query(TABLE_PREMIUM_REQUEST,
                     null, null, null, null, null, null);

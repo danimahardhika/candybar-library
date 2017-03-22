@@ -72,7 +72,7 @@ public class ChangelogAdapter extends BaseAdapter {
 
     private class ViewHolder {
 
-        final HtmlTextView changelog;
+        private final HtmlTextView changelog;
 
         ViewHolder(View view) {
             changelog = (HtmlTextView) view.findViewById(R.id.changelog);
@@ -84,5 +84,4 @@ public class ChangelogAdapter extends BaseAdapter {
         }
 
     }
-
 }

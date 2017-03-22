@@ -120,7 +120,7 @@ public class IconsBaseFragment extends Fragment {
                                 if (adapter == null) return;
 
                                 SearchListener listener = (SearchListener) getActivity();
-                                listener.OnSearchExpanded(true);
+                                listener.onSearchExpanded(true);
 
                                 FragmentTransaction ft = fm.beginTransaction()
                                         .replace(R.id.container, new IconsSearchFragment(), IconsSearchFragment.TAG)

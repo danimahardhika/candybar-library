@@ -20,6 +20,6 @@ package com.dm.material.dashboard.candybar.utils.listeners;
 
 public interface SearchListener {
 
-    void OnSearchExpanded(boolean expand);
+    void onSearchExpanded(boolean expand);
 
 }

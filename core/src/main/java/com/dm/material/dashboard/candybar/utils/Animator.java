@@ -44,24 +44,8 @@ public class Animator {
         view.startAnimation(alphaAnimation);
     }
 
-    public static void startSlideDownAnimation(@NonNull Context context, @NonNull View view, @Nullable View view2) {
+    public static void startSlideDownAnimation(@NonNull Context context, @NonNull View view) {
         Animation slideDown = AnimationUtils.loadAnimation(context, R.anim.slide_down_from_top);
-        slideDown.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                if (view2 != null) startAlphaAnimation(view2, 200, View.VISIBLE);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
         view.startAnimation(slideDown);
         view.setVisibility(View.VISIBLE);
     }

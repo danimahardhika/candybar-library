@@ -62,8 +62,8 @@ import me.grantland.widget.AutofitTextView;
 
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
-    private Context mContext;
-    private List<Home> mHomes;
+    private final Context mContext;
+    private final List<Home> mHomes;
 
     private int mItemsCount;
     private int mOrientation;
@@ -254,21 +254,18 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        ImageView image;
-        ImageView share;
-        TextView title;
-        TextView subtitle;
-        TextView muzei;
-        TextView installedApps;
-        TextView themedApps;
-        TextView missedApps;
-        HtmlTextView content;
-        AutofitTextView autoFitTitle;
-        AppCompatButton rate;
-        LinearLayout container;
-        ProgressBar progress;
+        private ImageView image;
+        private TextView title;
+        private TextView subtitle;
+        private TextView installedApps;
+        private TextView themedApps;
+        private TextView missedApps;
+        private HtmlTextView content;
+        private AutofitTextView autoFitTitle;
+        private LinearLayout container;
+        private ProgressBar progress;
 
-        int holderId;
+        private int holderId;
 
         public ViewHolder(View itemView, int viewType) {
             super(itemView);
@@ -276,8 +273,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
                 image = (ImageView) itemView.findViewById(R.id.header_image);
                 title = (TextView) itemView.findViewById(R.id.title);
                 content = (HtmlTextView) itemView.findViewById(R.id.content);
-                rate = (AppCompatButton) itemView.findViewById(R.id.rate);
-                share = (ImageView) itemView.findViewById(R.id.share);
+                AppCompatButton rate = (AppCompatButton) itemView.findViewById(R.id.rate);
+                ImageView share = (ImageView) itemView.findViewById(R.id.share);
                 holderId = TYPE_HEADER;
 
                 int color = ColorHelper.getAttributeColor(mContext, android.R.attr.textColorSecondary);
@@ -314,7 +311,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
                 container.setOnClickListener(this);
             } else if (viewType == TYPE_WALLPAPERS) {
                 title = (TextView) itemView.findViewById(R.id.title);
-                muzei = (TextView) itemView.findViewById(R.id.muzei);
+                TextView muzei = (TextView) itemView.findViewById(R.id.muzei);
                 holderId = TYPE_WALLPAPERS;
 
                 int color = ColorHelper.getAttributeColor(mContext, android.R.attr.textColorPrimary);
@@ -351,10 +348,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
             } else if (id == R.id.share) {
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("text/plain");
-                intent.putExtra(android.content.Intent.EXTRA_SUBJECT,
+                intent.putExtra(Intent.EXTRA_SUBJECT,
                         String.format(mContext.getResources().getString(R.string.share_app_title),
                                 mContext.getResources().getString(R.string.app_name)));
-                intent.putExtra(android.content.Intent.EXTRA_TEXT,
+                intent.putExtra(Intent.EXTRA_TEXT,
                         String.format(mContext.getResources().getString(R.string.share_app_content),
                                 "https://play.google.com/store/apps/details?id=" + mContext.getPackageName()));
                 mContext.startActivity(Intent.createChooser(intent,

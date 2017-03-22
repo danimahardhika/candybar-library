@@ -45,7 +45,7 @@ public class InAppBillingHelper implements BillingProcessor.IBillingHandler {
                 == InAppBillingHelper.DONATE) {
             try {
                 InAppBillingListener listener = (InAppBillingListener) mContext;
-                listener.OnInAppBillingConsume(Preferences.getPreferences(mContext)
+                listener.onInAppBillingConsume(Preferences.getPreferences(mContext)
                         .getInAppBillingType(), productId);
             } catch (Exception ignored) {}
         } else if (Preferences.getPreferences(mContext).getInAppBillingType() ==
@@ -54,7 +54,7 @@ public class InAppBillingHelper implements BillingProcessor.IBillingHandler {
             Preferences.getPreferences(mContext).setPremiumRequestProductId(productId);
             try {
                 RequestListener listener = (RequestListener) mContext;
-                listener.OnPremiumRequestBought();
+                listener.onPremiumRequestBought();
             } catch (Exception ignored) {}
         }
 
@@ -78,7 +78,7 @@ public class InAppBillingHelper implements BillingProcessor.IBillingHandler {
         } else if (errorCode == Constants.BILLING_ERROR_FAILED_TO_INITIALIZE_PURCHASE) {
             try {
                 InAppBillingListener listener = (InAppBillingListener) mContext;
-                listener.OnInAppBillingInitialized(false);
+                listener.onInAppBillingInitialized(false);
             } catch (Exception ignored) {}
         }
     }
@@ -87,7 +87,7 @@ public class InAppBillingHelper implements BillingProcessor.IBillingHandler {
     public void onBillingInitialized() {
         try {
             InAppBillingListener listener = (InAppBillingListener) mContext;
-            listener.OnInAppBillingInitialized(true);
+            listener.onInAppBillingInitialized(true);
         } catch (Exception ignored) {}
     }
 

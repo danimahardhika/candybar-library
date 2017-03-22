@@ -182,20 +182,16 @@ public class CandyBarMainActivity extends AppCompatActivity implements
         RequestHelper.prepareIconRequest(this);
         IconsHelper.prepareIconsList(this);
 
-        if (Preferences.getPreferences(this).isFirstRun()) {
-            if (licenseChecker) {
-                LicenseHelper.getLicenseChecker(this).checkLicense(mLicenseKey, salt);
-                return;
-            }
+        if (Preferences.getPreferences(this).isFirstRun() && licenseChecker) {
+            LicenseHelper.getLicenseChecker(this).checkLicense(mLicenseKey, salt);
+            return;
         }
 
         if (Preferences.getPreferences(this).isNewVersion())
             ChangelogFragment.showChangelog(mFragManager);
 
-        if (licenseChecker) {
-            if (!Preferences.getPreferences(this).isLicensed())
-                finish();
-        }
+        if (licenseChecker && !Preferences.getPreferences(this).isLicensed())
+            finish();
     }
 
     @Override
@@ -290,13 +286,13 @@ public class CandyBarMainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void OnPiracyAppChecked(boolean isPiracyAppInstalled) {
+    public void onPiracyAppChecked(boolean isPiracyAppInstalled) {
         mNavigationView.getMenu().getItem(3).setVisible(getResources().getBoolean(
                 R.bool.enable_icon_request) || !isPiracyAppInstalled);
     }
 
     @Override
-    public void OnSelected(int count) {
+    public void onRequestSelected(int count) {
         if (mFragmentTag.equals(TAG_REQUEST)) {
             String title = getResources().getString(R.string.navigation_view_request);
             if (count > 0) title += " ("+ count +")";
@@ -305,7 +301,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void OnBuyPremiumRequest() {
+    public void onBuyPremiumRequest() {
         if (Preferences.getPreferences(this).isPremiumRequest()) {
             RequestHelper.showPremiumRequestStillAvailable(this);
         } else {
@@ -341,7 +337,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void OnPremiumRequestBought() {
+    public void onPremiumRequestBought() {
         if (mFragmentTag.equals(TAG_REQUEST)) {
             RequestFragment fragment = (RequestFragment) mFragManager.findFragmentByTag(TAG_REQUEST);
             if (fragment != null) fragment.premiumRequestBought();
@@ -349,7 +345,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void OnRequestBuilt(Request request) {
+    public void onRequestBuilt(Request request) {
         if (Preferences.getPreferences(this).isPremiumRequest()) {
             if (mBillingProcessor == null) return;
 
@@ -376,12 +372,12 @@ public class CandyBarMainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void OnInAppBillingInitialized(boolean success) {
+    public void onInAppBillingInitialized(boolean success) {
         if (!success) mBillingProcessor = null;
     }
 
     @Override
-    public void OnRestorePurchases() {
+    public void onRestorePurchases() {
         if (mBillingProcessor == null) return;
 
         if (mBillingProcessor.loadOwnedPurchasesFromGoogle()) {
@@ -395,7 +391,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void OnInAppBillingSelected(int type, InAppBilling product) {
+    public void onInAppBillingSelected(int type, InAppBilling product) {
         Preferences.getPreferences(this).setInAppBillingType(type);
         if (type == InAppBillingHelper.PREMIUM_REQUEST) {
             Preferences.getPreferences(this).setPremiumRequestCount(product.getProductCount());
@@ -406,7 +402,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void OnInAppBillingConsume(int type, String productId) {
+    public void onInAppBillingConsume(int type, String productId) {
         if (mBillingProcessor == null) return;
 
         if (mBillingProcessor.consumePurchase(productId)) {
@@ -421,15 +417,15 @@ public class CandyBarMainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void OnInAppBillingRequest() {
+    public void onInAppBillingRequest() {
         if (mFragmentTag.equals(TAG_REQUEST)) {
             RequestFragment fragment = (RequestFragment) mFragManager.findFragmentByTag(TAG_REQUEST);
-            if (fragment != null) fragment.OnInAppBillingSent(mBillingProcessor);
+            if (fragment != null) fragment.onInAppBillingSent(mBillingProcessor);
         }
     }
 
     @Override
-    public void OnWallpapersChecked(@Nullable Intent intent) {
+    public void onWallpapersChecked(@Nullable Intent intent) {
         if (intent != null) {
             String packageName = intent.getStringExtra("packageName");
             LogUtil.d("Broadcast received from service with packageName: " +packageName);
@@ -475,7 +471,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void OnSearchExpanded(boolean expand) {
+    public void onSearchExpanded(boolean expand) {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         mIsMenuVisible = !expand;
 
@@ -507,6 +503,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements
     private void initNavigationView(Toolbar toolbar) {
         mDrawerToggle = new ActionBarDrawerToggle(
                 this, mDrawerLayout, toolbar, R.string.txt_open, R.string.txt_close) {
+
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -627,14 +624,14 @@ public class CandyBarMainActivity extends AppCompatActivity implements
 
         int size = Preferences.getPreferences(this).getAvailableWallpapersCount();
         if (size > 0) {
-            OnWallpapersChecked(new Intent().putExtra("size", size));
+            onWallpapersChecked(new Intent().putExtra("size", size));
         }
     }
 
     private void clearBackStack() {
         if (mFragManager.getBackStackEntryCount() > 0) {
             mFragManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            OnSearchExpanded(false);
+            onSearchExpanded(false);
         }
     }
 
@@ -648,7 +645,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements
                 if (!Preferences.getPreferences(CandyBarMainActivity.this).isPremiumRequest()) {
                     mPosition = mLastPosition;
                     mNavigationView.getMenu().getItem(mPosition).setChecked(true);
-                    OnBuyPremiumRequest();
+                    onBuyPremiumRequest();
                     return;
                 }
             }

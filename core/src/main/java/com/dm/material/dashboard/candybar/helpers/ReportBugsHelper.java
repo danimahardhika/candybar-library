@@ -9,9 +9,12 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
@@ -55,7 +58,31 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 public class ReportBugsHelper {
 
-    public static void checkForBugs(@NonNull Context context) {
+    public static void prepareReportBugs(@NonNull Context context) {
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(context);
+        builder.customView(R.layout.dialog_report_bugs, true);
+        builder.positiveText(R.string.report_bugs_send);
+        builder.negativeText(R.string.close);
+
+        MaterialDialog dialog = builder.build();
+
+        EditText editText = (EditText) dialog.findViewById(R.id.input_desc);
+        TextInputLayout inputLayout = (TextInputLayout) dialog.findViewById(R.id.input_layout);
+
+        dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(view -> {
+            if (editText.getText().length() > 0) {
+                inputLayout.setErrorEnabled(false);
+                checkForBugs(context, editText.getText().toString());
+                dialog.dismiss();
+                return;
+            }
+
+            inputLayout.setError(context.getResources().getString(R.string.report_bugs_desc_empty));
+        });
+        dialog.show();
+    }
+
+    private static void checkForBugs(@NonNull Context context, String description) {
         new AsyncTask<Void, Void, Boolean>() {
 
             MaterialDialog dialog;
@@ -86,6 +113,7 @@ public class ReportBugsHelper {
                         Thread.sleep(1);
                         List<String> files = new ArrayList<>();
                         sb.append(DeviceHelper.getDeviceInfo(context));
+                        sb.append("\n").append(description).append("\n");
 
                         String brokenAppFilter = buildBrokenAppFilter(context, folder);
                         if (brokenAppFilter != null) files.add(brokenAppFilter);
@@ -250,5 +278,4 @@ public class ReportBugsHelper {
         }
         return null;
     }
-
 }

@@ -11,7 +11,6 @@
     <dimen name="card_margin_left">3dp</dimen>
     <dimen name="card_margin_top">4dp</dimen>
     <dimen name="card_margin_bottom">1dp</dimen>
-    <dimen name="card_padding_bottom">4dp</dimen>
 
     <dimen name="card_elevation">2dp</dimen>
 
@@ -55,9 +54,8 @@
     <dimen name="about_profile_margin_top">-60dp</dimen>
 
     <!-- Dialog -->
-    <dimen name="dialog_content_padding">20dp</dimen>
-    <dimen name="changelog_content_padding">24dp</dimen>
-    <dimen name="changelog_content_margin">20dp</dimen>
+    <dimen name="dialog_content_padding">24dp</dimen>
+    <dimen name="dialog_content_margin">20dp</dimen>
 
     <!-- Icon -->
     <dimen name="icon_size_medium">40dp</dimen>
