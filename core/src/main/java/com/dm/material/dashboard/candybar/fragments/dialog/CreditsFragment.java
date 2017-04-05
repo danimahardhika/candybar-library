@@ -42,6 +42,10 @@ import java.util.List;
 
 public class CreditsFragment extends DialogFragment {
 
+    private ListView mListView;
+
+    private AsyncTask<Void, Void, Boolean> mGetCredits;
+
     private static final String TAG = "candybar.dialog.credits";
 
     private static CreditsFragment newInstance() {
@@ -60,10 +64,6 @@ public class CreditsFragment extends DialogFragment {
             dialog.show(ft, TAG);
         } catch (IllegalStateException | IllegalArgumentException ignored) {}
     }
-
-    private ListView mListView;
-
-    private AsyncTask<Void, Void, Boolean> mGetCredits;
 
     @NonNull
     @Override

@@ -35,6 +35,10 @@ import com.dm.material.dashboard.candybar.adapters.ChangelogAdapter;
 
 public class ChangelogFragment extends DialogFragment{
 
+    private ListView mChangelogList;
+    private TextView mChangelogDate;
+    private TextView mChangelogVersion;
+
     private static final String TAG = "candybar.dialog.changelog";
 
     private static ChangelogFragment newInstance() {
@@ -53,10 +57,6 @@ public class ChangelogFragment extends DialogFragment{
             dialog.show(ft, TAG);
         } catch (IllegalArgumentException | IllegalStateException ignored) {}
     }
-
-    private ListView mChangelogList;
-    private TextView mChangelogDate;
-    private TextView mChangelogVersion;
 
     @NonNull
     @Override

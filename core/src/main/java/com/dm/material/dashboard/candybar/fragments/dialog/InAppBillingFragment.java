@@ -47,6 +47,17 @@ import com.dm.material.dashboard.candybar.utils.listeners.InAppBillingListener;
 
 public class InAppBillingFragment extends DialogFragment {
 
+    private ListView mInAppList;
+    private ProgressBar mProgress;
+
+    private int mType;
+    private String mKey;
+    private String[] mProductsId;
+    private int[] mProductsCount;
+
+    private InAppBillingAdapter mAdapter;
+    private AsyncTask<Void, Void, Boolean> mLoadInAppProducts;
+
     private static BillingProcessor mBillingProcessor;
 
     private static final String TYPE = "type";
@@ -83,17 +94,6 @@ public class InAppBillingFragment extends DialogFragment {
             dialog.show(ft, TAG);
         } catch (IllegalArgumentException | IllegalStateException ignored) {}
     }
-
-    private ListView mInAppList;
-    private ProgressBar mProgress;
-
-    private int mType;
-    private String mKey;
-    private String[] mProductsId;
-    private int[] mProductsCount;
-
-    private InAppBillingAdapter mAdapter;
-    private AsyncTask<Void, Void, Boolean> mLoadInAppProducts;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

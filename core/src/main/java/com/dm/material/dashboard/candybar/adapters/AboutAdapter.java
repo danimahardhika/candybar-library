@@ -140,7 +140,7 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
             else return TYPE_FOOTER;
         }
 
-        if (position == 3 && mShowContributors && !mCardMode) return TYPE_FOOTER;
+        if (position == 3 && mShowContributors) return TYPE_FOOTER;
         return TYPE_BOTTOM_SHADOW;
     }
 
@@ -149,7 +149,7 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
         private ImageView image;
         private CircularImageView profile;
 
-        int holderId;
+        private int holderId;
 
         public ViewHolder(View itemView, int viewType) {
             super(itemView);

@@ -58,16 +58,12 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
     private final Context mContext;
     private final List<Setting> mSettings;
 
-    private final File mCache;
-
     private static final int TYPE_CONTENT = 0;
     private static final int TYPE_FOOTER = 1;
 
     public SettingsAdapter(@NonNull Context context, @NonNull List<Setting> settings) {
         mContext = context;
         mSettings = settings;
-
-        mCache = new File(mContext.getCacheDir().toString());
     }
 
     @Override
@@ -192,15 +188,16 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
                                 .negativeText(android.R.string.cancel)
                                 .onPositive((dialog, which) -> {
                                     try {
-                                        FileHelper.clearCache(mCache);
+                                        File cache = mContext.getCacheDir();
+                                        FileHelper.clearCache(cache);
 
-                                        double cache = (double) FileHelper.getCacheSize(
+                                        double size = (double) FileHelper.getCacheSize(
                                                 mContext.getCacheDir()) / FileHelper.MB;
                                         NumberFormat formatter = new DecimalFormat("#0.00");
 
                                         setting.setFooter(String.format(mContext.getResources().getString(
                                                 R.string.pref_data_cache_size),
-                                                formatter.format(cache) + " MB"));
+                                                formatter.format(size) + " MB"));
                                         notifyItemChanged(position);
 
                                         Toast.makeText(mContext, R.string.pref_data_cache_cleared,

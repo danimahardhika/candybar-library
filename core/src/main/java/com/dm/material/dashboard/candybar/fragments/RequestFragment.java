@@ -132,7 +132,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         int[] positions = mManager.findFirstVisibleItemPositions(null);
 
         SparseBooleanArray selectedItems = mAdapter.getSelectedItemsArray();
-        ViewHelper.resetSpanCount(getActivity(), mRecyclerView, R.integer.request_column_count);
+        ViewHelper.resetSpanCount(mRecyclerView, R.integer.request_column_count);
 
         mAdapter = new RequestAdapter(getActivity(),
                 CandyBarMainActivity.sMissedApps,

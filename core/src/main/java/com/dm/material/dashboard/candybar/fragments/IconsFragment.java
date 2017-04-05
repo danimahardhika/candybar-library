@@ -92,6 +92,6 @@ public class IconsFragment extends Fragment {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        ViewHelper.resetSpanCount(getActivity(), mRecyclerView, R.integer.icons_column_count);
+        ViewHelper.resetSpanCount(mRecyclerView, R.integer.icons_column_count);
     }
 }

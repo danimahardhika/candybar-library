@@ -27,6 +27,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.danimahardhika.cafebar.CafeBar;
+import com.danimahardhika.cafebar.CafeBarTheme;
 import com.dm.material.dashboard.candybar.fragments.dialog.WallpaperSettingsFragment;
 import com.dm.material.dashboard.candybar.helpers.FileHelper;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
@@ -106,7 +107,7 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
         TextView toolbarTitle = (TextView) findViewById(R.id.toolbar_title);
         TextView toolbarSubTitle = (TextView) findViewById(R.id.toolbar_subtitle);
 
-        ViewHelper.resetNavigationBarTranslucent(this, getResources().getConfiguration().orientation);
+        ViewHelper.resetViewBottomMargin(mFab);
 
         ColorHelper.setTransparentStatusBar(this,
                 ContextCompat.getColor(this, R.color.wallpaperStatusBar));
@@ -152,8 +153,7 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
                     public void onTransitionEnd(Transition transition) {
                         if (mIsEnter) {
                             mIsEnter = false;
-                            Animator.startSlideDownAnimation(
-                                    CandyBarWallpaperActivity.this, toolbar);
+                            Animator.startSlideDownAnimation(toolbar);
                             loadWallpaper(mUrl);
                         }
                     }
@@ -190,7 +190,7 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        ViewHelper.resetNavigationBarTranslucent(this, newConfig.orientation);
+        ViewHelper.resetViewBottomMargin(mFab);
     }
 
     @Override
@@ -242,11 +242,10 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
 
                 if (target.exists()) {
                     CafeBar.builder(this)
-                            .to(findViewById(R.id.rootview))
+                            .theme(new CafeBarTheme.Custom(ColorHelper.getAttributeColor(this, R.attr.card_background)))
                             .autoDismiss(false)
-                            .swipeToDismiss(false)
-                            .floating(true)
                             .maxLines(4)
+                            .fitSystemWindow(true)
                             .content(String.format(getResources().getString(R.string.wallpaper_download_exist),
                                     ("\"" +mName + FileHelper.IMAGE_EXTENSION+ "\"")))
                             .icon(R.drawable.ic_toolbar_download)
@@ -337,8 +336,7 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
                         int color = palette.getVibrantColor(accent);
                         mColor = color;
                         int text = ColorHelper.getTitleTextColor(color);
-                        mFab.setBackgroundTintList(ColorHelper.getColorStateList(
-                                color, ColorHelper.getDarkerColor(color, 0.9f)));
+                        mFab.setBackgroundTintList(ColorHelper.getColorStateList(color));
                         onWallpaperLoaded(text);
                     });
                 }

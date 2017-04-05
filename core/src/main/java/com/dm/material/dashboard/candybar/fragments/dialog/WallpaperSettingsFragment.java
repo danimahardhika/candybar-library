@@ -37,6 +37,11 @@ import com.dm.material.dashboard.candybar.preferences.Preferences;
 
 public class WallpaperSettingsFragment extends DialogFragment implements View.OnClickListener {
 
+    private AppCompatRadioButton mEnableScrollRadio;
+    private AppCompatRadioButton mDisableScrollRadio;
+    private LinearLayout mEnableScroll;
+    private LinearLayout mDisableScroll;
+
     private static final String TAG = "candybar.dialog.wallpaper.settings";
 
     private static WallpaperSettingsFragment newInstance() {
@@ -55,11 +60,6 @@ public class WallpaperSettingsFragment extends DialogFragment implements View.On
             dialog.show(ft, TAG);
         } catch (IllegalArgumentException | IllegalStateException ignored) {}
     }
-
-    private AppCompatRadioButton mEnableScrollRadio;
-    private AppCompatRadioButton mDisableScrollRadio;
-    private LinearLayout mEnableScroll;
-    private LinearLayout mDisableScroll;
 
     @NonNull
     @Override

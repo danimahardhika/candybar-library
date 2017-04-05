@@ -12,6 +12,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 import com.dm.material.dashboard.candybar.R;
+import com.dm.material.dashboard.candybar.helpers.ContextHelper;
 
 /*
  * CandyBar - Material Dashboard
@@ -44,7 +45,9 @@ public class Animator {
         view.startAnimation(alphaAnimation);
     }
 
-    public static void startSlideDownAnimation(@NonNull Context context, @NonNull View view) {
+    public static void startSlideDownAnimation(@NonNull View view) {
+        Context context = ContextHelper.getBaseContext(view);
+
         Animation slideDown = AnimationUtils.loadAnimation(context, R.anim.slide_down_from_top);
         view.startAnimation(slideDown);
         view.setVisibility(View.VISIBLE);

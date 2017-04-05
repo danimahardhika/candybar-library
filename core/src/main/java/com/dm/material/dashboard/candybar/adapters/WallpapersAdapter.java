@@ -70,16 +70,13 @@ public class WallpapersAdapter extends RecyclerView.Adapter<WallpapersAdapter.Vi
                 R.bool.card_wallpaper_auto_generated_color);
         mIsShowName = mContext.getResources().getBoolean(R.bool.wallpaper_show_name_author);
 
-        int color = ColorHelper.getAttributeColor(mContext, android.R.attr.textColorSecondary);
         Drawable loading = DrawableHelper.getDefaultImage(
-                mContext, R.drawable.ic_default_image_loading, color,
-                mContext.getResources().getDimensionPixelSize(R.dimen.default_image_padding));
+                mContext, R.drawable.ic_default_image_loading);
         Drawable failed = DrawableHelper.getDefaultImage(
-                mContext, R.drawable.ic_default_image_failed, color,
-                mContext.getResources().getDimensionPixelSize(R.dimen.default_image_padding));
+                mContext, R.drawable.ic_default_image_failed);
         mOptions = ImageConfig.getRawDefaultImageOptions();
         mOptions.resetViewBeforeLoading(true);
-        mOptions.cacheInMemory(false);
+        mOptions.cacheInMemory(true);
         mOptions.cacheOnDisk(true);
         mOptions.showImageForEmptyUri(failed);
         mOptions.showImageOnFail(failed);

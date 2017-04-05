@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.danimahardhika.cafebar.CafeBar;
+import com.danimahardhika.cafebar.CafeBarTheme;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.helpers.ColorHelper;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
@@ -45,6 +46,14 @@ import java.io.File;
 
 public class WallpaperOptionsFragment extends DialogFragment implements View.OnClickListener {
 
+    private LinearLayout mApply;
+    private LinearLayout mSave;
+    private ImageView mApplyIcon;
+    private ImageView mSaveIcon;
+
+    private String mName;
+    private String mUrl;
+
     private static final String TAG = "candybar.dialog.wallpaper.options";
 
     private static final String NAME = "name";
@@ -71,14 +80,6 @@ public class WallpaperOptionsFragment extends DialogFragment implements View.OnC
             dialog.show(ft, TAG);
         } catch (IllegalArgumentException | IllegalStateException ignored) {}
     }
-
-    private LinearLayout mApply;
-    private LinearLayout mSave;
-    private ImageView mApplyIcon;
-    private ImageView mSaveIcon;
-
-    private String mName;
-    private String mUrl;
 
     @NonNull
     @Override
@@ -138,9 +139,8 @@ public class WallpaperOptionsFragment extends DialogFragment implements View.OnC
                 if (target.exists()) {
                     Context context = getActivity();
                     CafeBar.builder(getActivity())
+                            .theme(new CafeBarTheme.Custom(ColorHelper.getAttributeColor(getActivity(), R.attr.card_background)))
                             .autoDismiss(false)
-                            .swipeToDismiss(false)
-                            .floating(true)
                             .maxLines(4)
                             .content(String.format(getResources().getString(R.string.wallpaper_download_exist),
                                     ("\"" +mName + FileHelper.IMAGE_EXTENSION+ "\"")))

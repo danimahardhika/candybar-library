@@ -50,6 +50,12 @@ import java.util.List;
 
 public class IntentChooserFragment extends DialogFragment {
 
+    private ListView mIntentList;
+    private TextView mNoApp;
+
+    private Request mRequest;
+    private AsyncTask<Void, Void, Boolean> mLoadIntentChooser;
+
     private static final String SUBJECT = "subject";
     private static final String TEXT = "text";
     private static final String STREAM = "stream";
@@ -78,12 +84,6 @@ public class IntentChooserFragment extends DialogFragment {
             dialog.show(ft, TAG);
         } catch (IllegalArgumentException | IllegalStateException ignored) {}
     }
-
-    private ListView mIntentList;
-    private TextView mNoApp;
-
-    private Request mRequest;
-    private AsyncTask<Void, Void, Boolean> mLoadIntentChooser;
 
     @NonNull
     @Override

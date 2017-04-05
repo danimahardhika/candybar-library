@@ -114,7 +114,7 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        ViewHelper.resetSpanCount(getActivity(), mRecyclerView, R.integer.wallpapers_column_count);
+        ViewHelper.resetSpanCount(mRecyclerView, R.integer.wallpapers_column_count);
     }
 
     @Override
@@ -147,7 +147,7 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
             popupBubble.setCompoundDrawablesWithIntrinsicBounds(DrawableHelper.getTintedDrawable(
                     getActivity(), R.drawable.ic_toolbar_arrow_up, color), null, null, null);
             popupBubble.setOnClickListener(this);
-            Animator.startSlideDownAnimation(getActivity(), popupBubble);
+            Animator.startSlideDownAnimation(popupBubble);
         }
     }
 

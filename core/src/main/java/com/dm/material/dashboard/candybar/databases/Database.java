@@ -175,7 +175,7 @@ public class Database extends SQLiteOpenHelper {
         return rowCount > 0;
     }
 
-    public List<Request> getRequestedApps(@Nullable SQLiteDatabase db) {
+    private List<Request> getRequestedApps(@Nullable SQLiteDatabase db) {
         List<Request> requests = new ArrayList<>();
         if (db == null) db = this.getReadableDatabase();
 

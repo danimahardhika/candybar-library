@@ -37,6 +37,12 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class IconPreviewFragment extends DialogFragment {
 
+    private TextView mName;
+    private ImageView mIcon;
+
+    private String mIconName;
+    private int mIconId;
+
     private static final String NAME = "name";
     private static final String ID = "id";
 
@@ -63,12 +69,6 @@ public class IconPreviewFragment extends DialogFragment {
             dialog.show(ft, TAG);
         } catch (IllegalArgumentException | IllegalStateException ignored) {}
     }
-
-    private TextView mName;
-    private ImageView mIcon;
-
-    private String mIconName;
-    private int mIconId;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

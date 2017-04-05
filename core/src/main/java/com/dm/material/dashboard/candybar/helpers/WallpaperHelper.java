@@ -23,12 +23,15 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.webkit.URLUtil;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.danimahardhika.cafebar.CafeBar;
 import com.danimahardhika.cafebar.CafeBarDuration;
+import com.danimahardhika.cafebar.CafeBarTheme;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
@@ -273,17 +276,19 @@ public class WallpaperHelper {
         }.execute();
     }
 
-    private static void wallpaperSaved(@NonNull Context context, @ColorInt int color, @NonNull File file) {
+    private static void wallpaperSaved(@Nullable Context context, @ColorInt int color, @NonNull File file) {
+        if (context == null) return;
+
         String downloaded = context.getResources().getString(
                 R.string.wallpaper_downloaded);
-        View rootView = ((AppCompatActivity) context).getWindow().getDecorView().findViewById(R.id.rootview);
+
+        if (Preferences.getPreferences(context).getWallsDirectory().length() == 0)
+            Preferences.getPreferences(context).setWallsDirectory(file.getParent());
 
         CafeBar.Builder builder = new CafeBar.Builder(context);
-        builder.to(rootView)
-                .duration(CafeBarDuration.LONG.getDuration())
+        builder.theme(new CafeBarTheme.Custom(ColorHelper.getAttributeColor(context, R.attr.card_background)))
+                .duration(CafeBarDuration.MEDIUM.getDuration())
                 .maxLines(4)
-                .floating(true)
-                .swipeToDismiss(false)
                 .content(downloaded + " " + file.toString())
                 .icon(R.drawable.ic_toolbar_download)
                 .neutralText(R.string.open)
@@ -300,6 +305,17 @@ public class WallpaperHelper {
 
                     cafeBar.dismiss();
                 });
+
+        Window window = ((AppCompatActivity) context).getWindow();
+        WindowManager.LayoutParams params = window.getAttributes();
+        int flags = params.flags;
+
+        if ((flags & WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION) ==
+                WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION) {
+            builder.fitSystemWindow(true);
+        } else {
+            builder.fitSystemWindow(false);
+        }
 
         CafeBar cafeBar = builder.build();
         cafeBar.show();
@@ -461,7 +477,12 @@ public class WallpaperHelper {
                                 canvas.drawBitmap(bitmaps[0], null, rectF, paint);
                             }
 
-                            manager.setBitmap(bitmap);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                manager.setBitmap(bitmap, null, true,
+                                        WallpaperManager.FLAG_LOCK | WallpaperManager.FLAG_SYSTEM);
+                            } else {
+                                manager.setBitmap(bitmap);
+                            }
                             return true;
                         }
                         return false;
@@ -485,8 +506,24 @@ public class WallpaperHelper {
                 super.onPostExecute(aBoolean);
                 dialog.dismiss();
                 if (aBoolean) {
-                    Toast.makeText(context, R.string.wallpaper_applied,
-                            Toast.LENGTH_LONG).show();
+                    CafeBar.Builder builder = new CafeBar.Builder(context)
+                            .theme(new CafeBarTheme.Custom(ColorHelper.getAttributeColor(
+                                    context, R.attr.card_background)))
+                            .content(R.string.wallpaper_applied);
+
+                    Window window = ((AppCompatActivity) context).getWindow();
+                    WindowManager.LayoutParams params = window.getAttributes();
+                    int flags = params.flags;
+
+                    if ((flags & WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION) ==
+                            WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION) {
+                        builder.fitSystemWindow(true);
+                    } else {
+                        builder.fitSystemWindow(false);
+                    }
+
+                    CafeBar cafeBar = builder.build();
+                    cafeBar.show();
                 } else {
                     Toast.makeText(context, R.string.wallpaper_apply_failed,
                             Toast.LENGTH_LONG).show();

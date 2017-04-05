@@ -22,6 +22,20 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
+    <!-- Wallpaper Theme -->
+    <style name="WallpaperTheme" parent="AppTheme">
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <!-- Wallpaper Theme Dark -->
+    <style name="WallpaperThemeDark" parent="AppThemeDark">
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
     <!-- Splash Screen Theme -->
     <style name="SplashTheme" parent="@style/Theme.AppCompat.Light">
         <item name="windowNoTitle">true</item>

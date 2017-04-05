@@ -124,7 +124,7 @@ public class LauncherAdapter extends RecyclerView.Adapter<LauncherAdapter.ViewHo
         private ImageView icon;
         private LinearLayout container;
 
-        int holderId;
+        private int holderId;
 
         ViewHolder(View itemView, int viewType) {
             super(itemView);

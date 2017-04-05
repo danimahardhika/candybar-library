@@ -41,6 +41,10 @@ import java.io.InputStreamReader;
 
 public class LicensesFragment extends DialogFragment {
 
+    private WebView mWebView;
+
+    private AsyncTask<Void, Void, Boolean> mLoadLicenses;
+
     private static final String TAG = "candybar.dialog.licenses";
 
     private static LicensesFragment newInstance() {
@@ -59,10 +63,6 @@ public class LicensesFragment extends DialogFragment {
             dialog.show(ft, TAG);
         } catch (IllegalArgumentException | IllegalStateException ignored) {}
     }
-
-    private WebView mWebView;
-
-    private AsyncTask<Void, Void, Boolean> mLoadLicenses;
 
     @NonNull
     @Override

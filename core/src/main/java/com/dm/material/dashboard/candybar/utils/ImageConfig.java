@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.helpers.FileHelper;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
-import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
@@ -39,15 +38,14 @@ public class ImageConfig {
 
     public static ImageLoaderConfiguration getImageLoaderConfiguration(@NonNull Context context) {
         return new ImageLoaderConfiguration.Builder(context)
-                .diskCacheSize(200 * 1024 * 1024)
-                .memoryCache(new LruMemoryCache(2 * 1024 * 1024))
-                .memoryCacheSize(2 * 2014 * 1024)
                 .threadPriority(Thread.NORM_PRIORITY - 2)
                 .threadPoolSize(4)
                 .tasksProcessingOrder(QueueProcessingType.FIFO)
                 .imageDownloader(new ImageDownloader(context))
                 .diskCache(new UnlimitedDiskCache(new File(
                         context.getCacheDir().toString() + "/" + FileHelper.UIL_CACHE_DIR)))
+                .diskCacheSize(256 * FileHelper.MB)
+                .memoryCacheSize(6 * FileHelper.MB)
                 .build();
     }
 

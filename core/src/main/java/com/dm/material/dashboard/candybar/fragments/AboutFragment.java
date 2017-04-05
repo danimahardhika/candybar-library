@@ -62,7 +62,7 @@ public class AboutFragment extends Fragment {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         resetRecyclerViewPadding(newConfig.orientation);
-        ViewHelper.resetSpanCount(getActivity(), mRecyclerView, R.integer.about_column_count);
+        ViewHelper.resetSpanCount(mRecyclerView, R.integer.about_column_count);
 
         StaggeredGridLayoutManager manager = (StaggeredGridLayoutManager) mRecyclerView.getLayoutManager();
         mRecyclerView.setAdapter(new AboutAdapter(getActivity(), manager.getSpanCount()));

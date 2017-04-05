@@ -102,9 +102,11 @@ public class DrawableHelper {
     }
 
     @Nullable
-    public static Drawable getDefaultImage(@NonNull Context context, @DrawableRes int res,
-                                           @ColorInt int color, int padding) {
+    public static Drawable getDefaultImage(@NonNull Context context, @DrawableRes int res) {
         try {
+            int color = ColorHelper.getAttributeColor(context, android.R.attr.textColorSecondary);
+            int padding = context.getResources().getDimensionPixelSize(R.dimen.default_image_padding);
+
             Drawable drawable = AppCompatDrawableManager.get().getDrawable(context, res);
             drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {

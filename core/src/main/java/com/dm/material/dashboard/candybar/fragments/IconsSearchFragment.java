@@ -142,7 +142,7 @@ public class IconsSearchFragment extends Fragment {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        ViewHelper.resetSpanCount(getActivity(), mRecyclerView, R.integer.icons_column_count);
+        ViewHelper.resetSpanCount(mRecyclerView, R.integer.icons_column_count);
     }
 
     @Override
@@ -211,10 +211,11 @@ public class IconsSearchFragment extends Fragment {
                                 return super.compare(s1, s2);
                             }
                         });
+                        return true;
                     } catch (Exception e) {
                         LogUtil.e(Log.getStackTraceString(e));
+                        return false;
                     }
-                    return true;
                 }
                 return false;
             }
