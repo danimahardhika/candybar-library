@@ -4,22 +4,12 @@
 <p><a href='https://play.google.com/store/apps/details?id=com.material.dashboard.candybar.demo&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width="200"/></a></p>
 
 # Gradle Dependency
-**Requirements**
-* Latest version of Android Studio
-* Android-SDK Build tools v25
-* API 25 SDK Platform
-* Latest version of Android Support Library
-* Java SE Development Kit 8
-
-Take a look on this [screenshot](https://raw.githubusercontent.com/danimahardhika/candybar-library/698d102f504f5a843af4f5bc67a340a09b3c5889/screenshots/requirements.jpg) for requirements
-
 The minimum API level supported by this library is API 15
 
 Add JitPack repository to root ```build.gradle```
 ```Gradle
 allprojects {
     repositories {
-        //...
         maven { url "https://jitpack.io" }
     }
 }
@@ -27,7 +17,6 @@ allprojects {
 Add the dependency
 ```Gradle
 dependencies {
-    //...
     compile 'com.github.danimahardhika.candybar-library:core:3.0.3'
 }
 ```
