@@ -2,6 +2,10 @@ package com.dm.material.dashboard.candybar.helpers;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -96,12 +100,13 @@ public class FileHelper {
         return false;
     }
 
-    public static void createZip (@NonNull List<String> files, String directory) {
+    public static String createZip (@NonNull List<String> files, String fileName) {
         try {
             BufferedInputStream origin;
-            FileOutputStream dest = new FileOutputStream(directory);
+            FileOutputStream dest = new FileOutputStream(fileName);
             ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(
                     dest));
+
             byte data[] = new byte[BUFFER];
             for (int i = 0; i < files.size(); i++) {
                 FileInputStream fi = new FileInputStream(files.get(i));
@@ -119,16 +124,37 @@ public class FileHelper {
             }
 
             out.close();
+            return fileName;
         } catch (Exception e) {
             LogUtil.e(Log.getStackTraceString(e));
         }
+        return "";
     }
 
     @Nullable
-    public static String saveIcon (File directory, Bitmap bitmap, String name) {
-        String fileName = name.toLowerCase().replace(" ", "_") + ".png";
+    public static String saveIcon(List<String> files, File directory, Drawable drawable, String name) {
+        String fileName = name.toLowerCase().replaceAll(" ", "_") + ".png";
         File file = new File(directory, fileName);
         try {
+            Bitmap bitmap;
+            if (drawable instanceof LayerDrawable) {
+                bitmap = Bitmap.createBitmap(
+                        drawable.getIntrinsicWidth(),
+                        drawable.getIntrinsicHeight(),
+                        Bitmap.Config.ARGB_8888);
+                drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                drawable.draw(new Canvas(bitmap));
+            } else {
+                bitmap = ((BitmapDrawable) drawable).getBitmap();
+            }
+
+            if (files.contains(file.toString())) {
+                fileName = fileName.replace(".png", "_" +System.currentTimeMillis()+ ".png");
+                file = new File(directory, fileName);
+
+                LogUtil.e("duplicate file name, renamed: " +fileName);
+            }
+
             FileOutputStream outStream = new FileOutputStream(file);
             bitmap.compress(Bitmap.CompressFormat.PNG, 50, outStream);
             outStream.flush();

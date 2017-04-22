@@ -32,8 +32,6 @@ import com.dm.material.dashboard.candybar.fragments.dialog.WallpaperSettingsFrag
 import com.dm.material.dashboard.candybar.helpers.FileHelper;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.utils.Animator;
-import com.kogitune.activitytransition.ActivityTransition;
-import com.kogitune.activitytransition.ExitActivityTransition;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.WallpapersAdapter;
 import com.dm.material.dashboard.candybar.helpers.ColorHelper;
@@ -42,6 +40,8 @@ import com.dm.material.dashboard.candybar.helpers.PermissionHelper;
 import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
+import com.kogitune.activitytransition.ActivityTransition;
+import com.kogitune.activitytransition.ExitActivityTransition;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -134,7 +134,8 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
 
         mFab.setOnClickListener(this);
 
-        mExitTransition = ActivityTransition.with(getIntent())
+        mExitTransition = ActivityTransition
+                .with(getIntent())
                 .to(this, mWallpaper, "image")
                 .duration(300)
                 .start(savedInstanceState);
@@ -225,7 +226,11 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
         WallpapersAdapter.sIsClickable = true;
         if (mHandler != null && mRunnable != null)
             mHandler.removeCallbacks(mRunnable);
-        if (mExitTransition != null) mExitTransition.exit(this);
+
+        if (mExitTransition != null) {
+            mExitTransition.exit(this);
+            return;
+        }
         super.onBackPressed();
     }
 

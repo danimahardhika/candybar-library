@@ -112,7 +112,13 @@ public class IntentAdapter extends BaseAdapter {
             ActivityInfo app = mApps.get(position).getApp().activityInfo;
             if (mApps.get(position).getType() == IntentChooser.TYPE_RECOMMENDED ||
                     mApps.get(position).getType() == IntentChooser.TYPE_SUPPORTED) {
-                ComponentName name = new ComponentName(app.applicationInfo.packageName, app.name);
+                String packageName = app.applicationInfo.packageName;
+                String activity = app.name;
+                if (packageName.equals("com.google.android.apps.inbox")) {
+                    activity = "com.google.android.apps.bigtop.activities.MainActivity";
+                }
+
+                ComponentName name = new ComponentName(packageName, activity);
                 sendRequest(name);
 
                 FragmentManager fm = ((AppCompatActivity) mContext).getSupportFragmentManager();

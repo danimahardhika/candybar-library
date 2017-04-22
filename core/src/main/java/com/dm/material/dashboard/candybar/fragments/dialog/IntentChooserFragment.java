@@ -1,8 +1,11 @@
 package com.dm.material.dashboard.candybar.fragments.dialog;
 
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -169,6 +172,22 @@ public class IntentChooserFragment extends DialogFragment {
                                     apps.add(new IntentChooser(resolveInfo, IntentChooser.TYPE_RECOMMENDED));
                                     break;
                                 case "com.google.android.apps.inbox":
+                                    try {
+                                        ComponentName componentName = new ComponentName(resolveInfo.activityInfo.applicationInfo.packageName,
+                                                "com.google.android.apps.bigtop.activities.MainActivity");
+                                        Intent inbox = new Intent(Intent.ACTION_SEND);
+                                        inbox.setComponent(componentName);
+
+                                        List<ResolveInfo> list = getActivity().getPackageManager().queryIntentActivities(
+                                                inbox, PackageManager.MATCH_DEFAULT_ONLY);
+                                        if (list.size() > 0) {
+                                            apps.add(new IntentChooser(resolveInfo, IntentChooser.TYPE_SUPPORTED));
+                                            break;
+                                        }
+                                    } catch (ActivityNotFoundException e) {
+                                        LogUtil.e(Log.getStackTraceString(e));
+                                    }
+
                                     apps.add(new IntentChooser(resolveInfo, IntentChooser.TYPE_NOT_SUPPORTED));
                                     break;
                                 case "com.android.fallback":
@@ -215,5 +234,4 @@ public class IntentChooserFragment extends DialogFragment {
             }
         }.execute();
     }
-
 }

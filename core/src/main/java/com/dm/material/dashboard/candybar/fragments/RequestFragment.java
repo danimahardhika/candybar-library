@@ -1,8 +1,8 @@
 package com.dm.material.dashboard.candybar.fragments;
 
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -368,10 +368,10 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                             String string1 = RequestHelper.writeAppFilter(item);
                             out.append(string1);
 
-                            Bitmap bitmap = DrawableHelper.getHighQualityIcon(
+                            Drawable drawable = DrawableHelper.getHighQualityIcon(
                                     getActivity(), item.getPackageName());
 
-                            String icon = FileHelper.saveIcon(directory, bitmap, item.getName());
+                            String icon = FileHelper.saveIcon(files, directory, drawable, item.getName());
                             if (icon != null) files.add(icon);
 
                             if (Preferences.getPreferences(getActivity()).isPremiumRequest()) {
@@ -389,8 +389,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                         out.close();
                         files.add(appFilter.toString());
 
-                        zipFile = directory.toString() + "/" + "icon_request.zip";
-                        FileHelper.createZip(files, zipFile);
+                        zipFile = FileHelper.createZip(files, directory.toString() + "/" + "icon_request.zip");
                         return true;
                     } catch (Exception e) {
                         LogUtil.e(Log.getStackTraceString(e));

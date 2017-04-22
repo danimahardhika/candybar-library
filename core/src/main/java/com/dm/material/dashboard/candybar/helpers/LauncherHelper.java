@@ -57,10 +57,9 @@ public class LauncherHelper {
     private static final int NEW = 22;
     private static final int M = 23;
     private static final int MN = 24;
-    private static final int ITOP = 25;
-    private static final int ZERO = 26;
-    private static final int V = 27;
-    private static final int ABC = 28;
+    private static final int ZERO = 25;
+    private static final int V = 26;
+    private static final int ABC = 27;
 
     private static int getLauncherId(String packageName) {
         if (packageName == null) return UNKNOWN;
@@ -120,8 +119,6 @@ public class LauncherHelper {
                 return M;
             case "com.kkmlauncher":
                 return MN;
-            case "com.itop.launcher":
-                return ITOP;
             case "com.zeroteam.zerolauncher":
                 return ZERO;
             case "com.vivid.launcher":
@@ -414,24 +411,6 @@ public class LauncherHelper {
                     final Intent newLauncher = new Intent("com.kkmlauncher");
                     newLauncher.setAction("com.kkmlauncher.APPLY_ICON_THEME");
                     newLauncher.putExtra("com.kkmlauncher.theme.EXTRA_PKG", context.getPackageName());
-                    newLauncher.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(newLauncher);
-                    ((AppCompatActivity) context).finish();
-                } catch (ActivityNotFoundException | NullPointerException e) {
-                    openGooglePlay(context, launcherPackage, launcherName);
-                }
-                break;
-            case ITOP:
-                try {
-                    /*
-                     * Just want to let anyone who is going to copy
-                     * It's not easy searching for this
-                     * I will be grateful if you take this with a proper credit
-                     * Thank you
-                     */
-                    final Intent newLauncher = new Intent("com.itop.launcher");
-                    newLauncher.setAction("com.itop.launcher.APPLY_ICON_THEME");
-                    newLauncher.putExtra("com.itop.launcher.theme.EXTRA_PKG", context.getPackageName());
                     newLauncher.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(newLauncher);
                     ((AppCompatActivity) context).finish();

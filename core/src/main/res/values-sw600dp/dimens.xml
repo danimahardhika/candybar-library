@@ -5,7 +5,7 @@
     <dimen name="tab_text">16sp</dimen>
 
     <!-- Default Image -->
-    <dimen name="default_image_padding">60dp</dimen>
+    <dimen name="default_image_padding">20dp</dimen>
 
     <!-- Splash Screen -->
     <dimen name="splash_screen_logo">114dp</dimen>

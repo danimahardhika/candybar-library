@@ -1,6 +1,6 @@
 package com.dm.material.dashboard.candybar.fragments;
 
-import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -249,10 +249,10 @@ public class SettingsFragment extends Fragment {
                             String string1 = RequestHelper.writeAppFilter(request);
                             out.append(string1);
 
-                            Bitmap bitmap = DrawableHelper.getHighQualityIcon(
+                            Drawable drawable = DrawableHelper.getHighQualityIcon(
                                     getActivity(), request.getPackageName());
 
-                            String icon = FileHelper.saveIcon(directory, bitmap, request.getName());
+                            String icon = FileHelper.saveIcon(files, directory, drawable, request.getName());
                             if (icon != null) files.add(icon);
                         }
 

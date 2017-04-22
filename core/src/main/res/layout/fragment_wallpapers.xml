@@ -19,7 +19,6 @@
             android:paddingTop="@dimen/card_margin_top"
             android:paddingStart="@dimen/card_margin_left"
             android:paddingLeft="@dimen/card_margin_left"
-            android:paddingBottom="@dimen/card_margin_bottom"
             android:clipToPadding="false"/>
 
     </android.support.v4.widget.SwipeRefreshLayout>

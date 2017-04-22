@@ -34,13 +34,15 @@ import com.dm.material.dashboard.candybar.helpers.ContextHelper;
 
 public class Animator {
 
-    public static void startAlphaAnimation(@Nullable View view, long duration, int visibility) {
+    private static final int ANIMATION_DURATION = 300;
+
+    public static void startAlphaAnimation(@Nullable View view, int visibility) {
         if (view == null) return;
 
         AlphaAnimation alphaAnimation = (visibility == View.VISIBLE)
                 ? new AlphaAnimation(0f, 1f) : new AlphaAnimation(1f, 0f);
 
-        alphaAnimation.setDuration(duration);
+        alphaAnimation.setDuration(ANIMATION_DURATION);
         alphaAnimation.setFillAfter(true);
         view.startAnimation(alphaAnimation);
     }

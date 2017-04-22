@@ -14,8 +14,6 @@
     <attr name="tab_text" format="color"/>
     <attr name="tab_text_selected" format="color"/>
 
-    <attr name="home_title" format="color"/>
-
     <declare-styleable name="HeaderView">
         <attr name="widthRatio" format="integer"/>
         <attr name="heightRatio" format="integer"/>

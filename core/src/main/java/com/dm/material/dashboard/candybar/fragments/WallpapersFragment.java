@@ -132,7 +132,7 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.popup_bubble) {
-            Animator.startAlphaAnimation(getActivity().findViewById(R.id.popup_bubble), 200, View.GONE);
+            Animator.startAlphaAnimation(getActivity().findViewById(R.id.popup_bubble), View.GONE);
             getWallpapers(true);
         }
     }

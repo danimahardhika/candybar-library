@@ -163,7 +163,7 @@ public class IconsBaseFragment extends Fragment {
             public void onAnimationEnd(Animation animation) {
                 if (getActivity() == null) return;
 
-                Animator.startAlphaAnimation(getActivity().findViewById(R.id.shadow), 200, View.VISIBLE);
+                Animator.startAlphaAnimation(getActivity().findViewById(R.id.shadow), View.VISIBLE);
                 getIcons();
             }
 

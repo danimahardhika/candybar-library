@@ -163,7 +163,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         } else if (holder.holderId == TYPE_CONTENT) {
             int finalPosition = mShowPremiumRequest ? position - 1 : position;
 
-            ImageLoader.getInstance().displayImage(mRequests.get(finalPosition).getPackageName(),
+            ImageLoader.getInstance().displayImage("package://" +mRequests.get(finalPosition).getPackageName(),
                     new ImageViewAware(holder.icon), mOptions.build(),
                     new ImageSize(114, 114), null, null);
 

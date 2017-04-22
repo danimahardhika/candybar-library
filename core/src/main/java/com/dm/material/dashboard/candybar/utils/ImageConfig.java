@@ -41,7 +41,6 @@ public class ImageConfig {
                 .threadPriority(Thread.NORM_PRIORITY - 2)
                 .threadPoolSize(4)
                 .tasksProcessingOrder(QueueProcessingType.FIFO)
-                .imageDownloader(new ImageDownloader(context))
                 .diskCache(new UnlimitedDiskCache(new File(
                         context.getCacheDir().toString() + "/" + FileHelper.UIL_CACHE_DIR)))
                 .diskCacheSize(256 * FileHelper.MB)

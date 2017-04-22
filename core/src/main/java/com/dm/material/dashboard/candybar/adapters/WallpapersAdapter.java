@@ -74,6 +74,7 @@ public class WallpapersAdapter extends RecyclerView.Adapter<WallpapersAdapter.Vi
                 mContext, R.drawable.ic_default_image_loading);
         Drawable failed = DrawableHelper.getDefaultImage(
                 mContext, R.drawable.ic_default_image_failed);
+
         mOptions = ImageConfig.getRawDefaultImageOptions();
         mOptions.resetViewBeforeLoading(true);
         mOptions.cacheInMemory(true);
@@ -214,6 +215,5 @@ public class WallpapersAdapter extends RecyclerView.Adapter<WallpapersAdapter.Vi
             }
             return false;
         }
-
     }
 }

@@ -11,7 +11,6 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DimenRes;
@@ -27,8 +26,6 @@ import android.util.Log;
 
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
-
-import java.io.ByteArrayOutputStream;
 
 /*
  * CandyBar - Material Dashboard
@@ -80,28 +77,6 @@ public class DrawableHelper {
     }
 
     @Nullable
-    public static Drawable getResizedDrawable(@NonNull Context context, @DrawableRes int drawableRes, @DimenRes int dimenRes) {
-        try {
-            Drawable drawable = getDrawable(context, drawableRes);
-            if (drawable == null) return null;
-
-            int size = context.getResources().getDimensionPixelSize(dimenRes);
-
-            Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
-                    drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-            drawable.draw(canvas);
-
-            return new BitmapDrawable(context.getResources(),
-                    Bitmap.createScaledBitmap(bitmap, size, size, true));
-        } catch (Exception | OutOfMemoryError e) {
-            LogUtil.d(Log.getStackTraceString(e));
-            return null;
-        }
-    }
-
-    @Nullable
     public static Drawable getDefaultImage(@NonNull Context context, @DrawableRes int res) {
         try {
             int color = ColorHelper.getAttributeColor(context, android.R.attr.textColorSecondary);
@@ -138,6 +113,28 @@ public class DrawableHelper {
         }
     }
 
+    @Nullable
+    public static Drawable getResizedDrawable(@NonNull Context context, @DrawableRes int drawableRes, @DimenRes int dimenRes) {
+        try {
+            Drawable drawable = getDrawable(context, drawableRes);
+            if (drawable == null) return null;
+
+            int size = context.getResources().getDimensionPixelSize(dimenRes);
+
+            Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+                    drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            drawable.draw(canvas);
+
+            return new BitmapDrawable(context.getResources(),
+                    Bitmap.createScaledBitmap(bitmap, size, size, true));
+        } catch (Exception | OutOfMemoryError e) {
+            LogUtil.d(Log.getStackTraceString(e));
+            return null;
+        }
+    }
+
     public static Drawable getAppIcon(@NonNull Context context, ResolveInfo info) {
         try {
             return info.activityInfo.loadIcon(context.getPackageManager());
@@ -147,7 +144,7 @@ public class DrawableHelper {
     }
 
     @Nullable
-    public static Bitmap getHighQualityIcon(@NonNull Context context, String packageName) {
+    public static Drawable getHighQualityIcon(@NonNull Context context, String packageName) {
         try {
             PackageManager packageManager = context.getPackageManager();
             ApplicationInfo info = packageManager.getApplicationInfo(
@@ -161,30 +158,8 @@ public class DrawableHelper {
 
             Drawable drawable = ResourcesCompat.getDrawableForDensity(
                     resources, info.icon, density, null);
-            if (drawable != null) return ((BitmapDrawable) drawable).getBitmap();
-        } catch (Exception | OutOfMemoryError e) {
-            LogUtil.e(Log.getStackTraceString(e));
-        }
-        return null;
-    }
-
-    @Nullable
-    public static byte[] getBitmapByte(@NonNull Drawable drawable) {
-        try {
-            Bitmap bitmap;
-            if (drawable instanceof LayerDrawable) {
-                bitmap = Bitmap.createBitmap(
-                        drawable.getIntrinsicWidth(),
-                        drawable.getIntrinsicHeight(),
-                        Bitmap.Config.ARGB_8888);
-                drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-                drawable.draw(new Canvas(bitmap));
-            } else {
-                bitmap = ((BitmapDrawable) drawable).getBitmap();
-            }
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 10, stream);
-            return stream.toByteArray();
+            if (drawable != null) return drawable;
+            return info.loadIcon(packageManager);
         } catch (Exception | OutOfMemoryError e) {
             LogUtil.e(Log.getStackTraceString(e));
         }
