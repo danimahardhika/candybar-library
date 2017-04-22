@@ -17,7 +17,7 @@ allprojects {
 Add the dependency
 ```Gradle
 dependencies {
-    compile 'com.github.danimahardhika.candybar-library:core:3.0.3'
+    compile 'com.github.danimahardhika.candybar-library:core:3.0.5'
 }
 ```
 # How to Use
@@ -29,7 +29,7 @@ Take a look inside <a href="https://github.com/danimahardhika/candybar-library/w
 
 # Features
 * License Checker
-* Apply: 27 launchers
+* Apply: 26 launchers
   * [List of Supported Launchers](https://github.com/danimahardhika/candybar-library/wiki/List-of-Supported-Launcher)
 * Icon Picker: see all icons included with sections and search
 * Icon Request
@@ -63,6 +63,8 @@ Want your icon pack listed here? Mention me at [Google Plus](https://plus.google
 * [Silhoutte](https://play.google.com/store/apps/details?id=com.xonyxltd.icon.silhouettedonate)
 * [Apollo](https://play.google.com/store/apps/details?id=com.solarium.apollo)
 * [Minimale](https://play.google.com/store/apps/details?id=com.mowmo.minimale)
+* [Origin](https://play.google.com/store/apps/details?id=com.mojojojodevlabs.origin)
+* [Dimitrix](https://play.google.com/store/apps/details?id=com.darin.dimitrix)
 
 # License
 ```
