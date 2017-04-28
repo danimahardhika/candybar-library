@@ -99,6 +99,6 @@ dependencies {
     compile 'com.google.android.apps.muzei:muzei-api:2.0'
     compile 'com.github.rafakob:DrawMe:0.1.6'
     compile 'org.sufficientlysecure:html-textview:3.3'
-    compile 'com.github.danimahardhika:cafebar:1.0.7'
+    compile 'com.github.danimahardhika:cafebar:1.1.0'
     compile 'me.grantland:autofittextview:0.2.1'
 }
