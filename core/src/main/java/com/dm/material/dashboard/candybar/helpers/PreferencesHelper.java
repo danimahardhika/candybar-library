@@ -48,10 +48,16 @@ public class PreferencesHelper {
     private static final String KEY_REGULAR_REQUEST_USED= "regular_request_used";
     private static final String KEY_INAPP_BILLING_TYPE = "inapp_billing_type";
     private static final String KEY_LICENSED = "licensed";
-    private static final String KEY_SCROLL_WALLPAPER = "scroll_wallpaper";
     private static final String KEY_LATEST_CRASHLOG = "last_crashlog";
     private static final String KEY_PREMIUM_REQUEST_ENABLED = "premium_request_enabled";
     private static final String KEY_AVAILABLE_WALLPAPERS_COUNT = "available_wallpapers_count";
+    private static final String KEY_WALLPAPER_CROP = "wallpaper_crop";
+    private static final String KEY_APPLY_LOCKSCREEN = "apply_lockscreen";
+    private static final String KEY_HOME_INTRO = "home_intro";
+    private static final String KEY_ICONS_INTRO = "icons_intro";
+    private static final String KEY_REQUEST_INTRO = "request_intro";
+    private static final String KEY_WALLPAPERS_INTRO = "wallpapers_intro";
+    private static final String KEY_WALLPAPER_PREVIEW_INTRO = "wallpaper_preview_intro";
 
     public PreferencesHelper(@NonNull Context context) {
         mContext = context;
@@ -69,6 +75,46 @@ public class PreferencesHelper {
         getSharedPreferences().edit().putBoolean(KEY_FIRST_RUN, bool).apply();
     }
 
+    public boolean isTimeToShowHomeIntro() {
+        return getSharedPreferences().getBoolean(KEY_HOME_INTRO, true);
+    }
+
+    public void setTimeToShowHomeIntro(boolean bool) {
+        getSharedPreferences().edit().putBoolean(KEY_HOME_INTRO, bool).apply();
+    }
+
+    public boolean isTimeToShowIconsIntro() {
+        return getSharedPreferences().getBoolean(KEY_ICONS_INTRO, true);
+    }
+
+    public void setTimeToShowIconsIntro(boolean bool) {
+        getSharedPreferences().edit().putBoolean(KEY_ICONS_INTRO, bool).apply();
+    }
+
+    public boolean isTimeToShowRequestIntro() {
+        return getSharedPreferences().getBoolean(KEY_REQUEST_INTRO, true);
+    }
+
+    public void setTimeToShowRequestIntro(boolean bool) {
+        getSharedPreferences().edit().putBoolean(KEY_REQUEST_INTRO, bool).apply();
+    }
+
+    public boolean isTimeToShowWallpapersIntro() {
+        return getSharedPreferences().getBoolean(KEY_WALLPAPERS_INTRO, true);
+    }
+
+    public void setTimeToShowWallpapersIntro(boolean bool) {
+        getSharedPreferences().edit().putBoolean(KEY_WALLPAPERS_INTRO, bool).apply();
+    }
+
+    public boolean isTimeToShowWallpaperPreviewIntro() {
+        return getSharedPreferences().getBoolean(KEY_WALLPAPER_PREVIEW_INTRO, true);
+    }
+
+    public void setTimeToShowWallpaperPreviewIntro(boolean bool) {
+        getSharedPreferences().edit().putBoolean(KEY_WALLPAPER_PREVIEW_INTRO, bool).apply();
+    }
+
     public boolean isDarkTheme() {
         return getSharedPreferences().getBoolean(KEY_DARK_THEME,
                 mContext.getResources().getBoolean(R.bool.use_dark_theme));
@@ -76,6 +122,10 @@ public class PreferencesHelper {
 
     public void setDarkTheme(boolean bool) {
         getSharedPreferences().edit().putBoolean(KEY_DARK_THEME, bool).apply();
+    }
+
+    public boolean isShadowEnabled() {
+        return mContext.getResources().getBoolean(R.bool.enable_shadow);
     }
 
     public void setRotateTime (int time) {
@@ -184,12 +234,20 @@ public class PreferencesHelper {
         getSharedPreferences().edit().putBoolean(KEY_LICENSED, bool).apply();
     }
 
-    public boolean isScrollWallpaper() {
-        return getSharedPreferences().getBoolean(KEY_SCROLL_WALLPAPER, true);
+    public boolean isWallpaperCrop() {
+        return getSharedPreferences().getBoolean(KEY_WALLPAPER_CROP, false);
     }
 
-    public void setScrollWallpaper(boolean bool) {
-        getSharedPreferences().edit().putBoolean(KEY_SCROLL_WALLPAPER, bool).apply();
+    public void setWallpaperCrop(boolean bool) {
+        getSharedPreferences().edit().putBoolean(KEY_WALLPAPER_CROP, bool).apply();
+    }
+
+    public boolean isApplyLockscreen() {
+        return getSharedPreferences().getBoolean(KEY_APPLY_LOCKSCREEN, false);
+    }
+
+    public void setApplyLockscreen(boolean bool) {
+        getSharedPreferences().edit().putBoolean(KEY_APPLY_LOCKSCREEN, bool).apply();
     }
 
     String getLatestCrashLog() {

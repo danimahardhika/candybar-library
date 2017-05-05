@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -43,16 +44,24 @@ import java.util.List;
 public class CreditsFragment extends DialogFragment {
 
     private ListView mListView;
-
     private AsyncTask<Void, Void, Boolean> mGetCredits;
+    private int mType;
 
     private static final String TAG = "candybar.dialog.credits";
+    private static final String TYPE = "type";
 
-    private static CreditsFragment newInstance() {
-        return new CreditsFragment();
+    public static final int TYPE_ICON_PACK_CONTRIBUTORS = 0;
+    public static final int TYPE_DASHBOARD_CONTRIBUTORS = 1;
+
+    private static CreditsFragment newInstance(int type) {
+        CreditsFragment fragment = new CreditsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(TYPE, type);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
-    public static void showCreditsDialog(FragmentManager fm) {
+    public static void showCreditsDialog(FragmentManager fm, int type) {
         FragmentTransaction ft = fm.beginTransaction();
         Fragment prev = fm.findFragmentByTag(TAG);
         if (prev != null) {
@@ -60,7 +69,7 @@ public class CreditsFragment extends DialogFragment {
         }
 
         try {
-            DialogFragment dialog = CreditsFragment.newInstance();
+            DialogFragment dialog = CreditsFragment.newInstance(type);
             dialog.show(ft, TAG);
         } catch (IllegalStateException | IllegalArgumentException ignored) {}
     }
@@ -70,13 +79,21 @@ public class CreditsFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
         builder.customView(R.layout.fragment_credits, false);
-        builder.title(R.string.about_contributors_title);
+        builder.typeface("Font-Medium.ttf", "Font-Regular.ttf");
+        builder.title(mType == TYPE_ICON_PACK_CONTRIBUTORS ?
+                R.string.about_contributors_title : R.string.about_dashboard_contributors);
         builder.positiveText(R.string.close);
 
         MaterialDialog dialog = builder.build();
         dialog.show();
         mListView = (ListView) dialog.findViewById(R.id.listview);
         return dialog;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mType = getArguments().getInt(TYPE);
     }
 
     @Override
@@ -107,7 +124,14 @@ public class CreditsFragment extends DialogFragment {
                 while (!isCancelled()) {
                     try {
                         Thread.sleep(1);
-                        XmlPullParser xpp = getActivity().getResources().getXml(R.xml.contributors);
+                        int res = -1;
+                        if (mType == TYPE_ICON_PACK_CONTRIBUTORS) {
+                            res = R.xml.contributors;
+                        } else if (mType == TYPE_DASHBOARD_CONTRIBUTORS) {
+                            res = R.xml.dashboard_contributors;
+                        }
+
+                        XmlPullParser xpp = getActivity().getResources().getXml(res);
 
                         while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
                             if (xpp.getEventType() == XmlPullParser.START_TAG) {
@@ -115,6 +139,7 @@ public class CreditsFragment extends DialogFragment {
                                     Credit credit = new Credit(
                                             xpp.getAttributeValue(null, "name"),
                                             xpp.getAttributeValue(null, "contribution"),
+                                            xpp.getAttributeValue(null, "image"),
                                             xpp.getAttributeValue(null, "link"));
                                     credits.add(credit);
                                 }
@@ -134,7 +159,7 @@ public class CreditsFragment extends DialogFragment {
             protected void onPostExecute(Boolean aBoolean) {
                 super.onPostExecute(aBoolean);
                 if (aBoolean) {
-                    mListView.setAdapter(new CreditsAdapter(getActivity(), credits));
+                    mListView.setAdapter(new CreditsAdapter(getActivity(), credits, mType));
                 } else {
                     dismiss();
                 }
@@ -142,5 +167,4 @@ public class CreditsFragment extends DialogFragment {
             }
         }.execute();
     }
-
 }

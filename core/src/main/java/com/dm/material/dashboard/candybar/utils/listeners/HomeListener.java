@@ -25,4 +25,5 @@ import com.dm.material.dashboard.candybar.items.Home;
 public interface HomeListener {
 
     void onHomeDataUpdated(@Nullable Home home);
+    void onHomeIntroInit();
 }

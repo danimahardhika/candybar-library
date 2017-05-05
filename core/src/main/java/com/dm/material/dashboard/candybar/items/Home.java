@@ -18,6 +18,7 @@ package com.dm.material.dashboard.candybar.items;
  * limitations under the License.
  */
 
+import android.graphics.Point;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 
@@ -66,6 +67,42 @@ public class Home {
 
         public int getType() {
             return mType;
+        }
+    }
+
+    public static class Style {
+
+        private final Point mPoint;
+        private final Home.Style.Type mType;
+
+        public Style(@NonNull Point point, @NonNull Home.Style.Type type) {
+            mPoint = point;
+            mType = type;
+        }
+
+        public Point getPoint() {
+            return mPoint;
+        }
+
+        public Type getType() {
+            return mType;
+        }
+
+        public enum Type {
+            CARD_SQUARE(0),
+            CARD_RECTANGLE(1),
+            SQUARE(2),
+            RECTANGLE(3);
+
+            private final int mType;
+
+            Type(int type) {
+                mType = type;
+            }
+
+            public int getType() {
+                return mType;
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.dm.material.dashboard.candybar.helpers;
 
 import android.content.Intent;
+import android.support.annotation.Nullable;
 
 /*
  * CandyBar - Material Dashboard
@@ -34,7 +35,7 @@ public class IntentHelper {
     private static final String ACTION_NOVA_LAUNCHER = "com.novalauncher.THEME";
     private static final String ACTION_PLUS_HOME = "jp.co.a_tm.android.launcher.icons.ACTION_PICK_ICON";
 
-    public static int getAction(Intent intent) {
+    public static int getAction(@Nullable Intent intent) {
         if (intent == null) return ACTION_DEFAULT;
         String action = intent.getAction();
         if (action != null) {
@@ -49,9 +50,10 @@ public class IntentHelper {
                     return IMAGE_PICKER;
                 case Intent.ACTION_SET_WALLPAPER:
                     return WALLPAPER_PICKER;
+                default:
+                    return ACTION_DEFAULT;
             }
         }
         return ACTION_DEFAULT;
     }
-
 }

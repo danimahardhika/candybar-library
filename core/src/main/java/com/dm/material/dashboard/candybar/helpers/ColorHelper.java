@@ -97,22 +97,14 @@ public class ColorHelper {
 
     private static boolean isLightToolbar(@NonNull Context context) {
         int color = getAttributeColor(context, R.attr.colorPrimaryDark);
-        int red = Color.red(color);
-        int green = Color.green(color);
-        int blue = Color.blue(color);
-        return red >= 192 && green >= 192 && blue >= 192;
+        int title = getTitleTextColor(color);
+        return title < Color.WHITE;
     }
 
     public static void setStatusBarIconColor(@NonNull Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             View view = ((AppCompatActivity) context).getWindow().getDecorView();
             if (view != null) {
-                String homeImage = context.getResources().getString(R.string.home_image);
-                if (homeImage.length() > 0) {
-                    view.setSystemUiVisibility(0);
-                    return;
-                }
-
                 if (isLightToolbar(context)){
                     view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
                     return;

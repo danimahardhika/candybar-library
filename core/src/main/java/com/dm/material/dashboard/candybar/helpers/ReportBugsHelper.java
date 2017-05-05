@@ -61,6 +61,7 @@ public class ReportBugsHelper {
     public static void prepareReportBugs(@NonNull Context context) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(context);
         builder.customView(R.layout.dialog_report_bugs, true);
+        builder.typeface("Font-Medium.ttf", "Font-Regular.ttf");
         builder.positiveText(R.string.report_bugs_send);
         builder.negativeText(R.string.close);
 
@@ -98,7 +99,8 @@ public class ReportBugsHelper {
                 file = folder.toString() + "/" + "reportbugs.zip";
 
                 MaterialDialog.Builder builder = new MaterialDialog.Builder(context);
-                builder.content(R.string.report_bugs_building)
+                builder.typeface("Font-Medium.ttf", "Font-Regular.ttf")
+                        .content(R.string.report_bugs_building)
                         .progress(true, 0)
                         .progressIndeterminateStyle(true);
 

@@ -1,6 +1,7 @@
 package com.dm.material.dashboard.candybar.fragments.dialog;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.ChangelogAdapter;
+import com.dm.material.dashboard.candybar.utils.listeners.HomeListener;
 
 /*
  * CandyBar - Material Dashboard
@@ -93,4 +95,17 @@ public class ChangelogFragment extends DialogFragment{
         mChangelogList.setAdapter(new ChangelogAdapter(getActivity(), changelog));
     }
 
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        if (fm != null) {
+            Fragment fragment = fm.findFragmentByTag("home");
+            if (fragment != null) {
+                HomeListener listener = (HomeListener) fragment;
+                listener.onHomeIntroInit();
+            }
+        }
+    }
 }

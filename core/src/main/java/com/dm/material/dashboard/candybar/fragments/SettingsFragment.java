@@ -67,13 +67,17 @@ public class SettingsFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
+
+        if (!Preferences.getPreferences(getActivity()).isShadowEnabled()) {
+            View shadow = view.findViewById(R.id.shadow);
+            if (shadow != null) shadow.setVisibility(View.GONE);
+        }
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -178,12 +182,18 @@ public class SettingsFragment extends Fragment {
                 "", "", "", Setting.Type.HEADER, -1));
 
         settings.add(new Setting(-1, "",
-                getActivity().getResources().getString(R.string.pref_others_report_changelog),
+                getActivity().getResources().getString(R.string.pref_others_changelog),
                 "", "", Setting.Type.CHANGELOG, -1));
 
+        if (getActivity().getResources().getBoolean(R.bool.enable_apply)) {
+            settings.add(new Setting(-1, "",
+                    getActivity().getResources().getString(R.string.pref_others_report_bugs),
+                    "", "", Setting.Type.REPORT_BUGS, -1));
+        }
+
         settings.add(new Setting(-1, "",
-                getActivity().getResources().getString(R.string.pref_others_report_bugs),
-                "", "", Setting.Type.REPORT_BUGS, -1));
+                getActivity().getResources().getString(R.string.pref_others_reset_tutorial),
+                "", "", Setting.Type.RESET_TUTORIAL, -1));
 
         mRecyclerView.setAdapter(new SettingsAdapter(getActivity(), settings));
     }
@@ -204,6 +214,7 @@ public class SettingsFragment extends Fragment {
                 sb = new StringBuilder();
 
                 MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+                builder.typeface("Font-Medium.ttf", "Font-Regular.ttf");
                 builder.content(R.string.premium_request_rebuilding);
                 builder.cancelable(false);
                 builder.canceledOnTouchOutside(false);

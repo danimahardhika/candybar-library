@@ -48,4 +48,11 @@ public class HeaderView extends AppCompatImageView {
         double height = (widthMeasureSpec/mWidthRatio) * mHeightRatio;
         setMeasuredDimension(widthMeasureSpec, Double.valueOf(height).intValue());
     }
+
+    public void setRatio(int widthRatio, int heightRatio) {
+        mWidthRatio = widthRatio;
+        mHeightRatio = heightRatio;
+        double height = (getMeasuredWidth()/mWidthRatio) * mHeightRatio;
+        setMeasuredDimension(getMeasuredWidth(), Double.valueOf(height).intValue());
+    }
 }

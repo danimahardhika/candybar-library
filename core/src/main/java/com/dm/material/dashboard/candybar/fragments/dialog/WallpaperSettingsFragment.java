@@ -3,15 +3,17 @@ package com.dm.material.dashboard.candybar.fragments.dialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.AppCompatRadioButton;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.dm.material.dashboard.candybar.R;
@@ -37,10 +39,13 @@ import com.dm.material.dashboard.candybar.preferences.Preferences;
 
 public class WallpaperSettingsFragment extends DialogFragment implements View.OnClickListener {
 
-    private AppCompatRadioButton mEnableScrollRadio;
-    private AppCompatRadioButton mDisableScrollRadio;
-    private LinearLayout mEnableScroll;
-    private LinearLayout mDisableScroll;
+    private LinearLayout mWallpaperCrop;
+    private AppCompatCheckBox mWallpaperCropCheck;
+    private LinearLayout mApplyLockscreen;
+    private TextView mApplyLockscreenTitle;
+    private TextView mApplyLockscreenSubtitle;
+    private AppCompatCheckBox mApplyLockscreenCheck;
+    private TextView mApplyLockscreenError;
 
     private static final String TAG = "candybar.dialog.wallpaper.settings";
 
@@ -65,48 +70,61 @@ public class WallpaperSettingsFragment extends DialogFragment implements View.On
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-        builder.title(R.string.menu_wallpaper_settings);
         builder.customView(R.layout.fragment_wallpaper_settings, false);
+        builder.typeface("Font-Medium.ttf", "Font-Regular.ttf");
+        builder.title(R.string.menu_wallpaper_settings);
         builder.positiveText(R.string.close);
         MaterialDialog dialog = builder.build();
         dialog.show();
 
-        mEnableScrollRadio = (AppCompatRadioButton) dialog.findViewById(R.id.enable_scroll_radio);
-        mDisableScrollRadio = (AppCompatRadioButton) dialog.findViewById(R.id.disable_scroll_radio);
-        mEnableScroll = (LinearLayout) dialog.findViewById(R.id.enable_scroll);
-        mDisableScroll = (LinearLayout) dialog.findViewById(R.id.disable_scroll);
+        mWallpaperCrop = (LinearLayout) dialog.findViewById(R.id.wallpaper_crop);
+        mWallpaperCropCheck = (AppCompatCheckBox) dialog.findViewById(R.id.wallpaper_crop_checkbox);
+        mApplyLockscreen = (LinearLayout) dialog.findViewById(R.id.apply_lockscreen);
+        mApplyLockscreenTitle = (TextView) dialog.findViewById(R.id.apply_lockscreen_title);
+        mApplyLockscreenSubtitle = (TextView) dialog.findViewById(R.id.apply_lockscreen_subtitle);
+        mApplyLockscreenCheck = (AppCompatCheckBox) dialog.findViewById(R.id.apply_lockscreen_checkbox);
+        mApplyLockscreenError = (TextView) dialog.findViewById(R.id.apply_lockscreen_error);
         return dialog;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mEnableScroll.setOnClickListener(this);
-        mDisableScroll.setOnClickListener(this);
-        toggleRadio();
+        mWallpaperCropCheck.setChecked(Preferences.getPreferences(getActivity()).isWallpaperCrop());
+        mApplyLockscreenCheck.setChecked(Preferences.getPreferences(getActivity()).isApplyLockscreen());
+
+        mWallpaperCrop.setOnClickListener(this);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            mApplyLockscreenTitle.setAlpha(0.5f);
+            mApplyLockscreenSubtitle.setAlpha(0.5f);
+            mApplyLockscreenCheck.setAlpha(0.5f);
+            mApplyLockscreenError.setVisibility(View.VISIBLE);
+            return;
+        }
+
+        mApplyLockscreen.setOnClickListener(this);
     }
 
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
-        if (Preferences.getPreferences(getActivity()).isScrollWallpaper()) {
-            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-        } else {
+        if (Preferences.getPreferences(getActivity()).isWallpaperCrop()) {
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        } else {
+            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         }
     }
 
     @Override
     public void onClick(View view) {
         int id = view.getId();
-        Preferences.getPreferences(getActivity()).setScrollWallpaper(id == R.id.enable_scroll);
-        toggleRadio();
+        if (id == R.id.wallpaper_crop) {
+            Preferences.getPreferences(getActivity()).setWallpaperCrop(!mWallpaperCropCheck.isChecked());
+            mWallpaperCropCheck.setChecked(!mWallpaperCropCheck.isChecked());
+        } else if (id == R.id.apply_lockscreen) {
+            Preferences.getPreferences(getActivity()).setApplyLockscreen(!mApplyLockscreenCheck.isChecked());
+            mApplyLockscreenCheck.setChecked(!mApplyLockscreenCheck.isChecked());
+        }
     }
-
-    private void toggleRadio() {
-        boolean scroll = Preferences.getPreferences(getActivity()).isScrollWallpaper();
-        mEnableScrollRadio.setChecked(scroll);
-        mDisableScrollRadio.setChecked(!scroll);
-    }
-
 }

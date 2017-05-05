@@ -53,7 +53,7 @@ import java.util.List;
  * limitations under the License.
  */
 
-public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHolder> {
+public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final Context mContext;
     private final List<Setting> mSettings;
@@ -67,63 +67,64 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = null;
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_CONTENT) {
-            view = LayoutInflater.from(mContext).inflate(
+            View view = LayoutInflater.from(mContext).inflate(
                     R.layout.fragment_settings_item_list, parent, false);
-        } else if (viewType == TYPE_FOOTER) {
-            view = LayoutInflater.from(mContext).inflate(
-                    R.layout.fragment_settings_item_footer, parent, false);
+            return new ContentViewHolder(view);
         }
-        return new ViewHolder(view, viewType);
+
+        View view = LayoutInflater.from(mContext).inflate(
+                R.layout.fragment_settings_item_footer, parent, false);
+        return new FooterViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        if (holder.holderId == TYPE_CONTENT) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if (holder.getItemViewType() == TYPE_CONTENT) {
+            ContentViewHolder contentViewHolder = (ContentViewHolder) holder;
             Setting setting = mSettings.get(position);
 
             if (setting.getTitle().length() == 0) {
-                holder.title.setVisibility(View.GONE);
-                holder.divider.setVisibility(View.GONE);
-                holder.container.setVisibility(View.VISIBLE);
+                contentViewHolder.title.setVisibility(View.GONE);
+                contentViewHolder.divider.setVisibility(View.GONE);
+                contentViewHolder.container.setVisibility(View.VISIBLE);
 
-                holder.subtitle.setText(setting.getSubtitle());
+                contentViewHolder.subtitle.setText(setting.getSubtitle());
 
                 if (setting.getContent().length() == 0) {
-                    holder.content.setVisibility(View.GONE);
+                    contentViewHolder.content.setVisibility(View.GONE);
                 } else {
-                    holder.content.setText(setting.getContent());
-                    holder.content.setVisibility(View.VISIBLE);
+                    contentViewHolder.content.setText(setting.getContent());
+                    contentViewHolder.content.setVisibility(View.VISIBLE);
                 }
 
                 if (setting.getFooter().length() == 0) {
-                    holder.footer.setVisibility(View.GONE);
+                    contentViewHolder.footer.setVisibility(View.GONE);
                 } else {
-                    holder.footer.setText(setting.getFooter());
+                    contentViewHolder.footer.setText(setting.getFooter());
                 }
 
                 if (setting.getCheckState() >= 0) {
-                    holder.checkBox.setVisibility(View.VISIBLE);
-                    holder.checkBox.setChecked(setting.getCheckState() == 1);
+                    contentViewHolder.checkBox.setVisibility(View.VISIBLE);
+                    contentViewHolder.checkBox.setChecked(setting.getCheckState() == 1);
                 } else {
-                    holder.checkBox.setVisibility(View.GONE);
+                    contentViewHolder.checkBox.setVisibility(View.GONE);
                 }
             } else {
-                holder.container.setVisibility(View.GONE);
-                holder.title.setVisibility(View.VISIBLE);
-                holder.title.setText(setting.getTitle());
+                contentViewHolder.container.setVisibility(View.GONE);
+                contentViewHolder.title.setVisibility(View.VISIBLE);
+                contentViewHolder.title.setText(setting.getTitle());
 
                 if (position > 0) {
-                    holder.divider.setVisibility(View.VISIBLE);
+                    contentViewHolder.divider.setVisibility(View.VISIBLE);
                 } else {
-                    holder.divider.setVisibility(View.GONE);
+                    contentViewHolder.divider.setVisibility(View.GONE);
                 }
 
                 if (setting.getIcon() != -1) {
                     int color = ColorHelper.getAttributeColor(mContext, android.R.attr.textColorPrimary);
-                    holder.title.setCompoundDrawablesWithIntrinsicBounds(DrawableHelper.getTintedDrawable(
+                    contentViewHolder.title.setCompoundDrawablesWithIntrinsicBounds(DrawableHelper.getTintedDrawable(
                             mContext, setting.getIcon(), color), null, null, null);
                 }
             }
@@ -141,34 +142,27 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
         return TYPE_CONTENT;
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private class ContentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private TextView title;
-        private TextView subtitle;
-        private TextView content;
-        private TextView footer;
-        private LinearLayout container;
-        private AppCompatCheckBox checkBox;
-        private View divider;
+        private final TextView title;
+        private final TextView subtitle;
+        private final TextView content;
+        private final TextView footer;
+        private final LinearLayout container;
+        private final AppCompatCheckBox checkBox;
+        private final View divider;
 
-        private int holderId;
-
-        public ViewHolder(View itemView, int viewType) {
+        ContentViewHolder(View itemView) {
             super(itemView);
-            if (viewType == TYPE_CONTENT) {
-                title = (TextView) itemView.findViewById(R.id.title);
-                subtitle = (TextView) itemView.findViewById(R.id.subtitle);
-                content = (TextView) itemView.findViewById(R.id.content);
-                footer = (TextView) itemView.findViewById(R.id.footer);
-                checkBox = (AppCompatCheckBox) itemView.findViewById(R.id.checkbox);
-                divider = itemView.findViewById(R.id.divider);
-                container = (LinearLayout) itemView.findViewById(R.id.container);
-                holderId = TYPE_CONTENT;
+            title = (TextView) itemView.findViewById(R.id.title);
+            subtitle = (TextView) itemView.findViewById(R.id.subtitle);
+            content = (TextView) itemView.findViewById(R.id.content);
+            footer = (TextView) itemView.findViewById(R.id.footer);
+            checkBox = (AppCompatCheckBox) itemView.findViewById(R.id.checkbox);
+            divider = itemView.findViewById(R.id.divider);
+            container = (LinearLayout) itemView.findViewById(R.id.container);
 
-                container.setOnClickListener(this);
-            } else if (viewType == TYPE_FOOTER) {
-                holderId = TYPE_FOOTER;
-            }
+            container.setOnClickListener(this);
         }
 
         @Override
@@ -183,6 +177,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
                 switch (setting.getType()) {
                     case CACHE:
                         new MaterialDialog.Builder(mContext)
+                                .typeface("Font-Medium.ttf", "Font-Regular.ttf")
                                 .content(R.string.pref_data_cache_clear_dialog)
                                 .positiveText(R.string.clear)
                                 .negativeText(android.R.string.cancel)
@@ -210,6 +205,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
                         break;
                     case ICON_REQUEST:
                         new MaterialDialog.Builder(mContext)
+                                .typeface("Font-Medium.ttf", "Font-Regular.ttf")
                                 .content(R.string.pref_data_request_clear_dialog)
                                 .positiveText(R.string.clear)
                                 .negativeText(android.R.string.cancel)
@@ -251,7 +247,27 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
                     case CHANGELOG:
                         ChangelogFragment.showChangelog(((AppCompatActivity) mContext).getSupportFragmentManager());
                         break;
+                    case RESET_TUTORIAL:
+                        Preferences.getPreferences(mContext).setTimeToShowHomeIntro(true);
+                        Preferences.getPreferences(mContext).setTimeToShowIconsIntro(true);
+                        Preferences.getPreferences(mContext).setTimeToShowRequestIntro(true);
+                        Preferences.getPreferences(mContext).setTimeToShowWallpapersIntro(true);
+                        Preferences.getPreferences(mContext).setTimeToShowWallpaperPreviewIntro(true);
+
+                        Toast.makeText(mContext, R.string.pref_others_reset_tutorial_reset, Toast.LENGTH_LONG).show();
+                        break;
                 }
+            }
+        }
+    }
+
+    private class FooterViewHolder extends RecyclerView.ViewHolder {
+
+        FooterViewHolder(View itemView) {
+            super(itemView);
+            if (!Preferences.getPreferences(mContext).isShadowEnabled()) {
+                View shadow = itemView.findViewById(R.id.shadow);
+                shadow.setVisibility(View.GONE);
             }
         }
     }

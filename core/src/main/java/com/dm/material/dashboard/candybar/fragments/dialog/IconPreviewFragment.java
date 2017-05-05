@@ -82,6 +82,7 @@ public class IconPreviewFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
         builder.customView(R.layout.fragment_icon_preview, false);
+        builder.typeface("Font-Medium.ttf", "Font-Regular.ttf");
         builder.positiveText(R.string.close);
         MaterialDialog dialog = builder.build();
         dialog.show();

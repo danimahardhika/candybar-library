@@ -2,7 +2,6 @@ package com.dm.material.dashboard.candybar.fragments.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,8 +10,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.danimahardhika.cafebar.CafeBar;
@@ -47,9 +46,9 @@ import java.io.File;
 public class WallpaperOptionsFragment extends DialogFragment implements View.OnClickListener {
 
     private LinearLayout mApply;
-    private LinearLayout mSave;
-    private ImageView mApplyIcon;
-    private ImageView mSaveIcon;
+    private TextView mSave;
+    private TextView mApplyText;
+    private View mDivider;
 
     private String mName;
     private String mUrl;
@@ -90,9 +89,9 @@ public class WallpaperOptionsFragment extends DialogFragment implements View.OnC
         dialog.show();
 
         mApply = (LinearLayout) dialog.findViewById(R.id.apply);
-        mSave = (LinearLayout) dialog.findViewById(R.id.save);
-        mApplyIcon = (ImageView) dialog.findViewById(R.id.apply_icon);
-        mSaveIcon = (ImageView) dialog.findViewById(R.id.save_icon);
+        mSave = (TextView) dialog.findViewById(R.id.save);
+        mApplyText = (TextView) dialog.findViewById(R.id.apply_text);
+        mDivider = dialog.findViewById(R.id.divider);
         return dialog;
     }
 
@@ -112,16 +111,18 @@ public class WallpaperOptionsFragment extends DialogFragment implements View.OnC
         }
 
         int color = ColorHelper.getAttributeColor(getActivity(), android.R.attr.textColorPrimary);
-        mApplyIcon.setImageDrawable(DrawableHelper.getTintedDrawable(
-                getActivity(), R.drawable.ic_toolbar_apply, color));
-        mSaveIcon.setImageDrawable(DrawableHelper.getTintedDrawable(
-                getActivity(), R.drawable.ic_toolbar_save, color));
+        mApplyText.setCompoundDrawablesWithIntrinsicBounds(DrawableHelper.getTintedDrawable(
+                getActivity(), R.drawable.ic_toolbar_apply, color), null, null, null);
+        mSave.setCompoundDrawablesWithIntrinsicBounds(DrawableHelper.getTintedDrawable(
+                getActivity(), R.drawable.ic_toolbar_download, color), null, null, null);
 
         mApply.setOnClickListener(this);
         if (getActivity().getResources().getBoolean(R.bool.enable_wallpaper_download)) {
             mSave.setOnClickListener(this);
             return;
         }
+
+        mDivider.setVisibility(View.GONE);
         mSave.setVisibility(View.GONE);
     }
 
@@ -142,12 +143,12 @@ public class WallpaperOptionsFragment extends DialogFragment implements View.OnC
                             .theme(new CafeBarTheme.Custom(ColorHelper.getAttributeColor(getActivity(), R.attr.card_background)))
                             .autoDismiss(false)
                             .maxLines(4)
+                            .typeface("Font-Regular.ttf", "Font-Bold.ttf")
                             .content(String.format(getResources().getString(R.string.wallpaper_download_exist),
                                     ("\"" +mName + FileHelper.IMAGE_EXTENSION+ "\"")))
                             .icon(R.drawable.ic_toolbar_download)
                             .positiveText(R.string.wallpaper_download_exist_replace)
                             .positiveColor(color)
-                            .positiveTypeface(Typeface.createFromAsset(getActivity().getAssets(), "fonts/Font-Bold.ttf"))
                             .onPositive(cafeBar -> {
                                 if (context == null) {
                                     cafeBar.dismiss();
@@ -158,7 +159,6 @@ public class WallpaperOptionsFragment extends DialogFragment implements View.OnC
                                 cafeBar.dismiss();
                             })
                             .negativeText(R.string.wallpaper_download_exist_new)
-                            .negativeTypeface(Typeface.createFromAsset(getActivity().getAssets(), "fonts/Font-Bold.ttf"))
                             .onNegative(cafeBar -> {
                                 if (context == null) {
                                     cafeBar.dismiss();
@@ -188,5 +188,4 @@ public class WallpaperOptionsFragment extends DialogFragment implements View.OnC
         outState.putString(NAME, mName);
         super.onSaveInstanceState(outState);
     }
-
 }

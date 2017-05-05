@@ -111,6 +111,7 @@ public class InAppBillingFragment extends DialogFragment {
         builder.title(mType == InAppBillingHelper.DONATE ?
                 R.string.navigation_view_donate : R.string.premium_request)
                 .customView(R.layout.fragment_inapp_dialog, false)
+                .typeface("Font-Medium.ttf", "Font-Regular.ttf")
                 .positiveText(mType == InAppBillingHelper.DONATE ?
                         R.string.donate : R.string.premium_request_buy)
                 .negativeText(R.string.close)

@@ -14,8 +14,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dm.material.dashboard.candybar.R;
+import com.dm.material.dashboard.candybar.fragments.dialog.CreditsFragment;
 import com.dm.material.dashboard.candybar.items.Credit;
+import com.dm.material.dashboard.candybar.utils.ImageConfig;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
+import com.mikhaellopez.circularimageview.CircularImageView;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 
 import java.util.List;
 
@@ -41,10 +47,12 @@ public class CreditsAdapter extends BaseAdapter {
 
     private final Context mContext;
     private final List<Credit> mCredits;
+    private final int mType;
 
-    public CreditsAdapter(@NonNull Context context, @NonNull List<Credit> credits) {
+    public CreditsAdapter(@NonNull Context context, @NonNull List<Credit> credits, int type) {
         mContext = context;
         mCredits = credits;
+        mType = type;
     }
 
     @Override
@@ -73,10 +81,11 @@ public class CreditsAdapter extends BaseAdapter {
             holder = (ViewHolder) view.getTag();
         }
 
-        holder.title.setText(mCredits.get(position).getName());
-        holder.subtitle.setText(mCredits.get(position).getContribution());
+        Credit credit = mCredits.get(position);
+        holder.title.setText(credit.getName());
+        holder.subtitle.setText(credit.getContribution());
         holder.container.setOnClickListener(view1 -> {
-            String link = mCredits.get(position).getLink();
+            String link = credit.getLink();
             if (URLUtil.isValidUrl(link)) {
                 try {
                     mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(link)));
@@ -85,6 +94,21 @@ public class CreditsAdapter extends BaseAdapter {
                 }
             }
         });
+
+        if (credit.getContribution().length() == 0) {
+            holder.subtitle.setVisibility(View.GONE);
+        } else {
+            holder.subtitle.setVisibility(View.VISIBLE);
+        }
+
+        if (mType == CreditsFragment.TYPE_DASHBOARD_CONTRIBUTORS) {
+            holder.image.setVisibility(View.VISIBLE);
+            ImageLoader.getInstance().displayImage(credit.getImage(),
+                    new ImageViewAware(holder.image), ImageConfig.getDefaultImageOptions(true),
+                    new ImageSize(144, 144), null, null);
+        } else if (mType == CreditsFragment.TYPE_ICON_PACK_CONTRIBUTORS) {
+            holder.image.setVisibility(View.GONE);
+        }
         return view;
     }
 
@@ -93,11 +117,13 @@ public class CreditsAdapter extends BaseAdapter {
         private final LinearLayout container;
         private final TextView title;
         private final TextView subtitle;
+        private final CircularImageView image;
 
         ViewHolder(View view) {
             container = (LinearLayout) view.findViewById(R.id.container);
             title = (TextView) view.findViewById(R.id.title);
             subtitle = (TextView) view.findViewById(R.id.subtitle);
+            image = (CircularImageView) view.findViewById(R.id.image);
         }
     }
 }

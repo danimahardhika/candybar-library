@@ -25,6 +25,7 @@ import com.dm.material.dashboard.candybar.adapters.FAQsAdapter;
 import com.dm.material.dashboard.candybar.helpers.ColorHelper;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.items.FAQs;
+import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.pluscubed.recyclerfastscroll.RecyclerFastScroller;
 
@@ -66,6 +67,11 @@ public class FAQsFragment extends Fragment {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.faqs_list);
         mSearchResult = (TextView) view.findViewById(R.id.search_result);
         mFastScroll = (RecyclerFastScroller) view.findViewById(R.id.fastscroll);
+
+        if (!Preferences.getPreferences(getActivity()).isShadowEnabled()) {
+            View shadow = view.findViewById(R.id.shadow);
+            if (shadow != null) shadow.setVisibility(View.GONE);
+        }
         return view;
     }
 
@@ -177,7 +183,7 @@ public class FAQsFragment extends Fragment {
                 super.onPostExecute(aBoolean);
                 if (aBoolean) {
                     setHasOptionsMenu(true);
-                    mAdapter = new FAQsAdapter(faqs);
+                    mAdapter = new FAQsAdapter(getActivity(), faqs);
                     mRecyclerView.setAdapter(mAdapter);
                 }
                 mGetFAQs = null;

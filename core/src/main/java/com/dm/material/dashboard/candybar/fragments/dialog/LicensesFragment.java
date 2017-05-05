@@ -69,6 +69,7 @@ public class LicensesFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
         builder.customView(R.layout.fragment_licenses, false);
+        builder.typeface("Font-Medium.ttf", "Font-Regular.ttf");
         builder.title(R.string.about_open_source_licenses);
         MaterialDialog dialog = builder.build();
         dialog.show();

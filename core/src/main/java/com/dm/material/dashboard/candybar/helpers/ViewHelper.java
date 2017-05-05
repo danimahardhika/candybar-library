@@ -13,6 +13,7 @@ import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
@@ -23,9 +24,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dm.material.dashboard.candybar.R;
+import com.dm.material.dashboard.candybar.items.Home;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.pluscubed.recyclerfastscroll.RecyclerFastScroller;
+
+import java.util.Locale;
 
 /*
  * CandyBar - Material Dashboard
@@ -102,7 +106,7 @@ public class ViewHelper {
         return size;
     }
 
-    public static Point getRealScreenSize(@NonNull Context context) {
+    public static Point getScreenSize(@NonNull Context context) {
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = windowManager.getDefaultDisplay();
         Point size = new Point();
@@ -123,7 +127,7 @@ public class ViewHelper {
 
     public static int getNavigationBarHeight(@NonNull Context context) {
         Point appUsableSize = getAppUsableScreenSize(context);
-        Point realScreenSize = getRealScreenSize(context);
+        Point realScreenSize = getScreenSize(context);
 
         if (appUsableSize.x < realScreenSize.x) {
             Point point = new Point(realScreenSize.x - appUsableSize.x, appUsableSize.y);
@@ -203,5 +207,38 @@ public class ViewHelper {
         fastScroll.setBarColor(color);
         fastScroll.setHandleNormalColor(color);
         fastScroll.setHandlePressedColor(accent);
+    }
+
+    public static float intToDp(@NonNull Context context, int value) {
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        return value / ((float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+    }
+
+    public static Point getWallpaperViewRatio(String viewStyle) {
+        switch (viewStyle.toLowerCase(Locale.getDefault())) {
+            case "square":
+                return new Point(1, 1);
+            case "rectangle":
+                return new Point(16, 9);
+            case "photo":
+                return new Point(4, 5);
+            default:
+                return new Point(1, 1);
+        }
+    }
+
+    public static Home.Style getHomeImageViewStyle(String viewStyle) {
+        switch (viewStyle.toLowerCase(Locale.getDefault())) {
+            case "card_square":
+                return new Home.Style(new Point(1, 1), Home.Style.Type.CARD_SQUARE);
+            case "card_rectangle":
+                return new Home.Style(new Point(16, 9), Home.Style.Type.CARD_RECTANGLE);
+            case "square":
+                return new Home.Style(new Point(1, 1), Home.Style.Type.SQUARE);
+            case "rectangle":
+                return new Home.Style(new Point(16, 9), Home.Style.Type.RECTANGLE);
+            default:
+                return new Home.Style(new Point(16, 9), Home.Style.Type.CARD_RECTANGLE);
+        }
     }
 }

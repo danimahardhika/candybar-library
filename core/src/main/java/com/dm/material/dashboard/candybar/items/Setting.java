@@ -85,7 +85,8 @@ public class Setting {
        THEME(4),
        WALLPAPER(5),
        REPORT_BUGS(6),
-       CHANGELOG(7);
+       CHANGELOG(7),
+       RESET_TUTORIAL(8);
 
        private final int mType;
 

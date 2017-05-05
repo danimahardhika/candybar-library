@@ -3,6 +3,7 @@ package com.dm.material.dashboard.candybar.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
@@ -13,7 +14,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -22,9 +22,12 @@ import com.dm.material.dashboard.candybar.activities.CandyBarWallpaperActivity;
 import com.dm.material.dashboard.candybar.fragments.dialog.WallpaperOptionsFragment;
 import com.dm.material.dashboard.candybar.helpers.ColorHelper;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
+import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
 import com.dm.material.dashboard.candybar.items.Wallpaper;
+import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
+import com.dm.material.dashboard.candybar.utils.views.HeaderView;
 import com.kogitune.activitytransition.ActivityTransitionLauncher;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -154,18 +157,27 @@ public class WallpapersAdapter extends RecyclerView.Adapter<WallpapersAdapter.Vi
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
             View.OnLongClickListener {
 
-        private CardView card;
+        private final CardView card;
         private LinearLayout container;
-        private final ImageView image;
+        private final HeaderView image;
         private TextView name;
         private TextView author;
 
         ViewHolder(View itemView) {
             super(itemView);
-            image = (ImageView) itemView.findViewById(R.id.image);
+            String viewStyle = mContext.getResources().getString(
+                    R.string.wallpaper_grid_preview_style);
+            Point ratio = ViewHelper.getWallpaperViewRatio(viewStyle);
+
+            image = (HeaderView) itemView.findViewById(R.id.image);
+            image.setRatio(ratio.x, ratio.y);
+
+            card = (CardView) itemView.findViewById(R.id.card);
+            if (!Preferences.getPreferences(mContext).isShadowEnabled()) {
+                card.setCardElevation(0);
+            }
 
             if (mIsShowName) {
-                card = (CardView) itemView.findViewById(R.id.card);
                 container = (LinearLayout) itemView.findViewById(R.id.container);
                 name = (TextView) itemView.findViewById(R.id.name);
                 author = (TextView) itemView.findViewById(R.id.author);

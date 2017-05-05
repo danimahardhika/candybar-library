@@ -3,8 +3,10 @@ package com.dm.material.dashboard.candybar.adapters;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatCheckBox;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
@@ -52,14 +54,14 @@ import java.util.List;
  * limitations under the License.
  */
 
-public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHolder> {
+public class RequestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final Context mContext;
     private final List<Request> mRequests;
     private SparseBooleanArray mSelectedItems;
     private final DisplayImageOptions.Builder mOptions;
 
-    private final int mTextColorPrimary;
+    private final int mTextColorSecondary;
     private final int mTextColorAccent;
     private boolean mSelectedAll = false;
 
@@ -73,8 +75,8 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
     public RequestAdapter(@NonNull Context context, @NonNull List<Request> requests, int spanCount) {
         mContext = context;
         mRequests = requests;
-        mTextColorPrimary = ColorHelper.getAttributeColor(mContext,
-                android.R.attr.textColorPrimary);
+        mTextColorSecondary = ColorHelper.getAttributeColor(mContext,
+                android.R.attr.textColorSecondary);
         mTextColorAccent = ColorHelper.getAttributeColor(mContext, R.attr.colorAccent);
         mSelectedItems = new SparseBooleanArray();
 
@@ -90,99 +92,96 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = null;
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_HEADER) {
-            view = LayoutInflater.from(mContext).inflate(
+            View view = LayoutInflater.from(mContext).inflate(
                     R.layout.fragment_request_item_header, parent, false);
+
+            StaggeredGridLayoutManager.LayoutParams params = getLayoutParams(view);
+            if (params != null) params.setFullSpan(false);
+            return new HeaderViewHolder(view);
         } else if (viewType == TYPE_CONTENT) {
-            view = LayoutInflater.from(mContext).inflate(
+            View view = LayoutInflater.from(mContext).inflate(
                     R.layout.fragment_request_item_list, parent, false);
-        } else if (viewType == TYPE_FOOTER) {
-            view = LayoutInflater.from(mContext).inflate(
-                    R.layout.fragment_request_item_footer, parent, false);
+
+            StaggeredGridLayoutManager.LayoutParams params = getLayoutParams(view);
+            if (params != null) params.setFullSpan(false);
+            return new ContentViewHolder(view);
         }
 
-        try {
-            if (view != null) {
-                StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams)
-                        view.getLayoutParams();
+        View view = LayoutInflater.from(mContext).inflate(
+                R.layout.fragment_request_item_footer, parent, false);
 
-                if (viewType == TYPE_FOOTER) {
-                    layoutParams.setFullSpan(true);
-                } else {
-                    layoutParams.setFullSpan(false);
-                }
-            }
-        } catch (Exception e) {
-            LogUtil.d(Log.getStackTraceString(e));
-        }
-        return new ViewHolder(view, viewType);
+        StaggeredGridLayoutManager.LayoutParams params = getLayoutParams(view);
+        if (params != null) params.setFullSpan(true);
+        return new FooterViewHolder(view);
     }
 
     @Override
-    public void onViewRecycled(ViewHolder holder) {
+    public void onViewRecycled(RecyclerView.ViewHolder holder) {
         super.onViewRecycled(holder);
-        if (holder.holderId == TYPE_CONTENT) {
-            holder.content.setTextColor(mTextColorPrimary);
+        if (holder.getItemViewType() == TYPE_CONTENT) {
+            ContentViewHolder contentViewHolder = (ContentViewHolder) holder;
+            contentViewHolder.content.setTextColor(mTextColorSecondary);
 
             if (mShowShadow) {
-                holder.divider.setVisibility(View.VISIBLE);
+                contentViewHolder.divider.setVisibility(View.VISIBLE);
             }
         }
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        if (holder.holderId == TYPE_HEADER) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if (holder.getItemViewType() == TYPE_HEADER) {
+            HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
             if (Preferences.getPreferences(mContext).isPremiumRequest()) {
-                holder.button.setVisibility(View.GONE);
-                holder.content.setVisibility(View.GONE);
-                holder.container.setVisibility(View.VISIBLE);
+                headerViewHolder.button.setVisibility(View.GONE);
+                headerViewHolder.content.setVisibility(View.GONE);
+                headerViewHolder.container.setVisibility(View.VISIBLE);
 
                 int total = Preferences.getPreferences(mContext).getPremiumRequestTotal();
                 int available = Preferences.getPreferences(mContext).getPremiumRequestCount();
 
-                holder.total.setText(String.format(
+                headerViewHolder.total.setText(String.format(
                         mContext.getResources().getString(R.string.premium_request_count),
                         total));
-                holder.available.setText(String.format(
+                headerViewHolder.available.setText(String.format(
                         mContext.getResources().getString(R.string.premium_request_available),
                         available));
-                holder.used.setText(String.format(
+                headerViewHolder.used.setText(String.format(
                         mContext.getResources().getString(R.string.premium_request_used),
                         (total - available)));
 
-                holder.progress.setMax(total);
-                holder.progress.setProgress(available);
+                headerViewHolder.progress.setMax(total);
+                headerViewHolder.progress.setProgress(available);
             } else {
-                holder.button.setVisibility(View.VISIBLE);
-                holder.content.setVisibility(View.VISIBLE);
-                holder.container.setVisibility(View.GONE);
+                headerViewHolder.button.setVisibility(View.VISIBLE);
+                headerViewHolder.content.setVisibility(View.VISIBLE);
+                headerViewHolder.container.setVisibility(View.GONE);
             }
-        } else if (holder.holderId == TYPE_CONTENT) {
+        } else if (holder.getItemViewType() == TYPE_CONTENT) {
             int finalPosition = mShowPremiumRequest ? position - 1 : position;
+            ContentViewHolder contentViewHolder = (ContentViewHolder) holder;
 
             ImageLoader.getInstance().displayImage("package://" +mRequests.get(finalPosition).getPackageName(),
-                    new ImageViewAware(holder.icon), mOptions.build(),
+                    new ImageViewAware(contentViewHolder.icon), mOptions.build(),
                     new ImageSize(114, 114), null, null);
 
-            holder.title.setText(mRequests.get(finalPosition).getName());
-            holder.subtitle.setText(mRequests.get(finalPosition).getActivity());
+            contentViewHolder.title.setText(mRequests.get(finalPosition).getName());
 
             if (mRequests.get(finalPosition).isRequested()) {
-                holder.content.setTextColor(mTextColorAccent);
-                holder.content.setText(mContext.getResources().getString(
+                contentViewHolder.content.setTextColor(mTextColorAccent);
+                contentViewHolder.content.setText(mContext.getResources().getString(
                         R.string.request_already_requested));
             } else {
-                holder.content.setText(mContext.getResources().getString(
+                contentViewHolder.content.setText(mContext.getResources().getString(
                         R.string.request_not_requested));
             }
 
-            holder.checkbox.setChecked(mSelectedItems.get(finalPosition, false));
+            contentViewHolder.checkbox.setChecked(mSelectedItems.get(finalPosition, false));
 
             if (finalPosition == (mRequests.size() - 1) && mShowShadow) {
-                holder.divider.setVisibility(View.GONE);
+                contentViewHolder.divider.setVisibility(View.GONE);
             }
         }
     }
@@ -202,70 +201,88 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         return TYPE_CONTENT;
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
-            View.OnLongClickListener {
+    private class HeaderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private TextView title;
-        private TextView subtitle;
-        private TextView content;
-        private TextView total;
-        private TextView available;
-        private TextView used;
-        private ImageView icon;
-        private AppCompatCheckBox checkbox;
-        private AppCompatButton button;
-        private LinearLayout container;
-        private View divider;
-        private ProgressBar progress;
+        private final TextView title;
+        private final TextView content;
+        private final TextView total;
+        private final TextView available;
+        private final TextView used;
+        private final AppCompatButton button;
+        private final LinearLayout container;
+        private final ProgressBar progress;
 
-        private int holderId;
-
-        ViewHolder(View itemView, int viewType) {
+        HeaderViewHolder(View itemView) {
             super(itemView);
-            if (viewType == TYPE_HEADER) {
-                title = (TextView) itemView.findViewById(R.id.title);
-                content = (TextView) itemView.findViewById(R.id.content);
-                button = (AppCompatButton) itemView.findViewById(R.id.buy);
+            title = (TextView) itemView.findViewById(R.id.title);
+            content = (TextView) itemView.findViewById(R.id.content);
+            button = (AppCompatButton) itemView.findViewById(R.id.buy);
 
-                container = (LinearLayout) itemView.findViewById(R.id.premium_request);
-                total = (TextView) itemView.findViewById(R.id.premium_request_total);
-                available = (TextView) itemView.findViewById(R.id.premium_request_available);
-                used = (TextView) itemView.findViewById(R.id.premium_request_used);
-                progress = (ProgressBar) itemView.findViewById(R.id.progress);
-                holderId = TYPE_HEADER;
+            container = (LinearLayout) itemView.findViewById(R.id.premium_request);
+            total = (TextView) itemView.findViewById(R.id.premium_request_total);
+            available = (TextView) itemView.findViewById(R.id.premium_request_available);
+            used = (TextView) itemView.findViewById(R.id.premium_request_used);
+            progress = (ProgressBar) itemView.findViewById(R.id.progress);
 
-                int padding = mContext.getResources().getDimensionPixelSize(R.dimen.content_margin) +
-                        mContext.getResources().getDimensionPixelSize(R.dimen.icon_size_small);
-                content.setPadding(padding, 0, 0, 0);
-                container.setPadding(padding, 0, padding, 0);
-
-                int color = ColorHelper.getAttributeColor(mContext, android.R.attr.textColorPrimary);
-                title.setCompoundDrawablesWithIntrinsicBounds(
-                        DrawableHelper.getTintedDrawable(mContext,
-                                R.drawable.ic_toolbar_premium_request, color),
-                        null, null, null);
-
-                int accent = ColorHelper.getAttributeColor(mContext, R.attr.colorAccent);
-                button.setTextColor(ColorHelper.getTitleTextColor(accent));
-
-                progress.getProgressDrawable().setColorFilter(accent, PorterDuff.Mode.SRC_IN);
-
-                button.setOnClickListener(this);
-            } else if (viewType == TYPE_CONTENT) {
-                title = (TextView) itemView.findViewById(R.id.name);
-                subtitle = (TextView) itemView.findViewById(R.id.activity);
-                content = (TextView) itemView.findViewById(R.id.requested);
-                icon = (ImageView) itemView.findViewById(R.id.icon);
-                checkbox = (AppCompatCheckBox) itemView.findViewById(R.id.checkbox);
-                container = (LinearLayout) itemView.findViewById(R.id.container);
-                divider = itemView.findViewById(R.id.divider);
-                holderId = TYPE_CONTENT;
-
-                container.setOnClickListener(this);
-                container.setOnLongClickListener(this);
-            } else if (viewType == TYPE_FOOTER) {
-                holderId = TYPE_FOOTER;
+            CardView card = (CardView) itemView.findViewById(R.id.card);
+            if (!Preferences.getPreferences(mContext).isShadowEnabled()) {
+                if (card != null) card.setCardElevation(0);
             }
+
+            int padding = mContext.getResources().getDimensionPixelSize(R.dimen.content_margin) +
+                    mContext.getResources().getDimensionPixelSize(R.dimen.icon_size_small);
+            content.setPadding(padding, 0, 0, 0);
+            container.setPadding(padding, 0, padding, 0);
+
+            int color = ColorHelper.getAttributeColor(mContext, android.R.attr.textColorPrimary);
+            title.setCompoundDrawablesWithIntrinsicBounds(
+                    DrawableHelper.getTintedDrawable(mContext,
+                            R.drawable.ic_toolbar_premium_request, color),
+                    null, null, null);
+
+            int accent = ColorHelper.getAttributeColor(mContext, R.attr.colorAccent);
+            button.setTextColor(ColorHelper.getTitleTextColor(accent));
+
+            progress.getProgressDrawable().setColorFilter(accent, PorterDuff.Mode.SRC_IN);
+
+            button.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            int id = view.getId();
+            if (id == R.id.buy) {
+                RequestListener listener = (RequestListener) mContext;
+                listener.onBuyPremiumRequest();
+            }
+        }
+    }
+
+    private class ContentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
+
+        private final TextView title;
+        private final TextView content;
+        private final ImageView icon;
+        private final AppCompatCheckBox checkbox;
+        private final LinearLayout container;
+        private final View divider;
+
+        ContentViewHolder(View itemView) {
+            super(itemView);
+            title = (TextView) itemView.findViewById(R.id.name);
+            content = (TextView) itemView.findViewById(R.id.requested);
+            icon = (ImageView) itemView.findViewById(R.id.icon);
+            checkbox = (AppCompatCheckBox) itemView.findViewById(R.id.checkbox);
+            container = (LinearLayout) itemView.findViewById(R.id.container);
+            divider = itemView.findViewById(R.id.divider);
+
+            CardView card = (CardView) itemView.findViewById(R.id.card);
+            if (!Preferences.getPreferences(mContext).isShadowEnabled()) {
+                if (card != null) card.setCardElevation(0);
+            }
+
+            container.setOnClickListener(this);
+            container.setOnLongClickListener(this);
         }
 
         @Override
@@ -277,9 +294,6 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
                 if (toggleSelection(position)) {
                     checkbox.toggle();
                 }
-            } else if (id == R.id.buy) {
-                RequestListener listener = (RequestListener) mContext;
-                listener.onBuyPremiumRequest();
             }
         }
 
@@ -296,6 +310,29 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
             }
             return false;
         }
+    }
+
+    private class FooterViewHolder extends RecyclerView.ViewHolder {
+
+        FooterViewHolder(View itemView) {
+            super(itemView);
+            View shadow = itemView.findViewById(R.id.shadow);
+            if (!Preferences.getPreferences(mContext).isShadowEnabled()) {
+                shadow.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    @Nullable
+    private StaggeredGridLayoutManager.LayoutParams getLayoutParams(@Nullable View view) {
+        if (view != null) {
+            try {
+                return (StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams();
+            } catch (Exception e) {
+                LogUtil.d(Log.getStackTraceString(e));
+            }
+        }
+        return null;
     }
 
     private boolean toggleSelection(int position) {

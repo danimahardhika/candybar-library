@@ -27,7 +27,9 @@ import android.widget.Toast;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
 import com.dm.material.dashboard.candybar.helpers.IconsHelper;
+import com.dm.material.dashboard.candybar.helpers.TapIntroHelper;
 import com.dm.material.dashboard.candybar.items.Icon;
+import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.AlphanumComparator;
 import com.dm.material.dashboard.candybar.utils.Animator;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
@@ -163,7 +165,10 @@ public class IconsBaseFragment extends Fragment {
             public void onAnimationEnd(Animation animation) {
                 if (getActivity() == null) return;
 
-                Animator.startAlphaAnimation(getActivity().findViewById(R.id.shadow), View.VISIBLE);
+                if (Preferences.getPreferences(getActivity()).isShadowEnabled()) {
+                    Animator.startAlphaAnimation(getActivity().findViewById(R.id.shadow), View.VISIBLE);
+                }
+
                 getIcons();
             }
 
@@ -241,6 +246,12 @@ public class IconsBaseFragment extends Fragment {
                     mPager.setAdapter(adapter);
 
                     updateTabTypeface();
+
+                    try {
+                        TapIntroHelper.showIconsIntro(getActivity());
+                    } catch (Exception e) {
+                        LogUtil.e(Log.getStackTraceString(e));
+                    }
                 } else {
                     Toast.makeText(getActivity(), R.string.icons_load_failed,
                             Toast.LENGTH_LONG).show();

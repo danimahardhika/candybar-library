@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +15,11 @@ import android.view.ViewGroup;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
 import com.dm.material.dashboard.candybar.adapters.HomeAdapter;
+import com.dm.material.dashboard.candybar.helpers.TapIntroHelper;
 import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
 import com.dm.material.dashboard.candybar.items.Home;
+import com.dm.material.dashboard.candybar.preferences.Preferences;
+import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.dm.material.dashboard.candybar.utils.listeners.HomeListener;
 
 import java.util.ArrayList;
@@ -42,6 +46,7 @@ import java.util.List;
 public class HomeFragment extends Fragment implements HomeListener{
 
     private RecyclerView mRecyclerView;
+    private StaggeredGridLayoutManager mManager;
 
     @Nullable
     @Override
@@ -49,18 +54,23 @@ public class HomeFragment extends Fragment implements HomeListener{
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
+
+        if (!Preferences.getPreferences(getActivity()).isShadowEnabled()) {
+            View shadow = view.findViewById(R.id.shadow);
+            if (shadow != null) shadow.setVisibility(View.GONE);
+        }
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        mManager = new StaggeredGridLayoutManager(
+                getActivity().getResources().getInteger(R.integer.home_column_count),
+                StaggeredGridLayoutManager.VERTICAL);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(
-                getActivity().getResources().getInteger(R.integer.home_column_count),
-                StaggeredGridLayoutManager.VERTICAL));
+        mRecyclerView.setLayoutManager(mManager);
 
         initHome();
     }
@@ -69,7 +79,7 @@ public class HomeFragment extends Fragment implements HomeListener{
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         HomeAdapter adapter = (HomeAdapter) mRecyclerView.getAdapter();
-        adapter.setOrientation(newConfig.orientation);
+        if (adapter != null) adapter.setOrientation(newConfig.orientation);
     }
 
     @Override
@@ -90,26 +100,37 @@ public class HomeFragment extends Fragment implements HomeListener{
             return;
         }
 
-        int index = adapter.getItemCount() - 3;
-
-        if (WallpaperHelper.getWallpaperType(getActivity()) != WallpaperHelper.CLOUD_WALLPAPERS) {
-            index += 1;
+        if (adapter instanceof HomeAdapter) {
+            HomeAdapter homeAdapter = (HomeAdapter) adapter;
+            int index = homeAdapter.getIconRequestIndex();
+            if (index >= 0 && index < adapter.getItemCount()) {
+                adapter.notifyItemChanged(index);
+            }
         }
+    }
 
-        if (index >= 0 && index < adapter.getItemCount()) {
-            adapter.notifyItemChanged(index);
+    @Override
+    public void onHomeIntroInit() {
+        try {
+            TapIntroHelper.showHomeIntros(getActivity(),
+                    mRecyclerView, mManager,
+                    ((HomeAdapter) mRecyclerView.getAdapter()).getApplyIndex());
+        } catch (Exception e) {
+            LogUtil.e(Log.getStackTraceString(e));
         }
     }
 
     private void initHome() {
         List<Home> homes = new ArrayList<>();
 
-        homes.add(new Home(
-                R.drawable.ic_toolbar_apply_launcher,
-                String.format(getActivity().getResources().getString(R.string.home_apply_icon_pack),
-                        getActivity().getResources().getString(R.string.app_name)),
-                "",
-                Home.Type.APPLY));
+        if (getActivity().getResources().getBoolean(R.bool.enable_apply)) {
+            homes.add(new Home(
+                    R.drawable.ic_toolbar_apply_launcher,
+                    String.format(getActivity().getResources().getString(R.string.home_apply_icon_pack),
+                            getActivity().getResources().getString(R.string.app_name)),
+                    "",
+                    Home.Type.APPLY));
+        }
 
         if (getActivity().getResources().getBoolean(R.bool.enable_donation)) {
             homes.add(new Home(
@@ -145,9 +166,12 @@ public class HomeFragment extends Fragment implements HomeListener{
                 return;
             }
 
-            int index = adapter.getItemCount() - 2;
-            if (index >= 0 && index < adapter.getItemCount()) {
-                adapter.notifyItemChanged(index);
+            if (adapter instanceof HomeAdapter) {
+                HomeAdapter homeAdapter = (HomeAdapter) adapter;
+                int index = homeAdapter.getWallpapersIndex();
+                if (index >= 0 && index < adapter.getItemCount()) {
+                    adapter.notifyItemChanged(index);
+                }
             }
         }
     }

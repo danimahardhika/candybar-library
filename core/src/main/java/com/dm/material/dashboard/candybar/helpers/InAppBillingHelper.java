@@ -93,12 +93,12 @@ public class InAppBillingHelper implements BillingProcessor.IBillingHandler {
 
     public static class Property {
 
-        public boolean licenseChecker;
-        public byte[] salt;
-        public String licenseKey;
-        public String[] donationProductsId;
-        public String[] premiumRequestProductsId;
-        public int[] premiumRequestProductsCount;
+        public final boolean licenseChecker;
+        public final byte[] salt;
+        public final String licenseKey;
+        public final String[] donationProductsId;
+        public final String[] premiumRequestProductsId;
+        public final int[] premiumRequestProductsCount;
 
         public Property(boolean licenseChecker, byte[] salt, String licenseKey, String[] donationProductsId,
                         String[] premiumRequestProductsId, int[] premiumRequestProductsCount) {

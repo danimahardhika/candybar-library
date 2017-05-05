@@ -68,7 +68,10 @@ public class Animator {
         fab.setScaleY(0f);
         fab.setAlpha(0f);
         fab.setVisibility(View.VISIBLE);
-        fab.animate().setDuration(200).scaleX(1).scaleY(1).alpha(1)
+        fab.animate().setDuration(200)
+                .scaleX(1)
+                .scaleY(1)
+                .alpha(1)
                 .setInterpolator(new LinearOutSlowInInterpolator());
     }
 }

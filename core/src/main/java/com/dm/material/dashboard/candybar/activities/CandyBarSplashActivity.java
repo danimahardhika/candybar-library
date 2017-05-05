@@ -17,12 +17,16 @@ import com.dm.material.dashboard.candybar.helpers.ColorHelper;
 import com.dm.material.dashboard.candybar.helpers.IconsHelper;
 import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
 import com.dm.material.dashboard.candybar.items.Icon;
+import com.dm.material.dashboard.candybar.items.Wallpaper;
 import com.dm.material.dashboard.candybar.items.WallpaperJSON;
+import com.dm.material.dashboard.candybar.utils.ImageConfig;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -176,6 +180,16 @@ public class CandyBarSplashActivity extends AppCompatActivity {
                             WallpaperJSON wallpapersJSON = LoganSquare.parse(stream, WallpaperJSON.class);
                             if (database.getWallpapersCount() > 0) database.deleteWallpapers();
                             database.addWallpapers(wallpapersJSON);
+                        }
+
+                        List<Wallpaper> wallpapers = database.getWallpapers();
+                        if (wallpapers.size() > 0) {
+                            String uri = WallpaperHelper.getThumbnailUrl(context,
+                                    wallpapers.get(0).getURL(),
+                                    wallpapers.get(0).getThumbUrl());
+                            ImageLoader.getInstance().loadImageSync(uri,
+                                    ImageConfig.getThumbnailSize(context),
+                                    ImageConfig.getDefaultImageOptions(true));
                         }
                         return true;
                     } catch (Exception e) {

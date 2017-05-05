@@ -172,6 +172,7 @@ public class RequestHelper {
 
     public static void showAlreadyRequestedDialog(@NonNull Context context) {
         new MaterialDialog.Builder(context)
+                .typeface("Font-Medium.ttf", "Font-Regular.ttf")
                 .title(R.string.request_title)
                 .content(R.string.request_requested)
                 .positiveText(R.string.close)
@@ -190,6 +191,7 @@ public class RequestHelper {
 
         if (reset) message += "\n\n"+ context.getResources().getString(R.string.request_limit_reset);
         new MaterialDialog.Builder(context)
+                .typeface("Font-Medium.ttf", "Font-Regular.ttf")
                 .title(R.string.request_title)
                 .content(message)
                 .positiveText(R.string.close)
@@ -198,6 +200,7 @@ public class RequestHelper {
 
     public static void showPremiumRequestRequired(@NonNull Context context) {
         new MaterialDialog.Builder(context)
+                .typeface("Font-Medium.ttf", "Font-Regular.ttf")
                 .title(R.string.request_title)
                 .content(R.string.premium_request_required)
                 .positiveText(R.string.close)
@@ -210,6 +213,7 @@ public class RequestHelper {
         message += " "+ String.format(context.getResources().getString(R.string.premium_request_limit1),
                 selected);
         new MaterialDialog.Builder(context)
+                .typeface("Font-Medium.ttf", "Font-Regular.ttf")
                 .title(R.string.premium_request)
                 .content(message)
                 .positiveText(R.string.close)
@@ -221,6 +225,7 @@ public class RequestHelper {
                 R.string.premium_request_already_purchased),
                 Preferences.getPreferences(context).getPremiumRequestCount());
         new MaterialDialog.Builder(context)
+                .typeface("Font-Medium.ttf", "Font-Regular.ttf")
                 .title(R.string.premium_request)
                 .content(message)
                 .positiveText(R.string.close)
@@ -231,6 +236,7 @@ public class RequestHelper {
         boolean isReady = Preferences.getPreferences(context).isConnectedToNetwork();
         if (!isReady) {
             new MaterialDialog.Builder(context)
+                    .typeface("Font-Medium.ttf", "Font-Regular.ttf")
                     .title(R.string.premium_request)
                     .content(R.string.premium_request_no_internet)
                     .positiveText(R.string.close)
@@ -241,6 +247,7 @@ public class RequestHelper {
 
     public static void showPremiumRequestConsumeFailed(@NonNull Context context) {
         new MaterialDialog.Builder(context)
+                .typeface("Font-Medium.ttf", "Font-Regular.ttf")
                 .title(R.string.premium_request)
                 .content(R.string.premium_request_consume_failed)
                 .positiveText(R.string.close)
@@ -249,6 +256,7 @@ public class RequestHelper {
 
     public static void showPremiumRequestExist(@NonNull Context context) {
         new MaterialDialog.Builder(context)
+                .typeface("Font-Medium.ttf", "Font-Regular.ttf")
                 .title(R.string.premium_request)
                 .content(R.string.premium_request_exist)
                 .positiveText(R.string.close)

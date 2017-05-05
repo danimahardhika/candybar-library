@@ -12,7 +12,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.RectF;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -20,11 +19,8 @@ import android.os.Environment;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.webkit.URLUtil;
 import android.widget.Toast;
 
@@ -172,7 +168,8 @@ public class WallpaperHelper {
                 file = new File(output.toString() + File.separator + name + FileHelper.IMAGE_EXTENSION);
 
                 MaterialDialog.Builder builder = new MaterialDialog.Builder(context);
-                builder.content(R.string.wallpaper_downloading)
+                builder.typeface("Font-Medium.ttf", "Font-Regular.ttf")
+                        .content(R.string.wallpaper_downloading)
                         .widgetColor(color)
                         .progress(true, 0)
                         .progressIndeterminateStyle(true);
@@ -285,14 +282,15 @@ public class WallpaperHelper {
         if (Preferences.getPreferences(context).getWallsDirectory().length() == 0)
             Preferences.getPreferences(context).setWallsDirectory(file.getParent());
 
-        CafeBar.Builder builder = new CafeBar.Builder(context);
-        builder.theme(new CafeBarTheme.Custom(ColorHelper.getAttributeColor(context, R.attr.card_background)))
+        CafeBar.builder(context)
+                .theme(new CafeBarTheme.Custom(ColorHelper.getAttributeColor(context, R.attr.card_background)))
                 .duration(CafeBarDuration.MEDIUM.getDuration())
+                .fitSystemWindow()
                 .maxLines(4)
+                .typeface("Font-Regular.ttf", "Font-Bold.ttf")
                 .content(downloaded + " " + file.toString())
                 .icon(R.drawable.ic_toolbar_download)
                 .neutralText(R.string.open)
-                .neutralTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/Font-Bold.ttf"))
                 .neutralColor(color)
                 .onNeutral(cafeBar -> {
                     Uri uri = FileHelper.getUriFromFile(context, context.getPackageName(), file);
@@ -304,25 +302,12 @@ public class WallpaperHelper {
                             .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION));
 
                     cafeBar.dismiss();
-                });
-
-        Window window = ((AppCompatActivity) context).getWindow();
-        WindowManager.LayoutParams params = window.getAttributes();
-        int flags = params.flags;
-
-        if ((flags & WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION) ==
-                WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION) {
-            builder.fitSystemWindow(true);
-        } else {
-            builder.fitSystemWindow(false);
-        }
-
-        CafeBar cafeBar = builder.build();
-        cafeBar.show();
+                })
+                .show();
     }
 
     private static ImageSize getScaledSize(@NonNull Context context, String url) {
-        Point point = ViewHelper.getRealScreenSize(context);
+        Point point = ViewHelper.getScreenSize(context);
         int height = point.y;
         int width = point.x;
 
@@ -350,7 +335,8 @@ public class WallpaperHelper {
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             int statusBarHeight = ViewHelper.getStatusBarHeight(context);
-            double scale = (double) (scaledHeight - statusBarHeight) / (double) scaledHeight;
+            int navBarHeight = ViewHelper.getNavigationBarHeight(context);
+            double scale = (double) (scaledHeight - statusBarHeight - navBarHeight) / (double) scaledHeight;
 
             scaledWidth = Double.valueOf((double) scaledWidth * scale).intValue();
             scaledHeight = Double.valueOf((double) scaledHeight * scale).intValue();
@@ -374,6 +360,7 @@ public class WallpaperHelper {
                                       @ColorInt int color, String url, String name) {
         final MaterialDialog.Builder builder = new MaterialDialog.Builder(context);
         builder.widgetColor(color)
+                .typeface("Font-Medium.ttf", "Font-Regular.ttf")
                 .progress(true, 0)
                 .progressIndeterminateStyle(true)
                 .content(R.string.wallpaper_applying);
@@ -382,6 +369,15 @@ public class WallpaperHelper {
         String imageUri = getWallpaperUri(context, url, name + FileHelper.IMAGE_EXTENSION);
 
         ImageSize imageSize = getScaledSize(context, url);
+        LogUtil.d("target bitmap: " +imageSize.getHeight() +" x "+ imageSize.getWidth());
+
+        if (rectF != null && Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
+            Point point = ViewHelper.getScreenSize(context);
+            int height = point.y - ViewHelper.getStatusBarHeight(context) - ViewHelper.getNavigationBarHeight(context);
+            float scaleFactor = (float) imageSize.getHeight() / (float) height;
+            rectF = getScaledRectF(rectF, scaleFactor);
+        }
+
         loadBitmap(context, dialog, 1, imageUri, rectF, imageSize);
     }
 
@@ -456,8 +452,8 @@ public class WallpaperHelper {
                         if (bitmaps[0] != null) {
                             Bitmap bitmap = bitmaps[0];
 
-                            if (!Preferences.getPreferences(context).isScrollWallpaper() && rectF != null) {
-                                Point point = ViewHelper.getRealScreenSize(context);
+                            if (Preferences.getPreferences(context).isWallpaperCrop() && rectF != null) {
+                                Point point = ViewHelper.getScreenSize(context);
 
                                 int targetWidth = Double.valueOf(
                                         ((double) bitmaps[0].getHeight() / (double) point.y)
@@ -477,9 +473,11 @@ public class WallpaperHelper {
                                 canvas.drawBitmap(bitmaps[0], null, rectF, paint);
                             }
 
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                manager.setBitmap(bitmap, null, true,
-                                        WallpaperManager.FLAG_LOCK | WallpaperManager.FLAG_SYSTEM);
+                            LogUtil.d("generated bitmap: " +bitmap.getHeight() +" x "+ bitmap.getWidth());
+
+                            if (Preferences.getPreferences(context).isApplyLockscreen() &&
+                                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                manager.setBitmap(bitmap, null, true, WallpaperManager.FLAG_LOCK | WallpaperManager.FLAG_SYSTEM);
                             } else {
                                 manager.setBitmap(bitmap);
                             }
@@ -506,24 +504,12 @@ public class WallpaperHelper {
                 super.onPostExecute(aBoolean);
                 dialog.dismiss();
                 if (aBoolean) {
-                    CafeBar.Builder builder = new CafeBar.Builder(context)
+                    new CafeBar.Builder(context)
                             .theme(new CafeBarTheme.Custom(ColorHelper.getAttributeColor(
                                     context, R.attr.card_background)))
-                            .content(R.string.wallpaper_applied);
-
-                    Window window = ((AppCompatActivity) context).getWindow();
-                    WindowManager.LayoutParams params = window.getAttributes();
-                    int flags = params.flags;
-
-                    if ((flags & WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION) ==
-                            WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION) {
-                        builder.fitSystemWindow(true);
-                    } else {
-                        builder.fitSystemWindow(false);
-                    }
-
-                    CafeBar cafeBar = builder.build();
-                    cafeBar.show();
+                            .content(R.string.wallpaper_applied)
+                            .fitSystemWindow()
+                            .show();
                 } else {
                     Toast.makeText(context, R.string.wallpaper_apply_failed,
                             Toast.LENGTH_LONG).show();

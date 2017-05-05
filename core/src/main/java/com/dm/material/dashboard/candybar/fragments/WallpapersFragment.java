@@ -26,6 +26,7 @@ import com.dm.material.dashboard.candybar.adapters.WallpapersAdapter;
 import com.dm.material.dashboard.candybar.databases.Database;
 import com.dm.material.dashboard.candybar.helpers.ColorHelper;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
+import com.dm.material.dashboard.candybar.helpers.TapIntroHelper;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.items.Wallpaper;
@@ -80,6 +81,11 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
         mSwipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe);
         mProgress = (ProgressBar) view.findViewById(R.id.progress);
         mFastScroll = (RecyclerFastScroller) view.findViewById(R.id.fastscroll);
+
+        if (!Preferences.getPreferences(getActivity()).isShadowEnabled()) {
+            View shadow = view.findViewById(R.id.shadow);
+            if (shadow != null) shadow.setVisibility(View.GONE);
+        }
         return view;
     }
 
@@ -236,8 +242,15 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
                     mRecyclerView.setAdapter(new WallpapersAdapter(getActivity(), wallpapers));
 
                     WallpapersListener listener = (WallpapersListener) getActivity();
-                    listener.onWallpapersChecked(new Intent().putExtra("size",
-                            Preferences.getPreferences(getActivity()).getAvailableWallpapersCount()));
+                    listener.onWallpapersChecked(new Intent()
+                            .putExtra("size", Preferences.getPreferences(getActivity()).getAvailableWallpapersCount())
+                            .putExtra("packageName", getActivity().getPackageName()));
+
+                    try {
+                        TapIntroHelper.showWallpapersIntro(getActivity(), mRecyclerView);
+                    } catch (Exception e) {
+                        LogUtil.e(Log.getStackTraceString(e));
+                    }
                 } else {
                     Toast.makeText(getActivity(), R.string.connection_failed,
                             Toast.LENGTH_LONG).show();

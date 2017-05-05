@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.LauncherAdapter;
 import com.dm.material.dashboard.candybar.items.Icon;
+import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.AlphanumComparator;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
 
@@ -56,6 +57,11 @@ public class ApplyFragment extends Fragment{
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_apply, container, false);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
+
+        if (!Preferences.getPreferences(getActivity()).isShadowEnabled()) {
+            View shadow = view.findViewById(R.id.shadow);
+            if (shadow != null) shadow.setVisibility(View.GONE);
+        }
         return view;
     }
 

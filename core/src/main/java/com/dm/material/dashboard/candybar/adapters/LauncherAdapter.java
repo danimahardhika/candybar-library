@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.graphics.Palette;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.helpers.ColorHelper;
 import com.dm.material.dashboard.candybar.helpers.LauncherHelper;
 import com.dm.material.dashboard.candybar.items.Icon;
+import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
@@ -135,9 +137,15 @@ public class LauncherAdapter extends RecyclerView.Adapter<LauncherAdapter.ViewHo
                 icon = (ImageView) itemView.findViewById(R.id.icon);
                 name = (TextView) itemView.findViewById(R.id.name);
                 container = (LinearLayout) itemView.findViewById(R.id.container);
-                container.setOnClickListener(this);
+
+                CardView card = (CardView) itemView.findViewById(R.id.card);
+                if (!Preferences.getPreferences(mContext).isShadowEnabled()) {
+                    if (card != null) card.setCardElevation(0);
+                }
 
                 holderId = TYPE_CONTENT;
+
+                container.setOnClickListener(this);
             }
         }
 

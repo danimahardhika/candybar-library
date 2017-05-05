@@ -34,6 +34,7 @@ import com.dm.material.dashboard.candybar.helpers.DeviceHelper;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.helpers.FileHelper;
 import com.dm.material.dashboard.candybar.helpers.RequestHelper;
+import com.dm.material.dashboard.candybar.helpers.TapIntroHelper;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
@@ -89,6 +90,11 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         mFab = (FloatingActionButton) view.findViewById(R.id.fab);
         mFastScroll = (RecyclerFastScroller) view.findViewById(R.id.fastscroll);
         mProgress = (ProgressBar) view.findViewById(R.id.progress);
+
+        if (!Preferences.getPreferences(getActivity()).isShadowEnabled()) {
+            View shadow = view.findViewById(R.id.shadow);
+            if (shadow != null) shadow.setVisibility(View.GONE);
+        }
         return view;
     }
 
@@ -107,6 +113,10 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         mFab.setImageDrawable(DrawableHelper.getTintedDrawable(
                 getActivity(), R.drawable.ic_fab_send, color));
         mFab.setOnClickListener(this);
+
+        if (!Preferences.getPreferences(getActivity()).isShadowEnabled()) {
+            mFab.setCompatElevation(0f);
+        }
 
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.getItemAnimator().setChangeDuration(0);
@@ -293,6 +303,12 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                     mRecyclerView.setAdapter(mAdapter);
 
                     Animator.showFab(mFab);
+
+                    try {
+                        TapIntroHelper.showRequestIntro(getActivity(), mRecyclerView);
+                    } catch (Exception e) {
+                        LogUtil.e(Log.getStackTraceString(e));
+                    }
                 } else {
                     mRecyclerView.setAdapter(null);
                     Toast.makeText(getActivity(), getActivity().getResources().getString(
@@ -319,6 +335,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                 sb = new StringBuilder();
 
                 MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+                builder.typeface("Font-Medium.ttf", "Font-Regular.ttf");
                 builder.content(R.string.request_building);
                 builder.cancelable(false);
                 builder.canceledOnTouchOutside(false);

@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
@@ -29,11 +30,13 @@ import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
 import com.dm.material.dashboard.candybar.fragments.dialog.IconPreviewFragment;
 import com.dm.material.dashboard.candybar.helpers.ColorHelper;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
+import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
 import com.dm.material.dashboard.candybar.items.Home;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
+import com.dm.material.dashboard.candybar.utils.views.HeaderView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.sufficientlysecure.htmltextview.HtmlTextView;
@@ -60,10 +63,11 @@ import me.grantland.widget.AutofitTextView;
  * limitations under the License.
  */
 
-public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
+public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final Context mContext;
     private final List<Home> mHomes;
+    private final Home.Style mImageStyle;
 
     private int mItemsCount;
     private int mOrientation;
@@ -81,6 +85,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         mContext = context;
         mHomes = homes;
         mOrientation = orientation;
+
+        String viewStyle = mContext.getResources().getString(R.string.home_image_style);
+        mImageStyle = ViewHelper.getHomeImageViewStyle(viewStyle);
 
         mItemsCount = 1;
         if (WallpaperHelper.getWallpaperType(mContext) == WallpaperHelper.CLOUD_WALLPAPERS) {
@@ -102,131 +109,142 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = null;
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_HEADER) {
-            view = LayoutInflater.from(mContext).inflate(
+            View view = LayoutInflater.from(mContext).inflate(
                     R.layout.fragment_home_item_header, parent, false);
+            if (mImageStyle.getType() == Home.Style.Type.RECTANGLE ||
+                    mImageStyle.getType() == Home.Style.Type.SQUARE) {
+                view = LayoutInflater.from(mContext).inflate(
+                        R.layout.fragment_home_item_header_alt, parent, false);
+            }
+            return new HeaderViewHolder(view);
         } else if (viewType == TYPE_CONTENT) {
-            view = LayoutInflater.from(mContext).inflate(
+            View view = LayoutInflater.from(mContext).inflate(
                     R.layout.fragment_home_item_content, parent, false);
+            return new ContentViewHolder(view);
         } else if (viewType == TYPE_ICON_REQUEST) {
-            view =  LayoutInflater.from(mContext).inflate(
+            View view =  LayoutInflater.from(mContext).inflate(
                     R.layout.fragment_home_item_icon_request, parent, false);
+            return new IconRequestViewHolder(view);
         } else if (viewType == TYPE_WALLPAPERS) {
-            view = LayoutInflater.from(mContext).inflate(
+            View view = LayoutInflater.from(mContext).inflate(
                     R.layout.fragment_home_item_wallpapers, parent, false);
-        } else if (viewType == TYPE_MORE_APPS) {
-            view =  LayoutInflater.from(mContext).inflate(
-                    R.layout.fragment_home_item_more_apps, parent, false);
+            return new WallpapersViewHolder(view);
         }
-        return new ViewHolder(view, viewType);
+
+        View view =  LayoutInflater.from(mContext).inflate(
+                R.layout.fragment_home_item_more_apps, parent, false);
+        return new MoreAppsViewHolder(view);
     }
 
     @Override
-    public void onViewRecycled(ViewHolder holder) {
+    public void onViewRecycled(RecyclerView.ViewHolder holder) {
         super.onViewRecycled(holder);
-        if (holder.holderId == TYPE_CONTENT) {
-            holder.autoFitTitle.setSingleLine(false);
-            holder.autoFitTitle.setMaxLines(10);
-            holder.autoFitTitle.setSizeToFit(false);
-            holder.autoFitTitle.setGravity(Gravity.CENTER_VERTICAL);
-            holder.autoFitTitle.setIncludeFontPadding(true);
-            holder.autoFitTitle.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
-            holder.subtitle.setVisibility(View.GONE);
-            holder.subtitle.setGravity(Gravity.CENTER_VERTICAL);
+        if (holder.getItemViewType() == TYPE_CONTENT) {
+            ContentViewHolder contentViewHolder = (ContentViewHolder) holder;
 
+            contentViewHolder.autoFitTitle.setSingleLine(false);
+            contentViewHolder.autoFitTitle.setMaxLines(10);
+            contentViewHolder.autoFitTitle.setSizeToFit(false);
+            contentViewHolder.autoFitTitle.setGravity(Gravity.CENTER_VERTICAL);
+            contentViewHolder.autoFitTitle.setIncludeFontPadding(true);
+            contentViewHolder.autoFitTitle.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+            contentViewHolder.subtitle.setVisibility(View.GONE);
+            contentViewHolder.subtitle.setGravity(Gravity.CENTER_VERTICAL);
         }
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         try {
             if (holder.itemView != null) {
                 StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams)
                         holder.itemView.getLayoutParams();
-
-                if (holder.holderId == TYPE_HEADER && mOrientation == Configuration.ORIENTATION_PORTRAIT) {
-                    layoutParams.setFullSpan(true);
-                } else {
-                    layoutParams.setFullSpan(false);
-                }
+                layoutParams.setFullSpan(isFullSpan(holder.getItemViewType()));
             }
         } catch (Exception e) {
             LogUtil.d(Log.getStackTraceString(e));
         }
 
-        if (holder.holderId == TYPE_HEADER) {
-            holder.title.setText(mContext.getResources().getString(R.string.home_title));
-            holder.content.setHtml(mContext.getResources().getString(R.string.home_description));
+        if (holder.getItemViewType() == TYPE_HEADER) {
+            HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
+
+            headerViewHolder.title.setText(mContext.getResources().getString(R.string.home_title));
+            headerViewHolder.content.setHtml(mContext.getResources().getString(R.string.home_description));
 
             String uri = mContext.getResources().getString(R.string.home_image);
             if (URLUtil.isValidUrl(uri)) {
                 ImageLoader.getInstance().displayImage(uri,
-                        holder.image, ImageConfig.getDefaultImageOptions(true));
+                        headerViewHolder.image, ImageConfig.getDefaultImageOptions(true));
             } else if (ColorHelper.isValidColor(uri)) {
-                holder.image.setBackgroundColor(Color.parseColor(uri));
+                headerViewHolder.image.setBackgroundColor(Color.parseColor(uri));
             } else {
                 uri = "drawable://" + DrawableHelper.getResourceId(mContext, uri);
 
                 ImageLoader.getInstance().displayImage(uri,
-                        holder.image, ImageConfig.getDefaultImageOptions(true));
+                        headerViewHolder.image, ImageConfig.getDefaultImageOptions(true));
             }
-        } else if (holder.holderId == TYPE_CONTENT) {
+        } else if (holder.getItemViewType() == TYPE_CONTENT) {
+            ContentViewHolder contentViewHolder = (ContentViewHolder) holder;
             int finalPosition = position - 1;
 
             int color = ColorHelper.getAttributeColor(mContext, android.R.attr.textColorPrimary);
             if (mHomes.get(finalPosition).getIcon() != -1) {
                 if (mHomes.get(finalPosition).getType() == Home.Type.DIMENSION) {
-                    holder.autoFitTitle.setCompoundDrawablesWithIntrinsicBounds(DrawableHelper.getResizedDrawable(
+                    contentViewHolder.autoFitTitle.setCompoundDrawablesWithIntrinsicBounds(DrawableHelper.getResizedDrawable(
                             mContext, mHomes.get(finalPosition).getIcon(), R.dimen.icon_size_medium), null, null, null);
                 } else {
-                    holder.autoFitTitle.setCompoundDrawablesWithIntrinsicBounds(DrawableHelper.getTintedDrawable(
+                    contentViewHolder.autoFitTitle.setCompoundDrawablesWithIntrinsicBounds(DrawableHelper.getTintedDrawable(
                             mContext, mHomes.get(finalPosition).getIcon(), color), null, null, null);
                 }
             }
 
             if (mHomes.get(finalPosition).getType() == Home.Type.ICONS) {
-                holder.autoFitTitle.setSingleLine(true);
-                holder.autoFitTitle.setMaxLines(1);
-                holder.autoFitTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                contentViewHolder.autoFitTitle.setSingleLine(true);
+                contentViewHolder.autoFitTitle.setMaxLines(1);
+                contentViewHolder.autoFitTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                         mContext.getResources().getDimension(R.dimen.text_max_size));
-                holder.autoFitTitle.setGravity(Gravity.END | Gravity.CENTER_VERTICAL);
-                holder.autoFitTitle.setIncludeFontPadding(false);
-                holder.autoFitTitle.setSizeToFit(true);
+                contentViewHolder.autoFitTitle.setGravity(Gravity.END | Gravity.CENTER_VERTICAL);
+                contentViewHolder.autoFitTitle.setIncludeFontPadding(false);
+                contentViewHolder.autoFitTitle.setSizeToFit(true);
 
-                holder.subtitle.setGravity(Gravity.END | Gravity.CENTER_VERTICAL);
+                contentViewHolder.subtitle.setGravity(Gravity.END | Gravity.CENTER_VERTICAL);
             } else {
-                holder.autoFitTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, mContext.getResources()
+                contentViewHolder.autoFitTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, mContext.getResources()
                         .getDimension(R.dimen.text_content_title));
             }
 
-            holder.autoFitTitle.setText(mHomes.get(finalPosition).getTitle());
+            contentViewHolder.autoFitTitle.setText(mHomes.get(finalPosition).getTitle());
 
             if (mHomes.get(finalPosition).getSubtitle().length() > 0) {
-                holder.subtitle.setText(mHomes.get(finalPosition).getSubtitle());
-                holder.subtitle.setVisibility(View.VISIBLE);
+                contentViewHolder.subtitle.setText(mHomes.get(finalPosition).getSubtitle());
+                contentViewHolder.subtitle.setVisibility(View.VISIBLE);
             }
-        } else if (holder.holderId == TYPE_ICON_REQUEST) {
+        } else if (holder.getItemViewType() == TYPE_ICON_REQUEST) {
+            IconRequestViewHolder iconRequestViewHolder = (IconRequestViewHolder) holder;
+
             int installed = CandyBarMainActivity.sInstalledAppsCount;
             int missed = CandyBarMainActivity.sMissedApps == null ?
                     installed : CandyBarMainActivity.sMissedApps.size();
             int themed = installed - missed;
 
-            holder.installedApps.setText(String.format(
+            iconRequestViewHolder.installedApps.setText(String.format(
                     mContext.getResources().getString(R.string.home_icon_request_installed_apps),
                     installed));
-            holder.missedApps.setText(String.format(
+            iconRequestViewHolder.missedApps.setText(String.format(
                     mContext.getResources().getString(R.string.home_icon_request_missed_apps),
                     missed));
-            holder.themedApps.setText(String.format(
+            iconRequestViewHolder.themedApps.setText(String.format(
                     mContext.getResources().getString(R.string.home_icon_request_themed_apps),
                     themed));
 
-            holder.progress.setMax(installed);
-            holder.progress.setProgress(themed);
-        } else if (holder.holderId == TYPE_WALLPAPERS) {
-            holder.title.setText(
+            iconRequestViewHolder.progress.setMax(installed);
+            iconRequestViewHolder.progress.setProgress(themed);
+        } else if (holder.getItemViewType() == TYPE_WALLPAPERS) {
+            WallpapersViewHolder wallpapersViewHolder = (WallpapersViewHolder) holder;
+
+            wallpapersViewHolder.title.setText(
                     String.format(mContext.getResources().getString(R.string.home_loud_wallpapers),
                     Preferences.getPreferences(mContext).getAvailableWallpapersCount()));
         }
@@ -252,89 +270,35 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         return TYPE_CONTENT;
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private class HeaderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private ImageView image;
-        private TextView title;
-        private TextView subtitle;
-        private TextView installedApps;
-        private TextView themedApps;
-        private TextView missedApps;
-        private HtmlTextView content;
-        private AutofitTextView autoFitTitle;
-        private LinearLayout container;
-        private ProgressBar progress;
+        private final HeaderView image;
+        private final TextView title;
+        private final HtmlTextView content;
 
-        private int holderId;
-
-        public ViewHolder(View itemView, int viewType) {
+        HeaderViewHolder(View itemView) {
             super(itemView);
-            if (viewType == TYPE_HEADER) {
-                image = (ImageView) itemView.findViewById(R.id.header_image);
-                title = (TextView) itemView.findViewById(R.id.title);
-                content = (HtmlTextView) itemView.findViewById(R.id.content);
-                AppCompatButton rate = (AppCompatButton) itemView.findViewById(R.id.rate);
-                ImageView share = (ImageView) itemView.findViewById(R.id.share);
-                holderId = TYPE_HEADER;
+            image = (HeaderView) itemView.findViewById(R.id.header_image);
+            title = (TextView) itemView.findViewById(R.id.title);
+            content = (HtmlTextView) itemView.findViewById(R.id.content);
+            AppCompatButton rate = (AppCompatButton) itemView.findViewById(R.id.rate);
+            ImageView share = (ImageView) itemView.findViewById(R.id.share);
 
-                int color = ColorHelper.getAttributeColor(mContext, android.R.attr.textColorSecondary);
-                rate.setCompoundDrawablesWithIntrinsicBounds(DrawableHelper.getTintedDrawable(
-                        mContext, R.drawable.ic_toolbar_rate, color), null, null, null);
-                share.setImageDrawable(DrawableHelper.getTintedDrawable(
-                        mContext, R.drawable.ic_toolbar_share, color));
-
-                rate.setOnClickListener(this);
-                share.setOnClickListener(this);
-            } else if (viewType == TYPE_CONTENT) {
-                container = (LinearLayout) itemView.findViewById(R.id.container);
-                autoFitTitle = (AutofitTextView) itemView.findViewById(R.id.title);
-                subtitle = (TextView) itemView.findViewById(R.id.subtitle);
-                holderId = TYPE_CONTENT;
-
-                container.setOnClickListener(this);
-            } else if (viewType == TYPE_ICON_REQUEST) {
-                title = (TextView) itemView.findViewById(R.id.title);
-                installedApps = (TextView) itemView.findViewById(R.id.installed_apps);
-                missedApps = (TextView) itemView.findViewById(R.id.missed_apps);
-                themedApps = (TextView) itemView.findViewById(R.id.themed_apps);
-                progress = (ProgressBar) itemView.findViewById(R.id.progress);
-                container = (LinearLayout) itemView.findViewById(R.id.container);
-                holderId = TYPE_ICON_REQUEST;
-
-                int color = ColorHelper.getAttributeColor(mContext, android.R.attr.textColorPrimary);
-                title.setCompoundDrawablesWithIntrinsicBounds(DrawableHelper.getTintedDrawable(
-                        mContext, R.drawable.ic_toolbar_icon_request, color), null, null, null);
-
-                int accent = ColorHelper.getAttributeColor(mContext, R.attr.colorAccent);
-                progress.getProgressDrawable().setColorFilter(accent, PorterDuff.Mode.SRC_IN);
-
-                container.setOnClickListener(this);
-            } else if (viewType == TYPE_WALLPAPERS) {
-                title = (TextView) itemView.findViewById(R.id.title);
-                TextView muzei = (TextView) itemView.findViewById(R.id.muzei);
-                holderId = TYPE_WALLPAPERS;
-
-                int color = ColorHelper.getAttributeColor(mContext, android.R.attr.textColorPrimary);
-                title.setCompoundDrawablesWithIntrinsicBounds(DrawableHelper.getTintedDrawable(
-                        mContext, R.drawable.ic_toolbar_wallpapers, color), null, null, null);
-
-                muzei.setCompoundDrawablesWithIntrinsicBounds(DrawableHelper.getDrawable(
-                        mContext, R.drawable.ic_home_app_muzei), null, null, null);
-
-                title.setOnClickListener(this);
-                muzei.setOnClickListener(this);
-            } else if (viewType == TYPE_MORE_APPS) {
-                container = (LinearLayout) itemView.findViewById(R.id.container);
-                title = (TextView) itemView.findViewById(R.id.title);
-                subtitle = (TextView) itemView.findViewById(R.id.subtitle);
-                holderId = TYPE_MORE_APPS;
-
-                int color = ColorHelper.getAttributeColor(mContext, android.R.attr.textColorPrimary);
-                title.setCompoundDrawablesWithIntrinsicBounds(DrawableHelper.getTintedDrawable(
-                        mContext, R.drawable.ic_google_play_more_apps, color), null, null, null);
-
-                container.setOnClickListener(this);
+            CardView card = (CardView) itemView.findViewById(R.id.card);
+            if (!Preferences.getPreferences(mContext).isShadowEnabled()) {
+                card.setCardElevation(0);
             }
+
+            int color = ColorHelper.getAttributeColor(mContext, android.R.attr.textColorSecondary);
+            rate.setCompoundDrawablesWithIntrinsicBounds(DrawableHelper.getTintedDrawable(
+                    mContext, R.drawable.ic_toolbar_rate, color), null, null, null);
+            share.setImageDrawable(DrawableHelper.getTintedDrawable(
+                    mContext, R.drawable.ic_toolbar_share, color));
+
+            image.setRatio(mImageStyle.getPoint().x, mImageStyle.getPoint().y);
+
+            rate.setOnClickListener(this);
+            share.setOnClickListener(this);
         }
 
         @Override
@@ -356,43 +320,133 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
                                 "https://play.google.com/store/apps/details?id=" + mContext.getPackageName()));
                 mContext.startActivity(Intent.createChooser(intent,
                         mContext.getResources().getString(R.string.email_client)));
-            } else if (id == R.id.container) {
-                if (holderId == TYPE_CONTENT) {
-                    int position = getAdapterPosition() - 1;
-                    if (position < 0 || position > mHomes.size()) return;
+            }
+        }
+    }
 
-                    switch (mHomes.get(position).getType()) {
-                        case APPLY:
-                            ((CandyBarMainActivity) mContext).selectPosition(1);
-                            break;
-                        case DONATE:
-                            if (mContext instanceof CandyBarMainActivity) {
-                                CandyBarMainActivity mainActivity = (CandyBarMainActivity) mContext;
-                                mainActivity.showSupportDevelopmentDialog();
-                            }
-                            break;
-                        case ICONS:
-                            ((CandyBarMainActivity) mContext).selectPosition(2);
-                            break;
-                        case DIMENSION:
-                            Home home = mHomes.get(position);
-                            IconPreviewFragment.showIconPreview(
-                                    ((AppCompatActivity) mContext).getSupportFragmentManager(),
-                                    home.getTitle(), home.getIcon());
-                            break;
-                    }
-                } else if (holderId == TYPE_ICON_REQUEST) {
-                    ((CandyBarMainActivity) mContext).selectPosition(3);
-                } else if (holderId == TYPE_MORE_APPS) {
-                    String link = mContext.getResources().getString(R.string.google_play_dev);
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
-                    intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
-                    mContext.startActivity(intent);
+    private class ContentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        private final TextView subtitle;
+        private final AutofitTextView autoFitTitle;
+        private final LinearLayout container;
+
+        ContentViewHolder(View itemView) {
+            super(itemView);
+            container = (LinearLayout) itemView.findViewById(R.id.container);
+            autoFitTitle = (AutofitTextView) itemView.findViewById(R.id.title);
+            subtitle = (TextView) itemView.findViewById(R.id.subtitle);
+
+            CardView card = (CardView) itemView.findViewById(R.id.card);
+            if (!Preferences.getPreferences(mContext).isShadowEnabled()) {
+                card.setCardElevation(0);
+            }
+
+            container.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            int id = view.getId();
+            if (id == R.id.container) {
+                int position = getAdapterPosition() - 1;
+                if (position < 0 || position > mHomes.size()) return;
+
+                switch (mHomes.get(position).getType()) {
+                    case APPLY:
+                        ((CandyBarMainActivity) mContext).selectPosition(1);
+                        break;
+                    case DONATE:
+                        if (mContext instanceof CandyBarMainActivity) {
+                            CandyBarMainActivity mainActivity = (CandyBarMainActivity) mContext;
+                            mainActivity.showSupportDevelopmentDialog();
+                        }
+                        break;
+                    case ICONS:
+                        ((CandyBarMainActivity) mContext).selectPosition(2);
+                        break;
+                    case DIMENSION:
+                        Home home = mHomes.get(position);
+                        IconPreviewFragment.showIconPreview(
+                                ((AppCompatActivity) mContext).getSupportFragmentManager(),
+                                home.getTitle(), home.getIcon());
+                        break;
                 }
-            } else if (id == R.id.title) {
-                if (holderId == TYPE_WALLPAPERS) {
-                    ((CandyBarMainActivity) mContext).selectPosition(4);
-                }
+            }
+        }
+    }
+
+    private class IconRequestViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        private final TextView title;
+        private final TextView installedApps;
+        private final TextView themedApps;
+        private final TextView missedApps;
+        private final LinearLayout container;
+        private final ProgressBar progress;
+
+        IconRequestViewHolder(View itemView) {
+            super(itemView);
+            title = (TextView) itemView.findViewById(R.id.title);
+            installedApps = (TextView) itemView.findViewById(R.id.installed_apps);
+            missedApps = (TextView) itemView.findViewById(R.id.missed_apps);
+            themedApps = (TextView) itemView.findViewById(R.id.themed_apps);
+            progress = (ProgressBar) itemView.findViewById(R.id.progress);
+            container = (LinearLayout) itemView.findViewById(R.id.container);
+
+            CardView card = (CardView) itemView.findViewById(R.id.card);
+            if (!Preferences.getPreferences(mContext).isShadowEnabled()) {
+                card.setCardElevation(0);
+            }
+
+            int color = ColorHelper.getAttributeColor(mContext, android.R.attr.textColorPrimary);
+            title.setCompoundDrawablesWithIntrinsicBounds(DrawableHelper.getTintedDrawable(
+                    mContext, R.drawable.ic_toolbar_icon_request, color), null, null, null);
+
+            int accent = ColorHelper.getAttributeColor(mContext, R.attr.colorAccent);
+            progress.getProgressDrawable().setColorFilter(accent, PorterDuff.Mode.SRC_IN);
+
+            container.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            int id = view.getId();
+            if (id == R.id.container) {
+                ((CandyBarMainActivity) mContext).selectPosition(3);
+            }
+        }
+    }
+
+    private class WallpapersViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        private final TextView title;
+
+        WallpapersViewHolder(View itemView) {
+            super(itemView);
+            title = (TextView) itemView.findViewById(R.id.title);
+            TextView muzei = (TextView) itemView.findViewById(R.id.muzei);
+
+            CardView card = (CardView) itemView.findViewById(R.id.card);
+            if (!Preferences.getPreferences(mContext).isShadowEnabled()) {
+                card.setCardElevation(0);
+            }
+
+            int color = ColorHelper.getAttributeColor(mContext, android.R.attr.textColorPrimary);
+            title.setCompoundDrawablesWithIntrinsicBounds(DrawableHelper.getTintedDrawable(
+                    mContext, R.drawable.ic_toolbar_wallpapers, color), null, null, null);
+
+            muzei.setCompoundDrawablesWithIntrinsicBounds(DrawableHelper.getDrawable(
+                    mContext, R.drawable.ic_home_app_muzei), null, null, null);
+
+            title.setOnClickListener(this);
+            muzei.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            int id = view.getId();
+            if (id == R.id.title) {
+                ((CandyBarMainActivity) mContext).selectPosition(4);
             } else if (id == R.id.muzei) {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(
                         "https://play.google.com/store/apps/details?id=net.nurik.roman.muzei"));
@@ -400,6 +454,83 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
                 mContext.startActivity(intent);
             }
         }
+    }
+
+    private class MoreAppsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        private final TextView title;
+        private final LinearLayout container;
+
+        MoreAppsViewHolder(View itemView) {
+            super(itemView);
+            container = (LinearLayout) itemView.findViewById(R.id.container);
+            title = (TextView) itemView.findViewById(R.id.title);
+
+            CardView card = (CardView) itemView.findViewById(R.id.card);
+            if (!Preferences.getPreferences(mContext).isShadowEnabled()) {
+                card.setCardElevation(0);
+            }
+
+            int color = ColorHelper.getAttributeColor(mContext, android.R.attr.textColorPrimary);
+            title.setCompoundDrawablesWithIntrinsicBounds(DrawableHelper.getTintedDrawable(
+                    mContext, R.drawable.ic_google_play_more_apps, color), null, null, null);
+
+            container.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            int id = view.getId();
+            if (id == R.id.container) {
+                String link = mContext.getResources().getString(R.string.google_play_dev);
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+                intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+                mContext.startActivity(intent);
+            }
+        }
+    }
+
+    public List<Home> getHome() {
+        return mHomes;
+    }
+
+    public int getApplyIndex() {
+        int index = -1;
+        for (int i = 0; i < getItemCount(); i++) {
+            int type = getItemViewType(i);
+            if (type == TYPE_CONTENT) {
+                int pos = i - 1;
+                if (mHomes.get(pos).getType() == Home.Type.APPLY) {
+                    index = i;
+                    break;
+                }
+            }
+        }
+        return index;
+    }
+
+    public int getIconRequestIndex() {
+        int index = -1;
+        for (int i = 0; i < getItemCount(); i++) {
+            int type = getItemViewType(i);
+            if (type == TYPE_ICON_REQUEST) {
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
+
+    public int getWallpapersIndex() {
+        int index = -1;
+        for (int i = 0; i < getItemCount(); i++) {
+            int type = getItemViewType(i);
+            if (type == TYPE_WALLPAPERS) {
+                index = i;
+                break;
+            }
+        }
+        return index;
     }
 
     public void addNewContent(@Nullable Home home) {
@@ -412,5 +543,17 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     public void setOrientation(int orientation) {
         mOrientation = orientation;
         notifyDataSetChanged();
+    }
+
+    private boolean isFullSpan(int viewType) {
+        if (viewType == TYPE_HEADER) {
+            if (mOrientation == Configuration.ORIENTATION_PORTRAIT) {
+                return true;
+            } else if (mImageStyle.getType() == Home.Style.Type.SQUARE ||
+                    mImageStyle.getType() == Home.Style.Type.RECTANGLE) {
+                return true;
+            }
+        }
+        return false;
     }
 }

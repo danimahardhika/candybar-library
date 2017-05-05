@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
@@ -42,24 +43,21 @@ public class LauncherHelper {
     private static final int GO = 7;
     private static final int HOLO = 8;
     private static final int HOLOHD = 9;
-    private static final int KK = 10;
-    private static final int LGHOME = 11;
-    private static final int LGHOME3 = 12;
-    private static final int LUCID = 13;
-    private static final int MINI = 14;
-    private static final int NEXT = 15;
-    private static final int NOVA = 16;
-    private static final int S = 17;
-    private static final int SMART = 18;
-    private static final int SOLO = 19;
-    private static final int ZENUI = 20;
-    private static final int NOUGAT = 21;
-    private static final int NEW = 22;
-    private static final int M = 23;
-    private static final int MN = 24;
-    private static final int ZERO = 25;
-    private static final int V = 26;
-    private static final int ABC = 27;
+    private static final int LGHOME = 10;
+    private static final int LGHOME3 = 11;
+    private static final int LUCID = 12;
+    private static final int MINI = 13;
+    private static final int NEXT = 14;
+    private static final int NOVA = 15;
+    private static final int SMART = 16;
+    private static final int SOLO = 17;
+    private static final int ZENUI = 18;
+    private static final int NOUGAT = 19;
+    private static final int M = 20;
+    private static final int ZERO = 21;
+    private static final int V = 22;
+    private static final int ABC = 23;
+    private static final int EVIE = 24;
 
     private static int getLauncherId(String packageName) {
         if (packageName == null) return UNKNOWN;
@@ -85,8 +83,6 @@ public class LauncherHelper {
                 return HOLO;
             case "com.mobint.hololauncher.hd":
                 return HOLOHD;
-            case "com.kk.launcher":
-                return KK;
             case "com.lge.launcher2":
                 return LGHOME;
             case "com.lge.launcher3":
@@ -101,8 +97,6 @@ public class LauncherHelper {
             case "com.teslacoilsw.launcher":
             case "com.teslacoilsw.launcher.prime":
                 return NOVA;
-            case "com.s.launcher":
-                return S;
             case "ginlemon.flowerfree":
             case "ginlemon.flowerpro":
             case "ginlemon.flowerpro.special":
@@ -113,18 +107,16 @@ public class LauncherHelper {
                 return ZENUI;
             case "me.craftsapp.nlauncher":
                 return NOUGAT;
-            case "com.inew.launcher":
-                return NEW;
             case "com.uprui.launcher.marshmallow":
                 return M;
-            case "com.kkmlauncher":
-                return MN;
             case "com.zeroteam.zerolauncher":
                 return ZERO;
             case "com.vivid.launcher":
                 return V;
             case "com.abclauncher.launcher":
                 return ABC;
+            case "is.shortcut":
+                return EVIE;
             default:
                 return UNKNOWN;
         }
@@ -228,19 +220,6 @@ public class LauncherHelper {
             case HOLOHD:
                 applyManual(context, launcherPackage, launcherName, "com.mobint.hololauncher.SettingsActivity");
                 break;
-            case KK:
-                try {
-                    final Intent launcher_kk = new Intent("com.kk.launcher.APPLY_ICON_THEME");
-                    launcher_kk.putExtra("com.kk.launcher.theme.EXTRA_PKG", context.getPackageName());
-                    launcher_kk.putExtra("com.kk.launcher.theme.EXTRA_NAME", context.getResources().getString(
-                            R.string.app_name));
-                    launcher_kk.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(launcher_kk);
-                    ((AppCompatActivity) context).finish();
-                } catch (ActivityNotFoundException | NullPointerException e) {
-                    openGooglePlay(context, launcherPackage, launcherName);
-                }
-                break;
             case LGHOME:
                 applyLgHome(context, launcherPackage, launcherName,
                         "com.lge.launcher2.homesettings.HomeSettingsPrefActivity");
@@ -288,19 +267,6 @@ public class LauncherHelper {
                     nova.putExtra("com.teslacoilsw.launcher.extra.ICON_THEME_PACKAGE", context.getPackageName());
                     nova.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(nova);
-                    ((AppCompatActivity) context).finish();
-                } catch (ActivityNotFoundException | NullPointerException e) {
-                    openGooglePlay(context, launcherPackage, launcherName);
-                }
-                break;
-            case S:
-                try {
-                    final Intent launcher_s = new Intent("com.s.launcher.APPLY_ICON_THEME");
-                    launcher_s.putExtra("com.s.launcher.theme.EXTRA_PKG", context.getPackageName());
-                    launcher_s.putExtra("com.s.launcher.theme.EXTRA_NAME", context.getResources().getString(
-                            R.string.app_name));
-                    launcher_s.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(launcher_s);
                     ((AppCompatActivity) context).finish();
                 } catch (ActivityNotFoundException | NullPointerException e) {
                     openGooglePlay(context, launcherPackage, launcherName);
@@ -364,24 +330,6 @@ public class LauncherHelper {
                     openGooglePlay(context, launcherPackage, launcherName);
                 }
                 break;
-            case NEW:
-                try {
-                    /*
-                     * Just want to let anyone who is going to copy
-                     * It's not easy searching for this
-                     * I will be grateful if you take this with a proper credit
-                     * Thank you
-                     */
-                    final Intent newLauncher = new Intent("com.inew.launcher");
-                    newLauncher.setAction("com.inew.launcher.APPLY_ICON_THEME");
-                    newLauncher.putExtra("com.inew.launcher.theme.EXTRA_PKG", context.getPackageName());
-                    newLauncher.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(newLauncher);
-                    ((AppCompatActivity) context).finish();
-                } catch (ActivityNotFoundException | NullPointerException e) {
-                    openGooglePlay(context, launcherPackage, launcherName);
-                }
-                break;
             case M:
                 try {
                     /*
@@ -393,24 +341,6 @@ public class LauncherHelper {
                     final Intent newLauncher = new Intent("com.uprui.launcher.marshmallow");
                     newLauncher.setAction("com.uprui.launcher.marshmallow.SET_THEME");
                     newLauncher.putExtra("com.uprui.launcher.marshmallow.theme.NAME", context.getPackageName());
-                    newLauncher.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(newLauncher);
-                    ((AppCompatActivity) context).finish();
-                } catch (ActivityNotFoundException | NullPointerException e) {
-                    openGooglePlay(context, launcherPackage, launcherName);
-                }
-                break;
-            case MN:
-                try {
-                    /*
-                     * Just want to let anyone who is going to copy
-                     * It's not easy searching for this
-                     * I will be grateful if you take this with a proper credit
-                     * Thank you
-                     */
-                    final Intent newLauncher = new Intent("com.kkmlauncher");
-                    newLauncher.setAction("com.kkmlauncher.APPLY_ICON_THEME");
-                    newLauncher.putExtra("com.kkmlauncher.theme.EXTRA_PKG", context.getPackageName());
                     newLauncher.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(newLauncher);
                     ((AppCompatActivity) context).finish();
@@ -480,11 +410,15 @@ public class LauncherHelper {
                     openGooglePlay(context, launcherPackage, launcherName);
                 }
                 break;
+            case EVIE:
+                applyEvie(context, launcherPackage, launcherName);
+                break;
         }
     }
 
     private static void applyManual(Context context, String launcherPackage, String launcherName, String activity) {
         new MaterialDialog.Builder(context)
+                .typeface("Font-Medium.ttf", "Font-Regular.ttf")
                 .title(launcherName)
                 .content(launcherName +" "+ String.format(context.getResources().getString(
                         R.string.apply_manual), context.getResources().getString(R.string.app_name)))
@@ -509,8 +443,48 @@ public class LauncherHelper {
                 .show();
     }
 
-    private static void applyLgHome(Context context, String launcherPackage, String launcherName, String activity) {
+    private static void applyEvie(Context context, String launcherPackage, String launcherName) {
         new MaterialDialog.Builder(context)
+                .typeface("Font-Medium.ttf", "Font-Regular.ttf")
+                .title(launcherName)
+                .content(launcherName +" "+ String.format(context.getResources().getString(
+                        R.string.apply_manual), context.getResources().getString(R.string.app_name)) +"\n\n"+
+                        String.format(context.getResources().getString(R.string.apply_manual_evie),
+                                context.getResources().getString(R.string.app_name)))
+                .positiveText(context.getResources().getString(R.string.ok))
+                .onPositive((dialog, which) -> {
+                    try{
+                        final Intent intent = new Intent(Intent.ACTION_MAIN);
+                        intent.setComponent(new ComponentName(launcherPackage,
+                                "com.voxel.launcher3.Launcher"));
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(intent);
+                        ((AppCompatActivity) context).finish();
+                    } catch (ActivityNotFoundException | NullPointerException e) {
+                        openGooglePlay(context, launcherPackage, launcherName);
+                    } catch (SecurityException | IllegalArgumentException e) {
+                        Toast.makeText(context, String.format(context.getResources().getString(
+                                R.string.apply_launch_failed),launcherName),
+                                Toast.LENGTH_LONG).show();
+                    }
+                })
+                .negativeText(context.getResources().getString(R.string.cancel))
+                .show();
+    }
+
+    private static void applyLgHome(Context context, String launcherPackage, String launcherName, String activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            new MaterialDialog.Builder(context)
+                    .typeface("Font-Medium.ttf", "Font-Regular.ttf")
+                    .title(launcherName)
+                    .content(R.string.apply_lg_home_nougat)
+                    .positiveText(R.string.close)
+                    .show();
+            return;
+        }
+
+        new MaterialDialog.Builder(context)
+                .typeface("Font-Medium.ttf", "Font-Regular.ttf")
                 .title(launcherName)
                 .content(launcherName +" "+ String.format(context.getResources().getString(
                         R.string.apply_manual), context.getResources().getString(R.string.app_name))
@@ -538,6 +512,7 @@ public class LauncherHelper {
 
     private static void openGooglePlay(Context context, String packageName, String launcherName) {
         new MaterialDialog.Builder(context)
+                .typeface("Font-Medium.ttf", "Font-Regular.ttf")
                 .title(launcherName)
                 .content(String.format(context.getResources().getString(
                         R.string.apply_launcher_not_installed), launcherName))

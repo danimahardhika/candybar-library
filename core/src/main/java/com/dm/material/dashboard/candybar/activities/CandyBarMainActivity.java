@@ -418,6 +418,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements
         if (mBillingProcessor.consumePurchase(productId)) {
             if (type == InAppBillingHelper.DONATE) {
                 new MaterialDialog.Builder(this)
+                        .typeface("Font-Medium.ttf", "Font-Regular.ttf")
                         .title(R.string.navigation_view_donate)
                         .content(R.string.donation_success)
                         .positiveText(R.string.close)
@@ -486,7 +487,9 @@ public class CandyBarMainActivity extends AppCompatActivity implements
         mIsMenuVisible = !expand;
 
         if (expand) {
-            toolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+            int color = ColorHelper.getAttributeColor(this, R.attr.toolbar_icon);
+            toolbar.setNavigationIcon(DrawableHelper.getTintedDrawable(
+                    this, R.drawable.ic_toolbar_back, color));
             toolbar.setNavigationOnClickListener(view -> onBackPressed());
         } else {
             SoftKeyboardHelper.closeKeyboard(this);
@@ -629,7 +632,9 @@ public class CandyBarMainActivity extends AppCompatActivity implements
 
         int size = Preferences.getPreferences(this).getAvailableWallpapersCount();
         if (size > 0) {
-            onWallpapersChecked(new Intent().putExtra("size", size));
+            onWallpapersChecked(new Intent()
+                    .putExtra("size", size)
+                    .putExtra("packageName", getPackageName()));
         }
     }
 

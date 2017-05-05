@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.AboutAdapter;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
+import com.dm.material.dashboard.candybar.preferences.Preferences;
 
 /*
  * CandyBar - Material Dashboard
@@ -42,6 +43,11 @@ public class AboutFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_about, container, false);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
+
+        if (!Preferences.getPreferences(getActivity()).isShadowEnabled()) {
+            View shadow = view.findViewById(R.id.shadow);
+            if (shadow != null) shadow.setVisibility(View.GONE);
+        }
         return view;
     }
 

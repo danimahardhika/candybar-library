@@ -1,5 +1,6 @@
 package com.dm.material.dashboard.candybar.adapters;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.items.FAQs;
+import com.dm.material.dashboard.candybar.preferences.Preferences;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,13 +37,15 @@ import java.util.Locale;
 
 public class FAQsAdapter extends RecyclerView.Adapter<FAQsAdapter.ViewHolder> {
 
+    private final Context mContext;
     private final List<FAQs> mFAQs;
     private final List<FAQs> mFAQsAll;
 
     private static final int TYPE_CONTENT = 0;
     private static final int TYPE_FOOTER = 1;
 
-    public FAQsAdapter(@NonNull List<FAQs> faqs) {
+    public FAQsAdapter(@NonNull Context context, @NonNull List<FAQs> faqs) {
+        mContext = context;
         mFAQs = faqs;
         mFAQsAll = new ArrayList<>();
         mFAQsAll.addAll(mFAQs);
@@ -108,6 +112,11 @@ public class FAQsAdapter extends RecyclerView.Adapter<FAQsAdapter.ViewHolder> {
                 holderId = TYPE_CONTENT;
             } else if (viewType == TYPE_FOOTER) {
                 holderId = TYPE_FOOTER;
+
+                if (!Preferences.getPreferences(mContext).isShadowEnabled()) {
+                    View shadow = itemView.findViewById(R.id.shadow);
+                    shadow.setVisibility(View.GONE);
+                }
             }
         }
     }
