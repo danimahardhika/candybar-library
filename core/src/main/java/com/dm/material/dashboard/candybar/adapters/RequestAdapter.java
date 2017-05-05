@@ -240,8 +240,9 @@ public class RequestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                             R.drawable.ic_toolbar_premium_request, color),
                     null, null, null);
 
+            int primary = ColorHelper.getAttributeColor(mContext, R.attr.colorPrimary);
             int accent = ColorHelper.getAttributeColor(mContext, R.attr.colorAccent);
-            button.setTextColor(ColorHelper.getTitleTextColor(accent));
+            button.setTextColor(ColorHelper.getTitleTextColor(primary));
 
             progress.getProgressDrawable().setColorFilter(accent, PorterDuff.Mode.SRC_IN);
 
