@@ -169,10 +169,10 @@ public class AboutAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             subtitle.setHtml(mContext.getResources().getString(R.string.about_desc));
 
             if (!mCardMode) {
-                int primary = ColorHelper.getAttributeColor(mContext, R.attr.colorPrimary);
+                int accent = ColorHelper.getAttributeColor(mContext, R.attr.colorAccent);
 
                 int cardColor = ColorHelper.getAttributeColor(mContext, R.attr.card_background);
-                email.setTextColor(ColorHelper.getTitleTextColor(primary));
+                email.setTextColor(ColorHelper.getTitleTextColor(accent));
                 link1.setTextColor(ColorHelper.getTitleTextColor(cardColor));
                 link2.setTextColor(ColorHelper.getTitleTextColor(cardColor));
             }
@@ -270,9 +270,9 @@ public class AboutAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     mContext, R.drawable.ic_toolbar_dashboard, color), null, null, null);
 
             if (!mCardMode) {
-                int primary = ColorHelper.getAttributeColor(mContext, R.attr.colorPrimary);
+                int accent = ColorHelper.getAttributeColor(mContext, R.attr.colorAccent);
                 int cardColor = ColorHelper.getAttributeColor(mContext, R.attr.card_background);
-                link1.setTextColor(ColorHelper.getTitleTextColor(primary));
+                link1.setTextColor(ColorHelper.getTitleTextColor(accent));
                 link2.setTextColor(ColorHelper.getTitleTextColor(cardColor));
             }
 
