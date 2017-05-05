@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingPrefix"
+    android:id="@+id/card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginRight="@dimen/content_padding"
@@ -15,17 +16,28 @@
     app:cardCornerRadius="@dimen/card_corner_radius">
 
     <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:ignore="MissingPrefix"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/content_margin"
         android:background="?attr/card_background">
 
         <TextView
+            android:id="@+id/about_dashboard_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/content_margin"
+            android:layout_marginLeft="@dimen/content_margin"
+            android:layout_marginStart="@dimen/content_margin"
+            android:layout_marginRight="@dimen/content_margin"
+            android:layout_marginEnd="@dimen/content_margin"
+            android:drawablePadding="@dimen/content_margin"
+            android:gravity="center_vertical"
             android:text="@string/about_dashboard"
-            android:textSize="@dimen/text_content_title"
+            android:textSize="@dimen/text_content_header"
             android:textColor="?android:attr/textColorPrimary"
             fontPath="fonts/Font-Medium.ttf"/>
 
@@ -33,9 +45,51 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/content_padding"
+            android:layout_marginLeft="@dimen/content_margin"
+            android:layout_marginStart="@dimen/content_margin"
+            android:layout_marginRight="@dimen/content_margin"
+            android:layout_marginEnd="@dimen/content_margin"
+            android:paddingLeft="@dimen/content_item_list_margin_start"
+            android:paddingStart="@dimen/content_item_list_margin_start"
             android:text="@string/about_dashboard_dev"
             android:textSize="@dimen/text_content"
             android:textColor="?android:attr/textColorPrimary"
+            fontPath="fonts/Font-Regular.ttf"/>
+
+        <TextView
+            android:id="@+id/about_dashboard_licenses"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/content_margin"
+            android:paddingBottom="@dimen/content_margin"
+            android:paddingLeft="@dimen/content_item_list_padding_start"
+            android:paddingStart="@dimen/content_item_list_padding_start"
+            android:paddingEnd="@dimen/content_margin"
+            android:paddingRight="@dimen/content_margin"
+            android:gravity="center_vertical"
+            android:text="@string/about_open_source_licenses"
+            android:textSize="@dimen/text_content_title"
+            android:textColor="?android:attr/textColorPrimary"
+            android:background="?attr/selectableItemBackground"
+            android:theme="@style/RippleStyle"
+            fontPath="fonts/Font-Regular.ttf"/>
+
+        <TextView
+            android:id="@+id/about_dashboard_contributors"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/content_margin"
+            android:paddingBottom="@dimen/content_margin"
+            android:paddingLeft="@dimen/content_item_list_padding_start"
+            android:paddingStart="@dimen/content_item_list_padding_start"
+            android:paddingEnd="@dimen/content_margin"
+            android:paddingRight="@dimen/content_margin"
+            android:gravity="center_vertical"
+            android:text="@string/about_dashboard_contributors"
+            android:textSize="@dimen/text_content_title"
+            android:textColor="?android:attr/textColorPrimary"
+            android:background="?attr/selectableItemBackground"
+            android:theme="@style/RippleStyle"
             fontPath="fonts/Font-Regular.ttf"/>
 
         <LinearLayout
@@ -43,10 +97,14 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="end"
-            android:layout_marginTop="@dimen/content_margin">
+            android:paddingBottom="@dimen/content_margin"
+            android:paddingRight="@dimen/content_margin"
+            android:paddingEnd="@dimen/content_margin"
+            android:paddingLeft="@dimen/content_margin"
+            android:paddingStart="@dimen/content_margin">
 
             <android.support.v7.widget.AppCompatButton
-                android:id="@+id/dev_google_plus"
+                android:id="@+id/about_dev_google_plus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -55,23 +113,23 @@
                 android:textColor="?attr/colorAccent"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:background="?attr/selectableItemBackground"
                 android:theme="@style/RippleAccentStyle"
+                android:background="?attr/selectableItemBackground"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 fontPath="fonts/Font-Medium.ttf"/>
 
             <android.support.v7.widget.AppCompatButton
-                android:id="@+id/dev_github"
+                android:id="@+id/about_dev_github"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
                 android:gravity="center"
+                android:maxLines="1"
                 android:text="@string/about_dashboard_dev_github_title"
                 android:textSize="@dimen/text_content"
                 android:textColor="?attr/colorAccent"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:background="?attr/selectableItemBackground"
                 android:theme="@style/RippleAccentStyle"
+                android:background="?attr/selectableItemBackground"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 fontPath="fonts/Font-Medium.ttf"/>
 

@@ -3,4 +3,6 @@
 
     <bool name="card_use_compat_padding">false</bool>
 
+    <bool name="fit_system_window">false</bool>
+
 </resources>

@@ -12,6 +12,11 @@
     <!-- Use dark theme as default theme -->
     <bool name="use_dark_theme">false</bool>
 
+    <!-- Enable or disable shadow
+    * Including:
+    * Toolbar, card, and list shadow -->
+    <bool name="enable_shadow">true</bool>
+
     <!-- CONFIG: MUZEI -->
 
     <!-- Muzei art source name -->
@@ -37,6 +42,15 @@
     * ex: <string name="navigation_view_header">#000000</string> -->
 
     <string name="home_image">https://drive.google.com/uc?id=0B0f4ypHfNKm5bVo5aHFOLVZpNlE</string>
+
+    <!-- Home image style
+    * Available choices:
+    * card_square
+    * card_rectangle
+    * rectangle
+    * square
+    -->
+    <string name="home_image_style">card_rectangle</string>
 
     <!-- Home description
     - If you don't want to show description, just leave this empty -->
@@ -68,7 +82,9 @@
     <string name="navigation_view_header_title">CandyBar</string>
 
     <!-- CONFIG: APPLY -->
-    <!-- Enable or disable apply section -->
+    <!-- Enable or disable apply section
+    * default: true
+    * Change to false to disable it -->
     <bool name="enable_apply">true</bool>
 
     <!-- CONFIG: ICONS -->
@@ -158,6 +174,14 @@
     * Higher value means higher quality, more RAM usage
     * Lower value means lower quality, minimal RAM usage -->
     <integer name="wallpaper_grid_preview_quality">4</integer>
+
+    <!-- Wallpapers grid preview style
+    * Available choices:
+    * square
+    * rectangle
+    * photo
+    -->
+    <string name="wallpaper_grid_preview_style">square</string>
 
     <!-- CONFIG: ABOUT -->
 

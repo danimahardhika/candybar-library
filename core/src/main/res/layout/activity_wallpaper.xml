@@ -6,7 +6,8 @@
     tools:ignore="MissingPrefix"
     android:id="@+id/rootview"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="@bool/fit_system_window">
 
     <uk.co.senab.photoview.PhotoView
         android:id="@+id/wallpaper"

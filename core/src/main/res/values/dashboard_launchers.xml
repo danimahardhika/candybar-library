@@ -12,22 +12,19 @@
         <item>GO Launcher EX</item>
         <item>Holo Launcher</item>
         <item>Holo Launcher HD</item>
-        <item>KK Launcher</item>
         <item>LG Home</item>
         <item>Lucid Launcher</item>
         <item>M Launcher</item>
         <item>Mini Launcher</item>
-        <item>MN Launcher</item>
-        <item>New Launcher</item>
         <item>Next Launcher</item>
         <item>Nougat Launcher</item>
         <item>Nova Launcher</item>
-        <item>S Launcher</item>
         <item>Smart Launcher</item>
         <item>Solo Launcher</item>
         <item>Zero Launcher</item>
         <item>V Launcher</item>
         <item>ABC Launcher</item>
+        <item>Evie Launcher</item>
     </string-array>
 
     <array name="launcher_icons">
@@ -41,22 +38,19 @@
         <item>@drawable/ic_launcher_go</item>
         <item>@drawable/ic_launcher_holo</item>
         <item>@drawable/ic_launcher_holohd</item>
-        <item>@drawable/ic_launcher_kk</item>
         <item>@drawable/ic_launcher_lg</item>
         <item>@drawable/ic_launcher_lucid</item>
         <item>@drawable/ic_launcher_m</item>
         <item>@drawable/ic_launcher_mini</item>
-        <item>@drawable/ic_launcher_mn</item>
-        <item>@drawable/ic_launcher_new</item>
         <item>@drawable/ic_launcher_next</item>
         <item>@drawable/ic_launcher_nougat</item>
         <item>@drawable/ic_launcher_nova</item>
-        <item>@drawable/ic_launcher_s</item>
         <item>@drawable/ic_launcher_smart</item>
         <item>@drawable/ic_launcher_solo</item>
         <item>@drawable/ic_launcher_zero</item>
         <item>@drawable/ic_launcher_v</item>
         <item>@drawable/ic_launcher_abc</item>
+        <item>@drawable/ic_launcher_evie</item>
     </array>
 
     <!-- Launcher Packages -->
@@ -71,22 +65,19 @@
         <item>com.gau.go.launcherex</item>				<!-- 7 -->
         <item>com.mobint.hololauncher</item>			<!-- 8 -->
         <item>com.mobint.hololauncher.hd</item>			<!-- 9 -->
-        <item>com.kk.launcher</item>					<!-- 10 -->
-        <item>com.lge.launcher2</item>                  <!-- 11 -->
-        <item>com.powerpoint45.launcher</item>          <!-- 12 -->
-        <item>com.uprui.launcher.marshmallow</item>		<!-- 13 -->
-        <item>com.jiubang.go.mini.launcher</item>		<!-- 14 -->
-        <item>com.kkmlauncher</item>                    <!-- 15 -->
-        <item>com.inew.launcher</item>                  <!-- 16 -->
-        <item>com.gtp.nextlauncher</item>				<!-- 17 -->
-        <item>me.craftsapp.nlauncher</item>             <!-- 18 -->
-        <item>com.teslacoilsw.launcher</item>			<!-- 19 -->
-        <item>com.s.launcher</item>						<!-- 20 -->
-        <item>ginlemon.flowerfree</item>				<!-- 21 -->
-        <item>home.solo.launcher.free</item>			<!-- 22 -->
-        <item>com.zeroteam.zerolauncher</item>          <!-- 23 -->
-        <item>com.vivid.launcher</item>                 <!-- 24 -->
-        <item>com.abclauncher.launcher</item>           <!-- 25 -->
+        <item>com.lge.launcher2</item>                  <!-- 10 -->
+        <item>com.powerpoint45.launcher</item>          <!-- 11 -->
+        <item>com.uprui.launcher.marshmallow</item>		<!-- 12 -->
+        <item>com.jiubang.go.mini.launcher</item>		<!-- 13 -->
+        <item>com.gtp.nextlauncher</item>				<!-- 14 -->
+        <item>me.craftsapp.nlauncher</item>             <!-- 15 -->
+        <item>com.teslacoilsw.launcher</item>			<!-- 16 -->
+        <item>ginlemon.flowerfree</item>				<!-- 17 -->
+        <item>home.solo.launcher.free</item>			<!-- 18 -->
+        <item>com.zeroteam.zerolauncher</item>          <!-- 19 -->
+        <item>com.vivid.launcher</item>                 <!-- 20 -->
+        <item>com.abclauncher.launcher</item>           <!-- 21 -->
+        <item>is.shortcut</item>                        <!-- 22 -->
     </string-array>
 
     <string-array name="launcher_packages_2">
@@ -100,22 +91,19 @@
         <item>none</item>								<!-- 7 -->
         <item>none</item>								<!-- 8 -->
         <item>none</item>								<!-- 9 -->
-        <item>none</item>								<!-- 10 -->
-        <item>com.lge.launcher3</item>                  <!-- 11 -->
+        <item>com.lge.launcher3</item>                  <!-- 10 -->
+        <item>none</item>								<!-- 11 -->
         <item>none</item>								<!-- 12 -->
         <item>none</item>								<!-- 13 -->
-        <item>none</item>								<!-- 14 -->
+        <item>com.gtp.nextlauncher.trial</item>			<!-- 14 -->
         <item>none</item>								<!-- 15 -->
-        <item>none</item>								<!-- 16 -->
-        <item>com.gtp.nextlauncher.trial</item>			<!-- 17 -->
+        <item>com.teslacoilsw.launcher.prime</item>		<!-- 16 -->
+        <item>ginlemon.flowerpro</item>					<!-- 17 -->
         <item>none</item>								<!-- 18 -->
-        <item>com.teslacoilsw.launcher.prime</item>		<!-- 19 -->
-        <item>none</item>								<!-- 20 -->
-        <item>ginlemon.flowerpro</item>					<!-- 21 -->
-        <item>none</item>								<!-- 22 -->
-        <item>none</item>								<!-- 23 -->
-        <item>none</item>                               <!-- 24 -->
-        <item>none</item>                               <!-- 25 -->
+        <item>none</item>								<!-- 19 -->
+        <item>none</item>                               <!-- 20 -->
+        <item>none</item>                               <!-- 21 -->
+        <item>none</item>                               <!-- 22 -->
     </string-array>
 
     <string-array name="launcher_packages_3">
@@ -136,15 +124,12 @@
         <item>none</item>								<!-- 14 -->
         <item>none</item>								<!-- 15 -->
         <item>none</item>								<!-- 16 -->
-        <item>none</item>								<!-- 17 -->
+        <item>ginlemon.flowerpro.special</item>			<!-- 17 -->
         <item>none</item>								<!-- 18 -->
         <item>none</item>								<!-- 19 -->
-        <item>none</item>								<!-- 20 -->
-        <item>ginlemon.flowerpro.special</item>			<!-- 21 -->
-        <item>none</item>								<!-- 22 -->
-        <item>none</item>								<!-- 23 -->
-        <item>note</item>                               <!-- 24 -->
-        <item>none</item>                               <!-- 25 -->
+        <item>note</item>                               <!-- 20 -->
+        <item>none</item>                               <!-- 21 -->
+        <item>none</item>                               <!-- 22 -->
     </string-array>
 
 </resources>

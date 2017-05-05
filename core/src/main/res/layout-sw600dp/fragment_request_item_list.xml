@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingPrefix"
+    android:id="@+id/card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginRight="@dimen/content_padding"
@@ -19,6 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/content_margin"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
         android:background="?attr/selectableItemBackground"
         android:theme="@style/RippleStyle">
@@ -46,19 +48,10 @@
                 fontPath="fonts/Font-Medium.ttf"/>
 
             <TextView
-                android:id="@+id/activity"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="?android:attr/textColorSecondary"
-                android:textSize="@dimen/text_content"
-                fontPath="fonts/Font-Regular.ttf"/>
-
-            <TextView
                 android:id="@+id/requested"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/request_not_requested"
-                android:layout_marginTop="@dimen/content_padding"
                 android:textColor="?android:attr/textColorSecondary"
                 android:textSize="@dimen/text_content"
                 fontPath="fonts/Font-Regular.ttf"/>

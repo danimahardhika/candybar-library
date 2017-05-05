@@ -27,7 +27,7 @@
             android:id="@+id/input_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textCapSentences"
+            android:inputType="textCapSentences|textMultiLine"
             android:hint="@string/report_bugs_desc_hint"
             android:textSize="@dimen/text_content"
             android:textColor="?android:attr/textColorPrimary"

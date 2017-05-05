@@ -63,6 +63,35 @@
     <string name="share_app_title">Yo! Check out %s</string>
     <string name="share_app_content">This Icon Pack is really cool %s</string>
 
+    <!-- Tap Intro -->
+    <string name="tap_intro_home_navigation">Navigation drawer</string>
+    <string name="tap_intro_home_navigation_desc">Tap here or swipe from left edge of the screen to open navigation drawer</string>
+    <string name="tap_intro_home_apply">Apply icon pack</string>
+    <string name="tap_intro_home_apply_desc">Tap here to apply %s</string>
+    <string name="tap_intro_icons_search">Search</string>
+    <string name="tap_intro_icons_search_desc">Tap here to search an icon</string>
+    <string name="tap_intro_request_select">Select missed app</string>
+    <string name="tap_intro_request_select_desc">Tap here to select missed app for icon request</string>
+    <string name="tap_intro_request_select_all">Select all missed apps</string>
+    <string name="tap_intro_request_select_all_desc">Tap here to select all missed apps for icon request</string>
+    <string name="tap_intro_request_send">Send icon request</string>
+    <string name="tap_intro_request_send_desc">Tap here to send selected missed apps</string>
+    <string name="tap_intro_request_premium">Premium icon request</string>
+    <string name="tap_intro_request_premium_desc">Tap here to buy premium icon request package,
+        with premium icon request you can get your requested apps faster.</string>
+    <string name="tap_intro_wallpapers_option">Wallpaper options</string>
+    <string name="tap_intro_wallpapers_option_desc">Tap and hold here to show wallpaper options, %s apply wallpaper.</string>
+    <string name="tap_intro_wallpapers_option_desc_download">download or</string>
+    <string name="tap_intro_wallpapers_preview">Preview wallpaper</string>
+    <string name="tap_intro_wallpapers_preview_desc">Tap here to preview full size of the wallpaper</string>
+    <string name="tap_intro_wallpaper_preview_settings">Wallpaper settings</string>
+    <string name="tap_intro_wallpaper_preview_settings_desc">Tap here to open wallpaper settings.
+        Enable set wallpaper as lockscreen background on Android Nougat or enable wallpaper crop.</string>
+    <string name="tap_intro_wallpaper_preview_save">Save wallpaper</string>
+    <string name="tap_intro_wallpaper_preview_save_desc">Tap here to download and save wallpaper to your device so you can use it later</string>
+    <string name="tap_intro_wallpaper_preview_apply">Apply wallpaper</string>
+    <string name="tap_intro_wallpaper_preview_apply_desc">Tap here to set wallpaper as homescreen background</string>
+
     <!-- Home -->
     <string name="home_more_apps_header">More Apps</string>
     <string name="home_more_apps">Check other apps published on Google Play Store</string>
@@ -84,16 +113,19 @@
     <string name="apply_installed">Installed Launcher</string>
     <string name="apply_supported">Supported Launchers</string>
 
-    <string name="apply_manual">doesn\'t support direct apply, you can apply %s manually from the launchers settings.</string>
+    <string name="apply_manual">doesn\'t support direct apply, you can apply %s manually from the launcher settings.</string>
+    <string name="apply_manual_evie">Tap and hold on homescreen - Settings - Icon Pack - choose %s.</string>
     <string name="apply_launch_failed">Unable to launch %s settings</string>
     <string name="apply_launcher_not_installed">%s is not installed. Do you want to open
         Google Play Store to download and install it?</string>
 
     <string name="apply_cmtheme_not_available">CM Theme Manager is not available on this device</string>
     <string name="apply_cmtheme_failed">Unable to launch CM Theme Manager, you can try to apply Icon Pack manually from Settings.</string>
+
     <string name="apply_lg_home">To apply this Icon Pack open Settings - Display - Home Screen - Theme</string>
     <string name="apply_lg_home_not_available">LG Home is not available on this device</string>
     <string name="apply_lg_home_failed">Unable to launch LG Home Settings, you can try to apply Icon Pack manually from Settings.</string>
+    <string name="apply_lg_home_nougat">LG Home with Android Nougat no longer supports Icon Pack. You need a custom launcher to use Icon Pack.</string>
 
     <string name="no_browser">Do you have a browser?</string>
 
@@ -122,7 +154,7 @@
     <string name="premium_request">Premium Icon Request</string>
     <string name="premium_request_build_failed">Unable to build Premium Request</string>
     <string name="premium_request_no_internet">Make sure your phone connected to internet before sending a premium request</string>
-    <string name="premium_request_desc">Get your requested icon faster with premium requests</string>
+    <string name="premium_request_desc">Premium icon request is pay to request. You can get your requested apps faster by using premium icon request.</string>
     <string name="premium_request_buy">Buy</string>
     <string name="premium_request_count">Total\n%d request</string>
     <string name="premium_request_used">Used\n%d request</string>
@@ -162,15 +194,14 @@
     <string name="wallpaper_apply_cancelled">Wallpaper apply cancelled</string>
     <string name="connection_failed">Unable to fetch data from server</string>
     <string name="wallpaper_apply">Set as Wallpaper</string>
-    <string name="wallpaper_apply_scroll">Wallpaper scroll will forced to enable if you apply from this option</string>
+    <string name="wallpaper_apply_scroll">Wallpaper crop will be disabled if you apply from this option</string>
 
-    <string name="wallpaper_scroll_enable">Enable Wallpaper Scroll</string>
-    <string name="wallpaper_scroll_enable_desc">Dashboard will apply wallpaper based on the original resolution
-        of the wallpaper. If your launcher supports scrollable wallpapers, the wallpaper will scroll when
-        you swipe left or right changing your home screen.</string>
-    <string name="wallpaper_scroll_disable">Disable Wallpaper Scroll</string>
-    <string name="wallpaper_scroll_disable_desc">Dashboard will apply wallpaper based on current view of wallpaper.
-        Drag to left or right to adjust wallpaper. Pinch or double tap to zoom wallpaper.</string>
+    <string name="wallpaper_settings_crop">Wallpaper Crop</string>
+    <string name="wallpaper_settings_crop_desc">Enable wallpaper crop. Wallpaper will be cropped based on current view of wallpaper preview.
+        Pinch or double tap to zoom wallpaper.</string>
+    <string name="wallpaper_settings_lockscreen">Lockscreen Background</string>
+    <string name="wallpaper_settings_lockscreen_desc">Apply will set wallpaper as both homescreen and lockscreen background</string>
+    <string name="wallpaper_settings_lockscreen_not_available">Lockscreen background only available on Android Nougat</string>
 
     <!-- Preferences -->
     <string name="pref_data_header">Data &amp; Cache</string>
@@ -205,7 +236,9 @@
 
     <string name="pref_others_header">Others</string>
     <string name="pref_others_report_bugs">Report Bugs</string>
-    <string name="pref_others_report_changelog">Changelog</string>
+    <string name="pref_others_changelog">Changelog</string>
+    <string name="pref_others_reset_tutorial">Reset Tutorial</string>
+    <string name="pref_others_reset_tutorial_reset">Tutorial Reset</string>
 
     <!-- Permission -->
     <string name="permission_storage_denied">Storage permission needed to save wallpaper</string>
@@ -221,7 +254,6 @@
 
     <!-- About -->
     <string name="about_contributors_title">Contributors</string>
-    <string name="about_open_source_licenses">Open Source Licenses</string>
 
     <!-- Report Bugs -->
     <string name="report_bugs_desc">Please give a description about what kind of problem that you want to report</string>
@@ -241,10 +273,12 @@
     <string name="crash_report_send">Send Report</string>
 
     <!-- Please don't modify this -->
+    <string name="about_open_source_licenses">Open Source Licenses</string>
+
     <string name="about_dashboard">CandyBar</string>
     <string name="about_dashboard_dev">CandyBar is open source icon pack dashboard licensed under Apache License 2.0 for
-        Android available at GitHub and free to use, developed by Dani Mahardhika.
-        \n\nCopyright © 2014-2016</string>
+        Android available at GitHub and free to use, developed by Dani Mahardhika.</string>
+    <string name="about_dashboard_contributors">CandyBar Contributors</string>
     <string name="about_dashboard_dev_google_plus_title">Google+</string>
     <string name="about_dashboard_dev_google_plus_url">https://plus.google.com/u/1/+DaniMahardhika</string>
     <string name="about_dashboard_dev_github_title">GitHub</string>
