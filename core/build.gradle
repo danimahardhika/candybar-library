@@ -101,5 +101,5 @@ dependencies {
     compile 'org.sufficientlysecure:html-textview:3.3'
     compile 'com.github.danimahardhika:cafebar:1.1.2'
     compile 'me.grantland:autofittextview:0.2.1'
-    compile 'com.getkeepsafe.taptargetview:taptargetview:1.9.1'
+    compile 'com.github.KeepSafe:TapTargetView:-SNAPSHOT'
 }
