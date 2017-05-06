@@ -55,6 +55,9 @@ public class TapIntroHelper {
                 TapTargetSequence tapTargetSequence = new TapTargetSequence(activity);
                 tapTargetSequence.continueOnCancel(true);
 
+                Typeface title = Typeface.createFromAsset(context.getAssets(), "fonts/Font-Medium.ttf");
+                Typeface description = Typeface.createFromAsset(context.getAssets(), "fonts/Font-Regular.ttf");
+
                 if (toolbar != null) {
                     tapTargetSequence.target(TapTarget.forToolbarNavigationIcon(toolbar,
                             context.getResources().getString(R.string.tap_intro_home_navigation),
@@ -63,7 +66,8 @@ public class TapIntroHelper {
                             .descriptionTextColorInt(secondary)
                             .targetCircleColorInt(primary)
                             .drawShadow(Preferences.getPreferences(context).isShadowEnabled())
-                            .textTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/Font-Medium.ttf")));
+                            .titleTypeface(title)
+                            .descriptionTypeface(description));
                 }
 
                 if (recyclerView != null) {
@@ -88,7 +92,8 @@ public class TapIntroHelper {
                                                 .targetRadius((int) targetRadius)
                                                 .tintTarget(false)
                                                 .drawShadow(Preferences.getPreferences(context).isShadowEnabled())
-                                                .textTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/Font-Medium.ttf")));
+                                                .titleTypeface(title)
+                                                .descriptionTypeface(description));
                                     }
                                 }
                             }
@@ -131,14 +136,18 @@ public class TapIntroHelper {
                 int primary = ColorHelper.getAttributeColor(context, R.attr.toolbar_icon);
                 int secondary = ColorHelper.setColorAlpha(primary, 0.7f);
 
+                Typeface title = Typeface.createFromAsset(context.getAssets(), "fonts/Font-Medium.ttf");
+                Typeface description = Typeface.createFromAsset(context.getAssets(), "fonts/Font-Regular.ttf");
+
                 TapTargetView.showFor(activity, TapTarget.forToolbarMenuItem(toolbar, R.id.menu_search,
                         context.getResources().getString(R.string.tap_intro_icons_search),
                         context.getResources().getString(R.string.tap_intro_icons_search_desc))
-                                .titleTextColorInt(primary)
-                                .descriptionTextColorInt(secondary)
-                                .targetCircleColorInt(primary)
-                                .drawShadow(Preferences.getPreferences(context).isShadowEnabled())
-                                .textTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/Font-Medium.ttf")),
+                        .titleTextColorInt(primary)
+                        .descriptionTextColorInt(secondary)
+                        .targetCircleColorInt(primary)
+                        .drawShadow(Preferences.getPreferences(context).isShadowEnabled())
+                        .titleTypeface(title)
+                        .descriptionTypeface(description),
                         new TapTargetView.Listener() {
 
                             @Override
@@ -170,6 +179,9 @@ public class TapIntroHelper {
                 TapTargetSequence tapTargetSequence = new TapTargetSequence(activity);
                 tapTargetSequence.continueOnCancel(true);
 
+                Typeface title = Typeface.createFromAsset(context.getAssets(), "fonts/Font-Medium.ttf");
+                Typeface description = Typeface.createFromAsset(context.getAssets(), "fonts/Font-Regular.ttf");
+
                 if (recyclerView != null) {
                     int position = 0;
                     if (Preferences.getPreferences(context).isPremiumRequestEnabled())
@@ -189,7 +201,8 @@ public class TapIntroHelper {
                                             .descriptionTextColorInt(secondary)
                                             .targetCircleColorInt(primary)
                                             .drawShadow(Preferences.getPreferences(context).isShadowEnabled())
-                                            .textTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/Font-Medium.ttf")));
+                                            .titleTypeface(title)
+                                            .descriptionTypeface(description));
                                 }
                             }
                         }
@@ -204,7 +217,8 @@ public class TapIntroHelper {
                             .descriptionTextColorInt(secondary)
                             .targetCircleColorInt(primary)
                             .drawShadow(Preferences.getPreferences(context).isShadowEnabled())
-                            .textTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/Font-Medium.ttf")));
+                            .titleTypeface(title)
+                            .descriptionTypeface(description));
                 }
 
                 View fab = activity.findViewById(R.id.fab);
@@ -217,7 +231,8 @@ public class TapIntroHelper {
                             .targetCircleColorInt(primary)
                             .tintTarget(false)
                             .drawShadow(Preferences.getPreferences(context).isShadowEnabled())
-                            .textTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/Font-Medium.ttf")));
+                            .titleTypeface(title)
+                            .descriptionTypeface(description));
                 }
 
                 if (Preferences.getPreferences(context).isPremiumRequestEnabled()) {
@@ -243,7 +258,8 @@ public class TapIntroHelper {
                                                     .targetRadius((int) targetRadius)
                                                     .tintTarget(false)
                                                     .drawShadow(Preferences.getPreferences(context).isShadowEnabled())
-                                                    .textTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/Font-Medium.ttf")));
+                                                    .titleTypeface(title)
+                                                    .descriptionTypeface(description));
                                         }
                                     }
                                 }
@@ -299,8 +315,10 @@ public class TapIntroHelper {
 
                         View view = holder.itemView.findViewById(R.id.image);
                         if (view != null) {
-                            float targetRadius = ViewHelper.intToDp(context, view.getMeasuredWidth()) - 10f
-                                    ;
+                            float targetRadius = ViewHelper.intToDp(context, view.getMeasuredWidth()) - 10f;
+
+                            Typeface title = Typeface.createFromAsset(context.getAssets(), "fonts/Font-Medium.ttf");
+                            Typeface description = Typeface.createFromAsset(context.getAssets(), "fonts/Font-Regular.ttf");
 
                             String desc = String.format(context.getResources().getString(R.string.tap_intro_wallpapers_option_desc),
                                     context.getResources().getBoolean(R.bool.enable_wallpaper_download) ?
@@ -314,7 +332,8 @@ public class TapIntroHelper {
                                     .targetRadius((int) targetRadius)
                                     .tintTarget(false)
                                     .drawShadow(Preferences.getPreferences(context).isShadowEnabled())
-                                    .textTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/Font-Medium.ttf")));
+                                    .titleTypeface(title)
+                                    .descriptionTypeface(description));
 
                             tapTargetSequence.target(TapTarget.forView(view,
                                     context.getResources().getString(R.string.tap_intro_wallpapers_preview),
@@ -325,7 +344,8 @@ public class TapIntroHelper {
                                     .targetRadius((int) targetRadius)
                                     .tintTarget(false)
                                     .drawShadow(Preferences.getPreferences(context).isShadowEnabled())
-                                    .textTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/Font-Medium.ttf")));
+                                    .titleTypeface(title)
+                                    .descriptionTypeface(description));
 
                             tapTargetSequence.listener(new TapTargetSequence.Listener() {
                                 @Override
@@ -365,6 +385,9 @@ public class TapIntroHelper {
                 TapTargetSequence tapTargetSequence = new TapTargetSequence(activity);
                 tapTargetSequence.continueOnCancel(true);
 
+                Typeface title = Typeface.createFromAsset(context.getAssets(), "fonts/Font-Medium.ttf");
+                Typeface description = Typeface.createFromAsset(context.getAssets(), "fonts/Font-Regular.ttf");
+
                 if (toolbar != null) {
                     tapTargetSequence.target(TapTarget.forToolbarMenuItem(toolbar, R.id.menu_wallpaper_settings,
                             context.getResources().getString(R.string.tap_intro_wallpaper_preview_settings),
@@ -374,7 +397,8 @@ public class TapIntroHelper {
                             .targetCircleColorInt(primary)
                             .outerCircleColorInt(color)
                             .drawShadow(Preferences.getPreferences(context).isShadowEnabled())
-                            .textTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/Font-Medium.ttf")));
+                            .titleTypeface(title)
+                            .descriptionTypeface(description));
 
                     if (context.getResources().getBoolean(R.bool.enable_wallpaper_download)) {
                         tapTargetSequence.target(TapTarget.forToolbarMenuItem(toolbar, R.id.menu_save,
@@ -385,7 +409,8 @@ public class TapIntroHelper {
                                 .targetCircleColorInt(primary)
                                 .outerCircleColorInt(color)
                                 .drawShadow(Preferences.getPreferences(context).isShadowEnabled())
-                                .textTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/Font-Medium.ttf")));
+                                .titleTypeface(title)
+                                .descriptionTypeface(description));
                     }
                 }
 
@@ -400,7 +425,8 @@ public class TapIntroHelper {
                             .outerCircleColorInt(color)
                             .tintTarget(false)
                             .drawShadow(Preferences.getPreferences(context).isShadowEnabled())
-                            .textTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/Font-Medium.ttf")));
+                            .titleTypeface(title)
+                            .descriptionTypeface(description));
                 }
 
                 tapTargetSequence.listener(new TapTargetSequence.Listener() {
