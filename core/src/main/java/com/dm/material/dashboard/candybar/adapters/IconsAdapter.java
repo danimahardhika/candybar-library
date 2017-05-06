@@ -122,7 +122,7 @@ public class IconsAdapter extends RecyclerView.Adapter<IconsAdapter.ViewHolder> 
     }
 
     public void search(String string) {
-        String query = string.toLowerCase(Locale.getDefault());
+        String query = string.toLowerCase(Locale.getDefault()).trim();
         mIcons.clear();
         if (query.length() == 0) mIcons.addAll(mIconsAll);
         else {
