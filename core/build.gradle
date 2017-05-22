@@ -35,7 +35,6 @@ buildscript {
         classpath 'me.tatarka:gradle-retrolambda:3.6.0'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
     }
-
 }
 
 android {
@@ -46,8 +45,8 @@ android {
     defaultConfig {
         minSdkVersion rootProject.ext.MinSdk
         targetSdkVersion rootProject.ext.TargetSdk
-        versionCode 310
-        versionName "3.1.0"
+        versionCode 314
+        versionName "3.1.4"
         vectorDrawables.useSupportLibrary = true
     }
 
@@ -79,7 +78,6 @@ dependencies {
 
     retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.5.1'
     compile project (':library:PreLollipopTransitions')
-    compile project (':library:GoogleLicensing')
 
     compile "com.android.support:appcompat-v7:$rootProject.ext.SupportLibrary"
     compile "com.android.support:recyclerview-v7:$rootProject.ext.SupportLibrary"
@@ -99,7 +97,11 @@ dependencies {
     compile 'com.google.android.apps.muzei:muzei-api:2.0'
     compile 'com.github.rafakob:DrawMe:0.1.6'
     compile 'org.sufficientlysecure:html-textview:3.3'
-    compile 'com.github.danimahardhika:cafebar:1.1.2'
     compile 'me.grantland:autofittextview:0.2.1'
-    compile 'com.github.KeepSafe:TapTargetView:-SNAPSHOT'
+    
+     compile 'com.github.danimahardhika:cafebar:1.1.3'
+    compile 'com.github.danimahardhika.android-helpers:core:0.0.5'
+    compile 'com.github.danimahardhika.android-helpers:animation:0.0.5'
+    compile 'com.github.danimahardhika.android-helpers:license:0.0.5'
+    compile 'com.github.danimahardhika.android-helpers:permission:0.0.5'
 }
