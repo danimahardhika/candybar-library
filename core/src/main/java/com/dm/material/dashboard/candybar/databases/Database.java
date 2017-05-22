@@ -40,7 +40,7 @@ import java.util.List;
 public class Database extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "candybar_database";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
     private static final String TABLE_REQUEST = "icon_request";
     private static final String TABLE_PREMIUM_REQUEST = "premium_request";
@@ -78,22 +78,25 @@ public class Database extends SQLiteOpenHelper {
         String CREATE_TABLE_REQUEST = "CREATE TABLE IF NOT EXISTS " +TABLE_REQUEST+ "(" +
                 KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
                 KEY_NAME + " TEXT NOT NULL, " +
-                KEY_ACTIVITY + " TEXT NOT NULL UNIQUE, " +
-                KEY_REQUESTED_ON + " DATETIME DEFAULT CURRENT_TIMESTAMP" + ")";
+                KEY_ACTIVITY + " TEXT NOT NULL, " +
+                KEY_REQUESTED_ON + " DATETIME DEFAULT CURRENT_TIMESTAMP, " +
+                "UNIQUE (" +KEY_ACTIVITY+ ") ON CONFLICT REPLACE)";
         String CREATE_TABLE_PREMIUM_REQUEST = "CREATE TABLE IF NOT EXISTS " +TABLE_PREMIUM_REQUEST+ "(" +
                 KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
                 KEY_ORDER_ID + " TEXT NOT NULL, " +
                 KEY_PRODUCT_ID + " TEXT NOT NULL, " +
                 KEY_NAME + " TEXT NOT NULL, " +
-                KEY_ACTIVITY + " TEXT NOT NULL UNIQUE, " +
-                KEY_REQUESTED_ON + " DATETIME DEFAULT CURRENT_TIMESTAMP" + ")";
+                KEY_ACTIVITY + " TEXT NOT NULL, " +
+                KEY_REQUESTED_ON + " DATETIME DEFAULT CURRENT_TIMESTAMP, " +
+                "UNIQUE (" +KEY_ACTIVITY+ ") ON CONFLICT REPLACE)";
         String CREATE_TABLE_WALLPAPER = "CREATE TABLE IF NOT EXISTS " +TABLE_WALLPAPERS+ "(" +
                 KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
                 KEY_NAME+ " TEXT NOT NULL, " +
                 KEY_AUTHOR + " TEXT NOT NULL, " +
-                KEY_URL + " TEXT NOT NULL UNIQUE, " +
+                KEY_URL + " TEXT NOT NULL, " +
                 KEY_THUMB_URL + " TEXT NOT NULL, " +
-                KEY_ADDED_ON + " TEXT NOT NULL" + ")";
+                KEY_ADDED_ON + " TEXT NOT NULL, " +
+                "UNIQUE (" +KEY_URL+ ") ON CONFLICT REPLACE)";
         db.execSQL(CREATE_TABLE_REQUEST);
         db.execSQL(CREATE_TABLE_PREMIUM_REQUEST);
         db.execSQL(CREATE_TABLE_WALLPAPER);
