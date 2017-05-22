@@ -24,6 +24,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.view.ViewCompat;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
@@ -46,7 +47,6 @@ public class TransitionAnimation {
         moveData.toView = toView;
         moveData.duration = duration;
         if (savedInstanceState == null) {
-
             ViewTreeObserver observer = toView.getViewTreeObserver();
             observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
 
@@ -110,11 +110,7 @@ public class TransitionAnimation {
             final ImageView toImageView = (ImageView) toView;
             toImageView.setImageBitmap(bitmap);
         } else {
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
-                toView.setBackground(new BitmapDrawable(toView.getResources(), bitmap));
-            } else {
-                toView.setBackgroundDrawable(new BitmapDrawable(toView.getResources(), bitmap));
-            }
+            ViewCompat.setBackground(toView, new BitmapDrawable(toView.getResources(), bitmap));
         }
     }
 
