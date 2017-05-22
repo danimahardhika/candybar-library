@@ -73,7 +73,6 @@ public class RequestHelper {
     @NonNull
     public static List<Request> loadMissingApps(@NonNull Context context) {
         List<Request> requests = new ArrayList<>();
-        Database database = new Database(context);
         String activities = RequestHelper.loadAppFilter(context);
         PackageManager packageManager = context.getPackageManager();
 
@@ -98,7 +97,7 @@ public class RequestHelper {
                 if (name == null)
                     name = app.activityInfo.loadLabel(packageManager).toString();
 
-                boolean requested = database.isRequested(activity);
+                boolean requested = Database.getInstance(context).isRequested(activity);
                 requests.add(new Request(
                         name,
                         app.activityInfo.packageName,
@@ -184,9 +183,9 @@ public class RequestHelper {
         int limit = context.getResources().getInteger(R.integer.icon_request_limit);
         String message = String.format(context.getResources().getString(R.string.request_limit), limit);
         message += " "+ String.format(context.getResources().getString(R.string.request_used),
-                Preferences.getPreferences(context).getRegularRequestUsed());
+                Preferences.get(context).getRegularRequestUsed());
 
-        if (Preferences.getPreferences(context).isPremiumRequestEnabled())
+        if (Preferences.get(context).isPremiumRequestEnabled())
             message += " "+ context.getResources().getString(R.string.request_limit_buy);
 
         if (reset) message += "\n\n"+ context.getResources().getString(R.string.request_limit_reset);
@@ -209,7 +208,7 @@ public class RequestHelper {
 
     public static void showPremiumRequestLimitDialog(@NonNull Context context, int selected) {
         String message = String.format(context.getResources().getString(R.string.premium_request_limit),
-                Preferences.getPreferences(context).getPremiumRequestCount());
+                Preferences.get(context).getPremiumRequestCount());
         message += " "+ String.format(context.getResources().getString(R.string.premium_request_limit1),
                 selected);
         new MaterialDialog.Builder(context)
@@ -223,7 +222,7 @@ public class RequestHelper {
     public static void showPremiumRequestStillAvailable(@NonNull Context context) {
         String message = String.format(context.getResources().getString(
                 R.string.premium_request_already_purchased),
-                Preferences.getPreferences(context).getPremiumRequestCount());
+                Preferences.get(context).getPremiumRequestCount());
         new MaterialDialog.Builder(context)
                 .typeface("Font-Medium.ttf", "Font-Regular.ttf")
                 .title(R.string.premium_request)
@@ -233,7 +232,7 @@ public class RequestHelper {
     }
 
     public static boolean isReadyToSendPremiumRequest(@NonNull Context context) {
-        boolean isReady = Preferences.getPreferences(context).isConnectedToNetwork();
+        boolean isReady = Preferences.get(context).isConnectedToNetwork();
         if (!isReady) {
             new MaterialDialog.Builder(context)
                     .typeface("Font-Medium.ttf", "Font-Regular.ttf")
@@ -267,7 +266,7 @@ public class RequestHelper {
         boolean premiumRequest = context.getResources().getBoolean(R.bool.enable_premium_request);
         //Dashboard don't need to check piracy app if premium request is disabled
         if (!premiumRequest) {
-            Preferences.getPreferences(context).setPremiumRequestEnabled(false);
+            Preferences.get(context).setPremiumRequestEnabled(false);
             RequestListener listener = (RequestListener) context;
             listener.onPiracyAppChecked(true);
             return;
@@ -297,7 +296,7 @@ public class RequestHelper {
             } catch (Exception ignored) {}
         }
 
-        Preferences.getPreferences(context).setPremiumRequestEnabled(!isPiracyAppInstalled);
+        Preferences.get(context).setPremiumRequestEnabled(!isPiracyAppInstalled);
 
         RequestListener listener = (RequestListener) context;
         listener.onPiracyAppChecked(isPiracyAppInstalled);

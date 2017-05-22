@@ -18,11 +18,11 @@ import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.danimahardhika.android.helpers.core.ColorHelper;
+import com.danimahardhika.android.helpers.core.DrawableHelper;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.fragments.dialog.CreditsFragment;
 import com.dm.material.dashboard.candybar.fragments.dialog.LicensesFragment;
-import com.dm.material.dashboard.candybar.helpers.ColorHelper;
-import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
@@ -159,7 +159,7 @@ public class AboutAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             AppCompatButton link2 = (AppCompatButton) itemView.findViewById(R.id.link2);
 
             CardView card = (CardView) itemView.findViewById(R.id.card);
-            if (!Preferences.getPreferences(mContext).isShadowEnabled()) {
+            if (!Preferences.get(mContext).isShadowEnabled()) {
                 if (card != null) card.setCardElevation(0);
 
                 profile.setShadowRadius(0f);
@@ -231,7 +231,7 @@ public class AboutAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             TextView title = (TextView) itemView.findViewById(R.id.title);
 
             CardView card = (CardView) itemView.findViewById(R.id.card);
-            if (!Preferences.getPreferences(mContext).isShadowEnabled()) {
+            if (!Preferences.get(mContext).isShadowEnabled()) {
                 if (card != null) card.setCardElevation(0);
             }
 
@@ -260,7 +260,7 @@ public class AboutAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             TextView contributors = (TextView) itemView.findViewById(R.id.about_dashboard_contributors);
 
             CardView card = (CardView) itemView.findViewById(R.id.card);
-            if (!Preferences.getPreferences(mContext).isShadowEnabled()) {
+            if (!Preferences.get(mContext).isShadowEnabled()) {
                 if (card != null) card.setCardElevation(0);
             }
 
@@ -317,7 +317,7 @@ public class AboutAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         ShadowViewHolder(View itemView) {
             super(itemView);
-            if (!Preferences.getPreferences(mContext).isShadowEnabled()) {
+            if (!Preferences.get(mContext).isShadowEnabled()) {
                 View shadow = itemView.findViewById(R.id.shadow);
                 shadow.setVisibility(View.GONE);
             }

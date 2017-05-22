@@ -19,17 +19,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.danimahardhika.android.helpers.core.ColorHelper;
+import com.danimahardhika.android.helpers.core.SoftKeyboardHelper;
+import com.danimahardhika.android.helpers.core.ViewHelper;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
 import com.dm.material.dashboard.candybar.adapters.IconsAdapter;
-import com.dm.material.dashboard.candybar.helpers.ColorHelper;
 import com.dm.material.dashboard.candybar.helpers.IconsHelper;
-import com.dm.material.dashboard.candybar.helpers.SoftKeyboardHelper;
-import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.items.Icon;
 import com.dm.material.dashboard.candybar.utils.AlphanumComparator;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
@@ -38,6 +37,8 @@ import com.pluscubed.recyclerfastscroll.RecyclerFastScroller;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static com.dm.material.dashboard.candybar.helpers.ViewHelper.setFastScrollColor;
 
 /*
  * CandyBar - Material Dashboard
@@ -90,6 +91,7 @@ public class IconsSearchFragment extends Fragment {
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),
                 getActivity().getResources().getInteger(R.integer.icons_column_count)));
         mFastScroll.attachRecyclerView(mRecyclerView);
+        setFastScrollColor(mFastScroll);
 
         getIcons();
     }
@@ -110,18 +112,10 @@ public class IconsSearchFragment extends Fragment {
         mSearchView.clearFocus();
 
         int color = ColorHelper.getAttributeColor(getActivity(), R.attr.toolbar_icon);
-        ViewHelper.changeSearchViewTextColor(mSearchView,
-                color, ColorHelper.setColorAlpha(color, 0.6f));
-        View view = mSearchView.findViewById(android.support.v7.appcompat.R.id.search_plate);
-        if (view != null) view.setBackgroundColor(Color.TRANSPARENT);
-
-        ImageView closeIcon = (ImageView) mSearchView.findViewById(
-                android.support.v7.appcompat.R.id.search_close_btn);
-        if (closeIcon != null) closeIcon.setImageResource(R.drawable.ic_toolbar_close);
-
-        ImageView searchIcon = (ImageView) mSearchView.findViewById(
-                android.support.v7.appcompat.R.id.search_mag_icon);
-        ViewHelper.removeSearchViewSearchIcon(searchIcon);
+        ViewHelper.setSearchViewTextColor(mSearchView, color);
+        ViewHelper.setSearchViewBackgroundColor(mSearchView, Color.TRANSPARENT);
+        ViewHelper.setSearchViewCloseIcon(mSearchView, R.drawable.ic_toolbar_close);
+        ViewHelper.setSearchViewSearchIcon(mSearchView, null);
 
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
@@ -184,11 +178,8 @@ public class IconsSearchFragment extends Fragment {
                         Thread.sleep(1);
                         if (CandyBarMainActivity.sSections == null) {
                             CandyBarMainActivity.sSections = IconsHelper.getIconsList(getActivity());
-                            CandyBarMainActivity.sIconsCount = 0;
 
                             for (Icon section : CandyBarMainActivity.sSections) {
-                                CandyBarMainActivity.sIconsCount += section.getIcons().size();
-
                                 if (getActivity().getResources().getBoolean(R.bool.show_icon_name)) {
                                     for (Icon icon : section.getIcons()) {
                                         String name = IconsHelper.replaceName(getActivity(),

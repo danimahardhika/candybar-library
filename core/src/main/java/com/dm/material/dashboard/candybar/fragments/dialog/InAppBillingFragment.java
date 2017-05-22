@@ -126,7 +126,7 @@ public class InAppBillingFragment extends DialogFragment {
                     }
                 })
                 .onNegative((dialog, which) ->
-                        Preferences.getPreferences(getActivity()).setInAppBillingType(-1));
+                        Preferences.get(getActivity()).setInAppBillingType(-1));
         MaterialDialog dialog = builder.build();
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
@@ -226,7 +226,7 @@ public class InAppBillingFragment extends DialogFragment {
                     mInAppList.setAdapter(mAdapter);
                 } else {
                     dismiss();
-                    Preferences.getPreferences(getActivity()).setInAppBillingType(-1);
+                    Preferences.get(getActivity()).setInAppBillingType(-1);
                     if (!isBillingNotReady)
                         Toast.makeText(getActivity(), R.string.billing_load_product_failed,
                                 Toast.LENGTH_LONG).show();

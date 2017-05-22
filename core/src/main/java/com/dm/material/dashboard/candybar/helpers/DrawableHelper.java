@@ -12,8 +12,6 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.annotation.ColorInt;
-import android.support.annotation.DimenRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,6 +22,7 @@ import android.support.v7.widget.AppCompatDrawableManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import com.danimahardhika.android.helpers.core.ColorHelper;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
 
@@ -46,35 +45,6 @@ import com.dm.material.dashboard.candybar.utils.LogUtil;
  */
 
 public class DrawableHelper {
-
-    public static int getResourceId(@NonNull Context context, String resName) {
-        try {
-            return context.getResources().getIdentifier(
-                    resName, "drawable", context.getPackageName());
-        } catch (Exception ignored) {}
-        return -1;
-    }
-
-    @Nullable
-    public static Drawable getDrawable(@NonNull Context context, @DrawableRes int res) {
-        try {
-            Drawable drawable = AppCompatDrawableManager.get().getDrawable(context, res);
-            return drawable.mutate();
-        } catch (OutOfMemoryError e) {
-            return null;
-        }
-    }
-
-    @Nullable
-    public static Drawable getTintedDrawable(@NonNull Context context, @DrawableRes int res, @ColorInt int color) {
-        try {
-            Drawable drawable = AppCompatDrawableManager.get().getDrawable(context, res);
-            drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);
-            return drawable.mutate();
-        } catch (OutOfMemoryError e) {
-            return null;
-        }
-    }
 
     @Nullable
     public static Drawable getDefaultImage(@NonNull Context context, @DrawableRes int res) {
@@ -109,28 +79,6 @@ public class DrawableHelper {
                     (tintedCanvas.getHeight() - bitmap.getHeight())/2, paint);
             return new BitmapDrawable(context.getResources(), tintedBitmap);
         } catch (Exception | OutOfMemoryError e) {
-            return null;
-        }
-    }
-
-    @Nullable
-    public static Drawable getResizedDrawable(@NonNull Context context, @DrawableRes int drawableRes, @DimenRes int dimenRes) {
-        try {
-            Drawable drawable = getDrawable(context, drawableRes);
-            if (drawable == null) return null;
-
-            int size = context.getResources().getDimensionPixelSize(dimenRes);
-
-            Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
-                    drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-            drawable.draw(canvas);
-
-            return new BitmapDrawable(context.getResources(),
-                    Bitmap.createScaledBitmap(bitmap, size, size, true));
-        } catch (Exception | OutOfMemoryError e) {
-            LogUtil.d(Log.getStackTraceString(e));
             return null;
         }
     }

@@ -5,11 +5,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.dm.material.dashboard.candybar.helpers.TimeHelper;
+import com.danimahardhika.android.helpers.core.TimeHelper;
 import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.items.Wallpaper;
 import com.dm.material.dashboard.candybar.items.WallpaperJSON;
@@ -59,7 +60,16 @@ public class Database extends SQLiteOpenHelper {
     private static final String KEY_URL = "url";
     private static final String KEY_ADDED_ON = "added_on";
 
-    public Database(@NonNull Context context) {
+    private static Database mDatabase;
+
+    public static synchronized Database getInstance(@NonNull Context context) {
+        if (mDatabase == null) {
+            mDatabase = new Database(context.getApplicationContext());
+        }
+        return mDatabase;
+    }
+
+    private Database(@NonNull Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -243,32 +253,46 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public void addWallpapers(WallpaperJSON wallpaper) {
+        String query = "INSERT INTO " +TABLE_WALLPAPERS+ " (" +KEY_NAME+ "," +KEY_AUTHOR+ "," +KEY_URL+ ","
+                +KEY_THUMB_URL+ "," +KEY_ADDED_ON+ ") VALUES (?,?,?,?,?);";
         SQLiteDatabase db = this.getWritableDatabase();
-        for (int i = 0; i < wallpaper.getWalls.size(); i++) {
-            ContentValues values = new ContentValues();
-            values.put(KEY_NAME, wallpaper.getWalls.get(i).name);
-            values.put(KEY_AUTHOR, wallpaper.getWalls.get(i).author);
-            values.put(KEY_URL, wallpaper.getWalls.get(i).url);
-            values.put(KEY_THUMB_URL, wallpaper.getWalls.get(i).thumbUrl);
-            values.put(KEY_ADDED_ON, TimeHelper.getDateTime());
+        SQLiteStatement statement = db.compileStatement(query);
+        db.beginTransaction();
 
-            db.insert(TABLE_WALLPAPERS, null, values);
+        for (int i = 0; i < wallpaper.getWalls.size(); i++) {
+            statement.clearBindings();
+            statement.bindString(1, wallpaper.getWalls.get(i).name);
+            statement.bindString(2, wallpaper.getWalls.get(i).author);
+            statement.bindString(3, wallpaper.getWalls.get(i).url);
+            statement.bindString(4, wallpaper.getWalls.get(i).thumbUrl == null ?
+                    wallpaper.getWalls.get(i).url : wallpaper.getWalls.get(i).thumbUrl);
+            statement.bindString(5, TimeHelper.getLongDateTime());
+            statement.execute();
         }
+        db.setTransactionSuccessful();
+        db.endTransaction();
         db.close();
     }
 
     public void addWallpapers(List<Wallpaper> wallpapers) {
+        String query = "INSERT INTO " +TABLE_WALLPAPERS+ " (" +KEY_NAME+ "," +KEY_AUTHOR+ "," +KEY_URL+ ","
+                +KEY_THUMB_URL+ "," +KEY_ADDED_ON+ ") VALUES (?,?,?,?,?);";
         SQLiteDatabase db = this.getWritableDatabase();
-        for (int i = 0; i < wallpapers.size(); i++) {
-            ContentValues values = new ContentValues();
-            values.put(KEY_NAME, wallpapers.get(i).getName());
-            values.put(KEY_AUTHOR, wallpapers.get(i).getAuthor());
-            values.put(KEY_URL, wallpapers.get(i).getURL());
-            values.put(KEY_THUMB_URL, wallpapers.get(i).getThumbUrl());
-            values.put(KEY_ADDED_ON, TimeHelper.getDateTime());
+        SQLiteStatement statement = db.compileStatement(query);
+        db.beginTransaction();
 
-            db.insert(TABLE_WALLPAPERS, null, values);
+        for (int i = 0; i < wallpapers.size(); i++) {
+            statement.clearBindings();
+            statement.bindString(1, wallpapers.get(i).getName());
+            statement.bindString(2, wallpapers.get(i).getAuthor());
+            statement.bindString(3, wallpapers.get(i).getURL());
+            statement.bindString(4, wallpapers.get(i).getThumbUrl() == null ?
+                    wallpapers.get(i).getURL() : wallpapers.get(i).getThumbUrl());
+            statement.bindString(5, TimeHelper.getLongDateTime());
+            statement.execute();
         }
+        db.setTransactionSuccessful();
+        db.endTransaction();
         db.close();
     }
 
@@ -342,5 +366,4 @@ public class Database extends SQLiteOpenHelper {
         db.delete(TABLE_WALLPAPERS, null, null);
         db.close();
     }
-
 }

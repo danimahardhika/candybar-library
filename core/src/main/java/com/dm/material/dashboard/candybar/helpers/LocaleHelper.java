@@ -56,5 +56,4 @@ class LocaleHelper {
         }
         return null;
     }
-
 }

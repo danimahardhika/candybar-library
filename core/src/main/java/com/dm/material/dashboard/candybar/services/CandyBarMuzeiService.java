@@ -5,9 +5,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.webkit.URLUtil;
 
+import com.danimahardhika.android.helpers.core.FileHelper;
 import com.google.android.apps.muzei.api.Artwork;
 import com.google.android.apps.muzei.api.RemoteMuzeiArtSource;
-import com.dm.material.dashboard.candybar.helpers.FileHelper;
 import com.dm.material.dashboard.candybar.helpers.MuzeiHelper;
 import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
 import com.dm.material.dashboard.candybar.items.Wallpaper;
@@ -66,23 +66,23 @@ public abstract class CandyBarMuzeiService extends RemoteMuzeiArtSource {
 
         try {
             Wallpaper wallpaper = null;
-            if (Preferences.getPreferences(this).isDownloadedOnly())
+            if (Preferences.get(this).isDownloadedOnly())
                 wallpaper = mMuzeiHelper.getRandomDownloadedWallpaper();
 
             if (wallpaper == null) {
-                if (Preferences.getPreferences(this).isDownloadedOnly())
-                    Preferences.getPreferences(this).setDownloadedOnly(false);
+                if (Preferences.get(this).isDownloadedOnly())
+                    Preferences.get(this).setDownloadedOnly(false);
                 wallpaper = mMuzeiHelper.getRandomWallpaper(wallpaperUrl);
             }
 
-            if (Preferences.getPreferences(this).isConnectedAsPreferred())
+            if (Preferences.get(this).isConnectedAsPreferred())
                 if (wallpaper != null) publishArtwork(wallpaper);
         } catch (Exception ignored) {}
     }
 
     private void publishArtwork(Wallpaper wallpaper) {
-        File file = new File(Preferences.getPreferences(this).getWallsDirectory()
-                + wallpaper.getName() + FileHelper.IMAGE_EXTENSION);
+        File file = new File(Preferences.get(this).getWallsDirectory()
+                + wallpaper.getName() + WallpaperHelper.IMAGE_EXTENSION);
         Uri uri = null;
         if (file.exists()) uri = FileHelper.getUriFromFile(this, getPackageName(), file);
         if (uri == null) uri = Uri.parse(wallpaper.getURL());
@@ -94,8 +94,7 @@ public abstract class CandyBarMuzeiService extends RemoteMuzeiArtSource {
                 .build());
 
         scheduleUpdate(System.currentTimeMillis() +
-                Preferences.getPreferences(this).getRotateTime());
+                Preferences.get(this).getRotateTime());
     }
-
 }
 

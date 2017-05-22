@@ -44,7 +44,7 @@ public class NavigationViewHelper {
         if (menuItem == null) return;
 
         menuItem.setVisible(context.getResources().getBoolean(R.bool.enable_icon_request) ||
-                Preferences.getPreferences(context).isPremiumRequestEnabled());
+                Preferences.get(context).isPremiumRequestEnabled());
     }
 
     public static void initWallpapers(NavigationView navigationView) {

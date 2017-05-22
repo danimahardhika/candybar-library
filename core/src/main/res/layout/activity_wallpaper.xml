@@ -61,15 +61,25 @@
 
         </android.support.v7.widget.Toolbar>
 
-    </FrameLayout>
+        <ProgressBar
+            android:id="@+id/progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            style="?android:attr/progressBarStyleLarge"/>
 
-    <ProgressBar
-        android:id="@+id/progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        style="?android:attr/progressBarStyleLarge"/>
+        <ProgressBar
+            android:id="@+id/bottom_progress"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_gravity="bottom"
+            android:visibility="gone"
+            android:indeterminate="false"
+            android:progressDrawable="@drawable/progressbar_track_flat"
+            style="?android:attr/progressBarStyleHorizontal"/>
+
+    </FrameLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

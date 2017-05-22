@@ -6,9 +6,14 @@ import android.content.Intent;
 import android.content.res.XmlResourceParser;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -33,6 +38,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+
+import static com.danimahardhika.android.helpers.core.DrawableHelper.getResourceId;
+import static com.danimahardhika.android.helpers.core.FileHelper.getUriFromFile;
 
 /*
  * CandyBar - Material Dashboard
@@ -62,20 +70,22 @@ public class IconsHelper {
         List<Icon> icons = new ArrayList<>();
         List<Icon> sections = new ArrayList<>();
 
+        int count = 0;
         while (eventType != XmlPullParser.END_DOCUMENT) {
             if (eventType == XmlPullParser.START_TAG) {
                 if (parser.getName().equals("category")) {
                     String title = parser.getAttributeValue(null, "title");
                     if (!section.equals(title)) {
-                        if (section.length() > 0)
-                            sections.add(
-                                    new Icon(section, icons));
+                        if (section.length() > 0) {
+                            count += icons.size();
+                            sections.add(new Icon(section, icons));
+                        }
                     }
                     section = title;
                     icons = new ArrayList<>();
                 } else if (parser.getName().equals("item")) {
                     String name = parser.getAttributeValue(null, "drawable");
-                    int id = DrawableHelper.getResourceId(context, name);
+                    int id = getResourceId(context, name);
                     if (id > 0) {
                         icons.add(new Icon(name, id));
                     }
@@ -84,6 +94,8 @@ public class IconsHelper {
 
             eventType = parser.next();
         }
+        count += icons.size();
+        CandyBarMainActivity.sIconsCount = count;
         sections.add(new Icon(section, icons));
         parser.close();
         return sections;
@@ -228,7 +240,7 @@ public class IconsHelper {
                     outStream.flush();
                     outStream.close();
 
-                    Uri uri = FileHelper.getUriFromFile(context, context.getPackageName(), file);
+                    Uri uri = getUriFromFile(context, context.getPackageName(), file);
                     if (uri == null) uri = Uri.fromFile(file);
                     intent.putExtra(Intent.EXTRA_STREAM, uri);
                     intent.setData(uri);
@@ -246,5 +258,40 @@ public class IconsHelper {
                             .getSupportFragmentManager(),
                     icon.getTitle(), icon.getRes());
         }
+    }
+
+    @Nullable
+    public static String saveIcon(List<String> files, File directory, Drawable drawable, String name) {
+        String fileName = name.toLowerCase().replaceAll(" ", "_") + ".png";
+        File file = new File(directory, fileName);
+        try {
+            Bitmap bitmap;
+            if (drawable instanceof LayerDrawable) {
+                bitmap = Bitmap.createBitmap(
+                        drawable.getIntrinsicWidth(),
+                        drawable.getIntrinsicHeight(),
+                        Bitmap.Config.ARGB_8888);
+                drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                drawable.draw(new Canvas(bitmap));
+            } else {
+                bitmap = ((BitmapDrawable) drawable).getBitmap();
+            }
+
+            if (files.contains(file.toString())) {
+                fileName = fileName.replace(".png", "_" +System.currentTimeMillis()+ ".png");
+                file = new File(directory, fileName);
+
+                LogUtil.e("duplicate file name, renamed: " +fileName);
+            }
+
+            FileOutputStream outStream = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 50, outStream);
+            outStream.flush();
+            outStream.close();
+            return directory.toString() + "/" + fileName;
+        } catch (Exception | OutOfMemoryError e) {
+            LogUtil.e(Log.getStackTraceString(e));
+        }
+        return null;
     }
 }

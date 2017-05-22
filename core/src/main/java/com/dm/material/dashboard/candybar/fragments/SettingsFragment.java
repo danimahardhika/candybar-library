@@ -15,13 +15,14 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.danimahardhika.android.helpers.core.FileHelper;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.SettingsAdapter;
 import com.dm.material.dashboard.candybar.databases.Database;
 import com.dm.material.dashboard.candybar.fragments.dialog.IntentChooserFragment;
 import com.dm.material.dashboard.candybar.helpers.DeviceHelper;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
-import com.dm.material.dashboard.candybar.helpers.FileHelper;
+import com.dm.material.dashboard.candybar.helpers.IconsHelper;
 import com.dm.material.dashboard.candybar.helpers.RequestHelper;
 import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
 import com.dm.material.dashboard.candybar.items.Request;
@@ -68,7 +69,7 @@ public class SettingsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
 
-        if (!Preferences.getPreferences(getActivity()).isShadowEnabled()) {
+        if (!Preferences.get(getActivity()).isShadowEnabled()) {
             View shadow = view.findViewById(R.id.shadow);
             if (shadow != null) shadow.setVisibility(View.GONE);
         }
@@ -95,13 +96,13 @@ public class SettingsFragment extends Fragment {
                 }
             }
             if (index > -1 && index < premiumRequestProductsCount.length) {
-                if (!Preferences.getPreferences(getActivity()).isPremiumRequest()) {
-                    Preferences.getPreferences(getActivity()).setPremiumRequestProductId(productId);
-                    Preferences.getPreferences(getActivity()).setPremiumRequestCount(
+                if (!Preferences.get(getActivity()).isPremiumRequest()) {
+                    Preferences.get(getActivity()).setPremiumRequestProductId(productId);
+                    Preferences.get(getActivity()).setPremiumRequestCount(
                             premiumRequestProductsCount[index]);
-                    Preferences.getPreferences(getActivity()).setPremiumRequestTotal(
+                    Preferences.get(getActivity()).setPremiumRequestTotal(
                             premiumRequestProductsCount[index]);
-                    Preferences.getPreferences(getActivity()).setPremiumRequest(true);
+                    Preferences.get(getActivity()).setPremiumRequest(true);
                 }
             }
         }
@@ -114,7 +115,7 @@ public class SettingsFragment extends Fragment {
     private void initSettings() {
         List<Setting> settings = new ArrayList<>();
 
-        double cache = (double) FileHelper.getCacheSize(getActivity().getCacheDir()) / FileHelper.MB;
+        double cache = (double) FileHelper.getDirectorySize(getActivity().getCacheDir()) / FileHelper.MB;
         NumberFormat formatter = new DecimalFormat("#0.00");
 
         settings.add(new Setting(R.drawable.ic_toolbar_storage,
@@ -129,7 +130,7 @@ public class SettingsFragment extends Fragment {
                 Setting.Type.CACHE, -1));
 
         if (getActivity().getResources().getBoolean(R.bool.enable_icon_request) ||
-                Preferences.getPreferences(getActivity()).isPremiumRequestEnabled() &&
+                Preferences.get(getActivity()).isPremiumRequestEnabled() &&
                         !getActivity().getResources().getBoolean(R.bool.enable_icon_request_limit)) {
             settings.add(new Setting(-1, "",
                     getActivity().getResources().getString(R.string.pref_data_request),
@@ -137,7 +138,7 @@ public class SettingsFragment extends Fragment {
                     "", Setting.Type.ICON_REQUEST, -1));
         }
 
-        if (Preferences.getPreferences(getActivity()).isPremiumRequestEnabled()) {
+        if (Preferences.get(getActivity()).isPremiumRequestEnabled()) {
             settings.add(new Setting(R.drawable.ic_toolbar_premium_request,
                     getActivity().getResources().getString(R.string.pref_premium_request_header),
                     "", "", "", Setting.Type.HEADER, -1));
@@ -160,7 +161,7 @@ public class SettingsFragment extends Fragment {
         settings.add(new Setting(-1, "",
                 getActivity().getResources().getString(R.string.pref_theme_dark),
                 getActivity().getResources().getString(R.string.pref_theme_dark_desc),
-                "", Setting.Type.THEME, Preferences.getPreferences(getActivity()).isDarkTheme() ? 1 : 0));
+                "", Setting.Type.THEME, Preferences.get(getActivity()).isDarkTheme() ? 1 : 0));
 
         if (WallpaperHelper.getWallpaperType(getActivity()) == WallpaperHelper.CLOUD_WALLPAPERS) {
             settings.add(new Setting(R.drawable.ic_toolbar_wallpapers,
@@ -168,8 +169,8 @@ public class SettingsFragment extends Fragment {
                     "", "", "", Setting.Type.HEADER, -1));
 
             String directory = getActivity().getResources().getString(R.string.pref_wallpaper_location_desc);
-            if (Preferences.getPreferences(getActivity()).getWallsDirectory().length() > 0) {
-                directory = Preferences.getPreferences(getActivity()).getWallsDirectory() + File.separator;
+            if (Preferences.get(getActivity()).getWallsDirectory().length() > 0) {
+                directory = Preferences.get(getActivity()).getWallsDirectory() + File.separator;
             }
 
             settings.add(new Setting(-1, "",
@@ -229,11 +230,10 @@ public class SettingsFragment extends Fragment {
                 while (!isCancelled()) {
                     try {
                         Thread.sleep(1);
-                        Database database = new Database(getActivity());
                         File directory = getActivity().getCacheDir();
                         File appFilter = new File(directory.toString() + "/" + "appfilter.xml");
 
-                        requests = database.getPremiumRequest(null);
+                        requests = Database.getInstance(getActivity()).getPremiumRequest(null);
 
                         if (requests.size() == 0) return true;
 
@@ -263,7 +263,7 @@ public class SettingsFragment extends Fragment {
                             Drawable drawable = DrawableHelper.getHighQualityIcon(
                                     getActivity(), request.getPackageName());
 
-                            String icon = FileHelper.saveIcon(files, directory, drawable, request.getName());
+                            String icon = IconsHelper.saveIcon(files, directory, drawable, request.getName());
                             if (icon != null) files.add(icon);
                         }
 
@@ -271,8 +271,7 @@ public class SettingsFragment extends Fragment {
                         out.close();
                         files.add(appFilter.toString());
 
-                        zipFile = directory.toString() + "/" + "icon_request.zip";
-                        FileHelper.createZip(files, zipFile);
+                        zipFile = FileHelper.createZip(files, new File(directory.toString() + "/" + "icon_request.zip"));
                         return true;
                     } catch (Exception e) {
                         log = e.toString();

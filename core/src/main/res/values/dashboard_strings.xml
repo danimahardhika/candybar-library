@@ -23,7 +23,6 @@
     <string name="muzei_downloaded_only">Load Downloaded Wallpapers Only</string>
     <string name="muzei_settings_ignored">Icon Pack doesn\'t contain wallpapers, settings ignored.</string>
     <string name="muzei_settings_saved">Settings Saved</string>
-    <string name="muzei_apply_no_wallpapers">Unable to apply, Icon Pack doesn\'t contain wallpapers.</string>
 
     <!-- Menu -->
     <string name="menu_search">Search</string>
@@ -56,12 +55,11 @@
     <string name="license_check_success">License check successful, thank you for downloading the app from Play Store.</string>
     <string name="license_check_failed">License check failed, you didn\'t download this app from the Play Store.
         You will not be able to use it.</string>
-    <string name="license_check_error">Unable to check license</string>
     <string name="license_check_retry">Unable to check license, please try again in a few moments.</string>
 
     <!-- Share -->
     <string name="share_app_title">Yo! Check out %s</string>
-    <string name="share_app_content">This Icon Pack is really cool %s</string>
+    <string name="share_app_body">Check out %1$s, this icon pack is really cool! %2$s</string>
 
     <!-- Tap Intro -->
     <string name="tap_intro_home_navigation">Navigation drawer</string>
@@ -113,7 +111,7 @@
     <string name="apply_installed">Installed Launcher</string>
     <string name="apply_supported">Supported Launchers</string>
 
-    <string name="apply_manual">doesn\'t support direct apply, you can apply %s manually from the launcher settings.</string>
+    <string name="apply_manual">%1$s doesn\'t support direct apply, you can apply %2$s manually from the launcher settings.</string>
     <string name="apply_manual_evie">Tap and hold on homescreen - Settings - Icon Pack - choose %s.</string>
     <string name="apply_launch_failed">Unable to launch %s settings</string>
     <string name="apply_launcher_not_installed">%s is not installed. Do you want to open
@@ -152,7 +150,6 @@
 
     <!-- Premium Request -->
     <string name="premium_request">Premium Icon Request</string>
-    <string name="premium_request_build_failed">Unable to build Premium Request</string>
     <string name="premium_request_no_internet">Make sure your phone connected to internet before sending a premium request</string>
     <string name="premium_request_desc">Premium icon request is pay to request. You can get your requested apps faster by using premium icon request.</string>
     <string name="premium_request_buy">Buy</string>
@@ -186,7 +183,6 @@
     <string name="wallpaper_download_exist_replace">Replace</string>
     <string name="wallpaper_download_exist_new">Create New</string>
 
-    <string name="wallpaper_noapp">No application to open image</string>
     <string name="wallpaper_loading">Loading wallpaper …</string>
     <string name="wallpaper_applying">Applying wallpaper …</string>
     <string name="wallpaper_applied">Wallpaper applied</string>
@@ -221,7 +217,6 @@
     <string name="pref_premium_request_restore">Restore Purchases</string>
     <string name="pref_premium_request_restore_desc">Restore premium request package after reinstalling the icon pack</string>
     <string name="pref_premium_request_restore_success">Premium Request Restored</string>
-    <string name="pref_premium_request_restore_failed">Unable to restore purchases</string>
     <string name="pref_premium_request_restore_empty">You don\'t have any purchased packages</string>
     <string name="pref_premium_request_rebuild">Rebuild Premium Icon Request</string>
     <string name="pref_premium_request_rebuild_desc">Collect all premium icon request data to resend them</string>

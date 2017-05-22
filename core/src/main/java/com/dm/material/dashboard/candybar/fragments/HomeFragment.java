@@ -55,7 +55,7 @@ public class HomeFragment extends Fragment implements HomeListener{
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
 
-        if (!Preferences.getPreferences(getActivity()).isShadowEnabled()) {
+        if (!Preferences.get(getActivity()).isShadowEnabled()) {
             View shadow = view.findViewById(R.id.shadow);
             if (shadow != null) shadow.setVisibility(View.GONE);
         }

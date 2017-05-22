@@ -42,7 +42,7 @@ public class MuzeiHelper {
     private final String mDirectory;
 
     public MuzeiHelper(@NonNull Context context, String directory) {
-        mDatabase = new Database(context);
+        mDatabase = Database.getInstance(context);
         mDirectory = directory;
     }
 
@@ -77,7 +77,7 @@ public class MuzeiHelper {
         List<Wallpaper> wallpapers = mDatabase.getWallpapers();
         for (Wallpaper wallpaper : wallpapers) {
             File file = new File(mDirectory + File.separator + wallpaper.getName() +
-                    FileHelper.IMAGE_EXTENSION);
+                    WallpaperHelper.IMAGE_EXTENSION);
             if (file.exists()) {
                 downloaded.append(downloaded.size(), wallpaper);
             }

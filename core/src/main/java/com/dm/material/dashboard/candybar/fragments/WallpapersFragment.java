@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
+import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -21,18 +22,18 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bluelinelabs.logansquare.LoganSquare;
+import com.danimahardhika.android.helpers.animation.AnimationHelper;
+import com.danimahardhika.android.helpers.core.ColorHelper;
+import com.danimahardhika.android.helpers.core.DrawableHelper;
+import com.danimahardhika.android.helpers.core.ListHelper;
+import com.danimahardhika.android.helpers.core.ViewHelper;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.WallpapersAdapter;
 import com.dm.material.dashboard.candybar.databases.Database;
-import com.dm.material.dashboard.candybar.helpers.ColorHelper;
-import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.helpers.TapIntroHelper;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
-import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.items.Wallpaper;
 import com.dm.material.dashboard.candybar.items.WallpaperJSON;
-import com.dm.material.dashboard.candybar.utils.Animator;
-import com.dm.material.dashboard.candybar.utils.ListUtils;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.dm.material.dashboard.candybar.utils.listeners.WallpapersListener;
 import com.pluscubed.recyclerfastscroll.RecyclerFastScroller;
@@ -43,6 +44,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.dm.material.dashboard.candybar.helpers.ViewHelper.setFastScrollColor;
 
 /*
  * CandyBar - Material Dashboard
@@ -62,12 +65,13 @@ import java.util.List;
  * limitations under the License.
  */
 
-public class WallpapersFragment extends Fragment implements View.OnClickListener {
+public class WallpapersFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipe;
     private ProgressBar mProgress;
     private RecyclerFastScroller mFastScroll;
+    private DrawMeButton mPopupBubble;
 
     private HttpURLConnection mConnection;
     private AsyncTask<Void, Void, Boolean> mGetWallpapers;
@@ -81,8 +85,9 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
         mSwipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe);
         mProgress = (ProgressBar) view.findViewById(R.id.progress);
         mFastScroll = (RecyclerFastScroller) view.findViewById(R.id.fastscroll);
+        mPopupBubble = (DrawMeButton) view.findViewById(R.id.popup_bubble);
 
-        if (!Preferences.getPreferences(getActivity()).isShadowEnabled()) {
+        if (!Preferences.get(getActivity()).isShadowEnabled()) {
             View shadow = view.findViewById(R.id.shadow);
             if (shadow != null) shadow.setVisibility(View.GONE);
         }
@@ -94,6 +99,7 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
         super.onActivityCreated(savedInstanceState);
         ViewCompat.setNestedScrollingEnabled(mRecyclerView, false);
 
+        initPopupBubble();
         mProgress.getIndeterminateDrawable().setColorFilter(
                 ColorHelper.getAttributeColor(getActivity(), R.attr.colorAccent),
                 PorterDuff.Mode.SRC_IN);
@@ -105,7 +111,7 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),
                 getActivity().getResources().getInteger(R.integer.wallpapers_column_count)));
 
-        ViewHelper.setFastScrollColor(mFastScroll);
+        setFastScrollColor(mFastScroll);
         mFastScroll.attachRecyclerView(mRecyclerView);
 
         mSwipe.setOnRefreshListener(() -> {
@@ -120,7 +126,8 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        ViewHelper.resetSpanCount(mRecyclerView, R.integer.wallpapers_column_count);
+        ViewHelper.resetSpanCount(mRecyclerView,
+                getActivity().getResources().getInteger(R.integer.wallpapers_column_count));
     }
 
     @Override
@@ -134,26 +141,31 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
         super.onDestroy();
     }
 
-    @Override
-    public void onClick(View view) {
-        int id = view.getId();
-        if (id == R.id.popup_bubble) {
-            Animator.startAlphaAnimation(getActivity().findViewById(R.id.popup_bubble), View.GONE);
+    private void initPopupBubble() {
+        int color = ContextCompat.getColor(getActivity(), R.color.popupBubbleText);
+        mPopupBubble.setCompoundDrawablesWithIntrinsicBounds(DrawableHelper.getTintedDrawable(
+                getActivity(), R.drawable.ic_toolbar_arrow_up, color), null, null, null);
+        mPopupBubble.setOnClickListener(view -> {
+            WallpapersListener listener = (WallpapersListener) getActivity();
+            listener.onWallpapersChecked(null);
+
+            AnimationHelper.hide(getActivity().findViewById(R.id.popup_bubble))
+                    .duration(400)
+                    .start();
+
             getWallpapers(true);
-        }
+        });
     }
 
-    private void initPopupBubble() {
-        int wallpapersCount = new Database(getActivity()).getWallpapersCount();
+    private void showPopupBubble() {
+        int wallpapersCount = Database.getInstance(getActivity()).getWallpapersCount();
         if (wallpapersCount == 0) return;
 
-        if (Preferences.getPreferences(getActivity()).getAvailableWallpapersCount() > wallpapersCount) {
-            int color = ContextCompat.getColor(getActivity(), R.color.popupBubbleText);
-            DrawMeButton popupBubble = (DrawMeButton) getActivity().findViewById(R.id.popup_bubble);
-            popupBubble.setCompoundDrawablesWithIntrinsicBounds(DrawableHelper.getTintedDrawable(
-                    getActivity(), R.drawable.ic_toolbar_arrow_up, color), null, null, null);
-            popupBubble.setOnClickListener(this);
-            Animator.startSlideDownAnimation(popupBubble);
+        if (Preferences.get(getActivity()).getAvailableWallpapersCount() > wallpapersCount) {
+            AnimationHelper.show(mPopupBubble)
+                    .interpolator(new LinearOutSlowInInterpolator())
+                    .duration(400)
+                    .start();
         }
     }
 
@@ -179,7 +191,7 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
                 while (!isCancelled()) {
                     try {
                         Thread.sleep(1);
-                        Database database = new Database(getActivity());
+                        Database database = Database.getInstance(getActivity());
                         if (!refreshing && (database.getWallpapersCount() > 0)) {
                             wallpapers = database.getWallpapers();
                             return true;
@@ -206,16 +218,16 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
                                 }
 
                                 List<Wallpaper> intersection = (List<Wallpaper>)
-                                        ListUtils.intersect(newWallpapers, wallpapers);
+                                        ListHelper.intersect(newWallpapers, wallpapers);
                                 List<Wallpaper> deleted = (List<Wallpaper>)
-                                        ListUtils.difference(intersection, wallpapers);
+                                        ListHelper.difference(intersection, wallpapers);
                                 List<Wallpaper> newlyAdded = (List<Wallpaper>)
-                                        ListUtils.difference(intersection, newWallpapers);
+                                        ListHelper.difference(intersection, newWallpapers);
 
                                 database.deleteWallpapers(deleted);
                                 database.addWallpapers(newlyAdded);
 
-                                Preferences.getPreferences(getActivity()).setAvailableWallpapersCount(
+                                Preferences.get(getActivity()).setAvailableWallpapersCount(
                                         database.getWallpapersCount());
                             } else {
                                 if (database.getWallpapersCount() > 0) database.deleteWallpapers();
@@ -243,7 +255,7 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
 
                     WallpapersListener listener = (WallpapersListener) getActivity();
                     listener.onWallpapersChecked(new Intent()
-                            .putExtra("size", Preferences.getPreferences(getActivity()).getAvailableWallpapersCount())
+                            .putExtra("size", Preferences.get(getActivity()).getAvailableWallpapersCount())
                             .putExtra("packageName", getActivity().getPackageName()));
 
                     try {
@@ -255,9 +267,9 @@ public class WallpapersFragment extends Fragment implements View.OnClickListener
                     Toast.makeText(getActivity(), R.string.connection_failed,
                             Toast.LENGTH_LONG).show();
                 }
-                initPopupBubble();
                 mConnection = null;
                 mGetWallpapers = null;
+                showPopupBubble();
             }
 
         }.execute();

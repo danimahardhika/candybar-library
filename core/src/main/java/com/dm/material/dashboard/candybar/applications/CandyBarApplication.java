@@ -70,7 +70,7 @@ public class CandyBarApplication extends Application {
                 sb.append(element.toString());
             }
 
-            Preferences.getPreferences(this).setLatestCrashLog(sb.toString());
+            Preferences.get(this).setLatestCrashLog(sb.toString());
 
             Intent intent = new Intent(this, CandyBarCrashReport.class);
             intent.putExtra(CandyBarCrashReport.EXTRA_STACKTRACE, sb.toString());

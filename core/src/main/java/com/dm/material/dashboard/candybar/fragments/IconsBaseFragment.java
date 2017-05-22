@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,11 +20,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.danimahardhika.android.helpers.animation.AnimationHelper;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
 import com.dm.material.dashboard.candybar.helpers.IconsHelper;
@@ -31,7 +31,6 @@ import com.dm.material.dashboard.candybar.helpers.TapIntroHelper;
 import com.dm.material.dashboard.candybar.items.Icon;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.AlphanumComparator;
-import com.dm.material.dashboard.candybar.utils.Animator;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.dm.material.dashboard.candybar.utils.listeners.SearchListener;
 
@@ -154,31 +153,26 @@ public class IconsBaseFragment extends Fragment {
     }
 
     private void initTabs() {
-        Animation slideDown = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_down_from_top);
-        slideDown.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
+        AnimationHelper.slideDownIn(mTabLayout)
+                .interpolator(new LinearOutSlowInInterpolator())
+                .callback(new AnimationHelper.Callback() {
+                    @Override
+                    public void onAnimationStart() {
 
-            }
+                    }
 
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                if (getActivity() == null) return;
+                    @Override
+                    public void onAnimationEnd() {
+                        if (getActivity() == null) return;
 
-                if (Preferences.getPreferences(getActivity()).isShadowEnabled()) {
-                    Animator.startAlphaAnimation(getActivity().findViewById(R.id.shadow), View.VISIBLE);
-                }
+                        if (Preferences.get(getActivity()).isShadowEnabled()) {
+                            AnimationHelper.fade(getActivity().findViewById(R.id.shadow)).start();
+                        }
 
-                getIcons();
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-        mTabLayout.startAnimation(slideDown);
-        mTabLayout.setVisibility(View.VISIBLE);
+                        getIcons();
+                    }
+                })
+                .start();
     }
 
     private void getIcons() {
@@ -197,12 +191,9 @@ public class IconsBaseFragment extends Fragment {
                         Thread.sleep(1);
                         if (CandyBarMainActivity.sSections == null) {
                             CandyBarMainActivity.sSections = IconsHelper.getIconsList(getActivity());
-                            CandyBarMainActivity.sIconsCount = 0;
 
                             for (int i = 0; i < CandyBarMainActivity.sSections.size(); i++) {
                                 List<Icon> icons = CandyBarMainActivity.sSections.get(i).getIcons();
-                                CandyBarMainActivity.sIconsCount += icons.size();
-
                                 if (getActivity().getResources().getBoolean(R.bool.show_icon_name)) {
                                     for (Icon icon : icons) {
                                         boolean replacer = getActivity().getResources().getBoolean(
@@ -332,5 +323,4 @@ public class IconsBaseFragment extends Fragment {
             return mIcons.size();
         }
     }
-
 }

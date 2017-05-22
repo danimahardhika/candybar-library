@@ -159,7 +159,7 @@ public class CreditsFragment extends DialogFragment {
             protected void onPostExecute(Boolean aBoolean) {
                 super.onPostExecute(aBoolean);
                 if (aBoolean) {
-                    mListView.setAdapter(new CreditsAdapter(getActivity(), credits, mType));
+                    mListView.setAdapter(new CreditsAdapter(getActivity(), credits));
                 } else {
                     dismiss();
                 }

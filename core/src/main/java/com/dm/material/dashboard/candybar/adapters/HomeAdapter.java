@@ -25,11 +25,11 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.danimahardhika.android.helpers.core.ColorHelper;
+import com.danimahardhika.android.helpers.core.DrawableHelper;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
 import com.dm.material.dashboard.candybar.fragments.dialog.IconPreviewFragment;
-import com.dm.material.dashboard.candybar.helpers.ColorHelper;
-import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
 import com.dm.material.dashboard.candybar.items.Home;
@@ -79,7 +79,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int TYPE_CONTENT = 1;
     private static final int TYPE_ICON_REQUEST = 2;
     private static final int TYPE_WALLPAPERS = 3;
-    private static final int TYPE_MORE_APPS = 4;
+    private static final int TYPE_GOOGLE_PLAY_DEV = 4;
 
     public HomeAdapter(@NonNull Context context, @NonNull List<Home> homes, int orientation) {
         mContext = context;
@@ -113,7 +113,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (viewType == TYPE_HEADER) {
             View view = LayoutInflater.from(mContext).inflate(
                     R.layout.fragment_home_item_header, parent, false);
-            if (mImageStyle.getType() == Home.Style.Type.RECTANGLE ||
+            if (mImageStyle.getType() == Home.Style.Type.LANDSCAPE ||
                     mImageStyle.getType() == Home.Style.Type.SQUARE) {
                 view = LayoutInflater.from(mContext).inflate(
                         R.layout.fragment_home_item_header_alt, parent, false);
@@ -135,7 +135,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         View view =  LayoutInflater.from(mContext).inflate(
                 R.layout.fragment_home_item_more_apps, parent, false);
-        return new MoreAppsViewHolder(view);
+        return new GooglePlayDevViewHolder(view);
     }
 
     @Override
@@ -192,8 +192,11 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             int color = ColorHelper.getAttributeColor(mContext, android.R.attr.textColorPrimary);
             if (mHomes.get(finalPosition).getIcon() != -1) {
                 if (mHomes.get(finalPosition).getType() == Home.Type.DIMENSION) {
-                    contentViewHolder.autoFitTitle.setCompoundDrawablesWithIntrinsicBounds(DrawableHelper.getResizedDrawable(
-                            mContext, mHomes.get(finalPosition).getIcon(), R.dimen.icon_size_medium), null, null, null);
+                    contentViewHolder.autoFitTitle.setCompoundDrawablesWithIntrinsicBounds(
+                            DrawableHelper.getResizedDrawable(mContext,
+                                    DrawableHelper.get(mContext, mHomes.get(finalPosition).getIcon()),
+                                    40),
+                            null, null, null);
                 } else {
                     contentViewHolder.autoFitTitle.setCompoundDrawablesWithIntrinsicBounds(DrawableHelper.getTintedDrawable(
                             mContext, mHomes.get(finalPosition).getIcon(), color), null, null, null);
@@ -246,7 +249,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             wallpapersViewHolder.title.setText(
                     String.format(mContext.getResources().getString(R.string.home_loud_wallpapers),
-                    Preferences.getPreferences(mContext).getAvailableWallpapersCount()));
+                    Preferences.get(mContext).getAvailableWallpapersCount()));
         }
     }
 
@@ -264,7 +267,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             return TYPE_WALLPAPERS;
 
         if (position == (getItemCount() - 1)) {
-            if (mShowMoreApps) return TYPE_MORE_APPS;
+            if (mShowMoreApps) return TYPE_GOOGLE_PLAY_DEV;
             else if (mShowWallpapers) return TYPE_WALLPAPERS;
         }
         return TYPE_CONTENT;
@@ -285,7 +288,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ImageView share = (ImageView) itemView.findViewById(R.id.share);
 
             CardView card = (CardView) itemView.findViewById(R.id.card);
-            if (!Preferences.getPreferences(mContext).isShadowEnabled()) {
+            if (!Preferences.get(mContext).isShadowEnabled()) {
                 card.setCardElevation(0);
             }
 
@@ -316,7 +319,8 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         String.format(mContext.getResources().getString(R.string.share_app_title),
                                 mContext.getResources().getString(R.string.app_name)));
                 intent.putExtra(Intent.EXTRA_TEXT,
-                        String.format(mContext.getResources().getString(R.string.share_app_content),
+                        mContext.getResources().getString(R.string.share_app_body,
+                                mContext.getResources().getString(R.string.app_name),
                                 "https://play.google.com/store/apps/details?id=" + mContext.getPackageName()));
                 mContext.startActivity(Intent.createChooser(intent,
                         mContext.getResources().getString(R.string.email_client)));
@@ -337,7 +341,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             subtitle = (TextView) itemView.findViewById(R.id.subtitle);
 
             CardView card = (CardView) itemView.findViewById(R.id.card);
-            if (!Preferences.getPreferences(mContext).isShadowEnabled()) {
+            if (!Preferences.get(mContext).isShadowEnabled()) {
                 card.setCardElevation(0);
             }
 
@@ -394,7 +398,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             container = (LinearLayout) itemView.findViewById(R.id.container);
 
             CardView card = (CardView) itemView.findViewById(R.id.card);
-            if (!Preferences.getPreferences(mContext).isShadowEnabled()) {
+            if (!Preferences.get(mContext).isShadowEnabled()) {
                 card.setCardElevation(0);
             }
 
@@ -427,7 +431,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             TextView muzei = (TextView) itemView.findViewById(R.id.muzei);
 
             CardView card = (CardView) itemView.findViewById(R.id.card);
-            if (!Preferences.getPreferences(mContext).isShadowEnabled()) {
+            if (!Preferences.get(mContext).isShadowEnabled()) {
                 card.setCardElevation(0);
             }
 
@@ -435,7 +439,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             title.setCompoundDrawablesWithIntrinsicBounds(DrawableHelper.getTintedDrawable(
                     mContext, R.drawable.ic_toolbar_wallpapers, color), null, null, null);
 
-            muzei.setCompoundDrawablesWithIntrinsicBounds(DrawableHelper.getDrawable(
+            muzei.setCompoundDrawablesWithIntrinsicBounds(DrawableHelper.get(
                     mContext, R.drawable.ic_home_app_muzei), null, null, null);
 
             title.setOnClickListener(this);
@@ -456,18 +460,18 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    private class MoreAppsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private class GooglePlayDevViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private final TextView title;
         private final LinearLayout container;
 
-        MoreAppsViewHolder(View itemView) {
+        GooglePlayDevViewHolder(View itemView) {
             super(itemView);
             container = (LinearLayout) itemView.findViewById(R.id.container);
             title = (TextView) itemView.findViewById(R.id.title);
 
             CardView card = (CardView) itemView.findViewById(R.id.card);
-            if (!Preferences.getPreferences(mContext).isShadowEnabled()) {
+            if (!Preferences.get(mContext).isShadowEnabled()) {
                 card.setCardElevation(0);
             }
 
@@ -488,10 +492,6 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 mContext.startActivity(intent);
             }
         }
-    }
-
-    public List<Home> getHome() {
-        return mHomes;
     }
 
     public int getApplyIndex() {
@@ -550,7 +550,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             if (mOrientation == Configuration.ORIENTATION_PORTRAIT) {
                 return true;
             } else if (mImageStyle.getType() == Home.Style.Type.SQUARE ||
-                    mImageStyle.getType() == Home.Style.Type.RECTANGLE) {
+                    mImageStyle.getType() == Home.Style.Type.LANDSCAPE) {
                 return true;
             }
         }

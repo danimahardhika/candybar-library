@@ -20,10 +20,10 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
+import com.danimahardhika.android.helpers.core.ColorHelper;
+import com.danimahardhika.android.helpers.core.ViewHelper;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.FAQsAdapter;
-import com.dm.material.dashboard.candybar.helpers.ColorHelper;
-import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.items.FAQs;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
@@ -31,6 +31,8 @@ import com.pluscubed.recyclerfastscroll.RecyclerFastScroller;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.dm.material.dashboard.candybar.helpers.ViewHelper.setFastScrollColor;
 
 /*
  * CandyBar - Material Dashboard
@@ -68,7 +70,7 @@ public class FAQsFragment extends Fragment {
         mSearchResult = (TextView) view.findViewById(R.id.search_result);
         mFastScroll = (RecyclerFastScroller) view.findViewById(R.id.fastscroll);
 
-        if (!Preferences.getPreferences(getActivity()).isShadowEnabled()) {
+        if (!Preferences.get(getActivity()).isShadowEnabled()) {
             View shadow = view.findViewById(R.id.shadow);
             if (shadow != null) shadow.setVisibility(View.GONE);
         }
@@ -83,7 +85,7 @@ public class FAQsFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        ViewHelper.setFastScrollColor(mFastScroll);
+        setFastScrollColor(mFastScroll);
         mFastScroll.attachRecyclerView(mRecyclerView);
 
         getFAQs();
@@ -100,10 +102,8 @@ public class FAQsFragment extends Fragment {
         searchView.setQueryHint(getActivity().getResources().getString(R.string.search_faqs));
         searchView.setMaxWidth(Integer.MAX_VALUE);
 
-        ViewHelper.changeSearchViewTextColor(searchView, color,
-                ColorHelper.setColorAlpha(color, 0.6f));
-        View view = searchView.findViewById(android.support.v7.appcompat.R.id.search_plate);
-        if (view != null) view.setBackgroundColor(Color.TRANSPARENT);
+        ViewHelper.setSearchViewTextColor(searchView, color);
+        ViewHelper.setSearchViewBackgroundColor(searchView, Color.TRANSPARENT);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 

@@ -15,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
@@ -26,19 +27,20 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.danimahardhika.android.helpers.animation.AnimationHelper;
+import com.danimahardhika.android.helpers.core.ColorHelper;
+import com.danimahardhika.android.helpers.core.DrawableHelper;
+import com.danimahardhika.android.helpers.permission.PermissionCode;
+import com.danimahardhika.android.helpers.permission.PermissionHelper;
 import com.danimahardhika.cafebar.CafeBar;
 import com.danimahardhika.cafebar.CafeBarTheme;
 import com.dm.material.dashboard.candybar.fragments.dialog.WallpaperSettingsFragment;
-import com.dm.material.dashboard.candybar.helpers.FileHelper;
 import com.dm.material.dashboard.candybar.helpers.TapIntroHelper;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
-import com.dm.material.dashboard.candybar.utils.Animator;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.WallpapersAdapter;
-import com.dm.material.dashboard.candybar.helpers.ColorHelper;
-import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
-import com.dm.material.dashboard.candybar.helpers.PermissionHelper;
 import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
@@ -79,6 +81,7 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
     private ImageView mWallpaper;
     private FloatingActionButton mFab;
     private ProgressBar mProgress;
+    private ProgressBar mBottomProgress;
 
     private String mUrl;
     private String mName;
@@ -99,7 +102,7 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.setTheme(Preferences.getPreferences(this).isDarkTheme() ?
+        super.setTheme(Preferences.get(this).isDarkTheme() ?
                 R.style.WallpaperThemeDark : R.style.WallpaperTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wallpaper);
@@ -108,6 +111,7 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
         mWallpaper = (ImageView) findViewById(R.id.wallpaper);
         mFab = (FloatingActionButton) findViewById(R.id.fab);
         mProgress = (ProgressBar) findViewById(R.id.progress);
+        mBottomProgress = (ProgressBar) findViewById(R.id.bottom_progress);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         TextView toolbarTitle = (TextView) findViewById(R.id.toolbar_title);
         TextView toolbarSubTitle = (TextView) findViewById(R.id.toolbar_subtitle);
@@ -116,8 +120,10 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
 
         mProgress.getIndeterminateDrawable().setColorFilter(
                 Color.parseColor("#CCFFFFFF"), PorterDuff.Mode.SRC_IN);
-        ColorHelper.setTransparentStatusBar(this,
-                ContextCompat.getColor(this, R.color.wallpaperStatusBar));
+        mBottomProgress.getProgressDrawable().setColorFilter(
+                Color.parseColor("#EEFFFFFF"), PorterDuff.Mode.SRC_IN);
+        ColorHelper.setStatusBarColor(this,
+                ContextCompat.getColor(this, R.color.wallpaperStatusBar), true);
         mColor = ColorHelper.getAttributeColor(this, R.attr.colorAccent);
 
         if (savedInstanceState != null) {
@@ -141,7 +147,7 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
         setSupportActionBar(toolbar);
 
         mFab.setOnClickListener(this);
-        if (!Preferences.getPreferences(this).isShadowEnabled()) {
+        if (!Preferences.get(this).isShadowEnabled()) {
             mFab.setCompatElevation(0f);
         }
 
@@ -167,7 +173,11 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
                     public void onTransitionEnd(Transition transition) {
                         if (mIsEnter) {
                             mIsEnter = false;
-                            Animator.startSlideDownAnimation(toolbar);
+                            AnimationHelper.slideDownIn(toolbar)
+                                    .duration(300)
+                                    .interpolator(new LinearOutSlowInInterpolator())
+                                    .start();
+
                             loadWallpaper(mUrl);
                         }
                     }
@@ -255,9 +265,9 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
             onBackPressed();
             return true;
         } else if (id == R.id.menu_save) {
-            if (PermissionHelper.isPermissionStorageGranted(this)) {
+            if (PermissionHelper.isStorageGranted(this)) {
                 File target = new File(WallpaperHelper.getDefaultWallpapersDirectory(this).toString()
-                        + File.separator + mName + FileHelper.IMAGE_EXTENSION);
+                        + File.separator + mName + WallpaperHelper.IMAGE_EXTENSION);
 
                 if (target.exists()) {
                     CafeBar.builder(this)
@@ -267,7 +277,7 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
                             .fitSystemWindow()
                             .typeface("Font-Regular.ttf", "Font-Bold.ttf")
                             .content(String.format(getResources().getString(R.string.wallpaper_download_exist),
-                                    ("\"" +mName + FileHelper.IMAGE_EXTENSION+ "\"")))
+                                    ("\"" +mName + WallpaperHelper.IMAGE_EXTENSION+ "\"")))
                             .icon(R.drawable.ic_toolbar_download)
                             .positiveText(R.string.wallpaper_download_exist_replace)
                             .positiveColor(mColor)
@@ -288,7 +298,7 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
                 return true;
             }
 
-            PermissionHelper.requestStoragePermission(this);
+            PermissionHelper.requestStorage(this);
             return true;
         } else if (id == R.id.menu_wallpaper_settings) {
             WallpaperSettingsFragment.showWallpaperSettings(getSupportFragmentManager());
@@ -309,12 +319,12 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PermissionHelper.PERMISSION_STORAGE) {
+        if (requestCode == PermissionCode.STORAGE) {
             if (grantResults.length > 0 &&
                     grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                recreate();
+                WallpaperHelper.downloadWallpaper(this, mColor, mUrl, mName);
             } else {
-                PermissionHelper.showPermissionStorageDenied(this);
+                Toast.makeText(this, R.string.permission_storage_denied, Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -330,7 +340,12 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
             @Override
             public void onLoadingStarted(String imageUri, View view) {
                 super.onLoadingStarted(imageUri, view);
-                mProgress.setVisibility(View.VISIBLE);
+                if (Preferences.get(CandyBarWallpaperActivity.this).isWallpaperCrop()) {
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                }
+
+                AnimationHelper.fade(mProgress).start();
+                AnimationHelper.fade(mBottomProgress).start();
             }
 
             @Override
@@ -342,9 +357,6 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                 super.onLoadingComplete(imageUri, view, loadedImage);
-                if (Preferences.getPreferences(CandyBarWallpaperActivity.this).isWallpaperCrop()) {
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                }
 
                 if (loadedImage != null) {
                     Palette.from(loadedImage).generate(palette -> {
@@ -357,6 +369,9 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
                     });
                 }
             }
+        }, (imageUri, view, current, total) -> {
+            mBottomProgress.setMax(total);
+            mBottomProgress.setProgress(current);
         });
     }
 
@@ -365,14 +380,17 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
 
         mAttacher = new PhotoViewAttacher(mWallpaper);
         mAttacher.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        mProgress.setVisibility(View.GONE);
+        AnimationHelper.fade(mProgress).start();
+        AnimationHelper.fade(mBottomProgress).start();
         mRunnable = null;
         mHandler = null;
         mIsResumed = false;
 
         mFab.setImageDrawable(DrawableHelper.getTintedDrawable(
                 CandyBarWallpaperActivity.this, R.drawable.ic_fab_apply, textColor));
-        Animator.showFab(mFab);
+        AnimationHelper.show(mFab)
+                .interpolator(new LinearOutSlowInInterpolator())
+                .start();
 
         try {
             TapIntroHelper.showWallpaperPreviewIntro(this, mColor);

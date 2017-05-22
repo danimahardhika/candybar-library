@@ -77,25 +77,15 @@ public class Setting {
     }
 
    public enum Type {
-       HEADER(0),
-       CACHE(1),
-       ICON_REQUEST(2),
-       RESTORE(3),
-       PREMIUM_REQUEST(4),
-       THEME(4),
-       WALLPAPER(5),
-       REPORT_BUGS(6),
-       CHANGELOG(7),
-       RESET_TUTORIAL(8);
-
-       private final int mType;
-
-       Type(int type) {
-           mType = type;
-       }
-
-       public int getType() {
-           return mType;
-       }
+       HEADER,
+       CACHE,
+       ICON_REQUEST,
+       RESTORE,
+       PREMIUM_REQUEST,
+       THEME,
+       WALLPAPER,
+       REPORT_BUGS,
+       CHANGELOG,
+       RESET_TUTORIAL
    }
 }

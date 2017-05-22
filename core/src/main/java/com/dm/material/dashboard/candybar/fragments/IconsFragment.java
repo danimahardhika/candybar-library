@@ -11,10 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.danimahardhika.android.helpers.core.ViewHelper;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
 import com.dm.material.dashboard.candybar.adapters.IconsAdapter;
-import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.items.Icon;
 import com.pluscubed.recyclerfastscroll.RecyclerFastScroller;
 
@@ -92,6 +92,7 @@ public class IconsFragment extends Fragment {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        ViewHelper.resetSpanCount(mRecyclerView, R.integer.icons_column_count);
+        ViewHelper.resetSpanCount(mRecyclerView,
+                getActivity().getResources().getInteger(R.integer.icons_column_count));
     }
 }

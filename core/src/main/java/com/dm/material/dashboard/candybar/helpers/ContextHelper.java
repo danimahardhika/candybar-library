@@ -25,10 +25,10 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
  * limitations under the License.
  */
 
-public class ContextHelper {
+class ContextHelper {
 
     @NonNull
-    public static Context getBaseContext(@NonNull View view) {
+    static Context getBaseContext(@NonNull View view) {
         Context context = view.getContext();
         if (context instanceof ContextThemeWrapper) {
             context = ((ContextThemeWrapper) view.getContext()).getBaseContext();

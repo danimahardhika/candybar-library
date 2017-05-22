@@ -11,9 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.danimahardhika.android.helpers.core.ViewHelper;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.AboutAdapter;
-import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 
 /*
@@ -44,7 +44,7 @@ public class AboutFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_about, container, false);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
 
-        if (!Preferences.getPreferences(getActivity()).isShadowEnabled()) {
+        if (!Preferences.get(getActivity()).isShadowEnabled()) {
             View shadow = view.findViewById(R.id.shadow);
             if (shadow != null) shadow.setVisibility(View.GONE);
         }
@@ -68,7 +68,8 @@ public class AboutFragment extends Fragment {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         resetRecyclerViewPadding(newConfig.orientation);
-        ViewHelper.resetSpanCount(mRecyclerView, R.integer.about_column_count);
+        ViewHelper.resetSpanCount(mRecyclerView,
+                getActivity().getResources().getInteger(R.integer.about_column_count));
 
         StaggeredGridLayoutManager manager = (StaggeredGridLayoutManager) mRecyclerView.getLayoutManager();
         mRecyclerView.setAdapter(new AboutAdapter(getActivity(), manager.getSpanCount()));

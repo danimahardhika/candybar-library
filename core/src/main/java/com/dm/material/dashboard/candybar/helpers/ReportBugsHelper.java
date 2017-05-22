@@ -38,6 +38,9 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import static com.danimahardhika.android.helpers.core.FileHelper.createZip;
+import static com.danimahardhika.android.helpers.core.FileHelper.getUriFromFile;
+
 /*
  * CandyBar - Material Dashboard
  *
@@ -123,11 +126,11 @@ public class ReportBugsHelper {
                         String activityList = buildActivityList(context, folder);
                         if (activityList != null) files.add(activityList);
 
-                        String stackTrace = Preferences.getPreferences(context).getLatestCrashLog();
+                        String stackTrace = Preferences.get(context).getLatestCrashLog();
                         String crashLog = buildCrashLog(context, folder, stackTrace);
                         if (crashLog != null) files.add(crashLog);
 
-                        FileHelper.createZip(files, file);
+                        createZip(files, new File(file));
                         return true;
                     } catch (Exception e) {
                         LogUtil.e(Log.getStackTraceString(e));
@@ -152,7 +155,7 @@ public class ReportBugsHelper {
                             "Report Bugs " + (context.getString(
                                     R.string.app_name)));
                     intent.putExtra(Intent.EXTRA_TEXT, sb.toString());
-                    Uri uri = FileHelper.getUriFromFile(context, context.getPackageName(), zip);
+                    Uri uri = getUriFromFile(context, context.getPackageName(), zip);
                     intent.putExtra(Intent.EXTRA_STREAM, uri);
 
                     context.startActivity(Intent.createChooser(intent,

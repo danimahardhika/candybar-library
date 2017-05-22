@@ -14,12 +14,15 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.danimahardhika.android.helpers.core.ColorHelper;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.HomeAdapter;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetSequence;
 import com.getkeepsafe.taptargetview.TapTargetView;
+
+import static com.danimahardhika.android.helpers.core.UnitHelper.toDp;
 
 /*
  * CandyBar - Material Dashboard
@@ -43,7 +46,7 @@ public class TapIntroHelper {
 
     public static void showHomeIntros(@NonNull Context context, @Nullable RecyclerView recyclerView,
                                       @Nullable StaggeredGridLayoutManager manager, int position) {
-        if (Preferences.getPreferences(context).isTimeToShowHomeIntro()) {
+        if (Preferences.get(context).isTimeToShowHomeIntro()) {
             AppCompatActivity activity = (AppCompatActivity) context;
 
             Toolbar toolbar = (Toolbar) activity.findViewById(R.id.toolbar);
@@ -65,7 +68,7 @@ public class TapIntroHelper {
                             .titleTextColorInt(primary)
                             .descriptionTextColorInt(secondary)
                             .targetCircleColorInt(primary)
-                            .drawShadow(Preferences.getPreferences(context).isShadowEnabled())
+                            .drawShadow(Preferences.get(context).isShadowEnabled())
                             .titleTypeface(title)
                             .descriptionTypeface(description));
                 }
@@ -79,7 +82,7 @@ public class TapIntroHelper {
                                 if (holder != null) {
                                     View view = holder.itemView;
                                     if (view != null) {
-                                        float targetRadius = ViewHelper.intToDp(context, view.getMeasuredWidth()) - 20f;
+                                        float targetRadius = toDp(context, view.getMeasuredWidth()) - 20f;
 
                                         String desc = String.format(context.getResources().getString(R.string.tap_intro_home_apply_desc),
                                                 context.getResources().getString(R.string.app_name));
@@ -91,7 +94,7 @@ public class TapIntroHelper {
                                                 .targetCircleColorInt(primary)
                                                 .targetRadius((int) targetRadius)
                                                 .tintTarget(false)
-                                                .drawShadow(Preferences.getPreferences(context).isShadowEnabled())
+                                                .drawShadow(Preferences.get(context).isShadowEnabled())
                                                 .titleTypeface(title)
                                                 .descriptionTypeface(description));
                                     }
@@ -104,7 +107,7 @@ public class TapIntroHelper {
                 tapTargetSequence.listener(new TapTargetSequence.Listener() {
                     @Override
                     public void onSequenceFinish() {
-                        Preferences.getPreferences(context).setTimeToShowHomeIntro(false);
+                        Preferences.get(context).setTimeToShowHomeIntro(false);
                     }
 
                     @Override
@@ -126,7 +129,7 @@ public class TapIntroHelper {
     }
 
     public static void showIconsIntro(@NonNull Context context) {
-        if (Preferences.getPreferences(context).isTimeToShowIconsIntro()) {
+        if (Preferences.get(context).isTimeToShowIconsIntro()) {
             AppCompatActivity activity = (AppCompatActivity) context;
 
             Toolbar toolbar = (Toolbar) activity.findViewById(R.id.toolbar);
@@ -145,7 +148,7 @@ public class TapIntroHelper {
                         .titleTextColorInt(primary)
                         .descriptionTextColorInt(secondary)
                         .targetCircleColorInt(primary)
-                        .drawShadow(Preferences.getPreferences(context).isShadowEnabled())
+                        .drawShadow(Preferences.get(context).isShadowEnabled())
                         .titleTypeface(title)
                         .descriptionTypeface(description),
                         new TapTargetView.Listener() {
@@ -153,7 +156,7 @@ public class TapIntroHelper {
                             @Override
                             public void onTargetDismissed(TapTargetView view, boolean userInitiated) {
                                 super.onTargetDismissed(view, userInitiated);
-                                Preferences.getPreferences(context).setTimeToShowIconsIntro(false);
+                                Preferences.get(context).setTimeToShowIconsIntro(false);
                             }
                         });
             }, 100);
@@ -161,7 +164,7 @@ public class TapIntroHelper {
     }
 
     public static void showRequestIntro(@NonNull Context context, @Nullable RecyclerView recyclerView) {
-        if (Preferences.getPreferences(context).isTimeToShowRequestIntro()) {
+        if (Preferences.get(context).isTimeToShowRequestIntro()) {
             AppCompatActivity activity = (AppCompatActivity) context;
 
             int requestOrientation = context.getResources().getConfiguration().orientation ==
@@ -184,7 +187,7 @@ public class TapIntroHelper {
 
                 if (recyclerView != null) {
                     int position = 0;
-                    if (Preferences.getPreferences(context).isPremiumRequestEnabled())
+                    if (Preferences.get(context).isPremiumRequestEnabled())
                         position += 1;
 
                     if (recyclerView.getAdapter() != null) {
@@ -200,7 +203,7 @@ public class TapIntroHelper {
                                             .titleTextColorInt(primary)
                                             .descriptionTextColorInt(secondary)
                                             .targetCircleColorInt(primary)
-                                            .drawShadow(Preferences.getPreferences(context).isShadowEnabled())
+                                            .drawShadow(Preferences.get(context).isShadowEnabled())
                                             .titleTypeface(title)
                                             .descriptionTypeface(description));
                                 }
@@ -216,7 +219,7 @@ public class TapIntroHelper {
                             .titleTextColorInt(primary)
                             .descriptionTextColorInt(secondary)
                             .targetCircleColorInt(primary)
-                            .drawShadow(Preferences.getPreferences(context).isShadowEnabled())
+                            .drawShadow(Preferences.get(context).isShadowEnabled())
                             .titleTypeface(title)
                             .descriptionTypeface(description));
                 }
@@ -230,13 +233,13 @@ public class TapIntroHelper {
                             .descriptionTextColorInt(secondary)
                             .targetCircleColorInt(primary)
                             .tintTarget(false)
-                            .drawShadow(Preferences.getPreferences(context).isShadowEnabled())
+                            .drawShadow(Preferences.get(context).isShadowEnabled())
                             .titleTypeface(title)
                             .descriptionTypeface(description));
                 }
 
-                if (Preferences.getPreferences(context).isPremiumRequestEnabled()) {
-                    if (!Preferences.getPreferences(context).isPremiumRequest()) {
+                if (Preferences.get(context).isPremiumRequestEnabled()) {
+                    if (!Preferences.get(context).isPremiumRequest()) {
                         if (recyclerView != null) {
                             int position = 0;
 
@@ -247,7 +250,7 @@ public class TapIntroHelper {
                                     if (holder != null) {
                                         View view = holder.itemView.findViewById(R.id.buy);
                                         if (view != null) {
-                                            float targetRadius = ViewHelper.intToDp(context, view.getMeasuredWidth()) - 10f;
+                                            float targetRadius = toDp(context, view.getMeasuredWidth()) - 10f;
 
                                             tapTargetSequence.target(TapTarget.forView(view,
                                                     context.getResources().getString(R.string.tap_intro_request_premium),
@@ -257,7 +260,7 @@ public class TapIntroHelper {
                                                     .targetCircleColorInt(primary)
                                                     .targetRadius((int) targetRadius)
                                                     .tintTarget(false)
-                                                    .drawShadow(Preferences.getPreferences(context).isShadowEnabled())
+                                                    .drawShadow(Preferences.get(context).isShadowEnabled())
                                                     .titleTypeface(title)
                                                     .descriptionTypeface(description));
                                         }
@@ -272,7 +275,7 @@ public class TapIntroHelper {
                     @Override
                     public void onSequenceFinish() {
                         activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-                        Preferences.getPreferences(context).setTimeToShowRequestIntro(false);
+                        Preferences.get(context).setTimeToShowRequestIntro(false);
                     }
 
                     @Override
@@ -291,7 +294,7 @@ public class TapIntroHelper {
     }
 
     public static void showWallpapersIntro(@NonNull Context context, @Nullable RecyclerView recyclerView) {
-        if (Preferences.getPreferences(context).isTimeToShowWallpapersIntro()) {
+        if (Preferences.get(context).isTimeToShowWallpapersIntro()) {
             AppCompatActivity activity = (AppCompatActivity) context;
 
             activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -315,7 +318,7 @@ public class TapIntroHelper {
 
                         View view = holder.itemView.findViewById(R.id.image);
                         if (view != null) {
-                            float targetRadius = ViewHelper.intToDp(context, view.getMeasuredWidth()) - 10f;
+                            float targetRadius = toDp(context, view.getMeasuredWidth()) - 10f;
 
                             Typeface title = Typeface.createFromAsset(context.getAssets(), "fonts/Font-Medium.ttf");
                             Typeface description = Typeface.createFromAsset(context.getAssets(), "fonts/Font-Regular.ttf");
@@ -331,7 +334,7 @@ public class TapIntroHelper {
                                     .targetCircleColorInt(primary)
                                     .targetRadius((int) targetRadius)
                                     .tintTarget(false)
-                                    .drawShadow(Preferences.getPreferences(context).isShadowEnabled())
+                                    .drawShadow(Preferences.get(context).isShadowEnabled())
                                     .titleTypeface(title)
                                     .descriptionTypeface(description));
 
@@ -343,7 +346,7 @@ public class TapIntroHelper {
                                     .targetCircleColorInt(primary)
                                     .targetRadius((int) targetRadius)
                                     .tintTarget(false)
-                                    .drawShadow(Preferences.getPreferences(context).isShadowEnabled())
+                                    .drawShadow(Preferences.get(context).isShadowEnabled())
                                     .titleTypeface(title)
                                     .descriptionTypeface(description));
 
@@ -351,7 +354,7 @@ public class TapIntroHelper {
                                 @Override
                                 public void onSequenceFinish() {
                                     activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-                                    Preferences.getPreferences(context).setTimeToShowWallpapersIntro(false);
+                                    Preferences.get(context).setTimeToShowWallpapersIntro(false);
                                 }
 
                                 @Override
@@ -373,7 +376,7 @@ public class TapIntroHelper {
     }
 
     public static void showWallpaperPreviewIntro(@NonNull Context context, @ColorInt int color) {
-        if (Preferences.getPreferences(context).isTimeToShowWallpaperPreviewIntro()) {
+        if (Preferences.get(context).isTimeToShowWallpaperPreviewIntro()) {
             AppCompatActivity activity = (AppCompatActivity) context;
 
             Toolbar toolbar = (Toolbar) activity.findViewById(R.id.toolbar);
@@ -396,7 +399,7 @@ public class TapIntroHelper {
                             .descriptionTextColorInt(secondary)
                             .targetCircleColorInt(primary)
                             .outerCircleColorInt(color)
-                            .drawShadow(Preferences.getPreferences(context).isShadowEnabled())
+                            .drawShadow(Preferences.get(context).isShadowEnabled())
                             .titleTypeface(title)
                             .descriptionTypeface(description));
 
@@ -408,7 +411,7 @@ public class TapIntroHelper {
                                 .descriptionTextColorInt(secondary)
                                 .targetCircleColorInt(primary)
                                 .outerCircleColorInt(color)
-                                .drawShadow(Preferences.getPreferences(context).isShadowEnabled())
+                                .drawShadow(Preferences.get(context).isShadowEnabled())
                                 .titleTypeface(title)
                                 .descriptionTypeface(description));
                     }
@@ -424,7 +427,7 @@ public class TapIntroHelper {
                             .targetCircleColorInt(primary)
                             .outerCircleColorInt(color)
                             .tintTarget(false)
-                            .drawShadow(Preferences.getPreferences(context).isShadowEnabled())
+                            .drawShadow(Preferences.get(context).isShadowEnabled())
                             .titleTypeface(title)
                             .descriptionTypeface(description));
                 }
@@ -432,7 +435,7 @@ public class TapIntroHelper {
                 tapTargetSequence.listener(new TapTargetSequence.Listener() {
                     @Override
                     public void onSequenceFinish() {
-                        Preferences.getPreferences(context).setTimeToShowWallpaperPreviewIntro(false);
+                        Preferences.get(context).setTimeToShowWallpaperPreviewIntro(false);
                     }
 
                     @Override

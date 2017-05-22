@@ -10,10 +10,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.danimahardhika.android.helpers.core.SoftKeyboardHelper;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.helpers.IconsHelper;
 import com.dm.material.dashboard.candybar.helpers.IntentHelper;
-import com.dm.material.dashboard.candybar.helpers.SoftKeyboardHelper;
 import com.dm.material.dashboard.candybar.items.Icon;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -78,12 +78,7 @@ public class IconsAdapter extends RecyclerView.Adapter<IconsAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        if (mIsShowIconName) {
-            holder.name.setVisibility(View.VISIBLE);
-            holder.name.setText(mIcons.get(position).getTitle());
-        } else {
-            holder.name.setVisibility(View.GONE);
-        }
+        holder.name.setText(mIcons.get(position).getTitle());
 
         ImageLoader.getInstance().displayImage("drawable://" + mIcons.get(position).getRes(),
                 new ImageViewAware(holder.icon), mOptions.build(),
@@ -107,6 +102,10 @@ public class IconsAdapter extends RecyclerView.Adapter<IconsAdapter.ViewHolder> 
             name = (TextView) itemView.findViewById(R.id.name);
             container = (LinearLayout) itemView.findViewById(R.id.container);
             container.setOnClickListener(this);
+
+            if (!mIsShowIconName) {
+                name.setVisibility(View.GONE);
+            }
         }
 
         @Override

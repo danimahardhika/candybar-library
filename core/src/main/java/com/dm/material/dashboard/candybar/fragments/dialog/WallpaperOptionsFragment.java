@@ -14,13 +14,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.danimahardhika.android.helpers.core.ColorHelper;
+import com.danimahardhika.android.helpers.core.DrawableHelper;
+import com.danimahardhika.android.helpers.permission.PermissionHelper;
 import com.danimahardhika.cafebar.CafeBar;
 import com.danimahardhika.cafebar.CafeBarTheme;
 import com.dm.material.dashboard.candybar.R;
-import com.dm.material.dashboard.candybar.helpers.ColorHelper;
-import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
-import com.dm.material.dashboard.candybar.helpers.FileHelper;
-import com.dm.material.dashboard.candybar.helpers.PermissionHelper;
 import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
 
 import java.io.File;
@@ -133,9 +132,9 @@ public class WallpaperOptionsFragment extends DialogFragment implements View.OnC
         if (id == R.id.apply) {
             WallpaperHelper.applyWallpaper(getActivity(), null, color, mUrl, mName);
         } else if (id == R.id.save) {
-            if (PermissionHelper.isPermissionStorageGranted(getActivity())) {
+            if (PermissionHelper.isStorageGranted(getActivity())) {
                 File target = new File(WallpaperHelper.getDefaultWallpapersDirectory(getActivity()).toString()
-                        + File.separator + mName + FileHelper.IMAGE_EXTENSION);
+                        + File.separator + mName + WallpaperHelper.IMAGE_EXTENSION);
 
                 if (target.exists()) {
                     Context context = getActivity();
@@ -145,7 +144,7 @@ public class WallpaperOptionsFragment extends DialogFragment implements View.OnC
                             .maxLines(4)
                             .typeface("Font-Regular.ttf", "Font-Bold.ttf")
                             .content(String.format(getResources().getString(R.string.wallpaper_download_exist),
-                                    ("\"" +mName + FileHelper.IMAGE_EXTENSION+ "\"")))
+                                    ("\"" +mName + WallpaperHelper.IMAGE_EXTENSION+ "\"")))
                             .icon(R.drawable.ic_toolbar_download)
                             .positiveText(R.string.wallpaper_download_exist_replace)
                             .positiveColor(color)
@@ -177,7 +176,7 @@ public class WallpaperOptionsFragment extends DialogFragment implements View.OnC
                 dismiss();
                 return;
             }
-            PermissionHelper.requestStoragePermission(getActivity());
+            PermissionHelper.requestStorage(getActivity());
         }
         dismiss();
     }

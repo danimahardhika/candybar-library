@@ -420,8 +420,9 @@ public class LauncherHelper {
         new MaterialDialog.Builder(context)
                 .typeface("Font-Medium.ttf", "Font-Regular.ttf")
                 .title(launcherName)
-                .content(launcherName +" "+ String.format(context.getResources().getString(
-                        R.string.apply_manual), context.getResources().getString(R.string.app_name)))
+                .content(context.getResources().getString(R.string.apply_manual,
+                        launcherName,
+                        context.getResources().getString(R.string.app_name)))
                 .positiveText(context.getResources().getString(R.string.ok))
                 .onPositive((dialog, which) -> {
                     try{
@@ -447,9 +448,10 @@ public class LauncherHelper {
         new MaterialDialog.Builder(context)
                 .typeface("Font-Medium.ttf", "Font-Regular.ttf")
                 .title(launcherName)
-                .content(launcherName +" "+ String.format(context.getResources().getString(
-                        R.string.apply_manual), context.getResources().getString(R.string.app_name)) +"\n\n"+
-                        String.format(context.getResources().getString(R.string.apply_manual_evie),
+                .content(context.getResources().getString(R.string.apply_manual,
+                        launcherName,
+                        context.getResources().getString(R.string.app_name)) +"\n\n"+
+                        context.getResources().getString(R.string.apply_manual_evie,
                                 context.getResources().getString(R.string.app_name)))
                 .positiveText(context.getResources().getString(R.string.ok))
                 .onPositive((dialog, which) -> {
@@ -457,7 +459,7 @@ public class LauncherHelper {
                         final Intent intent = new Intent(Intent.ACTION_MAIN);
                         intent.setComponent(new ComponentName(launcherPackage,
                                 "com.voxel.launcher3.Launcher"));
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);
                         context.startActivity(intent);
                         ((AppCompatActivity) context).finish();
                     } catch (ActivityNotFoundException | NullPointerException e) {
@@ -486,8 +488,8 @@ public class LauncherHelper {
         new MaterialDialog.Builder(context)
                 .typeface("Font-Medium.ttf", "Font-Regular.ttf")
                 .title(launcherName)
-                .content(launcherName +" "+ String.format(context.getResources().getString(
-                        R.string.apply_manual), context.getResources().getString(R.string.app_name))
+                .content(context.getResources().getString(R.string.apply_manual, launcherName,
+                        context.getResources().getString(R.string.app_name))
                         +"\n\n"+ context.getResources().getString(R.string.apply_lg_home))
                 .positiveText(context.getResources().getString(R.string.ok))
                 .onPositive((dialog, which) -> {

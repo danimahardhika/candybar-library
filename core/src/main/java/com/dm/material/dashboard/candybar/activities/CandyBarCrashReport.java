@@ -8,10 +8,10 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
+import com.danimahardhika.android.helpers.core.FileHelper;
+import com.danimahardhika.android.helpers.permission.PermissionHelper;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.helpers.DeviceHelper;
-import com.dm.material.dashboard.candybar.helpers.FileHelper;
-import com.dm.material.dashboard.candybar.helpers.PermissionHelper;
 import com.dm.material.dashboard.candybar.helpers.ReportBugsHelper;
 
 import java.io.File;
@@ -83,7 +83,7 @@ public class CandyBarCrashReport extends AppCompatActivity {
 
     private Intent prepareUri(String deviceInfo, String stackTrace, Intent intent) {
         String crashLog = ReportBugsHelper.buildCrashLog(this, getCacheDir(), stackTrace);
-        boolean granted = PermissionHelper.isPermissionStorageGranted(this);
+        boolean granted = PermissionHelper.isStorageGranted(this);
         if (crashLog != null) {
             Uri uri = FileHelper.getUriFromFile(this, getPackageName(), new File(crashLog));
             if (uri != null) {
@@ -103,5 +103,4 @@ public class CandyBarCrashReport extends AppCompatActivity {
         intent.putExtra(Intent.EXTRA_TEXT, deviceInfo + stackTrace);
         return intent;
     }
-
 }

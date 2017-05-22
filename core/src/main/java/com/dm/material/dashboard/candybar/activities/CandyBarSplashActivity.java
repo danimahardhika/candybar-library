@@ -5,18 +5,16 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
 
 import com.bluelinelabs.logansquare.LoganSquare;
+import com.danimahardhika.android.helpers.core.ColorHelper;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.databases.Database;
-import com.dm.material.dashboard.candybar.helpers.ColorHelper;
 import com.dm.material.dashboard.candybar.helpers.IconsHelper;
 import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
-import com.dm.material.dashboard.candybar.items.Icon;
 import com.dm.material.dashboard.candybar.items.Wallpaper;
 import com.dm.material.dashboard.candybar.items.WallpaperJSON;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
@@ -60,10 +58,9 @@ public class CandyBarSplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         mMainActivity = mainActivity;
 
-        int titleColor = ColorHelper.getTitleTextColor(ContextCompat
-                .getColor(this, R.color.splashColor));
+        int color = ColorHelper.getBodyTextColor(ColorHelper.get(this, R.color.splashColor));
         TextView splashTitle = (TextView) findViewById(R.id.splash_title);
-        splashTitle.setTextColor(ColorHelper.setColorAlpha(titleColor, 0.7f));
+        splashTitle.setTextColor(color);
 
         prepareIconsList();
         checkRszIo();
@@ -97,12 +94,6 @@ public class CandyBarSplashActivity extends AppCompatActivity {
                         Thread.sleep(1);
                         CandyBarMainActivity.sSections = IconsHelper
                                 .getIconsList(CandyBarSplashActivity.this);
-
-                        int count = 0;
-                        for (Icon section : CandyBarMainActivity.sSections) {
-                            count += section.getIcons().size();
-                        }
-                        CandyBarMainActivity.sIconsCount = count;
                         return true;
                     } catch (Exception e) {
                         LogUtil.e(Log.getStackTraceString(e));
@@ -169,7 +160,7 @@ public class CandyBarSplashActivity extends AppCompatActivity {
                         if (WallpaperHelper.getWallpaperType(context) != WallpaperHelper.CLOUD_WALLPAPERS)
                             return true;
 
-                        Database database = new Database(context);
+                        Database database = Database.getInstance(context);
                         if (database.getWallpapersCount() > 0) return true;
 
                         URL url = new URL(wallpaperUrl);

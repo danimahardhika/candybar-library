@@ -90,8 +90,8 @@ public class WallpaperSettingsFragment extends DialogFragment implements View.On
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mWallpaperCropCheck.setChecked(Preferences.getPreferences(getActivity()).isWallpaperCrop());
-        mApplyLockscreenCheck.setChecked(Preferences.getPreferences(getActivity()).isApplyLockscreen());
+        mWallpaperCropCheck.setChecked(Preferences.get(getActivity()).isWallpaperCrop());
+        mApplyLockscreenCheck.setChecked(Preferences.get(getActivity()).isApplyLockscreen());
 
         mWallpaperCrop.setOnClickListener(this);
 
@@ -109,7 +109,7 @@ public class WallpaperSettingsFragment extends DialogFragment implements View.On
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
-        if (Preferences.getPreferences(getActivity()).isWallpaperCrop()) {
+        if (Preferences.get(getActivity()).isWallpaperCrop()) {
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         } else {
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
@@ -120,10 +120,10 @@ public class WallpaperSettingsFragment extends DialogFragment implements View.On
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.wallpaper_crop) {
-            Preferences.getPreferences(getActivity()).setWallpaperCrop(!mWallpaperCropCheck.isChecked());
+            Preferences.get(getActivity()).setWallpaperCrop(!mWallpaperCropCheck.isChecked());
             mWallpaperCropCheck.setChecked(!mWallpaperCropCheck.isChecked());
         } else if (id == R.id.apply_lockscreen) {
-            Preferences.getPreferences(getActivity()).setApplyLockscreen(!mApplyLockscreenCheck.isChecked());
+            Preferences.get(getActivity()).setApplyLockscreen(!mApplyLockscreenCheck.isChecked());
             mApplyLockscreenCheck.setChecked(!mApplyLockscreenCheck.isChecked());
         }
     }

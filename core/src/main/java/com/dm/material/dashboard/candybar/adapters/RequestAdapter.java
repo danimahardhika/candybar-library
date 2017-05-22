@@ -19,9 +19,9 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.danimahardhika.android.helpers.core.ColorHelper;
+import com.danimahardhika.android.helpers.core.DrawableHelper;
 import com.dm.material.dashboard.candybar.R;
-import com.dm.material.dashboard.candybar.helpers.ColorHelper;
-import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
@@ -81,7 +81,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         mSelectedItems = new SparseBooleanArray();
 
         mShowShadow = (spanCount == 1);
-        mShowPremiumRequest = Preferences.getPreferences(mContext).isPremiumRequestEnabled();
+        mShowPremiumRequest = Preferences.get(mContext).isPremiumRequestEnabled();
 
         mOptions = ImageConfig.getRawDefaultImageOptions();
         mOptions.resetViewBeforeLoading(true);
@@ -134,13 +134,13 @@ public class RequestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder.getItemViewType() == TYPE_HEADER) {
             HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
-            if (Preferences.getPreferences(mContext).isPremiumRequest()) {
+            if (Preferences.get(mContext).isPremiumRequest()) {
                 headerViewHolder.button.setVisibility(View.GONE);
                 headerViewHolder.content.setVisibility(View.GONE);
                 headerViewHolder.container.setVisibility(View.VISIBLE);
 
-                int total = Preferences.getPreferences(mContext).getPremiumRequestTotal();
-                int available = Preferences.getPreferences(mContext).getPremiumRequestCount();
+                int total = Preferences.get(mContext).getPremiumRequestTotal();
+                int available = Preferences.get(mContext).getPremiumRequestCount();
 
                 headerViewHolder.total.setText(String.format(
                         mContext.getResources().getString(R.string.premium_request_count),
@@ -225,7 +225,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             progress = (ProgressBar) itemView.findViewById(R.id.progress);
 
             CardView card = (CardView) itemView.findViewById(R.id.card);
-            if (!Preferences.getPreferences(mContext).isShadowEnabled()) {
+            if (!Preferences.get(mContext).isShadowEnabled()) {
                 if (card != null) card.setCardElevation(0);
             }
 
@@ -278,7 +278,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             divider = itemView.findViewById(R.id.divider);
 
             CardView card = (CardView) itemView.findViewById(R.id.card);
-            if (!Preferences.getPreferences(mContext).isShadowEnabled()) {
+            if (!Preferences.get(mContext).isShadowEnabled()) {
                 if (card != null) card.setCardElevation(0);
             }
 
@@ -318,7 +318,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         FooterViewHolder(View itemView) {
             super(itemView);
             View shadow = itemView.findViewById(R.id.shadow);
-            if (!Preferences.getPreferences(mContext).isShadowEnabled()) {
+            if (!Preferences.get(mContext).isShadowEnabled()) {
                 shadow.setVisibility(View.GONE);
             }
         }

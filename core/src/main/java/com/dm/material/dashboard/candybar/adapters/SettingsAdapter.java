@@ -16,14 +16,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.danimahardhika.android.helpers.core.ColorHelper;
+import com.danimahardhika.android.helpers.core.DrawableHelper;
+import com.danimahardhika.android.helpers.core.FileHelper;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
 import com.dm.material.dashboard.candybar.databases.Database;
 import com.dm.material.dashboard.candybar.fragments.SettingsFragment;
 import com.dm.material.dashboard.candybar.fragments.dialog.ChangelogFragment;
-import com.dm.material.dashboard.candybar.helpers.ColorHelper;
-import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
-import com.dm.material.dashboard.candybar.helpers.FileHelper;
 import com.dm.material.dashboard.candybar.helpers.ReportBugsHelper;
 import com.dm.material.dashboard.candybar.items.Setting;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
@@ -124,8 +124,8 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                 if (setting.getIcon() != -1) {
                     int color = ColorHelper.getAttributeColor(mContext, android.R.attr.textColorPrimary);
-                    contentViewHolder.title.setCompoundDrawablesWithIntrinsicBounds(DrawableHelper.getTintedDrawable(
-                            mContext, setting.getIcon(), color), null, null, null);
+                    contentViewHolder.title.setCompoundDrawablesWithIntrinsicBounds(
+                            DrawableHelper.getTintedDrawable(mContext, setting.getIcon(), color), null, null, null);
                 }
             }
         }
@@ -184,9 +184,9 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                 .onPositive((dialog, which) -> {
                                     try {
                                         File cache = mContext.getCacheDir();
-                                        FileHelper.clearCache(cache);
+                                        FileHelper.clearDirectory(cache);
 
-                                        double size = (double) FileHelper.getCacheSize(
+                                        double size = (double) FileHelper.getDirectorySize(
                                                 mContext.getCacheDir()) / FileHelper.MB;
                                         NumberFormat formatter = new DecimalFormat("#0.00");
 
@@ -210,8 +210,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                 .positiveText(R.string.clear)
                                 .negativeText(android.R.string.cancel)
                                 .onPositive((dialog, which) -> {
-                                    Database database = new Database(mContext);
-                                    database.deleteIconRequestData();
+                                    Database.getInstance(mContext).deleteIconRequestData();
 
                                     CandyBarMainActivity.sMissedApps = null;
 
@@ -238,7 +237,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         }
                         break;
                     case THEME:
-                        Preferences.getPreferences(mContext).setDarkTheme(!checkBox.isChecked());
+                        Preferences.get(mContext).setDarkTheme(!checkBox.isChecked());
                         ((AppCompatActivity) mContext).recreate();
                         break;
                     case REPORT_BUGS:
@@ -248,11 +247,11 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         ChangelogFragment.showChangelog(((AppCompatActivity) mContext).getSupportFragmentManager());
                         break;
                     case RESET_TUTORIAL:
-                        Preferences.getPreferences(mContext).setTimeToShowHomeIntro(true);
-                        Preferences.getPreferences(mContext).setTimeToShowIconsIntro(true);
-                        Preferences.getPreferences(mContext).setTimeToShowRequestIntro(true);
-                        Preferences.getPreferences(mContext).setTimeToShowWallpapersIntro(true);
-                        Preferences.getPreferences(mContext).setTimeToShowWallpaperPreviewIntro(true);
+                        Preferences.get(mContext).setTimeToShowHomeIntro(true);
+                        Preferences.get(mContext).setTimeToShowIconsIntro(true);
+                        Preferences.get(mContext).setTimeToShowRequestIntro(true);
+                        Preferences.get(mContext).setTimeToShowWallpapersIntro(true);
+                        Preferences.get(mContext).setTimeToShowWallpaperPreviewIntro(true);
 
                         Toast.makeText(mContext, R.string.pref_others_reset_tutorial_reset, Toast.LENGTH_LONG).show();
                         break;
@@ -265,7 +264,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         FooterViewHolder(View itemView) {
             super(itemView);
-            if (!Preferences.getPreferences(mContext).isShadowEnabled()) {
+            if (!Preferences.get(mContext).isShadowEnabled()) {
                 View shadow = itemView.findViewById(R.id.shadow);
                 shadow.setVisibility(View.GONE);
             }

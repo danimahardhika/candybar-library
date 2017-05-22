@@ -14,8 +14,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.danimahardhika.android.helpers.core.ColorHelper;
 import com.dm.material.dashboard.candybar.R;
-import com.dm.material.dashboard.candybar.helpers.ColorHelper;
 import com.dm.material.dashboard.candybar.helpers.LauncherHelper;
 import com.dm.material.dashboard.candybar.items.Icon;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
@@ -139,7 +139,7 @@ public class LauncherAdapter extends RecyclerView.Adapter<LauncherAdapter.ViewHo
                 container = (LinearLayout) itemView.findViewById(R.id.container);
 
                 CardView card = (CardView) itemView.findViewById(R.id.card);
-                if (!Preferences.getPreferences(mContext).isShadowEnabled()) {
+                if (!Preferences.get(mContext).isShadowEnabled()) {
                     if (card != null) card.setCardElevation(0);
                 }
 

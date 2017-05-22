@@ -20,11 +20,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.danimahardhika.android.helpers.core.ColorHelper;
+import com.danimahardhika.android.helpers.core.FileHelper;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.fragments.dialog.IntentChooserFragment;
-import com.dm.material.dashboard.candybar.helpers.ColorHelper;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
-import com.dm.material.dashboard.candybar.helpers.FileHelper;
 import com.dm.material.dashboard.candybar.items.IntentChooser;
 import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
@@ -162,6 +162,8 @@ public class IntentAdapter extends BaseAdapter {
             intent = addIntentExtra(intent);
             intent.setComponent(name);
             intent.addCategory(Intent.CATEGORY_LAUNCHER);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
             mContext.startActivity(intent);
         } catch (IllegalArgumentException e) {
             try {
@@ -178,7 +180,7 @@ public class IntentAdapter extends BaseAdapter {
 
     private Intent addIntentExtra(@NonNull Intent intent) {
         intent.setType("message/rfc822");
-        if (mRequest.getStream().length() > 0) {
+        if (mRequest.getStream() != null) {
             File zip = new File(mRequest.getStream());
             Uri uri = FileHelper.getUriFromFile(mContext, mContext.getPackageName(), zip);
             if (uri == null) uri = Uri.fromFile(zip);

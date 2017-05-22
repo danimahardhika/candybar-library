@@ -1,5 +1,9 @@
 package com.dm.material.dashboard.candybar.items;
 
+import android.graphics.Point;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
+
 /*
  * CandyBar - Material Dashboard
  *
@@ -17,10 +21,6 @@ package com.dm.material.dashboard.candybar.items;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import android.graphics.Point;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
 
 public class Home {
 
@@ -54,20 +54,10 @@ public class Home {
     }
 
     public enum Type {
-        APPLY(0),
-        DONATE(1),
-        ICONS(2),
-        DIMENSION(3);
-
-        private final int mType;
-
-        Type(int type) {
-            mType = type;
-        }
-
-        public int getType() {
-            return mType;
-        }
+        APPLY,
+        DONATE,
+        ICONS,
+        DIMENSION
     }
 
     public static class Style {
@@ -89,20 +79,10 @@ public class Home {
         }
 
         public enum Type {
-            CARD_SQUARE(0),
-            CARD_RECTANGLE(1),
-            SQUARE(2),
-            RECTANGLE(3);
-
-            private final int mType;
-
-            Type(int type) {
-                mType = type;
-            }
-
-            public int getType() {
-                return mType;
-            }
+            CARD_SQUARE,
+            CARD_LANDSCAPE,
+            SQUARE,
+            LANDSCAPE
         }
     }
 }
