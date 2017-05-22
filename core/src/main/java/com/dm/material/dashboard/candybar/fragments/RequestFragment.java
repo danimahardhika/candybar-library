@@ -372,7 +372,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                             return false;
                         }
 
-                        Database database = Database.getInstance(getActivity());
+                        Database database = Database.get(getActivity());
                         File directory = getActivity().getCacheDir();
                         sb.append(DeviceHelper.getDeviceInfo(getActivity()));
 

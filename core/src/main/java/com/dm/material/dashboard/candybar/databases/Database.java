@@ -60,16 +60,12 @@ public class Database extends SQLiteOpenHelper {
     private static final String KEY_URL = "url";
     private static final String KEY_ADDED_ON = "added_on";
 
-    private static Database mDatabase;
-
-    public static synchronized Database getInstance(@NonNull Context context) {
-        if (mDatabase == null) {
-            mDatabase = new Database(context.getApplicationContext());
-        }
-        return mDatabase;
+    @NonNull
+    public static Database get(@NonNull Context context) {
+        return new Database(context);
     }
 
-    private Database(@NonNull Context context) {
+    private Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 

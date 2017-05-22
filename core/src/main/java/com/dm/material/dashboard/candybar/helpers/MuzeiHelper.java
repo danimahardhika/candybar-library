@@ -42,7 +42,7 @@ public class MuzeiHelper {
     private final String mDirectory;
 
     public MuzeiHelper(@NonNull Context context, String directory) {
-        mDatabase = Database.getInstance(context);
+        mDatabase = Database.get(context);
         mDirectory = directory;
     }
 
@@ -104,5 +104,4 @@ public class MuzeiHelper {
             return 0;
         }
     }
-
 }

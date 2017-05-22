@@ -225,8 +225,8 @@ public class RequestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             progress = (ProgressBar) itemView.findViewById(R.id.progress);
 
             CardView card = (CardView) itemView.findViewById(R.id.card);
-            if (!Preferences.get(mContext).isShadowEnabled()) {
-                if (card != null) card.setCardElevation(0);
+            if (!Preferences.get(mContext).isShadowEnabled() && card != null) {
+                card.setCardElevation(0);
             }
 
             int padding = mContext.getResources().getDimensionPixelSize(R.dimen.content_margin) +

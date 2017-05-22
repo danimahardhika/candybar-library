@@ -233,7 +233,7 @@ public class SettingsFragment extends Fragment {
                         File directory = getActivity().getCacheDir();
                         File appFilter = new File(directory.toString() + "/" + "appfilter.xml");
 
-                        requests = Database.getInstance(getActivity()).getPremiumRequest(null);
+                        requests = Database.get(getActivity()).getPremiumRequest(null);
 
                         if (requests.size() == 0) return true;
 

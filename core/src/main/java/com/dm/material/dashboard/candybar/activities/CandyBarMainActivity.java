@@ -462,7 +462,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements
             }
 
             int size = intent.getIntExtra("size", 0);
-            int offlineSize = Database.getInstance(this).getWallpapersCount();
+            int offlineSize = Database.get(this).getWallpapersCount();
             Preferences.get(this).setAvailableWallpapersCount(size);
 
             if (size > offlineSize) {

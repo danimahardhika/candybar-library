@@ -160,7 +160,7 @@ public class CandyBarSplashActivity extends AppCompatActivity {
                         if (WallpaperHelper.getWallpaperType(context) != WallpaperHelper.CLOUD_WALLPAPERS)
                             return true;
 
-                        Database database = Database.getInstance(context);
+                        Database database = Database.get(context);
                         if (database.getWallpapersCount() > 0) return true;
 
                         URL url = new URL(wallpaperUrl);

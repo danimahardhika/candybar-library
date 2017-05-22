@@ -210,7 +210,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                 .positiveText(R.string.clear)
                                 .negativeText(android.R.string.cancel)
                                 .onPositive((dialog, which) -> {
-                                    Database.getInstance(mContext).deleteIconRequestData();
+                                    Database.get(mContext).deleteIconRequestData();
 
                                     CandyBarMainActivity.sMissedApps = null;
 

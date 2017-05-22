@@ -158,7 +158,7 @@ public class WallpapersFragment extends Fragment {
     }
 
     private void showPopupBubble() {
-        int wallpapersCount = Database.getInstance(getActivity()).getWallpapersCount();
+        int wallpapersCount = Database.get(getActivity()).getWallpapersCount();
         if (wallpapersCount == 0) return;
 
         if (Preferences.get(getActivity()).getAvailableWallpapersCount() > wallpapersCount) {
@@ -191,7 +191,7 @@ public class WallpapersFragment extends Fragment {
                 while (!isCancelled()) {
                     try {
                         Thread.sleep(1);
-                        Database database = Database.getInstance(getActivity());
+                        Database database = Database.get(getActivity());
                         if (!refreshing && (database.getWallpapersCount() > 0)) {
                             wallpapers = database.getWallpapers();
                             return true;

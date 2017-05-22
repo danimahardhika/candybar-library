@@ -97,7 +97,7 @@ public class RequestHelper {
                 if (name == null)
                     name = app.activityInfo.loadLabel(packageManager).toString();
 
-                boolean requested = Database.getInstance(context).isRequested(activity);
+                boolean requested = Database.get(context).isRequested(activity);
                 requests.add(new Request(
                         name,
                         app.activityInfo.packageName,
