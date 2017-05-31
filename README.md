@@ -21,7 +21,7 @@ dependencies {
 }
 ```
 # How to Use
-Take a look inside <a href="https://github.com/danimahardhika/candybar-library/wiki" target="_blank">Wiki Site</a>.
+Take a look inside [Wiki Site](https://github.com/danimahardhika/candybar-library/wiki)
 
 # Previews
 <img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/home.jpg" width="215"/> <img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/navigation_drawer.jpg" width="215"/> <img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/changelog.jpg" width="215"/> <img src="https://raw.githubusercontent.com/danimahardhika/candybar-library/master/screenshots/icon_request.jpg" width="215"/>
@@ -52,7 +52,10 @@ Take a look inside <a href="https://github.com/danimahardhika/candybar-library/w
 **NOTE:** This is just Icon Pack Dashboard, not Icon Pack template or Icon Pack tutorial. You need to add required XML for Icon Pack by yourself.
 
 # Support Development
-Support development by making donation through demo app at Google Play.
+Support development by making donation through demo app at Google Play
+
+# Need a Help?
+Join [CandyBar community](https://plus.google.com/communities/113391514858983102172) on Google+
 
 # Icon Pack Using CandyBar
 Want your icon pack listed here? Mention me at [Google Plus](https://plus.google.com/u/1/+DaniMahardhika).
