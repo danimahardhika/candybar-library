@@ -54,6 +54,9 @@ Take a look inside [Wiki Site](https://github.com/danimahardhika/candybar-librar
 # Support Development
 Support development by making donation through demo app at Google Play
 
+# Translation
+Help translating CandyBar to supports more languages [here](http://danimahardhika.oneskyapp.com/collaboration/project?id=245866)
+
 # Need a Help?
 Join [CandyBar community](https://plus.google.com/communities/113391514858983102172) on Google+
 
