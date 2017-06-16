@@ -2,9 +2,11 @@ package com.dm.material.dashboard.candybar.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 
 import com.danimahardhika.android.helpers.core.ColorHelper;
 import com.dm.material.dashboard.candybar.R;
+import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
 import com.dm.material.dashboard.candybar.helpers.LauncherHelper;
 import com.dm.material.dashboard.candybar.items.Icon;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
@@ -139,6 +142,19 @@ public class LauncherAdapter extends RecyclerView.Adapter<LauncherAdapter.ViewHo
                 container = (LinearLayout) itemView.findViewById(R.id.container);
 
                 CardView card = (CardView) itemView.findViewById(R.id.card);
+                if (CandyBarApplication.getConfiguration().getApplyGrid() == CandyBarApplication.GridStyle.FLAT) {
+                    if (card.getLayoutParams() instanceof GridLayoutManager.LayoutParams) {
+                        card.setRadius(0f);
+                        card.setUseCompatPadding(false);
+                        int margin = mContext.getResources().getDimensionPixelSize(R.dimen.card_margin);
+                        GridLayoutManager.LayoutParams params = (GridLayoutManager.LayoutParams) card.getLayoutParams();
+                        params.setMargins(0, 0, margin, margin);
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                            params.setMarginEnd(margin);
+                        }
+                    }
+                }
                 if (!Preferences.get(mContext).isShadowEnabled()) {
                     if (card != null) card.setCardElevation(0);
                 }

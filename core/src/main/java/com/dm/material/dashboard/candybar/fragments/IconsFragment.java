@@ -21,6 +21,8 @@ import com.pluscubed.recyclerfastscroll.RecyclerFastScroller;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.dm.material.dashboard.candybar.helpers.ViewHelper.setFastScrollColor;
+
 /*
  * CandyBar - Material Dashboard
  *
@@ -83,6 +85,7 @@ public class IconsFragment extends Fragment {
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),
                 getActivity().getResources().getInteger(R.integer.icons_column_count)));
+        setFastScrollColor(mFastScroll);
         mFastScroll.attachRecyclerView(mRecyclerView);
 
         IconsAdapter adapter = new IconsAdapter(getActivity(), mIcons, false);

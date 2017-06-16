@@ -28,6 +28,7 @@ import com.danimahardhika.android.helpers.core.ViewHelper;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
 import com.dm.material.dashboard.candybar.adapters.IconsAdapter;
+import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
 import com.dm.material.dashboard.candybar.helpers.IconsHelper;
 import com.dm.material.dashboard.candybar.items.Icon;
 import com.dm.material.dashboard.candybar.utils.AlphanumComparator;
@@ -136,7 +137,7 @@ public class IconsSearchFragment extends Fragment {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        ViewHelper.resetSpanCount(mRecyclerView, R.integer.icons_column_count);
+        ViewHelper.resetSpanCount(mRecyclerView, getActivity().getResources().getInteger(R.integer.icons_column_count));
     }
 
     @Override
@@ -189,10 +190,23 @@ public class IconsSearchFragment extends Fragment {
                                     }
                                 }
                             }
+
+                            if (CandyBarApplication.getConfiguration().isShowTabAllIcons()) {
+                                List<Icon> icons = IconsHelper.getTabAllIcons();
+                                CandyBarMainActivity.sSections.add(new Icon(
+                                        CandyBarApplication.getConfiguration().getTabAllIconsTitle(), icons));
+                            }
                         }
 
-                        for (Icon icon : CandyBarMainActivity.sSections)
-                            icons.addAll(icon.getIcons());
+                        for (Icon icon : CandyBarMainActivity.sSections) {
+                            if (CandyBarApplication.getConfiguration().isShowTabAllIcons()) {
+                                if (!icon.getTitle().equals(CandyBarApplication.getConfiguration().getTabAllIconsTitle())) {
+                                    icons.addAll(icon.getIcons());
+                                }
+                            } else {
+                                icons.addAll(icon.getIcons());
+                            }
+                        }
 
                         Collections.sort(icons, new AlphanumComparator() {
                             @Override

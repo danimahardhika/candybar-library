@@ -37,7 +37,9 @@ import com.danimahardhika.android.helpers.permission.PermissionHelper;
 import com.danimahardhika.cafebar.CafeBar;
 import com.danimahardhika.cafebar.CafeBarTheme;
 import com.dm.material.dashboard.candybar.fragments.dialog.WallpaperSettingsFragment;
+import com.dm.material.dashboard.candybar.helpers.LocaleHelper;
 import com.dm.material.dashboard.candybar.helpers.TapIntroHelper;
+import com.dm.material.dashboard.candybar.helpers.TypefaceHelper;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.WallpapersAdapter;
@@ -214,6 +216,7 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        LocaleHelper.setLocale(this);
         ViewHelper.resetViewBottomMargin(mFab);
     }
 
@@ -227,6 +230,7 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
 
     @Override
     protected void attachBaseContext(Context newBase) {
+        LocaleHelper.setLocale(newBase);
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
@@ -275,7 +279,7 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
                             .autoDismiss(false)
                             .maxLines(4)
                             .fitSystemWindow()
-                            .typeface("Font-Regular.ttf", "Font-Bold.ttf")
+                            .typeface(TypefaceHelper.getRegular(this), TypefaceHelper.getBold(this))
                             .content(String.format(getResources().getString(R.string.wallpaper_download_exist),
                                     ("\"" +mName + WallpaperHelper.IMAGE_EXTENSION+ "\"")))
                             .icon(R.drawable.ic_toolbar_download)

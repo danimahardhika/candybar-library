@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.dm.material.dashboard.candybar.R;
+import com.dm.material.dashboard.candybar.helpers.TypefaceHelper;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 
 /*
@@ -71,7 +72,9 @@ public class WallpaperSettingsFragment extends DialogFragment implements View.On
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
         builder.customView(R.layout.fragment_wallpaper_settings, false);
-        builder.typeface("Font-Medium.ttf", "Font-Regular.ttf");
+        builder.typeface(
+                TypefaceHelper.getMedium(getActivity()),
+                TypefaceHelper.getRegular(getActivity()));
         builder.title(R.string.menu_wallpaper_settings);
         builder.positiveText(R.string.close);
         MaterialDialog dialog = builder.build();
@@ -108,12 +111,12 @@ public class WallpaperSettingsFragment extends DialogFragment implements View.On
 
     @Override
     public void onDismiss(DialogInterface dialog) {
-        super.onDismiss(dialog);
         if (Preferences.get(getActivity()).isWallpaperCrop()) {
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         } else {
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         }
+        super.onDismiss(dialog);
     }
 
     @Override

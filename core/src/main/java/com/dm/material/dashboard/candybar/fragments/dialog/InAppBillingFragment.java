@@ -22,6 +22,7 @@ import com.anjlab.android.iab.v3.SkuDetails;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.InAppBillingAdapter;
 import com.dm.material.dashboard.candybar.helpers.InAppBillingHelper;
+import com.dm.material.dashboard.candybar.helpers.TypefaceHelper;
 import com.dm.material.dashboard.candybar.items.InAppBilling;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
@@ -111,7 +112,9 @@ public class InAppBillingFragment extends DialogFragment {
         builder.title(mType == InAppBillingHelper.DONATE ?
                 R.string.navigation_view_donate : R.string.premium_request)
                 .customView(R.layout.fragment_inapp_dialog, false)
-                .typeface("Font-Medium.ttf", "Font-Regular.ttf")
+                .typeface(
+                        TypefaceHelper.getMedium(getActivity()),
+                        TypefaceHelper.getRegular(getActivity()))
                 .positiveText(mType == InAppBillingHelper.DONATE ?
                         R.string.donate : R.string.premium_request_buy)
                 .negativeText(R.string.close)

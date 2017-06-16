@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import com.danimahardhika.android.helpers.core.ViewHelper;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.AboutAdapter;
+import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 
 /*
@@ -81,6 +82,10 @@ public class AboutFragment extends Fragment {
         int padding = 0;
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             padding = getActivity().getResources().getDimensionPixelSize(R.dimen.content_padding);
+
+            if (CandyBarApplication.getConfiguration().getAboutStyle() == CandyBarApplication.Style.PORTRAIT_FLAT_LANDSCAPE_FLAT) {
+                padding = getActivity().getResources().getDimensionPixelSize(R.dimen.card_margin);
+            }
         }
 
         mRecyclerView.setPadding(padding, padding, 0, 0);

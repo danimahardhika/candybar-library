@@ -5,11 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,8 +24,10 @@ import android.widget.TextView;
 import com.danimahardhika.android.helpers.core.ColorHelper;
 import com.danimahardhika.android.helpers.core.DrawableHelper;
 import com.dm.material.dashboard.candybar.R;
+import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
 import com.dm.material.dashboard.candybar.fragments.dialog.CreditsFragment;
 import com.dm.material.dashboard.candybar.fragments.dialog.LicensesFragment;
+import com.dm.material.dashboard.candybar.helpers.ConfigurationHelper;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
@@ -55,7 +60,6 @@ public class AboutAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private int mItemCount;
 
-    private final boolean mCardMode;
     private final boolean mShowContributors;
 
     private static final int TYPE_HEADER = 0;
@@ -67,8 +71,8 @@ public class AboutAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         mContext = context;
 
         mItemCount = 2;
-        mCardMode = (spanCount > 1);
-        if (!mCardMode) {
+        boolean cardMode = (spanCount > 1);
+        if (!cardMode) {
             mItemCount += 1;
         }
 
@@ -91,6 +95,10 @@ public class AboutAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         } if (viewType == TYPE_FOOTER) {
             View view = LayoutInflater.from(mContext).inflate(
                     R.layout.fragment_about_item_footer, parent, false);
+            if (CandyBarApplication.getConfiguration().getSocialIconColor() == CandyBarApplication.IconColor.ACCENT) {
+                view = LayoutInflater.from(mContext).inflate(
+                        R.layout.fragment_about_item_footer_accent, parent, false);
+            }
             return new FooterViewHolder(view);
         }
 
@@ -144,7 +152,7 @@ public class AboutAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return TYPE_BOTTOM_SHADOW;
     }
 
-    private class HeaderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private class HeaderViewHolder extends RecyclerView.ViewHolder {
 
         private final ImageView image;
         private final CircularImageView profile;
@@ -154,11 +162,40 @@ public class AboutAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             image = (ImageView) itemView.findViewById(R.id.image);
             profile = (CircularImageView) itemView.findViewById(R.id.profile);
             HtmlTextView subtitle = (HtmlTextView) itemView.findViewById(R.id.subtitle);
-            AppCompatButton email = (AppCompatButton) itemView.findViewById(R.id.email);
-            AppCompatButton link1 = (AppCompatButton) itemView.findViewById(R.id.link1);
-            AppCompatButton link2 = (AppCompatButton) itemView.findViewById(R.id.link2);
+            RecyclerView recyclerView = (RecyclerView) itemView.findViewById(R.id.recyclerview);
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, true));
+            recyclerView.setHasFixedSize(true);
+
+            String[] urls = mContext.getResources().getStringArray(R.array.about_social_links);
+            if (urls.length == 0) {
+                recyclerView.setVisibility(View.GONE);
+
+                subtitle.setPadding(
+                        subtitle.getPaddingLeft(),
+                        subtitle.getPaddingTop(),
+                        subtitle.getPaddingRight(),
+                        subtitle.getPaddingBottom() + mContext.getResources().getDimensionPixelSize(R.dimen.content_margin));
+            } else {
+                recyclerView.setAdapter(new AboutSocialAdapter(mContext, urls));
+            }
 
             CardView card = (CardView) itemView.findViewById(R.id.card);
+            if (CandyBarApplication.getConfiguration().getAboutStyle() == CandyBarApplication.Style.PORTRAIT_FLAT_LANDSCAPE_FLAT &&
+                    card != null) {
+                if (card.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
+                    card.setRadius(0f);
+                    card.setUseCompatPadding(false);
+                    int margin = mContext.getResources().getDimensionPixelSize(R.dimen.card_margin);
+                    StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) card.getLayoutParams();
+                    params.setMargins(0, 0, margin, margin);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                        params.setMarginEnd(margin);
+                    }
+                }
+            }
+
             if (!Preferences.get(mContext).isShadowEnabled()) {
                 if (card != null) card.setCardElevation(0);
 
@@ -167,60 +204,6 @@ public class AboutAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             }
 
             subtitle.setHtml(mContext.getResources().getString(R.string.about_desc));
-
-            if (!mCardMode) {
-                int accent = ColorHelper.getAttributeColor(mContext, R.attr.colorAccent);
-
-                int cardColor = ColorHelper.getAttributeColor(mContext, R.attr.card_background);
-                email.setTextColor(ColorHelper.getTitleTextColor(accent));
-                link1.setTextColor(ColorHelper.getTitleTextColor(cardColor));
-                link2.setTextColor(ColorHelper.getTitleTextColor(cardColor));
-            }
-
-            String emailText = mContext.getResources().getString(R.string.about_email);
-            if (emailText.length() == 0) email.setVisibility(View.GONE);
-            String link2Text = mContext.getResources().getString(R.string.about_link_2_url);
-            if (link2Text.length() == 0) link2.setVisibility(View.GONE);
-
-            email.setOnClickListener(this);
-            link1.setOnClickListener(this);
-            link2.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View view) {
-            int id = view.getId();
-            if (id == R.id.email) {
-                try {
-                    final Intent email = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                            "mailto", mContext.getResources().getString(
-                                    R.string.about_email), null));
-                    email.putExtra(Intent.EXTRA_SUBJECT, (mContext.getResources().getString(
-                            R.string.app_name)));
-                    mContext.startActivity(Intent.createChooser(email,
-                            mContext.getResources().getString(R.string.email_client)));
-                    return;
-                }
-                catch (ActivityNotFoundException e) {
-                    LogUtil.e(Log.getStackTraceString(e));
-                }
-                return;
-            }
-
-            Intent intent = null;
-            if (id == R.id.link1) {
-                intent = new Intent(Intent.ACTION_VIEW, Uri.parse(
-                        mContext.getResources().getString(R.string.about_link_1_url)));
-            } else if (id == R.id.link2) {
-                intent = new Intent(Intent.ACTION_VIEW, Uri.parse(
-                        mContext.getResources().getString(R.string.about_link_2_url)));
-            }
-
-            try {
-                mContext.startActivity(intent);
-            } catch (NullPointerException | ActivityNotFoundException e) {
-                LogUtil.e(Log.getStackTraceString(e));
-            }
         }
     }
 
@@ -231,6 +214,21 @@ public class AboutAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             TextView title = (TextView) itemView.findViewById(R.id.title);
 
             CardView card = (CardView) itemView.findViewById(R.id.card);
+            if (CandyBarApplication.getConfiguration().getAboutStyle() == CandyBarApplication.Style.PORTRAIT_FLAT_LANDSCAPE_FLAT &&
+                    card != null) {
+                if (card.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
+                    card.setRadius(0f);
+                    card.setUseCompatPadding(false);
+                    int margin = mContext.getResources().getDimensionPixelSize(R.dimen.card_margin);
+                    StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) card.getLayoutParams();
+                    params.setMargins(0, 0, margin, margin);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                        params.setMarginEnd(margin);
+                    }
+                }
+            }
+
             if (!Preferences.get(mContext).isShadowEnabled()) {
                 if (card != null) card.setCardElevation(0);
             }
@@ -254,32 +252,50 @@ public class AboutAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         FooterViewHolder(View itemView) {
             super(itemView);
-            AppCompatButton link1 = (AppCompatButton) itemView.findViewById(R.id.about_dev_github);
-            AppCompatButton link2 = (AppCompatButton) itemView.findViewById(R.id.about_dev_google_plus);
+            ImageView instagram = (ImageView) itemView.findViewById(R.id.about_dev_instagram);
+            ImageView googlePlus = (ImageView) itemView.findViewById(R.id.about_dev_google_plus);
+            ImageView github = (ImageView) itemView.findViewById(R.id.about_dev_github);
+            TextView title = (TextView) itemView.findViewById(R.id.about_dashboard_title);
             TextView licenses = (TextView) itemView.findViewById(R.id.about_dashboard_licenses);
             TextView contributors = (TextView) itemView.findViewById(R.id.about_dashboard_contributors);
+            TextView translator = (TextView) itemView.findViewById(R.id.about_dashboard_translator);
 
             CardView card = (CardView) itemView.findViewById(R.id.card);
+            if (CandyBarApplication.getConfiguration().getAboutStyle() == CandyBarApplication.Style.PORTRAIT_FLAT_LANDSCAPE_FLAT &&
+                    card != null) {
+                if (card.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
+                    card.setRadius(0f);
+                    card.setUseCompatPadding(false);
+                    int margin = mContext.getResources().getDimensionPixelSize(R.dimen.card_margin);
+                    StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) card.getLayoutParams();
+                    params.setMargins(0, 0, margin, margin);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                        params.setMarginEnd(margin);
+                    }
+                }
+            }
+
             if (!Preferences.get(mContext).isShadowEnabled()) {
                 if (card != null) card.setCardElevation(0);
             }
 
             int color = ColorHelper.getAttributeColor(mContext, android.R.attr.textColorPrimary);
-            TextView title = (TextView) itemView.findViewById(R.id.about_dashboard_title);
             title.setCompoundDrawablesWithIntrinsicBounds(DrawableHelper.getTintedDrawable(
                     mContext, R.drawable.ic_toolbar_dashboard, color), null, null, null);
 
-            if (!mCardMode) {
-                int accent = ColorHelper.getAttributeColor(mContext, R.attr.colorAccent);
-                int cardColor = ColorHelper.getAttributeColor(mContext, R.attr.card_background);
-                link1.setTextColor(ColorHelper.getTitleTextColor(accent));
-                link2.setTextColor(ColorHelper.getTitleTextColor(cardColor));
-            }
+            color = ConfigurationHelper.getSocialIconColor(mContext,
+                    CandyBarApplication.getConfiguration().getSocialIconColor());
+            instagram.setImageDrawable(DrawableHelper.getTintedDrawable(mContext, R.drawable.ic_toolbar_instagram, color));
+            googlePlus.setImageDrawable(DrawableHelper.getTintedDrawable(mContext, R.drawable.ic_toolbar_google_plus, color));
+            github.setImageDrawable(DrawableHelper.getTintedDrawable(mContext, R.drawable.ic_toolbar_github, color));
 
-            link1.setOnClickListener(this);
-            link2.setOnClickListener(this);
+            instagram.setOnClickListener(this);
+            googlePlus.setOnClickListener(this);
+            github.setOnClickListener(this);
             licenses.setOnClickListener(this);
             contributors.setOnClickListener(this);
+            translator.setOnClickListener(this);
         }
 
         @Override
@@ -296,6 +312,12 @@ public class AboutAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 return;
             }
 
+            if (id == R.id.about_dashboard_translator) {
+                CreditsFragment.showCreditsDialog(((AppCompatActivity) mContext).getSupportFragmentManager(),
+                        CreditsFragment.TYPE_DASHBOARD_TRANSLATOR);
+                return;
+            }
+
             Intent intent = null;
             if (id == R.id.about_dev_github) {
                 intent = new Intent(Intent.ACTION_VIEW, Uri.parse(mContext
@@ -303,6 +325,9 @@ public class AboutAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             } else if (id == R.id.about_dev_google_plus) {
                 intent = new Intent(Intent.ACTION_VIEW, Uri.parse(mContext
                         .getResources().getString(R.string.about_dashboard_dev_google_plus_url)));
+            } else if (id == R.id.about_dev_instagram) {
+                intent = new Intent(Intent.ACTION_VIEW, Uri.parse(mContext
+                        .getResources().getString(R.string.about_dashboard_dev_instagram_url)));
             }
 
             try {

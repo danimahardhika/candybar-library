@@ -7,6 +7,7 @@ import android.util.Log;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
+import com.dm.material.dashboard.candybar.items.Wallpaper;
 import com.dm.material.dashboard.candybar.items.WallpaperJSON;
 import com.dm.material.dashboard.candybar.receivers.CandyBarBroadcastReceiver;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
@@ -14,6 +15,8 @@ import com.dm.material.dashboard.candybar.utils.LogUtil;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
  * CandyBar - Material Dashboard
@@ -63,7 +66,21 @@ public class CandyBarWallpapersService extends IntentService {
                 WallpaperJSON wallpapersJSON = LoganSquare.parse(stream, WallpaperJSON.class);
                 if (wallpapersJSON == null) return;
 
-                int size = wallpapersJSON.getWalls.size();
+                List<Wallpaper> wallpapers = new ArrayList<>();
+                for (WallpaperJSON wallpaper : wallpapersJSON.getWalls) {
+                    Wallpaper wall = new Wallpaper(
+                            wallpaper.name,
+                            wallpaper.author,
+                            wallpaper.url,
+                            wallpaper.thumbUrl);
+                    if (!wallpapers.contains(wall)) {
+                        wallpapers.add(wall);
+                    } else {
+                        LogUtil.e("Duplicate wallpaper found: " +wall.getURL());
+                    }
+                }
+
+                int size = wallpapers.size();
                 broadcastIntent.putExtra("size", size);
                 broadcastIntent.putExtra("packageName", getPackageName());
                 sendBroadcast(broadcastIntent);

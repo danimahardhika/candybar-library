@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.LauncherAdapter;
+import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
 import com.dm.material.dashboard.candybar.items.Icon;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.AlphanumComparator;
@@ -73,6 +74,11 @@ public class ApplyFragment extends Fragment{
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),
                 getActivity().getResources().getInteger(R.integer.apply_column_count)));
 
+        if (CandyBarApplication.getConfiguration().getApplyGrid() == CandyBarApplication.GridStyle.FLAT) {
+            int padding = getActivity().getResources().getDimensionPixelSize(R.dimen.card_margin);
+            mRecyclerView.setPadding(padding, padding, 0, 0);
+        }
+
         getLaunchers();
     }
 
@@ -119,6 +125,18 @@ public class ApplyFragment extends Fragment{
 
     private boolean isLauncherInstalled(String pkg1, String pkg2, String pkg3) {
         return isPackageInstalled(pkg1) | isPackageInstalled(pkg2) | isPackageInstalled(pkg3);
+    }
+
+    private boolean isLauncherShouldBeAdded(String packageName) {
+        if (packageName.equals("com.dlto.atom.launcher")) {
+            int id = getActivity().getResources().getIdentifier("appmap", "xml", getActivity().getPackageName());
+            if (id <= 0) return false;
+        } else if (packageName.equals("com.lge.launcher2") ||
+                packageName.equals("com.lge.launcher3")) {
+            int id = getActivity().getResources().getIdentifier("theme_resources", "xml", getActivity().getPackageName());
+            if (id<= 0) return false;
+        }
+        return true;
     }
 
     private void getLaunchers() {
@@ -168,8 +186,10 @@ public class ApplyFragment extends Fragment{
                             }
 
                             Icon launcher = new Icon(launcherNames[i], icon, launcherPackage);
-                            if (isInstalled) installed.add(launcher);
-                            else supported.add(launcher);
+                            if (isLauncherShouldBeAdded(launcherPackage)) {
+                                if (isInstalled) installed.add(launcher);
+                                else supported.add(launcher);
+                            }
                         }
 
                         try {

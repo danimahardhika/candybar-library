@@ -2,9 +2,12 @@ package com.dm.material.dashboard.candybar.applications;
 
 import android.app.Application;
 import android.content.Intent;
+import android.support.annotation.IntRange;
+import android.support.annotation.NonNull;
 
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.activities.CandyBarCrashReport;
+import com.dm.material.dashboard.candybar.helpers.LocaleHelper;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
@@ -36,10 +39,23 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 public class CandyBarApplication extends Application {
 
+    private static Configuration mConfiguration;
     private Thread.UncaughtExceptionHandler mHandler;
 
+    public static Configuration getConfiguration() {
+        if (mConfiguration == null) {
+            mConfiguration = new Configuration();
+        }
+        return mConfiguration;
+    }
+
     public void initApplication() {
+        initApplication(new Configuration());
+    }
+
+    public void initApplication(@NonNull Configuration configuration) {
         super.onCreate();
+        mConfiguration = configuration;
         if (!ImageLoader.getInstance().isInited())
             ImageLoader.getInstance().init(ImageConfig.getImageLoaderConfiguration(this));
 
@@ -51,8 +67,17 @@ public class CandyBarApplication extends Application {
         //Enable or disable logging
         LogUtil.setLoggingEnabled(true);
 
-        mHandler = Thread.getDefaultUncaughtExceptionHandler();
-        Thread.setDefaultUncaughtExceptionHandler(this::handleUncaughtException);
+        if (mConfiguration.mIsCrashReportEnabled) {
+            mHandler = Thread.getDefaultUncaughtExceptionHandler();
+            Thread.setDefaultUncaughtExceptionHandler(this::handleUncaughtException);
+        }
+
+        if (Preferences.get(this).isTimeToSetLanguagePreference()) {
+            Preferences.get(this).setLanguagePreference();
+            return;
+        }
+
+        LocaleHelper.setLocale(this);
     }
 
     private void handleUncaughtException(Thread thread, Throwable throwable) {
@@ -67,8 +92,8 @@ public class CandyBarApplication extends Application {
 
             for (StackTraceElement element : throwable.getStackTrace()) {
                 sb.append("\n");
-                sb.append(element.toString());
-            }
+            sb.append(element.toString());
+        }
 
             Preferences.get(this).setLatestCrashLog(sb.toString());
 
@@ -84,5 +109,265 @@ public class CandyBarApplication extends Application {
             }
         }
         System.exit(1);
+    }
+
+    public static class Configuration {
+
+        private NavigationIcon mNavigationIcon = NavigationIcon.STYLE_1;
+        private NavigationViewHeader mNavigationViewHeader = NavigationViewHeader.NORMAL;
+
+        private GridStyle mHomeGrid = GridStyle.CARD;
+        private GridStyle mApplyGrid = GridStyle.CARD;
+        private Style mRequestStyle = Style.PORTRAIT_FLAT_LANDSCAPE_CARD;
+        private GridStyle mWallpapersGrid = GridStyle.CARD;
+        private Style mAboutStyle = Style.PORTRAIT_FLAT_LANDSCAPE_CARD;
+        private IconColor mIconColor = IconColor.PRIMARY_TEXT;
+
+        private boolean mIsAutomaticIconsCountEnabled = true;
+        private int mCustomIconsCount = 0;
+        private boolean mIsShowTabIconsCount = false;
+        private boolean mIsShowTabAllIcons = false;
+        private String mTabAllIconsTitle = "All Icons";
+        private String[] mCategoryForTabAllIcons = null;
+
+        private boolean mIsShadowEnabled = true;
+        private boolean mIsDashboardThemingEnabled = true;
+        private int mWallpaperGridPreviewQuality = 4;
+
+        private boolean mIsGenerateAppFilter = true;
+        private boolean mIsGenerateAppMap = false;
+        private boolean mIsGenerateThemeResources = false;
+        private boolean mIsIncludeIconRequestToEmailBody = true;
+
+        private boolean mIsCrashReportEnabled = true;
+
+        public Configuration setNavigationIcon(@NonNull NavigationIcon navigationIcon) {
+            mNavigationIcon = navigationIcon;
+            return this;
+        }
+
+        public Configuration setNavigationViewHeaderStyle(@NonNull NavigationViewHeader navigationViewHeader) {
+            mNavigationViewHeader = navigationViewHeader;
+            return this;
+        }
+
+        public Configuration setAutomaticIconsCountEnabled(boolean automaticIconsCountEnabled) {
+            mIsAutomaticIconsCountEnabled = automaticIconsCountEnabled;
+            return this;
+        }
+
+        public Configuration setHomeGridStyle(@NonNull GridStyle gridStyle) {
+            mHomeGrid = gridStyle;
+            return this;
+        }
+
+        public Configuration setApplyGridStyle(@NonNull GridStyle gridStyle) {
+            mApplyGrid = gridStyle;
+            return this;
+        }
+
+        public Configuration setRequestStyle(@NonNull Style style) {
+            mRequestStyle = style;
+            return this;
+        }
+
+        public Configuration setWallpapersGridStyle(@NonNull GridStyle gridStyle) {
+            mWallpapersGrid = gridStyle;
+            return this;
+        }
+
+        public Configuration setAboutStyle(@NonNull Style style) {
+            mAboutStyle = style;
+            return this;
+        }
+
+        public Configuration setSocialIconColor(@NonNull IconColor iconColor) {
+            mIconColor = iconColor;
+            return this;
+        }
+
+        public Configuration setCustomIconsCount(int customIconsCount) {
+            mCustomIconsCount = customIconsCount;
+            return this;
+        }
+
+        public Configuration setShowTabIconsCount(boolean showTabIconsCount) {
+            mIsShowTabIconsCount = showTabIconsCount;
+            return this;
+        }
+
+        public Configuration setShowTabAllIcons(boolean showTabAllIcons) {
+            mIsShowTabAllIcons = showTabAllIcons;
+            return this;
+        }
+
+        public Configuration setTabAllIconsTitle(@NonNull String title) {
+            mTabAllIconsTitle = title;
+            if (mTabAllIconsTitle.length() == 0) mTabAllIconsTitle = "All Icons";
+            return this;
+        }
+
+        public Configuration setCategoryForTabAllIcons(@NonNull String[] categories) {
+            mCategoryForTabAllIcons = categories;
+            return this;
+        }
+
+        public Configuration setShadowEnabled(boolean shadowEnabled) {
+            mIsShadowEnabled = shadowEnabled;
+            return this;
+        }
+
+        public Configuration setDashboardThemingEnabled(boolean dashboardThemingEnabled) {
+            mIsDashboardThemingEnabled = dashboardThemingEnabled;
+            return this;
+        }
+
+        public Configuration setWallpaperGridPreviewQuality(@IntRange (from = 1, to = 10) int quality) {
+            mWallpaperGridPreviewQuality = quality;
+            return this;
+        }
+
+        public Configuration setGenerateAppFilter(boolean generateAppFilter) {
+            mIsGenerateAppFilter = generateAppFilter;
+            return this;
+        }
+
+        public Configuration setGenerateAppMap(boolean generateAppMap) {
+            mIsGenerateAppMap = generateAppMap;
+            return this;
+        }
+
+        public Configuration setGenerateThemeResources(boolean generateThemeResources) {
+            mIsGenerateThemeResources = generateThemeResources;
+            return this;
+        }
+
+        public Configuration setIncludeIconRequestToEmailBody(boolean includeIconRequestToEmailBody) {
+            mIsIncludeIconRequestToEmailBody = includeIconRequestToEmailBody;
+            return this;
+        }
+
+        public Configuration setCrashReportEnabled(boolean crashReportEnabled) {
+            mIsCrashReportEnabled = crashReportEnabled;
+            return this;
+        }
+
+        public NavigationIcon getNavigationIcon() {
+            return mNavigationIcon;
+        }
+
+        public NavigationViewHeader getNavigationViewHeader() {
+            return mNavigationViewHeader;
+        }
+
+        public GridStyle getHomeGrid() {
+            return mHomeGrid;
+        }
+
+        public GridStyle getApplyGrid() {
+            return mApplyGrid;
+        }
+
+        public Style getRequestStyle() {
+            return mRequestStyle;
+        }
+
+        public GridStyle getWallpapersGrid() {
+            return mWallpapersGrid;
+        }
+
+        public Style getAboutStyle() {
+            return mAboutStyle;
+        }
+
+        public IconColor getSocialIconColor() {
+            return mIconColor;
+        }
+
+        public boolean isAutomaticIconsCountEnabled() {
+            return mIsAutomaticIconsCountEnabled;
+        }
+
+        public int getCustomIconsCount() {
+            return mCustomIconsCount;
+        }
+
+        public boolean isShowTabIconsCount() {
+            return mIsShowTabIconsCount;
+        }
+
+        public boolean isShowTabAllIcons() {
+            return mIsShowTabAllIcons;
+        }
+
+        public String getTabAllIconsTitle() {
+            return mTabAllIconsTitle;
+        }
+
+        public String[] getCategoryForTabAllIcons() {
+            return mCategoryForTabAllIcons;
+        }
+
+        public boolean isShadowEnabled() {
+            return mIsShadowEnabled;
+        }
+
+        public boolean isDashboardThemingEnabled() {
+            return mIsDashboardThemingEnabled;
+        }
+
+        public int getWallpaperGridPreviewQuality() {
+            return mWallpaperGridPreviewQuality;
+        }
+
+        public boolean isGenerateAppFilter() {
+            return mIsGenerateAppFilter;
+        }
+
+        public boolean isGenerateAppMap() {
+            return mIsGenerateAppMap;
+        }
+
+        public boolean isGenerateThemeResources() {
+            return mIsGenerateThemeResources;
+        }
+
+        public boolean isIncludeIconRequestToEmailBody() {
+            return mIsIncludeIconRequestToEmailBody;
+        }
+    }
+
+    public enum NavigationIcon {
+        DEFAULT,
+        STYLE_1,
+        STYLE_2,
+        STYLE_3,
+        STYLE_4
+    }
+
+    public enum NavigationViewHeader {
+        NORMAL,
+        MINI,
+        NONE
+    }
+
+    public enum GridStyle {
+        CARD,
+        FLAT
+    }
+
+    public enum Style {
+        PORTRAIT_FLAT_LANDSCAPE_CARD,
+        PORTRAIT_FLAT_LANDSCAPE_FLAT
+    }
+
+    public enum IconColor {
+        PRIMARY_TEXT,
+        ACCENT
+    }
+
+    public enum IconStyle {
+        SQUARE,
+        CIRCLE,
     }
 }

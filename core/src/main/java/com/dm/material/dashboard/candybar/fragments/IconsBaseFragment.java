@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.danimahardhika.android.helpers.animation.AnimationHelper;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
+import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
 import com.dm.material.dashboard.candybar.helpers.IconsHelper;
 import com.dm.material.dashboard.candybar.helpers.TapIntroHelper;
 import com.dm.material.dashboard.candybar.items.Icon;
@@ -33,6 +34,7 @@ import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.AlphanumComparator;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.dm.material.dashboard.candybar.utils.listeners.SearchListener;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.Collections;
 import java.util.List;
@@ -149,6 +151,7 @@ public class IconsBaseFragment extends Fragment {
     @Override
     public void onDestroy() {
         if (mGetIcons != null) mGetIcons.cancel(true);
+        ImageLoader.getInstance().getMemoryCache().clear();
         super.onDestroy();
     }
 
@@ -181,7 +184,9 @@ public class IconsBaseFragment extends Fragment {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                mProgress.setVisibility(View.VISIBLE);
+                if (CandyBarMainActivity.sSections == null) {
+                    mProgress.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
@@ -215,6 +220,12 @@ public class IconsBaseFragment extends Fragment {
 
                                     CandyBarMainActivity.sSections.get(i).setIcons(icons);
                                 }
+                            }
+
+                            if (CandyBarApplication.getConfiguration().isShowTabAllIcons()) {
+                                List<Icon> icons = IconsHelper.getTabAllIcons();
+                                CandyBarMainActivity.sSections.add(new Icon(
+                                        CandyBarApplication.getConfiguration().getTabAllIconsTitle(), icons));
                             }
                         }
                         return true;
@@ -310,7 +321,11 @@ public class IconsBaseFragment extends Fragment {
 
         @Override
         public CharSequence getPageTitle(int position){
-            return mIcons.get(position).getTitle();
+            String title = mIcons.get(position).getTitle();
+            if (CandyBarApplication.getConfiguration().isShowTabIconsCount()) {
+                title += " (" +mIcons.get(position).getIcons().size() +")";
+            }
+            return title;
         }
 
         @Override
@@ -321,6 +336,10 @@ public class IconsBaseFragment extends Fragment {
         @Override
         public int getCount() {
             return mIcons.size();
+        }
+
+        public List<Icon> getIcons() {
+            return mIcons;
         }
     }
 }

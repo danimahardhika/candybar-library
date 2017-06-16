@@ -29,6 +29,7 @@ import com.danimahardhika.android.helpers.core.ListHelper;
 import com.danimahardhika.android.helpers.core.ViewHelper;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.WallpapersAdapter;
+import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
 import com.dm.material.dashboard.candybar.databases.Database;
 import com.dm.material.dashboard.candybar.helpers.TapIntroHelper;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
@@ -111,6 +112,11 @@ public class WallpapersFragment extends Fragment {
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),
                 getActivity().getResources().getInteger(R.integer.wallpapers_column_count)));
 
+        if (CandyBarApplication.getConfiguration().getWallpapersGrid() == CandyBarApplication.GridStyle.FLAT) {
+            int padding = getActivity().getResources().getDimensionPixelSize(R.dimen.card_margin);
+            mRecyclerView.setPadding(padding, padding, 0, 0);
+        }
+
         setFastScrollColor(mFastScroll);
         mFastScroll.attachRecyclerView(mRecyclerView);
 
@@ -142,15 +148,14 @@ public class WallpapersFragment extends Fragment {
     }
 
     private void initPopupBubble() {
-        int color = ContextCompat.getColor(getActivity(), R.color.popupBubbleText);
+        int color = ColorHelper.getAttributeColor(getActivity(), R.attr.colorAccent);
         mPopupBubble.setCompoundDrawablesWithIntrinsicBounds(DrawableHelper.getTintedDrawable(
-                getActivity(), R.drawable.ic_toolbar_arrow_up, color), null, null, null);
+                getActivity(), R.drawable.ic_toolbar_arrow_up, ColorHelper.getTitleTextColor(color)), null, null, null);
         mPopupBubble.setOnClickListener(view -> {
             WallpapersListener listener = (WallpapersListener) getActivity();
             listener.onWallpapersChecked(null);
 
             AnimationHelper.hide(getActivity().findViewById(R.id.popup_bubble))
-                    .duration(400)
                     .start();
 
             getWallpapers(true);
@@ -164,7 +169,6 @@ public class WallpapersFragment extends Fragment {
         if (Preferences.get(getActivity()).getAvailableWallpapersCount() > wallpapersCount) {
             AnimationHelper.show(mPopupBubble)
                     .interpolator(new LinearOutSlowInInterpolator())
-                    .duration(400)
                     .start();
         }
     }
@@ -183,7 +187,9 @@ public class WallpapersFragment extends Fragment {
                 else mSwipe.setRefreshing(true);
 
                 DrawMeButton popupBubble = (DrawMeButton) getActivity().findViewById(R.id.popup_bubble);
-                if (popupBubble.getVisibility() == View.VISIBLE) popupBubble.setVisibility(View.GONE);
+                if (popupBubble.getVisibility() == View.VISIBLE) {
+                    AnimationHelper.hide(popupBubble).start();
+                }
             }
 
             @Override

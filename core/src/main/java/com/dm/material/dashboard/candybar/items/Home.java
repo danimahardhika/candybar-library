@@ -25,7 +25,7 @@ import android.support.annotation.NonNull;
 public class Home {
 
     private final int mIcon;
-    private final String mTitle;
+    private String mTitle;
     private final String mSubtitle;
     private final Home.Type mType;
 
@@ -51,6 +51,10 @@ public class Home {
 
     public Home.Type getType() {
         return mType;
+    }
+
+    public void setTitle(String title) {
+        mTitle = title;
     }
 
     public enum Type {

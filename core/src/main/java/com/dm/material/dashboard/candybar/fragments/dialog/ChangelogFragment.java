@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.ChangelogAdapter;
+import com.dm.material.dashboard.candybar.helpers.TypefaceHelper;
 import com.dm.material.dashboard.candybar.utils.listeners.HomeListener;
 
 /*
@@ -64,6 +65,9 @@ public class ChangelogFragment extends DialogFragment{
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+        builder.typeface(
+                TypefaceHelper.getMedium(getActivity()),
+                TypefaceHelper.getRegular(getActivity()));
         builder.customView(R.layout.fragment_changelog, false);
         builder.positiveText(R.string.close);
         MaterialDialog dialog = builder.build();

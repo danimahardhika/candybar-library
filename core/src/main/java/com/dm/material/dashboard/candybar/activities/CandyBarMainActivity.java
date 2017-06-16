@@ -22,12 +22,12 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.URLUtil;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,11 +39,15 @@ import com.danimahardhika.android.helpers.core.DrawableHelper;
 import com.danimahardhika.android.helpers.core.SoftKeyboardHelper;
 import com.danimahardhika.android.helpers.license.LicenseHelper;
 import com.danimahardhika.android.helpers.permission.PermissionCode;
+import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
 import com.dm.material.dashboard.candybar.databases.Database;
 import com.dm.material.dashboard.candybar.fragments.AboutFragment;
+import com.dm.material.dashboard.candybar.helpers.ConfigurationHelper;
 import com.dm.material.dashboard.candybar.helpers.IconsHelper;
 import com.dm.material.dashboard.candybar.helpers.LicenseCallbackHelper;
+import com.dm.material.dashboard.candybar.helpers.LocaleHelper;
 import com.dm.material.dashboard.candybar.helpers.NavigationViewHelper;
+import com.dm.material.dashboard.candybar.helpers.TypefaceHelper;
 import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
 import com.dm.material.dashboard.candybar.items.Home;
 import com.dm.material.dashboard.candybar.items.Icon;
@@ -72,6 +76,7 @@ import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
 import com.dm.material.dashboard.candybar.utils.listeners.InAppBillingListener;
 import com.dm.material.dashboard.candybar.utils.listeners.RequestListener;
+import com.dm.material.dashboard.candybar.utils.views.HeaderView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
@@ -214,11 +219,13 @@ public class CandyBarMainActivity extends AppCompatActivity implements
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        LocaleHelper.setLocale(this);
         if (mIsMenuVisible) mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
     @Override
     protected void attachBaseContext(Context newBase) {
+        LocaleHelper.setLocale(newBase);
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
@@ -253,7 +260,6 @@ public class CandyBarMainActivity extends AppCompatActivity implements
         }
 
         CandyBarMainActivity.sMissedApps = null;
-        CandyBarMainActivity.sSections = null;
         CandyBarMainActivity.sHomeIcon = null;
         super.onDestroy();
     }
@@ -430,7 +436,9 @@ public class CandyBarMainActivity extends AppCompatActivity implements
         if (mBillingProcessor.consumePurchase(productId)) {
             if (type == InAppBillingHelper.DONATE) {
                 new MaterialDialog.Builder(this)
-                        .typeface("Font-Medium.ttf", "Font-Regular.ttf")
+                        .typeface(
+                                TypefaceHelper.getMedium(this),
+                                TypefaceHelper.getRegular(this))
                         .title(R.string.navigation_view_donate)
                         .content(R.string.donation_success)
                         .positiveText(R.string.close)
@@ -505,7 +513,13 @@ public class CandyBarMainActivity extends AppCompatActivity implements
         } else {
             SoftKeyboardHelper.closeKeyboard(this);
             ColorHelper.setStatusBarColor(this, Color.TRANSPARENT, true);
-            toolbar.setNavigationIcon(R.drawable.ic_toolbar_navigation);
+            if (CandyBarApplication.getConfiguration().getNavigationIcon() == CandyBarApplication.NavigationIcon.DEFAULT) {
+                mDrawerToggle.setDrawerArrowDrawable(new DrawerArrowDrawable(this));
+            } else {
+                toolbar.setNavigationIcon(ConfigurationHelper.getNavigationIcon(this,
+                        CandyBarApplication.getConfiguration().getNavigationIcon()));
+            }
+
             toolbar.setNavigationOnClickListener(view ->
                     mDrawerLayout.openDrawer(GravityCompat.START));
         }
@@ -541,9 +555,18 @@ public class CandyBarMainActivity extends AppCompatActivity implements
             }
         };
         mDrawerToggle.setDrawerIndicatorEnabled(false);
-        toolbar.setNavigationIcon(R.drawable.ic_toolbar_navigation);
+        toolbar.setNavigationIcon(ConfigurationHelper.getNavigationIcon(this,
+                CandyBarApplication.getConfiguration().getNavigationIcon()));
         toolbar.setNavigationOnClickListener(view ->
                 mDrawerLayout.openDrawer(GravityCompat.START));
+
+        if (CandyBarApplication.getConfiguration().getNavigationIcon() == CandyBarApplication.NavigationIcon.DEFAULT) {
+            DrawerArrowDrawable drawerArrowDrawable = new DrawerArrowDrawable(this);
+            drawerArrowDrawable.setColor(ColorHelper.getAttributeColor(this, R.attr.toolbar_icon));
+            drawerArrowDrawable.setSpinEnabled(true);
+            mDrawerToggle.setDrawerArrowDrawable(drawerArrowDrawable);
+            mDrawerToggle.setDrawerIndicatorEnabled(true);
+        }
 
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         mDrawerLayout.addDrawerListener(mDrawerToggle);
@@ -583,13 +606,22 @@ public class CandyBarMainActivity extends AppCompatActivity implements
     }
 
     private void initNavigationViewHeader() {
+        if (CandyBarApplication.getConfiguration().getNavigationViewHeader() == CandyBarApplication.NavigationViewHeader.NONE) {
+            mNavigationView.removeHeaderView(mNavigationView.getHeaderView(0));
+            return;
+        }
+
         String imageUrl = getResources().getString(R.string.navigation_view_header);
         String titleText = getResources().getString(R.string.navigation_view_header_title);
         View header = mNavigationView.getHeaderView(0);
-        ImageView image = (ImageView) header.findViewById(R.id.header_image);
+        HeaderView image = (HeaderView) header.findViewById(R.id.header_image);
         LinearLayout container = (LinearLayout) header.findViewById(R.id.header_title_container);
         TextView title = (TextView )header.findViewById(R.id.header_title);
         TextView version = (TextView) header.findViewById(R.id.header_version);
+
+        if (CandyBarApplication.getConfiguration().getNavigationViewHeader() == CandyBarApplication.NavigationViewHeader.MINI) {
+            image.setRatio(16, 9);
+        }
 
         if (titleText.length() == 0) {
             container.setVisibility(View.GONE);

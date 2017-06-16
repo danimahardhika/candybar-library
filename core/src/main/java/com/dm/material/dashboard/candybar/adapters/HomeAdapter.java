@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -29,6 +30,7 @@ import com.danimahardhika.android.helpers.core.ColorHelper;
 import com.danimahardhika.android.helpers.core.DrawableHelper;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
+import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
 import com.dm.material.dashboard.candybar.fragments.dialog.IconPreviewFragment;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
@@ -288,6 +290,35 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ImageView share = (ImageView) itemView.findViewById(R.id.share);
 
             CardView card = (CardView) itemView.findViewById(R.id.card);
+            if (CandyBarApplication.getConfiguration().getHomeGrid() == CandyBarApplication.GridStyle.FLAT) {
+                if (card.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
+                    card.setRadius(0f);
+                    card.setUseCompatPadding(false);
+                    int margin = mContext.getResources().getDimensionPixelSize(R.dimen.card_margin);
+                    StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) card.getLayoutParams();
+                    params.setMargins(0, 0, margin, margin);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                        params.setMarginEnd(margin);
+                    }
+                } else if (card.getLayoutParams() instanceof LinearLayout.LayoutParams) {
+                    card.setRadius(0f);
+                    card.setUseCompatPadding(false);
+                    int margin = mContext.getResources().getDimensionPixelSize(R.dimen.card_margin);
+                    LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) card.getLayoutParams();
+                    if (mImageStyle.getType() == Home.Style.Type.LANDSCAPE ||
+                            mImageStyle.getType() == Home.Style.Type.SQUARE) {
+                        params.setMargins(margin,
+                                mContext.getResources().getDimensionPixelSize(R.dimen.content_padding_reverse),
+                                margin, margin);
+                    }
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                        params.setMarginEnd(margin);
+                    }
+                }
+            }
+
             if (!Preferences.get(mContext).isShadowEnabled()) {
                 card.setCardElevation(0);
             }
@@ -341,6 +372,20 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             subtitle = (TextView) itemView.findViewById(R.id.subtitle);
 
             CardView card = (CardView) itemView.findViewById(R.id.card);
+            if (CandyBarApplication.getConfiguration().getHomeGrid() == CandyBarApplication.GridStyle.FLAT) {
+                if (card.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
+                    card.setRadius(0f);
+                    card.setUseCompatPadding(false);
+                    int margin = mContext.getResources().getDimensionPixelSize(R.dimen.card_margin);
+                    StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) card.getLayoutParams();
+                    params.setMargins(0, 0, margin, margin);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                        params.setMarginEnd(margin);
+                    }
+                }
+            }
+
             if (!Preferences.get(mContext).isShadowEnabled()) {
                 card.setCardElevation(0);
             }
@@ -398,6 +443,20 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             container = (LinearLayout) itemView.findViewById(R.id.container);
 
             CardView card = (CardView) itemView.findViewById(R.id.card);
+            if (CandyBarApplication.getConfiguration().getHomeGrid() == CandyBarApplication.GridStyle.FLAT) {
+                if (card.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
+                    card.setRadius(0f);
+                    card.setUseCompatPadding(false);
+                    int margin = mContext.getResources().getDimensionPixelSize(R.dimen.card_margin);
+                    StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) card.getLayoutParams();
+                    params.setMargins(0, 0, margin, margin);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                        params.setMarginEnd(margin);
+                    }
+                }
+            }
+
             if (!Preferences.get(mContext).isShadowEnabled()) {
                 card.setCardElevation(0);
             }
@@ -431,6 +490,20 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             TextView muzei = (TextView) itemView.findViewById(R.id.muzei);
 
             CardView card = (CardView) itemView.findViewById(R.id.card);
+            if (CandyBarApplication.getConfiguration().getHomeGrid() == CandyBarApplication.GridStyle.FLAT) {
+                if (card.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
+                    card.setRadius(0f);
+                    card.setUseCompatPadding(false);
+                    int margin = mContext.getResources().getDimensionPixelSize(R.dimen.card_margin);
+                    StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) card.getLayoutParams();
+                    params.setMargins(0, 0, margin, margin);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                        params.setMarginEnd(margin);
+                    }
+                }
+            }
+
             if (!Preferences.get(mContext).isShadowEnabled()) {
                 card.setCardElevation(0);
             }
@@ -471,6 +544,20 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             title = (TextView) itemView.findViewById(R.id.title);
 
             CardView card = (CardView) itemView.findViewById(R.id.card);
+            if (CandyBarApplication.getConfiguration().getHomeGrid() == CandyBarApplication.GridStyle.FLAT) {
+                if (card.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
+                    card.setRadius(0f);
+                    card.setUseCompatPadding(false);
+                    int margin = mContext.getResources().getDimensionPixelSize(R.dimen.card_margin);
+                    StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) card.getLayoutParams();
+                    params.setMargins(0, 0, margin, margin);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                        params.setMarginEnd(margin);
+                    }
+                }
+            }
+
             if (!Preferences.get(mContext).isShadowEnabled()) {
                 card.setCardElevation(0);
             }
@@ -501,6 +588,25 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             if (type == TYPE_CONTENT) {
                 int pos = i - 1;
                 if (mHomes.get(pos).getType() == Home.Type.APPLY) {
+                    index = i;
+                    break;
+                }
+            }
+        }
+        return index;
+    }
+
+    public Home getItem(int position) {
+        return mHomes.get(position - 1);
+    }
+
+    public int getIconsIndex() {
+        int index = -1;
+        for (int i = 0; i < getItemCount(); i++) {
+            int type = getItemViewType(i);
+            if (type == TYPE_CONTENT) {
+                int pos = i - 1;
+                if (mHomes.get(pos).getType() == Home.Type.ICONS) {
                     index = i;
                     break;
                 }

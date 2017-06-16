@@ -21,6 +21,7 @@ import android.util.Log;
 
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
+import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
 import com.dm.material.dashboard.candybar.fragments.dialog.IconPreviewFragment;
 import com.dm.material.dashboard.candybar.items.Home;
 import com.dm.material.dashboard.candybar.items.Icon;
@@ -66,7 +67,7 @@ public class IconsHelper {
     public static List<Icon> getIconsList(@NonNull Context context) throws Exception {
         XmlResourceParser parser = context.getResources().getXml(R.xml.drawable);
         int eventType = parser.getEventType();
-        String section = "";
+        String sectionTitle = "";
         List<Icon> icons = new ArrayList<>();
         List<Icon> sections = new ArrayList<>();
 
@@ -75,13 +76,13 @@ public class IconsHelper {
             if (eventType == XmlPullParser.START_TAG) {
                 if (parser.getName().equals("category")) {
                     String title = parser.getAttributeValue(null, "title");
-                    if (!section.equals(title)) {
-                        if (section.length() > 0) {
+                    if (!sectionTitle.equals(title)) {
+                        if (sectionTitle.length() > 0) {
                             count += icons.size();
-                            sections.add(new Icon(section, icons));
+                            sections.add(new Icon(sectionTitle, icons));
                         }
                     }
-                    section = title;
+                    sectionTitle = title;
                     icons = new ArrayList<>();
                 } else if (parser.getName().equals("item")) {
                     String name = parser.getAttributeValue(null, "drawable");
@@ -96,9 +97,43 @@ public class IconsHelper {
         }
         count += icons.size();
         CandyBarMainActivity.sIconsCount = count;
-        sections.add(new Icon(section, icons));
+        if (!CandyBarApplication.getConfiguration().isAutomaticIconsCountEnabled() &&
+                CandyBarApplication.getConfiguration().getCustomIconsCount() == 0) {
+            CandyBarApplication.getConfiguration().setCustomIconsCount(count);
+        }
+        sections.add(new Icon(sectionTitle, icons));
         parser.close();
         return sections;
+    }
+
+    public static List<Icon> getTabAllIcons() {
+        List<Icon> icons = new ArrayList<>();
+        String[] categories = CandyBarApplication.getConfiguration().getCategoryForTabAllIcons();
+
+        if (categories != null && categories.length > 0) {
+            for (String category : categories) {
+                for (Icon section : CandyBarMainActivity.sSections) {
+                    if (section.getTitle().equals(category)) {
+                        icons.addAll(section.getIcons());
+                        break;
+                    }
+                }
+            }
+        } else {
+            for (Icon section : CandyBarMainActivity.sSections) {
+                icons.addAll(section.getIcons());
+            }
+        }
+
+        Collections.sort(icons, new AlphanumComparator() {
+            @Override
+            public int compare(Object o1, Object o2) {
+                String s1 = ((Icon) o1).getTitle();
+                String s2 = ((Icon) o2).getTitle();
+                return super.compare(s1, s2);
+            }
+        });
+        return icons;
     }
 
     public static void prepareIconsList(@NonNull Context context) {
@@ -114,36 +149,36 @@ public class IconsHelper {
                         if (CandyBarMainActivity.sSections == null) {
                             CandyBarMainActivity.sSections = IconsHelper.getIconsList(context);
 
-                            int count = 0;
-                            for (Icon section : CandyBarMainActivity.sSections) {
-                                count += section.getIcons().size();
-                            }
-                            CandyBarMainActivity.sIconsCount = count;
-                        }
+                            for (int i = 0; i < CandyBarMainActivity.sSections.size(); i++) {
+                                List<Icon> icons = CandyBarMainActivity.sSections.get(i).getIcons();
 
-                        for (int i = 0; i < CandyBarMainActivity.sSections.size(); i++) {
-                            List<Icon> icons = CandyBarMainActivity.sSections.get(i).getIcons();
+                                if (context.getResources().getBoolean(R.bool.show_icon_name)) {
+                                    for (Icon icon : icons) {
+                                        boolean replacer = context.getResources().getBoolean(
+                                                R.bool.enable_icon_name_replacer);
+                                        String name = replaceName(context, replacer, icon.getTitle());
+                                        icon.setTitle(name);
+                                    }
+                                }
 
-                            if (context.getResources().getBoolean(R.bool.show_icon_name)) {
-                                for (Icon icon : icons) {
-                                    boolean replacer = context.getResources().getBoolean(
-                                            R.bool.enable_icon_name_replacer);
-                                    String name = replaceName(context, replacer, icon.getTitle());
-                                    icon.setTitle(name);
+                                if (context.getResources().getBoolean(R.bool.enable_icons_sort)) {
+                                    Collections.sort(icons, new AlphanumComparator() {
+                                        @Override
+                                        public int compare(Object o1, Object o2) {
+                                            String s1 = ((Icon) o1).getTitle();
+                                            String s2 = ((Icon) o2).getTitle();
+                                            return super.compare(s1, s2);
+                                        }
+                                    });
+
+                                    CandyBarMainActivity.sSections.get(i).setIcons(icons);
                                 }
                             }
 
-                            if (context.getResources().getBoolean(R.bool.enable_icons_sort)) {
-                                Collections.sort(icons, new AlphanumComparator() {
-                                    @Override
-                                    public int compare(Object o1, Object o2) {
-                                        String s1 = ((Icon) o1).getTitle();
-                                        String s2 = ((Icon) o2).getTitle();
-                                        return super.compare(s1, s2);
-                                    }
-                                });
-
-                                CandyBarMainActivity.sSections.get(i).setIcons(icons);
+                            if (CandyBarApplication.getConfiguration().isShowTabAllIcons()) {
+                                List<Icon> icons = getTabAllIcons();
+                                CandyBarMainActivity.sSections.add(new Icon(
+                                        CandyBarApplication.getConfiguration().getTabAllIconsTitle(), icons));
                             }
                         }
 

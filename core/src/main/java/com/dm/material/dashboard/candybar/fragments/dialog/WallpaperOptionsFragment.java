@@ -20,6 +20,7 @@ import com.danimahardhika.android.helpers.permission.PermissionHelper;
 import com.danimahardhika.cafebar.CafeBar;
 import com.danimahardhika.cafebar.CafeBarTheme;
 import com.dm.material.dashboard.candybar.R;
+import com.dm.material.dashboard.candybar.helpers.TypefaceHelper;
 import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
 
 import java.io.File;
@@ -142,7 +143,7 @@ public class WallpaperOptionsFragment extends DialogFragment implements View.OnC
                             .theme(new CafeBarTheme.Custom(ColorHelper.getAttributeColor(getActivity(), R.attr.card_background)))
                             .autoDismiss(false)
                             .maxLines(4)
-                            .typeface("Font-Regular.ttf", "Font-Bold.ttf")
+                            .typeface(TypefaceHelper.getRegular(getActivity()), TypefaceHelper.getBold(getActivity()))
                             .content(String.format(getResources().getString(R.string.wallpaper_download_exist),
                                     ("\"" +mName + WallpaperHelper.IMAGE_EXTENSION+ "\"")))
                             .icon(R.drawable.ic_toolbar_download)

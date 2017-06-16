@@ -38,7 +38,9 @@ public class LicenseCallbackHelper implements LicenseCallback {
         mContext = context;
 
         MaterialDialog.Builder builder = new MaterialDialog.Builder(mContext);
-        builder.typeface("Font-Medium.ttf", "Font-Regular.ttf");
+        builder.typeface(
+                TypefaceHelper.getMedium(mContext),
+                TypefaceHelper.getRegular(mContext));
         builder.content(R.string.license_checking)
                 .progress(true, 0);
 
@@ -67,7 +69,9 @@ public class LicenseCallbackHelper implements LicenseCallback {
         int message = status == LicenseHelper.Status.SUCCESS ?
                 R.string.license_check_success : R.string.license_check_failed;
         new MaterialDialog.Builder(mContext)
-                .typeface("Font-Medium.ttf", "Font-Regular.ttf")
+                .typeface(
+                        TypefaceHelper.getMedium(mContext),
+                        TypefaceHelper.getRegular(mContext))
                 .title(R.string.license_check)
                 .content(message)
                 .positiveText(R.string.close)
@@ -82,7 +86,9 @@ public class LicenseCallbackHelper implements LicenseCallback {
 
     private void showRetryDialog() {
         new MaterialDialog.Builder(mContext)
-                .typeface("Font-Medium.ttf", "Font-Regular.ttf")
+                .typeface(
+                        TypefaceHelper.getMedium(mContext),
+                        TypefaceHelper.getRegular(mContext))
                 .title(R.string.license_check)
                 .content(R.string.license_check_retry)
                 .positiveText(R.string.close)

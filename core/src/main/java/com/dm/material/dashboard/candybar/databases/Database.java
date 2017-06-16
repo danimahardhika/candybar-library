@@ -40,7 +40,7 @@ import java.util.List;
 public class Database extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "candybar_database";
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 7;
 
     private static final String TABLE_REQUEST = "icon_request";
     private static final String TABLE_PREMIUM_REQUEST = "premium_request";
@@ -151,12 +151,7 @@ public class Database extends SQLiteOpenHelper {
 
     public void addRequest(String name, String activity, String requestedOn) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(KEY_NAME, name);
-        values.put(KEY_ACTIVITY, activity);
-        if (requestedOn != null) values.put(KEY_REQUESTED_ON, requestedOn);
-
-        db.insert(TABLE_REQUEST, null, values);
+        addRequest(db, name, activity, requestedOn);
         db.close();
     }
 
@@ -207,7 +202,7 @@ public class Database extends SQLiteOpenHelper {
         return requests;
     }
 
-    public void addPremiumRequest(@Nullable SQLiteDatabase db, String orderId, String productId, String name,
+    private void addPremiumRequest(@Nullable SQLiteDatabase db, String orderId, String productId, String name,
                                    String activity, String requestedOn) {
         if (db == null) db = this.getWritableDatabase();
 
@@ -225,6 +220,13 @@ public class Database extends SQLiteOpenHelper {
         } catch (Exception e) {
             LogUtil.e(Log.getStackTraceString(e));
         }
+    }
+
+    public void addPremiumRequest(String orderId, String productId, String name,
+                                  String activity, String requestedOn) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        addPremiumRequest(db, orderId, productId, name, activity, requestedOn);
+        db.close();
     }
 
     public List<Request> getPremiumRequest(@Nullable SQLiteDatabase db) {

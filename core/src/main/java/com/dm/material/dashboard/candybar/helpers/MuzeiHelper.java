@@ -46,6 +46,7 @@ public class MuzeiHelper {
         mDirectory = directory;
     }
 
+    @Nullable
     public Wallpaper getRandomWallpaper(String wallpaperUrl) throws Exception {
         if (mDatabase.getWallpapersCount() == 0) {
             URL url = new URL(wallpaperUrl);

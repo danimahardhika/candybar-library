@@ -6,7 +6,6 @@ import android.graphics.Point;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.view.ContextThemeWrapper;
 import android.view.View;
 
@@ -14,7 +13,6 @@ import com.danimahardhika.android.helpers.core.ColorHelper;
 import com.danimahardhika.android.helpers.core.WindowHelper;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.items.Home;
-import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.pluscubed.recyclerfastscroll.RecyclerFastScroller;
 
 import java.util.Locale;
@@ -86,14 +84,11 @@ public class ViewHelper {
             context = ((ContextThemeWrapper) context).getBaseContext();
         }
 
-        int color = ContextCompat.getColor(context,
-                Preferences.get(context).isDarkTheme() ?
-                        R.color.fastScrollHandleDark : R.color.fastScrollHandle);
         int accent = ColorHelper.getAttributeColor(context, R.attr.colorAccent);
 
-        fastScroll.setBarColor(color);
-        fastScroll.setHandleNormalColor(color);
-        fastScroll.setHandlePressedColor(accent);
+        fastScroll.setBarColor(ColorHelper.setColorAlpha(accent, 0.8f));
+        fastScroll.setHandleNormalColor(accent);
+        fastScroll.setHandlePressedColor(ColorHelper.getDarkerColor(accent, 0.7f));
     }
 
     public static Point getWallpaperViewRatio(String viewStyle) {

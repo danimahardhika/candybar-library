@@ -12,6 +12,7 @@ import com.danimahardhika.android.helpers.core.FileHelper;
 import com.danimahardhika.android.helpers.permission.PermissionHelper;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.helpers.DeviceHelper;
+import com.dm.material.dashboard.candybar.helpers.LocaleHelper;
 import com.dm.material.dashboard.candybar.helpers.ReportBugsHelper;
 
 import java.io.File;
@@ -48,12 +49,12 @@ public class CandyBarCrashReport extends AppCompatActivity {
                 return;
             }
 
+            LocaleHelper.setLocale(this);
+
             String stackTrace = bundle.getString(EXTRA_STACKTRACE);
             String deviceInfo = DeviceHelper.getDeviceInfoForCrashReport(this);
 
-            String message = getResources().getString(R.string.crash_report_message) +" "+
-                    getResources().getString(R.string.app_name) +" "+
-                    getResources().getString(R.string.crash_report_message_1);
+            String message = getResources().getString(R.string.crash_report_message, getResources().getString(R.string.app_name));
             new MaterialDialog.Builder(this)
                     .title(R.string.crash_report)
                     .content(message)

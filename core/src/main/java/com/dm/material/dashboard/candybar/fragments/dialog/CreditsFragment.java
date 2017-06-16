@@ -15,6 +15,7 @@ import android.widget.ListView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.CreditsAdapter;
+import com.dm.material.dashboard.candybar.helpers.TypefaceHelper;
 import com.dm.material.dashboard.candybar.items.Credit;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
 
@@ -52,6 +53,7 @@ public class CreditsFragment extends DialogFragment {
 
     public static final int TYPE_ICON_PACK_CONTRIBUTORS = 0;
     public static final int TYPE_DASHBOARD_CONTRIBUTORS = 1;
+    public static final int TYPE_DASHBOARD_TRANSLATOR = 2;
 
     private static CreditsFragment newInstance(int type) {
         CreditsFragment fragment = new CreditsFragment();
@@ -79,9 +81,10 @@ public class CreditsFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
         builder.customView(R.layout.fragment_credits, false);
-        builder.typeface("Font-Medium.ttf", "Font-Regular.ttf");
-        builder.title(mType == TYPE_ICON_PACK_CONTRIBUTORS ?
-                R.string.about_contributors_title : R.string.about_dashboard_contributors);
+        builder.typeface(
+                TypefaceHelper.getMedium(getActivity()),
+                TypefaceHelper.getRegular(getActivity()));
+        builder.title(getTitle(mType));
         builder.positiveText(R.string.close);
 
         MaterialDialog dialog = builder.build();
@@ -108,6 +111,33 @@ public class CreditsFragment extends DialogFragment {
         super.onDestroyView();
     }
 
+    @NonNull
+    private String getTitle(int type) {
+        switch (type) {
+            case TYPE_ICON_PACK_CONTRIBUTORS:
+                return getActivity().getResources().getString(R.string.about_contributors_title);
+            case TYPE_DASHBOARD_CONTRIBUTORS:
+                return getActivity().getResources().getString(R.string.about_dashboard_contributors);
+            case TYPE_DASHBOARD_TRANSLATOR:
+                return getActivity().getResources().getString(R.string.about_dashboard_translator);
+            default:
+                return "";
+        }
+    }
+
+    private int getResource(int type) {
+        switch (type) {
+            case TYPE_ICON_PACK_CONTRIBUTORS:
+                return R.xml.contributors;
+            case TYPE_DASHBOARD_CONTRIBUTORS:
+                return R.xml.dashboard_contributors;
+            case TYPE_DASHBOARD_TRANSLATOR:
+                return R.xml.dashboard_translator;
+            default:
+                return -1;
+        }
+    }
+
     private void getData() {
         mGetCredits = new AsyncTask<Void, Void, Boolean>() {
 
@@ -124,12 +154,7 @@ public class CreditsFragment extends DialogFragment {
                 while (!isCancelled()) {
                     try {
                         Thread.sleep(1);
-                        int res = -1;
-                        if (mType == TYPE_ICON_PACK_CONTRIBUTORS) {
-                            res = R.xml.contributors;
-                        } else if (mType == TYPE_DASHBOARD_CONTRIBUTORS) {
-                            res = R.xml.dashboard_contributors;
-                        }
+                        int res = getResource(mType);
 
                         XmlPullParser xpp = getActivity().getResources().getXml(res);
 

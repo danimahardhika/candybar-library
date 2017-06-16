@@ -10,18 +10,19 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.View;
-import android.webkit.WebView;
+import android.widget.ListView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.dm.material.dashboard.candybar.R;
+import com.dm.material.dashboard.candybar.adapters.LanguagesAdapter;
 import com.dm.material.dashboard.candybar.helpers.LocaleHelper;
 import com.dm.material.dashboard.candybar.helpers.TypefaceHelper;
+import com.dm.material.dashboard.candybar.items.Language;
+import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.util.List;
+import java.util.Locale;
 
 /*
  * CandyBar - Material Dashboard
@@ -41,19 +42,19 @@ import java.io.InputStreamReader;
  * limitations under the License.
  */
 
-public class LicensesFragment extends DialogFragment {
+public class LanguagesFragment extends DialogFragment {
 
-    private WebView mWebView;
+    private ListView mListView;
+    private Locale mLocale;
+    private AsyncTask<Void, Void, Boolean> mGetLanguages;
 
-    private AsyncTask<Void, Void, Boolean> mLoadLicenses;
+    public static final String TAG = "candybar.dialog.languages";
 
-    private static final String TAG = "candybar.dialog.licenses";
-
-    private static LicensesFragment newInstance() {
-        return new LicensesFragment();
+    private static LanguagesFragment newInstance() {
+        return new LanguagesFragment();
     }
 
-    public static void showLicensesDialog(FragmentManager fm) {
+    public static void showLanguageChooser(@NonNull FragmentManager fm) {
         FragmentTransaction ft = fm.beginTransaction();
         Fragment prev = fm.findFragmentByTag(TAG);
         if (prev != null) {
@@ -61,7 +62,7 @@ public class LicensesFragment extends DialogFragment {
         }
 
         try {
-            DialogFragment dialog = LicensesFragment.newInstance();
+            DialogFragment dialog = LanguagesFragment.newInstance();
             dialog.show(ft, TAG);
         } catch (IllegalArgumentException | IllegalStateException ignored) {}
     }
@@ -70,57 +71,58 @@ public class LicensesFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-        builder.customView(R.layout.fragment_licenses, false);
-        builder.typeface(
-                TypefaceHelper.getMedium(getActivity()),
-                TypefaceHelper.getRegular(getActivity()));
-        builder.title(R.string.about_open_source_licenses);
+        builder.customView(R.layout.fragment_languages, false);
+        builder.typeface(TypefaceHelper.getMedium(getActivity()), TypefaceHelper.getRegular(getActivity()));
+        builder.title(R.string.pref_language_header);
         MaterialDialog dialog = builder.build();
         dialog.show();
 
-        mWebView = (WebView) dialog.findViewById(R.id.webview);
+        mListView = (ListView) dialog.findViewById(R.id.listview);
         return dialog;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        loadLicenses();
+        getLanguages();
     }
 
     @Override
     public void onDismiss(DialogInterface dialog) {
-        if (mLoadLicenses != null) mLoadLicenses.cancel(true);
+        if (mLocale != null) {
+            Preferences.get(getActivity()).setCurrentLocale(mLocale.toString());
+            LocaleHelper.setLocale(getActivity());
+            getActivity().recreate();
+        }
+        if (mGetLanguages != null) mGetLanguages.cancel(true);
         super.onDismiss(dialog);
     }
 
-    private void loadLicenses() {
-        mLoadLicenses = new AsyncTask<Void, Void, Boolean>() {
+    public void setLanguage(@NonNull Locale locale) {
+        mLocale = locale;
+        dismiss();
+    }
 
-            StringBuilder sb;
+    private void getLanguages() {
+        mGetLanguages = new AsyncTask<Void, Void, Boolean>() {
 
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                sb = new StringBuilder();
-            }
+            List<Language> languages;
+            int index = 0;
 
             @Override
             protected Boolean doInBackground(Void... voids) {
                 while (!isCancelled()) {
                     try {
                         Thread.sleep(1);
-                        InputStream rawResource = getActivity().getResources()
-                                .openRawResource(R.raw.licenses);
-                        BufferedReader bufferedReader = new BufferedReader(
-                                new InputStreamReader(rawResource));
-
-                        String line;
-                        while ((line = bufferedReader.readLine()) != null) {
-                            sb.append(line);
-                            sb.append("\n");
+                        languages = LocaleHelper.getAvailableLanguages(getActivity());
+                        Locale locale = Preferences.get(getActivity()).getCurrentLocale();
+                        for (int i = 0; i < languages.size(); i++) {
+                            Locale l = languages.get(i).getLocale();
+                            if (l.toString().equals(locale.toString())) {
+                                index = i;
+                                break;
+                            }
                         }
-                        bufferedReader.close();
                         return true;
                     } catch (Exception e) {
                         LogUtil.e(Log.getStackTraceString(e));
@@ -133,16 +135,13 @@ public class LicensesFragment extends DialogFragment {
             @Override
             protected void onPostExecute(Boolean aBoolean) {
                 super.onPostExecute(aBoolean);
-                LocaleHelper.setLocale(getActivity());
                 if (aBoolean) {
-                    mWebView.setVisibility(View.VISIBLE);
-                    mWebView.loadDataWithBaseURL(null,
-                            sb.toString(), "text/html", "utf-8", null);
+                    mListView.setAdapter(new LanguagesAdapter(getActivity(), languages, index));
+                } else {
+                    dismiss();
                 }
-                mLoadLicenses = null;
+                mGetLanguages = null;
             }
         }.execute();
     }
 }
-
-

@@ -18,13 +18,17 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.danimahardhika.android.helpers.core.FileHelper;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.SettingsAdapter;
+import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
 import com.dm.material.dashboard.candybar.databases.Database;
 import com.dm.material.dashboard.candybar.fragments.dialog.IntentChooserFragment;
 import com.dm.material.dashboard.candybar.helpers.DeviceHelper;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.helpers.IconsHelper;
+import com.dm.material.dashboard.candybar.helpers.LocaleHelper;
 import com.dm.material.dashboard.candybar.helpers.RequestHelper;
+import com.dm.material.dashboard.candybar.helpers.TypefaceHelper;
 import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
+import com.dm.material.dashboard.candybar.items.Language;
 import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.items.Setting;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
@@ -154,14 +158,16 @@ public class SettingsFragment extends Fragment {
                     "", Setting.Type.PREMIUM_REQUEST, -1));
         }
 
-        settings.add(new Setting(R.drawable.ic_toolbar_theme,
-                getActivity().getResources().getString(R.string.pref_theme_header),
-                "", "", "", Setting.Type.HEADER, -1));
+        if (CandyBarApplication.getConfiguration().isDashboardThemingEnabled()) {
+            settings.add(new Setting(R.drawable.ic_toolbar_theme,
+                    getActivity().getResources().getString(R.string.pref_theme_header),
+                    "", "", "", Setting.Type.HEADER, -1));
 
-        settings.add(new Setting(-1, "",
-                getActivity().getResources().getString(R.string.pref_theme_dark),
-                getActivity().getResources().getString(R.string.pref_theme_dark_desc),
-                "", Setting.Type.THEME, Preferences.get(getActivity()).isDarkTheme() ? 1 : 0));
+            settings.add(new Setting(-1, "",
+                    getActivity().getResources().getString(R.string.pref_theme_dark),
+                    getActivity().getResources().getString(R.string.pref_theme_dark_desc),
+                    "", Setting.Type.THEME, Preferences.get(getActivity()).isDarkTheme() ? 1 : 0));
+        }
 
         if (WallpaperHelper.getWallpaperType(getActivity()) == WallpaperHelper.CLOUD_WALLPAPERS) {
             settings.add(new Setting(R.drawable.ic_toolbar_wallpapers,
@@ -177,6 +183,15 @@ public class SettingsFragment extends Fragment {
                     getActivity().getResources().getString(R.string.pref_wallpaper_location),
                     directory, "", Setting.Type.WALLPAPER, -1));
         }
+
+        settings.add(new Setting(R.drawable.ic_toolbar_language,
+                getActivity().getResources().getString(R.string.pref_language_header),
+                "", "", "", Setting.Type.HEADER, -1));
+
+        Language language = LocaleHelper.getCurrentLanguage(getActivity());
+        settings.add(new Setting(-1, "",
+                language.getName(),
+                "", "", Setting.Type.LANGUAGE, -1));
 
         settings.add(new Setting(R.drawable.ic_toolbar_others,
                 getActivity().getResources().getString(R.string.pref_others_header),
@@ -215,7 +230,9 @@ public class SettingsFragment extends Fragment {
                 sb = new StringBuilder();
 
                 MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-                builder.typeface("Font-Medium.ttf", "Font-Regular.ttf");
+                builder.typeface(
+                        TypefaceHelper.getMedium(getActivity()),
+                        TypefaceHelper.getRegular(getActivity()));
                 builder.content(R.string.premium_request_rebuilding);
                 builder.cancelable(false);
                 builder.canceledOnTouchOutside(false);

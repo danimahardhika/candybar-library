@@ -97,7 +97,7 @@ public class WallpaperHelper {
 
     private static String getRszIoThumbnailUrl(@NonNull Context context, String url) {
         url = url.replaceFirst("https://|http://", "");
-        ImageSize imageSize = ImageConfig.getThumbnailSize(context);
+        ImageSize imageSize = ImageConfig.getThumbnailSize();
         return "https://rsz.io/" +url+ "?height=" +imageSize.getWidth();
     }
 
@@ -177,7 +177,9 @@ public class WallpaperHelper {
                 file = new File(output.toString() + File.separator + name + IMAGE_EXTENSION);
 
                 MaterialDialog.Builder builder = new MaterialDialog.Builder(context);
-                builder.typeface("Font-Medium.ttf", "Font-Regular.ttf")
+                builder.typeface(
+                        TypefaceHelper.getMedium(context),
+                        TypefaceHelper.getRegular(context))
                         .content(R.string.wallpaper_downloading)
                         .widgetColor(color)
                         .progress(true, 0)
@@ -288,15 +290,14 @@ public class WallpaperHelper {
         String downloaded = context.getResources().getString(
                 R.string.wallpaper_downloaded);
 
-        if (Preferences.get(context).getWallsDirectory().length() == 0)
-            Preferences.get(context).setWallsDirectory(file.getParent());
+        Preferences.get(context).setWallsDirectory(file.getParent());
 
         CafeBar.builder(context)
                 .theme(new CafeBarTheme.Custom(ColorHelper.getAttributeColor(context, R.attr.card_background)))
                 .duration(CafeBarDuration.MEDIUM.getDuration())
                 .fitSystemWindow()
                 .maxLines(4)
-                .typeface("Font-Regular.ttf", "Font-Bold.ttf")
+                .typeface(TypefaceHelper.getRegular(context), TypefaceHelper.getBold(context))
                 .content(downloaded + " " + file.toString())
                 .icon(R.drawable.ic_toolbar_download)
                 .neutralText(R.string.open)
@@ -349,7 +350,9 @@ public class WallpaperHelper {
                                       @ColorInt int color, String url, String name) {
         final MaterialDialog.Builder builder = new MaterialDialog.Builder(context);
         builder.widgetColor(color)
-                .typeface("Font-Medium.ttf", "Font-Regular.ttf")
+                .typeface(
+                        TypefaceHelper.getMedium(context),
+                        TypefaceHelper.getRegular(context))
                 .progress(true, 0)
                 .progressIndeterminateStyle(true)
                 .content(R.string.wallpaper_applying);
@@ -486,8 +489,32 @@ public class WallpaperHelper {
 
                     @Override
                     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        dialog.setContent(R.string.wallpaper_applying);
-                        setWallpaper.execute(loadedImage);
+                        try {
+                            Bitmap bitmap = Bitmap.createBitmap(
+                                    loadedImage.getWidth(),
+                                    loadedImage.getHeight(),
+                                    loadedImage.getConfig());
+                            bitmap.recycle();
+
+                            dialog.setContent(R.string.wallpaper_applying);
+                            setWallpaper.execute(loadedImage);
+                        } catch (OutOfMemoryError e) {
+                            LogUtil.e("loaded bitmap is too big, resizing it ...");
+
+                            if (call <= 5) {
+                                double scaleFactor = 1 - (0.1 * call);
+                                int scaledWidth = Double.valueOf(imageSize.getWidth() * scaleFactor).intValue();
+                                int scaledHeight = Double.valueOf(imageSize.getHeight() * scaleFactor).intValue();
+
+                                RectF scaledRecF = getScaledRectF(rectF, (float) scaleFactor, (float) scaleFactor);
+                                loadBitmap(context, dialog, (call + 1), imageUri, scaledRecF,
+                                        new ImageSize(scaledWidth, scaledHeight));
+                                return;
+                            }
+
+                            dialog.dismiss();
+                            Toast.makeText(context, R.string.wallpaper_apply_failed, Toast.LENGTH_LONG).show();
+                        }
                     }
 
                     @Override
@@ -511,6 +538,8 @@ public class WallpaperHelper {
                         WallpaperManager manager = WallpaperManager.getInstance(context);
                         if (bitmaps[0] != null) {
                             Bitmap bitmap = bitmaps[0];
+
+                            LogUtil.d("loaded bitmap: " +bitmap.getWidth() +" x "+ bitmap.getHeight());
 
                             if (Preferences.get(context).isWallpaperCrop() && rectF != null) {
                                 Point point = WindowHelper.getScreenSize(context);
@@ -567,6 +596,7 @@ public class WallpaperHelper {
                     new CafeBar.Builder(context)
                             .theme(new CafeBarTheme.Custom(ColorHelper.getAttributeColor(
                                     context, R.attr.card_background)))
+                            .contentTypeface(TypefaceHelper.getRegular(context))
                             .content(R.string.wallpaper_applied)
                             .fitSystemWindow()
                             .show();

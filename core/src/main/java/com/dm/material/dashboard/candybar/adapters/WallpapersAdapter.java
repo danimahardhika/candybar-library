@@ -6,10 +6,12 @@ import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +22,7 @@ import android.widget.TextView;
 import com.danimahardhika.android.helpers.core.ColorHelper;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.activities.CandyBarWallpaperActivity;
+import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
 import com.dm.material.dashboard.candybar.fragments.dialog.WallpaperOptionsFragment;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
@@ -112,7 +115,7 @@ public class WallpapersAdapter extends RecyclerView.Adapter<WallpapersAdapter.Vi
         //LogUtil.d("loading wallpaper thumbnail: " +url);
 
         ImageLoader.getInstance().displayImage(url, new ImageViewAware(holder.image),
-                mOptions.build(), ImageConfig.getThumbnailSize(mContext), new SimpleImageLoadingListener() {
+                mOptions.build(), ImageConfig.getThumbnailSize(), new SimpleImageLoadingListener() {
                     @Override
                     public void onLoadingStarted(String imageUri, View view) {
                         super.onLoadingStarted(imageUri, view);
@@ -171,6 +174,20 @@ public class WallpapersAdapter extends RecyclerView.Adapter<WallpapersAdapter.Vi
             image.setRatio(ratio.x, ratio.y);
 
             card = (CardView) itemView.findViewById(R.id.card);
+            if (CandyBarApplication.getConfiguration().getApplyGrid() == CandyBarApplication.GridStyle.FLAT) {
+                if (card.getLayoutParams() instanceof GridLayoutManager.LayoutParams) {
+                    card.setRadius(0f);
+                    card.setUseCompatPadding(false);
+                    int margin = mContext.getResources().getDimensionPixelSize(R.dimen.card_margin);
+                    GridLayoutManager.LayoutParams params = (GridLayoutManager.LayoutParams) card.getLayoutParams();
+                    params.setMargins(0, 0, margin, margin);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                        params.setMarginEnd(margin);
+                    }
+                }
+            }
+
             if (!Preferences.get(mContext).isShadowEnabled()) {
                 card.setCardElevation(0);
             }

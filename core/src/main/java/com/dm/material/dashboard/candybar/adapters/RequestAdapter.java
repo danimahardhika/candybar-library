@@ -2,6 +2,7 @@ package com.dm.material.dashboard.candybar.adapters;
 
 import android.content.Context;
 import android.graphics.PorterDuff;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatButton;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 import com.danimahardhika.android.helpers.core.ColorHelper;
 import com.danimahardhika.android.helpers.core.DrawableHelper;
 import com.dm.material.dashboard.candybar.R;
+import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
 import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
@@ -225,6 +227,21 @@ public class RequestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             progress = (ProgressBar) itemView.findViewById(R.id.progress);
 
             CardView card = (CardView) itemView.findViewById(R.id.card);
+            if (CandyBarApplication.getConfiguration().getRequestStyle() == CandyBarApplication.Style.PORTRAIT_FLAT_LANDSCAPE_FLAT &&
+                    card != null) {
+                if (card.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
+                    card.setRadius(0f);
+                    card.setUseCompatPadding(false);
+                    int margin = mContext.getResources().getDimensionPixelSize(R.dimen.card_margin);
+                    StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) card.getLayoutParams();
+                    params.setMargins(0, 0, margin, margin);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                        params.setMarginEnd(margin);
+                    }
+                }
+            }
+
             if (!Preferences.get(mContext).isShadowEnabled() && card != null) {
                 card.setCardElevation(0);
             }
@@ -278,6 +295,21 @@ public class RequestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             divider = itemView.findViewById(R.id.divider);
 
             CardView card = (CardView) itemView.findViewById(R.id.card);
+            if (CandyBarApplication.getConfiguration().getRequestStyle() == CandyBarApplication.Style.PORTRAIT_FLAT_LANDSCAPE_FLAT &&
+                    card != null) {
+                if (card.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
+                    card.setRadius(0f);
+                    card.setUseCompatPadding(false);
+                    int margin = mContext.getResources().getDimensionPixelSize(R.dimen.card_margin);
+                    StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) card.getLayoutParams();
+                    params.setMargins(0, 0, margin, margin);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                        params.setMarginEnd(margin);
+                    }
+                }
+            }
+
             if (!Preferences.get(mContext).isShadowEnabled()) {
                 if (card != null) card.setCardElevation(0);
             }
@@ -350,11 +382,11 @@ public class RequestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return false;
     }
 
-    public void selectAll() {
+    public boolean selectAll() {
         if (mSelectedAll) {
             mSelectedAll = false;
             resetSelectedItems();
-            return;
+            return false;
         }
 
         mSelectedItems.clear();
@@ -368,6 +400,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             RequestListener listener = (RequestListener) mContext;
             listener.onRequestSelected(getSelectedItemsSize());
         } catch (Exception ignored) {}
+        return mSelectedAll;
     }
 
     public void setRequested(int position, boolean requested) {

@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
 import com.dm.material.dashboard.candybar.adapters.HomeAdapter;
+import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
 import com.dm.material.dashboard.candybar.helpers.TapIntroHelper;
 import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
 import com.dm.material.dashboard.candybar.items.Home;
@@ -71,6 +72,7 @@ public class HomeFragment extends Fragment implements HomeListener{
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLayoutManager(mManager);
+        adjustRecyclerViewPadding();
 
         initHome();
     }
@@ -89,6 +91,14 @@ public class HomeFragment extends Fragment implements HomeListener{
 
         if (home != null) {
             HomeAdapter adapter = (HomeAdapter) mRecyclerView.getAdapter();
+            if (CandyBarApplication.getConfiguration().isAutomaticIconsCountEnabled()) {
+                int index = adapter.getIconsIndex();
+                if (index >= 0 && index < adapter.getItemCount()) {
+                    adapter.getItem(index).setTitle(String.valueOf(CandyBarMainActivity.sIconsCount));
+                    adapter.notifyItemChanged(index);
+                }
+            }
+
             adapter.addNewContent(home);
             return;
         }
@@ -120,6 +130,13 @@ public class HomeFragment extends Fragment implements HomeListener{
         }
     }
 
+    private void adjustRecyclerViewPadding() {
+        if (CandyBarApplication.getConfiguration().getHomeGrid() == CandyBarApplication.GridStyle.FLAT) {
+            int padding = getActivity().getResources().getDimensionPixelSize(R.dimen.card_margin);
+            mRecyclerView.setPadding(padding, padding, 0, 0);
+        }
+    }
+
     private void initHome() {
         List<Home> homes = new ArrayList<>();
 
@@ -142,7 +159,9 @@ public class HomeFragment extends Fragment implements HomeListener{
 
         homes.add(new Home(
                 -1,
-                String.valueOf(CandyBarMainActivity.sIconsCount),
+                CandyBarApplication.getConfiguration().isAutomaticIconsCountEnabled() ?
+                        String.valueOf(CandyBarMainActivity.sIconsCount) :
+                        String.valueOf(CandyBarApplication.getConfiguration().getCustomIconsCount()),
                 getActivity().getResources().getString(R.string.home_icons),
                 Home.Type.ICONS));
 

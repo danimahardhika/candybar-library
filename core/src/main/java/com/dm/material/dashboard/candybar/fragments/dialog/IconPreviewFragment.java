@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.helpers.IconsHelper;
+import com.dm.material.dashboard.candybar.helpers.TypefaceHelper;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -82,7 +83,9 @@ public class IconPreviewFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
         builder.customView(R.layout.fragment_icon_preview, false);
-        builder.typeface("Font-Medium.ttf", "Font-Regular.ttf");
+        builder.typeface(
+                TypefaceHelper.getMedium(getActivity()),
+                TypefaceHelper.getRegular(getActivity()));
         builder.positiveText(R.string.close);
         MaterialDialog dialog = builder.build();
         dialog.show();

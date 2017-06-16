@@ -13,7 +13,7 @@ import com.bluelinelabs.logansquare.LoganSquare;
 import com.danimahardhika.android.helpers.core.ColorHelper;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.databases.Database;
-import com.dm.material.dashboard.candybar.helpers.IconsHelper;
+import com.dm.material.dashboard.candybar.helpers.LocaleHelper;
 import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
 import com.dm.material.dashboard.candybar.items.Wallpaper;
 import com.dm.material.dashboard.candybar.items.WallpaperJSON;
@@ -49,7 +49,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 public class CandyBarSplashActivity extends AppCompatActivity {
 
     private Class<?> mMainActivity;
-    private AsyncTask<Void, Void, Boolean> mPrepareIconsList;
+    private AsyncTask<Void, Void, Boolean> mPrepareApp;
     private AsyncTask<Void, Void, Boolean> mCheckRszIo;
     private AsyncTask<Void, Void, Boolean> mPrepareCloudWallpapers;
 
@@ -62,13 +62,14 @@ public class CandyBarSplashActivity extends AppCompatActivity {
         TextView splashTitle = (TextView) findViewById(R.id.splash_title);
         splashTitle.setTextColor(color);
 
-        prepareIconsList();
-        checkRszIo();
+        prepareApp();
+        //checkRszIo();
         prepareCloudWallpapers(this);
     }
 
     @Override
     protected void attachBaseContext(Context newBase) {
+        LocaleHelper.setLocale(newBase);
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
@@ -81,19 +82,17 @@ public class CandyBarSplashActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (mPrepareIconsList != null) mPrepareIconsList.cancel(true);
+        if (mPrepareApp != null) mPrepareApp.cancel(true);
         super.onDestroy();
     }
 
-    private void prepareIconsList() {
-        mPrepareIconsList = new AsyncTask<Void, Void, Boolean>() {
+    private void prepareApp() {
+        mPrepareApp = new AsyncTask<Void, Void, Boolean>() {
             @Override
             protected Boolean doInBackground(Void... voids) {
                 while (!isCancelled()) {
                     try {
-                        Thread.sleep(1);
-                        CandyBarMainActivity.sSections = IconsHelper
-                                .getIconsList(CandyBarSplashActivity.this);
+                        Thread.sleep(400);
                         return true;
                     } catch (Exception e) {
                         LogUtil.e(Log.getStackTraceString(e));
@@ -106,7 +105,7 @@ public class CandyBarSplashActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(Boolean aBoolean) {
                 super.onPostExecute(aBoolean);
-                mPrepareIconsList = null;
+                mPrepareApp = null;
                 startActivity(new Intent(CandyBarSplashActivity.this, mMainActivity));
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 finish();
@@ -129,7 +128,7 @@ public class CandyBarSplashActivity extends AppCompatActivity {
                         connection.setReadTimeout(6000);
                         connection.setConnectTimeout(6000);
                         int code = connection.getResponseCode();
-                        return code == 200;
+                        return code == HttpURLConnection.HTTP_OK;
                     } catch (Exception e) {
                         LogUtil.e(Log.getStackTraceString(e));
                         return false;
@@ -179,7 +178,7 @@ public class CandyBarSplashActivity extends AppCompatActivity {
                                     wallpapers.get(0).getURL(),
                                     wallpapers.get(0).getThumbUrl());
                             ImageLoader.getInstance().loadImageSync(uri,
-                                    ImageConfig.getThumbnailSize(context),
+                                    ImageConfig.getThumbnailSize(),
                                     ImageConfig.getDefaultImageOptions(true));
                         }
                         return true;

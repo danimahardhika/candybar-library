@@ -24,7 +24,9 @@ import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
 import com.dm.material.dashboard.candybar.databases.Database;
 import com.dm.material.dashboard.candybar.fragments.SettingsFragment;
 import com.dm.material.dashboard.candybar.fragments.dialog.ChangelogFragment;
+import com.dm.material.dashboard.candybar.fragments.dialog.LanguagesFragment;
 import com.dm.material.dashboard.candybar.helpers.ReportBugsHelper;
+import com.dm.material.dashboard.candybar.helpers.TypefaceHelper;
 import com.dm.material.dashboard.candybar.items.Setting;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
@@ -103,6 +105,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     contentViewHolder.footer.setVisibility(View.GONE);
                 } else {
                     contentViewHolder.footer.setText(setting.getFooter());
+                    contentViewHolder.footer.setVisibility(View.VISIBLE);
                 }
 
                 if (setting.getCheckState() >= 0) {
@@ -177,7 +180,9 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 switch (setting.getType()) {
                     case CACHE:
                         new MaterialDialog.Builder(mContext)
-                                .typeface("Font-Medium.ttf", "Font-Regular.ttf")
+                                .typeface(
+                                        TypefaceHelper.getMedium(mContext),
+                                        TypefaceHelper.getRegular(mContext))
                                 .content(R.string.pref_data_cache_clear_dialog)
                                 .positiveText(R.string.clear)
                                 .negativeText(android.R.string.cancel)
@@ -186,8 +191,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                         File cache = mContext.getCacheDir();
                                         FileHelper.clearDirectory(cache);
 
-                                        double size = (double) FileHelper.getDirectorySize(
-                                                mContext.getCacheDir()) / FileHelper.MB;
+                                        double size = (double) FileHelper.getDirectorySize(cache) / FileHelper.MB;
                                         NumberFormat formatter = new DecimalFormat("#0.00");
 
                                         setting.setFooter(String.format(mContext.getResources().getString(
@@ -205,7 +209,9 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         break;
                     case ICON_REQUEST:
                         new MaterialDialog.Builder(mContext)
-                                .typeface("Font-Medium.ttf", "Font-Regular.ttf")
+                                .typeface(
+                                        TypefaceHelper.getMedium(mContext),
+                                        TypefaceHelper.getRegular(mContext))
                                 .content(R.string.pref_data_request_clear_dialog)
                                 .positiveText(R.string.clear)
                                 .negativeText(android.R.string.cancel)
@@ -239,6 +245,9 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     case THEME:
                         Preferences.get(mContext).setDarkTheme(!checkBox.isChecked());
                         ((AppCompatActivity) mContext).recreate();
+                        break;
+                    case LANGUAGE:
+                        LanguagesFragment.showLanguageChooser(((AppCompatActivity) mContext).getSupportFragmentManager());
                         break;
                     case REPORT_BUGS:
                         ReportBugsHelper.prepareReportBugs(mContext);

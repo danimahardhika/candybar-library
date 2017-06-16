@@ -33,15 +33,18 @@ import com.danimahardhika.android.helpers.animation.AnimationHelper;
 import com.danimahardhika.android.helpers.core.ColorHelper;
 import com.danimahardhika.android.helpers.core.DrawableHelper;
 import com.danimahardhika.android.helpers.core.FileHelper;
+import com.danimahardhika.android.helpers.core.TimeHelper;
 import com.danimahardhika.android.helpers.core.ViewHelper;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
 import com.dm.material.dashboard.candybar.adapters.RequestAdapter;
+import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
 import com.dm.material.dashboard.candybar.databases.Database;
 import com.dm.material.dashboard.candybar.helpers.DeviceHelper;
 import com.dm.material.dashboard.candybar.helpers.IconsHelper;
 import com.dm.material.dashboard.candybar.helpers.RequestHelper;
 import com.dm.material.dashboard.candybar.helpers.TapIntroHelper;
+import com.dm.material.dashboard.candybar.helpers.TypefaceHelper;
 import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
@@ -85,9 +88,18 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     private RecyclerFastScroller mFastScroll;
     private ProgressBar mProgress;
 
+    private MenuItem mMenuItem;
     private RequestAdapter mAdapter;
     private StaggeredGridLayoutManager mManager;
-    private AsyncTask<Void, Request, Boolean> mGetMissingApps;
+    private AsyncTask<Void, Void, Boolean> mGetMissingApps;
+    private AsyncTask<Void, Void, Boolean> mSendRequest;
+    private AsyncTask<Void, Void, Boolean> mBuildAppFilter;
+    private AsyncTask<Void, Void, Boolean> mBuildAppMap;
+    private AsyncTask<Void, Void, Boolean> mBuildThemeResources;
+
+    private File mAppFilter;
+    private File mAppMap;
+    private File mThemeResources;
 
     @Nullable
     @Override
@@ -172,6 +184,10 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onDestroy() {
         if (mGetMissingApps != null) mGetMissingApps.cancel(true);
+        if (mSendRequest != null) mSendRequest.cancel(true);
+        if (mBuildAppFilter != null) mBuildAppFilter.cancel(true);
+        if (mBuildAppMap != null) mBuildAppMap.cancel(true);
+        if (mBuildThemeResources != null) mBuildThemeResources.cancel(true);
         super.onDestroy();
     }
 
@@ -179,8 +195,14 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.menu_select_all) {
+            mMenuItem = item;
             if (mAdapter == null) return false;
-            mAdapter.selectAll();
+            if (mAdapter.selectAll()) {
+                item.setIcon(R.drawable.ic_toolbar_select_all_selected);
+                return true;
+            }
+
+            item.setIcon(R.drawable.ic_toolbar_select_all);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -238,6 +260,9 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                     Preferences.get(getActivity()).setRegularRequestUsed((used + selected));
                 }
 
+                buildAppFilter();
+                buildAppMap();
+                buildThemeResources();
                 sendRequest(null);
             } else {
                 Toast.makeText(getActivity(), R.string.request_not_selected,
@@ -253,6 +278,10 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         boolean tabletMode = getActivity().getResources().getBoolean(R.bool.tablet_mode);
         if (tabletMode || orientation == Configuration.ORIENTATION_LANDSCAPE) {
             padding = getActivity().getResources().getDimensionPixelSize(R.dimen.content_padding);
+
+            if (CandyBarApplication.getConfiguration().getRequestStyle() == CandyBarApplication.Style.PORTRAIT_FLAT_LANDSCAPE_FLAT) {
+                padding = getActivity().getResources().getDimensionPixelSize(R.dimen.card_margin);
+            }
         }
 
         int size = getActivity().getResources().getDimensionPixelSize(R.dimen.fab_size);
@@ -262,6 +291,9 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     }
 
     public void onInAppBillingSent(BillingProcessor billingProcessor) {
+        buildAppFilter();
+        buildAppMap();
+        buildThemeResources();
         sendRequest(billingProcessor);
     }
 
@@ -272,14 +304,16 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     }
 
     private void getMissingApps() {
-        mGetMissingApps = new AsyncTask<Void, Request, Boolean>() {
+        mGetMissingApps = new AsyncTask<Void, Void, Boolean>() {
 
             List<Request> requests;
 
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                mProgress.setVisibility(View.VISIBLE);
+                if (CandyBarMainActivity.sMissedApps == null) {
+                    mProgress.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
@@ -304,6 +338,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
             @Override
             protected void onPostExecute(Boolean aBoolean) {
                 super.onPostExecute(aBoolean);
+                mGetMissingApps = null;
                 mProgress.setVisibility(View.GONE);
                 if (aBoolean) {
                     setHasOptionsMenu(true);
@@ -325,21 +360,155 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                     Toast.makeText(getActivity(), getActivity().getResources().getString(
                             R.string.request_appfilter_failed), Toast.LENGTH_LONG).show();
                 }
-                mGetMissingApps = null;
             }
 
         }.execute();
     }
 
+    private void buildAppFilter() {
+        mBuildAppFilter = new AsyncTask<Void, Void, Boolean>() {
+
+            File appFilter;
+
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+                while (!isCancelled()) {
+                    try {
+                        Thread.sleep(1);
+                        List<Integer> selectedItems = mAdapter.getSelectedItems();
+                        appFilter = new File(getActivity().getCacheDir().toString(), "appfilter.xml");
+                        Writer writer = new BufferedWriter(new OutputStreamWriter(
+                                new FileOutputStream(appFilter), "UTF8"));
+                        writer.append("<resources>").append("\n\n");
+
+                        for (int i = 0; i < selectedItems.size(); i++) {
+                            Request item = mAdapter.getRequest(selectedItems.get(i));
+                            String string = RequestHelper.writeAppFilter(item);
+                            writer.append(string);
+                        }
+
+                        writer.append("</resources>");
+                        writer.flush();
+                        writer.close();
+                        return true;
+                    } catch (Exception e) {
+                        LogUtil.e(Log.getStackTraceString(e));
+                        return false;
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean aBoolean) {
+                super.onPostExecute(aBoolean);
+                mBuildAppFilter = null;
+                if (aBoolean) {
+                    mAppFilter = appFilter;
+                }
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    private void buildAppMap() {
+        mBuildAppMap = new AsyncTask<Void, Void, Boolean>() {
+
+            File appMap;
+
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+                while (!isCancelled()) {
+                    try {
+                        Thread.sleep(1);
+                        List<Integer> selectedItems = mAdapter.getSelectedItems();
+                        appMap = new File(getActivity().getCacheDir().toString(), "appmap.xml");
+                        Writer writer = new BufferedWriter(new OutputStreamWriter(
+                                new FileOutputStream(appMap), "UTF8"));
+                        writer.append("<appmap>").append("\n\n");
+
+                        for (int i = 0; i < selectedItems.size(); i++) {
+                            Request item = mAdapter.getRequest(selectedItems.get(i));
+                            String string = RequestHelper.writeAppMap(item);
+                            writer.append(string);
+                        }
+
+                        writer.append("</appmap>");
+                        writer.flush();
+                        writer.close();
+                        return true;
+                    } catch (Exception e) {
+                        LogUtil.e(Log.getStackTraceString(e));
+                        return false;
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean aBoolean) {
+                super.onPostExecute(aBoolean);
+                mBuildAppMap = null;
+                if (aBoolean) {
+                    mAppMap = appMap;
+                }
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    private void buildThemeResources() {
+        mBuildThemeResources = new AsyncTask<Void, Void, Boolean>() {
+
+            File themeResources;
+
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+                while (!isCancelled()) {
+                    try {
+                        Thread.sleep(1);
+                        List<Integer> selectedItems = mAdapter.getSelectedItems();
+                        themeResources = new File(getActivity().getCacheDir().toString(), "theme_resources.xml");
+                        Writer writer = new BufferedWriter(new OutputStreamWriter(
+                                new FileOutputStream(themeResources), "UTF8"));
+                        writer.append("<Theme version=\"1\">").append("\n\n");
+
+                        for (int i = 0; i < selectedItems.size(); i++) {
+                            Request item = mAdapter.getRequest(selectedItems.get(i));
+                            String string = RequestHelper.writeThemeResources(item);
+                            writer.append(string);
+                        }
+
+                        writer.append("</Theme>");
+                        writer.flush();
+                        writer.close();
+                        return true;
+                    } catch (Exception e) {
+                        LogUtil.e(Log.getStackTraceString(e));
+                        return false;
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean aBoolean) {
+                super.onPostExecute(aBoolean);
+                mBuildThemeResources = null;
+                if (aBoolean) {
+                    mThemeResources = themeResources;
+                }
+            }
+        }.execute();
+    }
+
     private void sendRequest(BillingProcessor billingProcessor) {
-        new AsyncTask<Void, Void, Boolean>() {
+        mSendRequest = new AsyncTask<Void, Void, Boolean>() {
 
             MaterialDialog dialog;
             StringBuilder sb;
             String zipFile;
             String productId = "";
             String orderId = "";
-            boolean noEmailClientErro = false;
+            boolean noEmailClientError = false;
 
             @Override
             protected void onPreExecute() {
@@ -347,7 +516,9 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                 sb = new StringBuilder();
 
                 MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-                builder.typeface("Font-Medium.ttf", "Font-Regular.ttf");
+                builder.typeface(
+                        TypefaceHelper.getMedium(getActivity()),
+                        TypefaceHelper.getRegular(getActivity()));
                 builder.content(R.string.request_building);
                 builder.cancelable(false);
                 builder.canceledOnTouchOutside(false);
@@ -368,7 +539,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                         List<ResolveInfo> resolveInfos = getActivity().getPackageManager()
                                 .queryIntentActivities(intent, 0);
                         if (resolveInfos.size() == 0) {
-                            noEmailClientErro = true;
+                            noEmailClientError = true;
                             return false;
                         }
 
@@ -391,21 +562,16 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 
                         List<Integer> selectedItems = mAdapter.getSelectedItems();
                         List<String> files = new ArrayList<>();
-                        File appFilter = new File(directory.toString() + "/" + "appfilter.xml");
-
-                        Writer out = new BufferedWriter(new OutputStreamWriter(
-                                new FileOutputStream(appFilter), "UTF8"));
 
                         for (int i = 0; i < selectedItems.size(); i++) {
                             Request item = mAdapter.getRequest(selectedItems.get(i));
-                            database.addRequest(item.getName(), item.getActivity(), null);
+                            database.addRequest(item.getName(), item.getActivity(), TimeHelper.getLongDateTime());
                             mAdapter.setRequested(selectedItems.get(i), true);
 
-                            String string = RequestHelper.writeRequest(item);
-                            sb.append(string);
-
-                            String string1 = RequestHelper.writeAppFilter(item);
-                            out.append(string1);
+                            if (CandyBarApplication.getConfiguration().isIncludeIconRequestToEmailBody()) {
+                                String string = RequestHelper.writeRequest(item);
+                                sb.append(string);
+                            }
 
                             Drawable drawable = getHighQualityIcon(getActivity(), item.getPackageName());
 
@@ -414,20 +580,27 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 
                             if (Preferences.get(getActivity()).isPremiumRequest()) {
                                 database.addPremiumRequest(
-                                        null,
                                         orderId,
                                         productId,
                                         item.getName(),
                                         item.getActivity(),
-                                        null);
+                                        TimeHelper.getLongDateTime());
                             }
                         }
 
-                        out.flush();
-                        out.close();
-                        files.add(appFilter.toString());
+                        if (mAppFilter != null && CandyBarApplication.getConfiguration().isGenerateAppFilter()) {
+                            files.add(mAppFilter.toString());
+                        }
 
-                        zipFile = FileHelper.createZip(files, new File(directory.toString() + "/" + "icon_request.zip"));
+                        if (mAppMap != null && CandyBarApplication.getConfiguration().isGenerateAppMap()) {
+                            files.add(mAppMap.toString());
+                        }
+
+                        if (mThemeResources != null && CandyBarApplication.getConfiguration().isGenerateThemeResources()) {
+                            files.add(mThemeResources.toString());
+                        }
+
+                        zipFile = FileHelper.createZip(files, new File(directory.toString(), "icon_request.zip"));
                         return true;
                     } catch (Exception e) {
                         LogUtil.e(Log.getStackTraceString(e));
@@ -440,6 +613,11 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
             @Override
             protected void onPostExecute(Boolean aBoolean) {
                 super.onPostExecute(aBoolean);
+                mSendRequest = null;
+                mAppFilter = null;
+                mAppMap = null;
+                mThemeResources = null;
+
                 dialog.dismiss();
                 if (aBoolean) {
                     String subject = Preferences.get(getActivity()).isPremiumRequest() ?
@@ -453,8 +631,9 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                         listener.onRequestBuilt(request);
                     } catch (Exception ignored) {}
                     mAdapter.resetSelectedItems();
+                    if (mMenuItem != null) mMenuItem.setIcon(R.drawable.ic_toolbar_select_all);
                 } else {
-                    if (noEmailClientErro) {
+                    if (noEmailClientError) {
                         Toast.makeText(getActivity(), R.string.no_email_app,
                                 Toast.LENGTH_LONG).show();
                     } else {
@@ -467,7 +646,6 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                 sb.setLength(0);
                 sb.trimToSize();
             }
-
         }.execute();
     }
 }
