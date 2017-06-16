@@ -12,11 +12,6 @@
     <!-- Use dark theme as default theme -->
     <bool name="use_dark_theme">false</bool>
 
-    <!-- Enable or disable shadow
-    * Include:
-    * Toolbar, card, and list shadow -->
-    <bool name="enable_shadow">true</bool>
-
     <!-- CONFIG: MUZEI -->
 
     <!-- Muzei art source name -->
@@ -169,12 +164,6 @@
     * Hide -> false -->
     <bool name="wallpaper_show_name_author">true</bool>
 
-    <!-- Wallpapers grid preview quality
-    * Image quality when displaying wallpapers in grid
-    * Higher value means higher quality, more RAM usage
-    * Lower value means lower quality, minimal RAM usage -->
-    <integer name="wallpaper_grid_preview_quality">4</integer>
-
     <!-- Wallpapers grid preview style
     * Available choices:
     * square
@@ -210,31 +199,23 @@
         <a href="https://github.com/danimahardhika">link inside description</a>.
         ]]></string>
 
-    <!-- Email that showed in about
-    * This part must be email
-    * If you don't want to show email in about, just set about_email to empty
-    * ex: <string name="about_email"></string> -->
-    <string name="about_email_title">Email</string>
-    <string name="about_email">your@email.com</string>
-
-    <!-- Link 1 showed in about
-    * Link 1 must be included, link 2 is optional
-    * You can change this to another link, like facebook, twitter etc
+    <!-- Social link inside about
+    * Supported link:
+    * Email, Behance, Dribbble, Facebook, Github, Google+, Instagram, Pinterest, Twitter
+    * The link will be marked as regular website if doesn't listed above
+    *
+    * If you don't want to show social link, just set about_social_links to empty
     * ex:
-    * <string name="about_link_1_title">Facebook</string>
-    * <string name="about_link_1_url">http://facebook.com/yourlink</string> -->
-    <string name="about_link_1_title">Google+</string>
-    <string name="about_link_1_url">http://plus.google.com/xxxx</string>
-
-    <!-- Link 2 showed in about
-    * Link 2 is optional, if you don't want to show link 2, just set about_link_2_url to empty
-    * ex: <string name="about_link_2_url"></string>
-    * You can change this to another link, like facebook, twitter etc
-    * ex:
-    * <string name="about_link_2_title">Facebook</string>
-    * <string name="about_link_2_url">http://facebook.com/yourlink</string> -->
-    <string name="about_link_2_title">Website</string>
-    <string name="about_link_2_url">http://yourwebsite.com</string>
+    * <string-array name="about_social_links"></string-array>-->
+    <string-array name="about_social_links">
+        <item>https://www.instagram.com/_u/yourusername</item>
+        <item>https://twitter.com/</item>
+        <item>https://www.behance.net/</item>
+        <item>https://plus.google.com/u/1/+yourusername</item>
+        <item>http://github.com/yourusername</item>
+        <item>http://www.yourwebsite.com</item>
+        <item>your@email.com</item>
+    </string-array>
 
     <!-- Contributors dialog
     * Take a look inside res/xml/contributors.xml to add contributors -->

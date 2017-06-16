@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="questions">
+        <!-- What is a launcher -->
+        <item>Qu\'est-ce qu\'un launcher ?</item>
+        <!-- What is an icon pack -->
+        <item>Qu\'est-ce qu\'un pack d\'icônes ?</item>
+        <!-- How do i use an icon pack? -->
+        <item>Comment utiliser un pack d\'icônes ?</item>
+        <!-- How do i apply an icon pack? -->
+        <item>Comment puis-je appliquer un pack d\'icônes ?</item>
+        <!-- How do i see all icons included? -->
+        <item>Comment puis-je voir toutes les icônes incluses ?</item>
+        <!-- I can\'t see a complete icon name -->
+        <item>Je ne peux pas voir un nom d\'icône complet</item>
+        <!-- How can i replace icons with an alternate icon? -->
+        <item>Comment puis-je remplacer des icônes par un icône alternatif ?</item>
+        <!-- How do i request an icon? -->
+        <item>Comment puis-je demander une icône ?</item>
+        <!-- How can i restore remaining Premium Requests after reinstalling the app? -->
+        <item>Comment puis-je restaurer les Demandes Premium restantes après avoir réinstallé l\'application ?</item>
+        <!-- After restarting my phone, the icon pack is not applied, it restore to defaults? -->
+        <item>Après avoir redémarré mon téléphone, le pack d\'icônes n\'est pas appliqué, est-il réinitialisé ?</item>
+        <!-- Why do the icons looks jaggy or pixelated on my phone? -->
+        <item>Pourquoi les icônes semblent floues ou pixelisées sur mon téléphone ?</item>
+        <!-- I can see the icon included in all icons,
+            but why isn\'t the actual icon on app drawer changed? -->
+        <item>Je peux voir une icône dans la liste des icônes disponibles, alors pourquoi cette même icône ne change pas dans le tiroir des applications ?</item>
+        <!-- What is the \"report bugs\" option? -->
+        <item>Qu\'est-ce que l\'option \"Rapport de bugs\" ?</item>
+        <!-- My launcher is listed in the google play description, but why isn\'t it included in apply section? -->
+        <item>Mon launcher est listé dans la description Google Play alors pourquoi n\'est-il pas inclus dans la section Appliquer ?</item>
+        <!-- Wallpaper can\'t be applied, just showing black screen? -->
+        <item>Le fond d\'écran ne peut pas être appliqué, je n\'ai qu\'un écran noir.</item>
+        <!-- Muzei: How to load downloaded wallpapers only? -->
+        <item>Muzei : comment uniquement charger les fonds d\'écran téléchargés ?</item>
+        <!-- Muzei: I don\'t want to keep downloading wallpapers each time the wallpaper changes? -->
+        <item>Muzei : Je ne veux pas continuer à télécharger des fonds d\'écran à chaque fois que le fond d\'écran change.</item>
+        <!-- Muzei: I only want to use specific wallpapers? -->
+        <item>Muzei : Je ne veux que certains fonds d\'écran.</item>
+        <!-- Why are Read &amp; Write External Storage permission needed? -->
+        <item>Pourquoi la permission Voir, modifier ou supprimer le contenu de la mémoire USB est requise ?</item>
+        <!-- Why is Internet permission needed? -->
+        <item>Pourquoi la permission Internet est requise ?</item>
+        <!-- Why is Access Network State permission needed? -->
+        <item>Pourquoi la permission Afficher les connexions réseau est requise ?</item>
+        <!-- Why is Access Wifi State permission needed? -->
+        <item>Pourquoi la permission Afficher les connexions Wi-Fi est requise ?</item>
+        <!-- Why is Set Wallpaper permission needed? -->
+        <item>Pourquoi la permission Configurer le fond d\'écran est requise ?</item>
+        <!-- Why is Wake Lock Permission needed? -->
+        <item>Pourquoi la permission Empêcher le téléphone de passer en mode veille est requise ?</item>
+    </string-array>
+
+    <string-array name="answers">
+        <!-- What is a launcher -->
+        <item>Le launcher est une partie de l\'interface utilisateur Android qui permet aux utilisateurs de personnaliser l\'écran d\'accueil, démarrer des applications mobile, passer des appels téléphoniques et effectuer d\'autres tâches.</item>
+        <!-- What is an icon pack -->
+        <item>Un ensemble d\'éléments graphiques qui changera l\'aspect des icônes de votre tiroir d\'applications</item>
+        <!-- How do i use an icon pack? -->
+        <item>Vous aurez besoin d\'un launcher qui supporte les packs d\'icônes.
+Les launchers supportés sont listés dans la description du Play Store.
+Si vous hésitez sur les launchers à utiliser, allez simplement à la section \"Appliquer\" puis installez-en un depuis cet endroit.</item>
+        <!-- How do i apply an icon pack? -->
+        <item>Vous pouvez ouvrir le panneau de navigation puis sélectionner \"Appliquer\". Choisir un launcher dans la liste.
+Si votre launcher n\'est pas listé ici mais que ce pack d\'icônes est compatible (voir la description Google Play pour les launchers supportés), alors vous pouvez appliquer le pack d\'icônes manuellement depuis les paramètres de votre launcher.</item>
+        <!-- How do i see all icons included? -->
+        <item>Vous pouvez ouvrir le panneau de navigation puis sélectionner \"Icônes\"</item>
+        <!-- I can\'t see a complete icon name -->
+        <item>Appuyez simplement sur l\'icône. Une prévisualisation apparaitra avec une image plus grande et le nom de l\'icône au complet.</item>
+        <!-- How can i replace icons with an alternate icon? -->
+        <item>Cela dépend du launcher utilisé. Tous les launchers ne supportent pas la modification d\'icône.
+Généralement, vous pouvez modifier un icône en maintenant votre doigt dessus ou en faisant un double appui.</item>
+        <!-- How do i request an icon? -->
+        <item>Vous pouvez ouvrir le panneau de navigation puis sélectionner \"Demande d\'icône\"</item>
+        <!-- How can i restore remaining Premium Requests after reinstalling the app? -->
+        <item>Vous pouvez ouvrir le panneau de navigation puis sélectionner \"Paramètres\" &gt; \"Restaurer les achats\".
+Si vous aviez des Demandes Premium restantes avant la réinstallation, alors elles seront restaurées.</item>
+        <!-- After restarting my phone, the icon pack is not applied, it restore to defaults? -->
+        <item>C\'est arrivé car ce pack d\'icônes a été déplacé sur la SD Card, vous devriez l\'installer sur la mémoire interne.</item>
+        <!-- Why do the icons looks jaggy or pixelated on my phone? -->
+        <item>Le problème peut venir du launcher que vous utilisez lors de la gestion de la résolution de gros icônes.
+Vous pouvez corriger cela en augmentant la taille des icônes à 115 - 120%.
+Sinon, vous pouvez changer de launcher.</item>
+        <!-- I can see the icon included in all icons,
+            but why isn\'t the actual icon on app drawer changed? -->
+        <item>Ouvrir les paramètres, allez en bas pour choir \"Rapport de bugs\".</item>
+        <!-- What is the \"report bugs\" option? -->
+        <item>\"Rapport de bugs\" est utilisé pour remonter des problèmes relatifs au pack d\'icônes, pas le tableau de bord.</item>
+        <!-- My launcher is listed in the google play description, but why isn\'t it included in apply section? -->
+        <item>Tous les launchers ne supportent pas l\'application instantanée et certains ne sont pas accessibles depuis le tableau de bord.
+Vous pouvez appliquer ce pack d\'icônes manuellement depuis les paramètres dédiés du launcher.</item>
+        <!-- Wallpaper can\'t be applied, just showing black screen? -->
+        <item>Quand vous \"Appliquer un fond d\'écran\" depuis l\'application, il sera téléchargé dans le cache, puis le tableau de bord essaiera de l\'appliquer. L\'application peut prendre du temps et requiert beaucoup de RAM pendant une faible durée.
+Les erreurs \"Écran noir\" peuvent survenir car votre téléphone n\'a pas assez de RAM disponible pour traiter le fond d\'écran.
+Redémarrer votre téléphone pour régler le problème. Au redémarrage, votre téléphone aura plus de RAM disponible.
+Sinon, vous pouvez ouvrir le fond d\'écran téléchargé depuis votre Galerie et le définir en tant que fond d\'écran depuis cette application.</item>
+        <!-- Muzei: How to load downloaded wallpapers only? -->
+        <item>Ouvrir Muzei &gt; Choisir ce pack d\'icônes &gt; Paramètres. Vous verrez une option pour charger uniquement les fonds d\'écran téléchargés.
+Vous aurez au préalable besoin de télécharger les fonds d\'écran depuis le tableau de bord.</item>
+        <!-- Muzei: I don\'t want to keep downloading wallpapers each time the wallpaper changes? -->
+        <item>Si un fond d\'écran est déjà téléchargé, il sera automatiquement chargé depuis la mémoire du téléphone.
+Muzei n\'essaiera pas de le télécharger quand le fond d\'écran change. Vous aurez au préalable besoin de télécharger les fonds d\'écran depuis le tableau de bord.</item>
+        <!-- Muzei: I only want to use specific wallpapers? -->
+        <item>Ouvrir le tableau de bord, télécharger les fonds d\'écran que vous souhaitez utiliser dans Muzei.
+Ouvrir les paramètres de Muzei puis choisir \"Charger uniquement les fonds d\'écran téléchargés\".</item>
+        <!-- Why are Read &amp; Write External Storage permission needed? -->
+        <item>Nécessaire pour écrire et lire le cache et collecter les données lors de demande d\'icône•s.</item>
+        <!-- Why is Internet permission needed? -->
+        <item>Nécessaire pour charger les fonds d\'écran stockés dans le cloud et les télécharger.</item>
+        <!-- Why is Access Network State permission needed? -->
+        <item>Nécessaire pour savoir si votre téléphone a une connexion Internet ou pas.</item>
+        <!-- Why is Access Wifi State permission needed? -->
+        <item>Nécessaire pour savoir si votre téléphone a une connexion Internet WiFi ou pas, pour charger les fonds d\'écran du cloud depuis Muzei.</item>
+        <!-- Why is Set Wallpaper permission needed? -->
+        <item>Nécessaire pour directement appliquer les fonds d\'écran depuis le tableau de bord.</item>
+        <!-- Why is Wake Lock Permission needed? -->
+        <item>Nécessaire pour Muzei Live Wallpaper</item>
+    </string-array>
+
+</resources>

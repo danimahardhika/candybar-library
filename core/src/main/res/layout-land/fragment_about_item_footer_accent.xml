@@ -124,7 +124,7 @@
                 android:padding="@dimen/content_padding"
                 android:scaleType="fitCenter"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:theme="@style/RippleStyle"/>
+                android:theme="@style/RippleAccentStyle"/>
 
             <ImageView
                 android:id="@+id/about_dev_google_plus"
@@ -133,7 +133,7 @@
                 android:padding="@dimen/content_padding"
                 android:scaleType="fitCenter"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:theme="@style/RippleStyle"/>
+                android:theme="@style/RippleAccentStyle"/>
 
             <ImageView
                 android:id="@+id/about_dev_instagram"
@@ -142,7 +142,7 @@
                 android:padding="@dimen/content_padding"
                 android:scaleType="fitCenter"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:theme="@style/RippleStyle"/>
+                android:theme="@style/RippleAccentStyle"/>
         </LinearLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>

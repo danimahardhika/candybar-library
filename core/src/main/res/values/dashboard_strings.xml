@@ -35,7 +35,6 @@
     <string name="close">Close</string>
     <string name="clear">Clear</string>
     <string name="ok">OK</string>
-    <string name="cancel">Cancel</string>
     <string name="install">Install</string>
     <string name="donate">Donate</string>
 
@@ -52,8 +51,8 @@
     <!-- License -->
     <string name="license_checking">Checking license …</string>
     <string name="license_check">License Check</string>
-    <string name="license_check_success">License check successful, thank you for downloading the app from Play Store.</string>
-    <string name="license_check_failed">License check failed, you didn\'t download this app from the Play Store.
+    <string name="license_check_success">License check success, thank you for downloading the app from Play Store.</string>
+    <string name="license_check_failed">License check failed, you didn\'t download the app from Play Store.
         You will not be able to use it.</string>
     <string name="license_check_retry">Unable to check license, please try again in a few moments.</string>
 
@@ -125,10 +124,8 @@
     <string name="apply_lg_home_failed">Unable to launch LG Home Settings, you can try to apply Icon Pack manually from Settings.</string>
     <string name="apply_lg_home_nougat">LG Home with Android Nougat no longer supports Icon Pack. You need a custom launcher to use Icon Pack.</string>
 
-    <string name="no_browser">Do you have a browser?</string>
-
     <!-- Icons -->
-    <string name="icons_load_failed">Unable to read drawable.xml</string>
+    <string name="icons_load_failed">Unable to load icons</string>
 
     <!-- Request -->
     <string name="request_title">Icon Request</string>
@@ -223,11 +220,13 @@
 
     <string name="pref_theme_header">Theme</string>
     <string name="pref_theme_dark">Dark Theme</string>
-    <string name="pref_theme_dark_desc">Switch between dark and light theme</string>
+    <string name="pref_theme_dark_desc">Use dark color for application theme</string>
 
     <string name="pref_wallpaper_header">Wallpaper</string>
     <string name="pref_wallpaper_location">Wallpaper Save Location</string>
     <string name="pref_wallpaper_location_desc">Try to download at least one wallpaper first</string>
+
+    <string name="pref_language_header">Language</string>
 
     <string name="pref_others_header">Others</string>
     <string name="pref_others_report_bugs">Report Bugs</string>
@@ -241,6 +240,7 @@
     <!-- Intent -->
     <string name="email_client">Choose Email Client</string>
     <string name="no_email_app">No application to send email</string>
+    <string name="no_browser">No application to open url</string>
     <string name="intent_email_failed">Unable to display email application</string>>
     <string name="intent_email_supported">Supported</string>
     <string name="intent_email_recommended">Recommended</string>
@@ -263,21 +263,19 @@
 
     <!-- Crash Report -->
     <string name="crash_report">Crash Report</string>
-    <string name="crash_report_message">Unfortunately</string>
-    <string name="crash_report_message_1">has crashed. Choose send report below to help developer fix the issue.</string>
+    <string name="crash_report_message">Unfortunately %s has crashed. Choose send report below to help developer fix the issue.</string>
     <string name="crash_report_send">Send Report</string>
 
     <!-- Please don't modify this -->
-    <string name="about_open_source_licenses">Open Source Licenses</string>
-
     <string name="about_dashboard">CandyBar</string>
     <string name="about_dashboard_dev">CandyBar is open source icon pack dashboard licensed under Apache License 2.0 for
         Android available at GitHub and free to use, developed by Dani Mahardhika.</string>
+    <string name="about_open_source_licenses">Open Source Licenses</string>
     <string name="about_dashboard_contributors">CandyBar Contributors</string>
-    <string name="about_dashboard_dev_google_plus_title">Google+</string>
+    <string name="about_dashboard_translator">CandyBar Translator</string>
     <string name="about_dashboard_dev_google_plus_url">https://plus.google.com/u/1/+DaniMahardhika</string>
-    <string name="about_dashboard_dev_github_title">GitHub</string>
     <string name="about_dashboard_dev_github_url">https://github.com/danimahardhika</string>
+    <string name="about_dashboard_dev_instagram_url">https://www.instagram.com/_u/danimahardhika112/</string>
 
     <!-- DrawerToggle -->
     <string name="txt_open">Open</string>

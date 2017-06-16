@@ -11,6 +11,8 @@
     <dimen name="content_item_list_padding_start">56dp</dimen>
 
     <!-- Card Global -->
+    <dimen name="card_margin">1dp</dimen>
+
     <dimen name="card_margin_right">3dp</dimen>
     <dimen name="card_margin_left">3dp</dimen>
     <dimen name="card_margin_top">4dp</dimen>
@@ -61,7 +63,7 @@
     <!-- Icon -->
     <dimen name="icon_size_medium">40dp</dimen>
     <dimen name="icon_size_small">24dp</dimen>
-    <dimen name="icon_size_tiny">12dp</dimen>
+    <dimen name="icon_size_tiny">8dp</dimen>
 
     <!-- Text -->
     <dimen name="text_max_size">56sp</dimen>

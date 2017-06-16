@@ -64,14 +64,6 @@
     <color name="dividerList">#18000000</color>
     <color name="dividerListDark">#18FFFFFF</color>
 
-    <!-- Fast Scroll -->
-    <color name="fastScrollHandle">#757575</color>
-    <color name="fastScrollHandleDark">#B2B2B2</color>
-
-    <!-- Popup Bubble -->
-    <color name="popupBubble">#FE9700</color>
-    <color name="popupBubbleText">#FFFFFF</color>
-
     <!-- Wallpaper Preview -->
     <color name="wallpaperStatusBar">#99000000</color>
     <color name="wallpaperToolbar">#66000000</color>
