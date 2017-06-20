@@ -37,6 +37,7 @@ import com.dm.material.dashboard.candybar.items.Wallpaper;
 import com.dm.material.dashboard.candybar.items.WallpaperJSON;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.dm.material.dashboard.candybar.utils.listeners.WallpapersListener;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pluscubed.recyclerfastscroll.RecyclerFastScroller;
 import com.rafakob.drawme.DrawMeButton;
 
@@ -74,7 +75,6 @@ public class WallpapersFragment extends Fragment {
     private RecyclerFastScroller mFastScroll;
     private DrawMeButton mPopupBubble;
 
-    private HttpURLConnection mConnection;
     private AsyncTask<Void, Void, Boolean> mGetWallpapers;
 
     @Nullable
@@ -138,12 +138,8 @@ public class WallpapersFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        if (mGetWallpapers != null) {
-            try {
-                if (mConnection != null) mConnection.disconnect();
-            } catch (Exception ignored){}
-            mGetWallpapers.cancel(true);
-        }
+        if (mGetWallpapers != null) mGetWallpapers.cancel(true);
+        ImageLoader.getInstance().getMemoryCache().clear();
         super.onDestroy();
     }
 
@@ -204,11 +200,11 @@ public class WallpapersFragment extends Fragment {
                         }
 
                         URL url = new URL(wallpaperUrl);
-                        mConnection = (HttpURLConnection) url.openConnection();
-                        mConnection.setConnectTimeout(15000);
+                        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                        connection.setConnectTimeout(15000);
 
-                        if (mConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                            InputStream stream = mConnection.getInputStream();
+                        if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                            InputStream stream = connection.getInputStream();
                             wallpapersJSON = LoganSquare.parse(stream, WallpaperJSON.class);
 
                             if (wallpapersJSON == null) return false;
@@ -273,7 +269,6 @@ public class WallpapersFragment extends Fragment {
                     Toast.makeText(getActivity(), R.string.connection_failed,
                             Toast.LENGTH_LONG).show();
                 }
-                mConnection = null;
                 mGetWallpapers = null;
                 showPopupBubble();
             }
