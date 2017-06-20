@@ -365,9 +365,4 @@ public class CandyBarApplication extends Application {
         PRIMARY_TEXT,
         ACCENT
     }
-
-    public enum IconStyle {
-        SQUARE,
-        CIRCLE,
-    }
 }
