@@ -124,8 +124,10 @@ public class PreferencesHelper {
     }
 
     public boolean isDarkTheme() {
-        return getSharedPreferences().getBoolean(KEY_DARK_THEME,
-                mContext.getResources().getBoolean(R.bool.use_dark_theme));
+        boolean useDarkTheme = mContext.getResources().getBoolean(R.bool.use_dark_theme);
+        boolean isThemingEnabled = CandyBarApplication.getConfiguration().isDashboardThemingEnabled();
+        if (!isThemingEnabled) return useDarkTheme;
+        return getSharedPreferences().getBoolean(KEY_DARK_THEME, useDarkTheme);
     }
 
     public void setDarkTheme(boolean bool) {
