@@ -14,11 +14,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.URLUtil;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.danimahardhika.android.helpers.core.ColorHelper;
@@ -177,6 +179,14 @@ public class AboutAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         subtitle.getPaddingRight(),
                         subtitle.getPaddingBottom() + mContext.getResources().getDimensionPixelSize(R.dimen.content_margin));
             } else {
+                if (recyclerView.getLayoutParams() instanceof LinearLayout.LayoutParams) {
+                    LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) recyclerView.getLayoutParams();
+                    if (urls.length < 7) {
+                        params.width = LinearLayout.LayoutParams.WRAP_CONTENT;
+                        params.gravity = Gravity.CENTER_HORIZONTAL;
+                        recyclerView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+                    }
+                }
                 recyclerView.setAdapter(new AboutSocialAdapter(mContext, urls));
             }
 
