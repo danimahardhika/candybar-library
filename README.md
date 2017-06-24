@@ -80,7 +80,7 @@ Want your icon pack listed here? Mention me at [Google Plus](https://plus.google
 * [Dimitrix](https://play.google.com/store/apps/details?id=com.darin.dimitrix)
 * [Cikukua](https://play.google.com/store/apps/details?id=com.setio.budi.cikukua.icons)
 * [Monoic White](https://play.google.com/store/apps/details?id=com.kdpixels.iconpacks.monoic)
-* [Lense Icon Pack](https://play.google.com/store/apps/details?id=ru.xorrisont.lens)
+* [Lens Icon Pack](https://play.google.com/store/apps/details?id=ru.xorrisont.lens)
 
 # License
 ```
