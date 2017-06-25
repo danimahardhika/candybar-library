@@ -66,7 +66,7 @@
     <string name="tap_intro_request_premium_desc">প্রিমিয়াম আইকন অনুরোধ প্যাকেজ কিনতে এখানে আলতো চাপুন,
 প্রিমিয়াম আইকন অনুরোধ সঙ্গে আপনি আপনার অনুরোধ করা অ্যাপ দ্রুত পেতে পারেন</string>
     <string name="tap_intro_wallpapers_option">ওয়ালপেপার অপশন</string>
-    <string name="tap_intro_wallpapers_option_desc">ওয়ালপেপার বিকল্পগুলি প্রদর্শন করতে এখানে ট্যাপ করুন এবং ধরে থাকুন,% s ওয়ালপেপারটি প্রয়োগ করুন।</string>
+    <string name="tap_intro_wallpapers_option_desc">ওয়ালপেপার বিকল্পগুলি প্রদর্শন করতে এখানে ট্যাপ করুন এবং ধরে থাকুন,%s ওয়ালপেপারটি প্রয়োগ করুন।</string>
     <string name="tap_intro_wallpapers_option_desc_download">ডাউনলোড করুন অথবা</string>
     <string name="tap_intro_wallpapers_preview">ওয়ালপেপার প্রিভিউ দেখান</string>
     <string name="tap_intro_wallpapers_preview_desc">ওয়ালপেপারের সম্পূর্ণ আকারের পূর্বরূপ দেখার জন্য এখানে আলতো চাপুন</string>
@@ -150,7 +150,7 @@ Android Nougat এ লকস্ক্রিন ব্যাকগ্রাউন
     <string name="wallpaper_download_failed">ওয়ালপেপার ডাউনলোড করতে অক্ষম</string>
     <string name="wallpaper_download_cancelled">ওয়ালপেপার ডাউনলোড বাতিল করা হয়েছে</string>
     <string name="wallpaper_downloaded">-এ ওয়ালপেপার সংরক্ষিত</string>
-    <string name="wallpaper_download_exist">% s নামের ওয়ালপেপার ইতিমধ্যে বিদ্যমান, আপনি কি এটি প্রতিস্থাপন করতে চান?</string>
+    <string name="wallpaper_download_exist">%s নামের ওয়ালপেপার ইতিমধ্যে বিদ্যমান, আপনি কি এটি প্রতিস্থাপন করতে চান?</string>
     <string name="wallpaper_download_exist_replace">প্রতিস্থাপন করুন</string>
     <string name="wallpaper_download_exist_new">নতুন তৈরী করুন</string>
     <string name="wallpaper_loading">ওয়ালপেপার লোড করা হচ্ছে …</string>
