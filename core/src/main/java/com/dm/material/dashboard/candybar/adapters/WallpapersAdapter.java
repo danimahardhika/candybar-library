@@ -26,7 +26,6 @@ import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
 import com.dm.material.dashboard.candybar.fragments.dialog.WallpaperOptionsFragment;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
-import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
 import com.dm.material.dashboard.candybar.items.Wallpaper;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
@@ -109,12 +108,7 @@ public class WallpapersAdapter extends RecyclerView.Adapter<WallpapersAdapter.Vi
             holder.author.setText(mWallpapers.get(position).getAuthor());
         }
 
-        String url = WallpaperHelper.getThumbnailUrl(mContext,
-                mWallpapers.get(position).getURL(),
-                mWallpapers.get(position).getThumbUrl());
-        //LogUtil.d("loading wallpaper thumbnail: " +url);
-
-        ImageLoader.getInstance().displayImage(url, new ImageViewAware(holder.image),
+        ImageLoader.getInstance().displayImage(mWallpapers.get(position).getThumbUrl(), new ImageViewAware(holder.image),
                 mOptions.build(), ImageConfig.getThumbnailSize(), new SimpleImageLoadingListener() {
                     @Override
                     public void onLoadingStarted(String imageUri, View view) {

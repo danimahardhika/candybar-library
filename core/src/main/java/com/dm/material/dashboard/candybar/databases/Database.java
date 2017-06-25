@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.danimahardhika.android.helpers.core.TimeHelper;
+import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
 import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.items.Wallpaper;
 import com.dm.material.dashboard.candybar.items.WallpaperJSON;
@@ -265,8 +266,9 @@ public class Database extends SQLiteOpenHelper {
             statement.bindString(1, wallpaper.getWalls.get(i).name);
             statement.bindString(2, wallpaper.getWalls.get(i).author);
             statement.bindString(3, wallpaper.getWalls.get(i).url);
-            statement.bindString(4, wallpaper.getWalls.get(i).thumbUrl == null ?
-                    wallpaper.getWalls.get(i).url : wallpaper.getWalls.get(i).thumbUrl);
+            statement.bindString(4, WallpaperHelper.getThumbnailUrl(
+                    wallpaper.getWalls.get(i).url,
+                    wallpaper.getWalls.get(i).thumbUrl));
             statement.bindString(5, TimeHelper.getLongDateTime());
             statement.execute();
         }
@@ -287,8 +289,9 @@ public class Database extends SQLiteOpenHelper {
             statement.bindString(1, wallpapers.get(i).getName());
             statement.bindString(2, wallpapers.get(i).getAuthor());
             statement.bindString(3, wallpapers.get(i).getURL());
-            statement.bindString(4, wallpapers.get(i).getThumbUrl() == null ?
-                    wallpapers.get(i).getURL() : wallpapers.get(i).getThumbUrl());
+            statement.bindString(4, WallpaperHelper.getThumbnailUrl(
+                    wallpapers.get(i).getURL(),
+                    wallpapers.get(i).getThumbUrl()));
             statement.bindString(5, TimeHelper.getLongDateTime());
             statement.execute();
         }

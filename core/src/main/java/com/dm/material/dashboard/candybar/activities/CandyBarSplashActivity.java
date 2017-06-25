@@ -50,7 +50,6 @@ public class CandyBarSplashActivity extends AppCompatActivity {
 
     private Class<?> mMainActivity;
     private AsyncTask<Void, Void, Boolean> mPrepareApp;
-    private AsyncTask<Void, Void, Boolean> mCheckRszIo;
     private AsyncTask<Void, Void, Boolean> mPrepareCloudWallpapers;
 
     public void initSplashActivity(Bundle savedInstanceState, Class<?> mainActivity) {
@@ -63,7 +62,6 @@ public class CandyBarSplashActivity extends AppCompatActivity {
         splashTitle.setTextColor(color);
 
         prepareApp();
-        //checkRszIo();
         prepareCloudWallpapers(this);
     }
 
@@ -76,7 +74,6 @@ public class CandyBarSplashActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (mPrepareCloudWallpapers != null) mPrepareCloudWallpapers.cancel(true);
-        if (mCheckRszIo != null) mCheckRszIo.cancel(true);
         super.onBackPressed();
     }
 
@@ -113,40 +110,6 @@ public class CandyBarSplashActivity extends AppCompatActivity {
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    private void checkRszIo() {
-        mCheckRszIo = new AsyncTask<Void, Void, Boolean>() {
-
-            final String rszio = "https://rsz.io/";
-
-            @Override
-            protected Boolean doInBackground(Void... voids) {
-                while ((!isCancelled())) {
-                    try {
-                        Thread.sleep(1);
-                        URL url = new URL(rszio);
-                        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                        connection.setReadTimeout(6000);
-                        connection.setConnectTimeout(6000);
-                        int code = connection.getResponseCode();
-                        return code == HttpURLConnection.HTTP_OK;
-                    } catch (Exception e) {
-                        LogUtil.e(Log.getStackTraceString(e));
-                        return false;
-                    }
-                }
-                return false;
-            }
-
-            @Override
-            protected void onPostExecute(Boolean aBoolean) {
-                super.onPostExecute(aBoolean);
-                CandyBarMainActivity.sRszIoAvailable = aBoolean;
-                LogUtil.e("rsz.io availability: " +CandyBarMainActivity.sRszIoAvailable);
-                mCheckRszIo = null;
-            }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-    }
-
     private void prepareCloudWallpapers(@NonNull Context context) {
         final String wallpaperUrl = getResources().getString(R.string.wallpaper_json);
 
@@ -170,16 +133,16 @@ public class CandyBarSplashActivity extends AppCompatActivity {
                             WallpaperJSON wallpapersJSON = LoganSquare.parse(stream, WallpaperJSON.class);
                             if (database.getWallpapersCount() > 0) database.deleteWallpapers();
                             database.addWallpapers(wallpapersJSON);
-                        }
 
-                        List<Wallpaper> wallpapers = database.getWallpapers();
-                        if (wallpapers.size() > 0) {
-                            String uri = WallpaperHelper.getThumbnailUrl(context,
-                                    wallpapers.get(0).getURL(),
-                                    wallpapers.get(0).getThumbUrl());
-                            ImageLoader.getInstance().loadImageSync(uri,
-                                    ImageConfig.getThumbnailSize(),
-                                    ImageConfig.getDefaultImageOptions(true));
+                            List<Wallpaper> wallpapers = database.getWallpapers();
+                            if (wallpapers.size() > 0) {
+                                String uri = WallpaperHelper.getThumbnailUrl(
+                                        wallpapers.get(0).getURL(),
+                                        wallpapers.get(0).getThumbUrl());
+                                ImageLoader.getInstance().loadImageSync(uri,
+                                        ImageConfig.getThumbnailSize(),
+                                        ImageConfig.getDefaultImageOptions(true));
+                            }
                         }
                         return true;
                     } catch (Exception e) {

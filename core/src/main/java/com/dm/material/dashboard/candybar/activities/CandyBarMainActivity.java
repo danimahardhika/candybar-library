@@ -183,6 +183,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements
         mPosition = mLastPosition = 0;
         if (savedInstanceState != null) {
             mPosition = mLastPosition = savedInstanceState.getInt("position", 0);
+            onSearchExpanded(false);
         }
 
         IntentHelper.sAction = IntentHelper.getAction(getIntent());

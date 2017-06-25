@@ -26,13 +26,13 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.danimahardhika.android.helpers.core.ColorHelper;
+import com.danimahardhika.android.helpers.core.FileHelper;
 import com.danimahardhika.android.helpers.core.WindowHelper;
 import com.danimahardhika.android.helpers.permission.PermissionHelper;
 import com.danimahardhika.cafebar.CafeBar;
 import com.danimahardhika.cafebar.CafeBarDuration;
 import com.danimahardhika.cafebar.CafeBarTheme;
 import com.dm.material.dashboard.candybar.R;
-import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -48,9 +48,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
-import static com.danimahardhika.android.helpers.core.FileHelper.copy;
-import static com.danimahardhika.android.helpers.core.FileHelper.getUriFromFile;
 
 /*
  * CandyBar - Material Dashboard
@@ -88,17 +85,9 @@ public class WallpaperHelper {
         return UNKNOWN;
     }
 
-    public static String getThumbnailUrl(@NonNull Context context, String url, String thumbUrl) {
-        if (thumbUrl.equals(url) && CandyBarMainActivity.sRszIoAvailable && !thumbUrl.contains("drive.google.com")) {
-            return getRszIoThumbnailUrl(context, url);
-        }
-        return thumbUrl;
-    }
-
-    private static String getRszIoThumbnailUrl(@NonNull Context context, String url) {
-        url = url.replaceFirst("https://|http://", "");
-        ImageSize imageSize = ImageConfig.getThumbnailSize();
-        return "https://rsz.io/" +url+ "?height=" +imageSize.getWidth();
+    public static String getThumbnailUrl(String url, String thumbUrl) {
+        if (thumbUrl != null) return thumbUrl;
+        return url;
     }
 
     public static void launchExternalApp(@NonNull Context context) {
@@ -152,7 +141,7 @@ public class WallpaperHelper {
             File target = new File(getDefaultWallpapersDirectory(context).toString()
                     + File.separator + name + IMAGE_EXTENSION);
 
-            if (copy(cache, target)) {
+            if (FileHelper.copy(cache, target)) {
                 wallpaperSaved(context, color, target);
 
                 context.sendBroadcast(new Intent(
@@ -303,8 +292,11 @@ public class WallpaperHelper {
                 .neutralText(R.string.open)
                 .neutralColor(color)
                 .onNeutral(cafeBar -> {
-                    Uri uri = getUriFromFile(context, context.getPackageName(), file);
-                    if (uri == null) return;
+                    Uri uri = FileHelper.getUriFromFile(context, context.getPackageName(), file);
+                    if (uri == null) {
+                        cafeBar.dismiss();
+                        return;
+                    }
 
                     context.startActivity(new Intent()
                             .setAction(Intent.ACTION_VIEW)
