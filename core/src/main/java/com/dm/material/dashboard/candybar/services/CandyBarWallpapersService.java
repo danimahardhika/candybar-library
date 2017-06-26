@@ -4,11 +4,10 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
 
-import com.bluelinelabs.logansquare.LoganSquare;
 import com.dm.material.dashboard.candybar.R;
+import com.dm.material.dashboard.candybar.helpers.JsonHelper;
 import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
 import com.dm.material.dashboard.candybar.items.Wallpaper;
-import com.dm.material.dashboard.candybar.items.WallpaperJSON;
 import com.dm.material.dashboard.candybar.receivers.CandyBarBroadcastReceiver;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
 
@@ -63,20 +62,18 @@ public class CandyBarWallpapersService extends IntentService {
 
             if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 InputStream stream = connection.getInputStream();
-                WallpaperJSON wallpapersJSON = LoganSquare.parse(stream, WallpaperJSON.class);
-                if (wallpapersJSON == null) return;
+                List list = JsonHelper.parseList(stream);
+                if (list == null) return;
 
                 List<Wallpaper> wallpapers = new ArrayList<>();
-                for (WallpaperJSON wallpaper : wallpapersJSON.getWalls) {
-                    Wallpaper wall = new Wallpaper(
-                            wallpaper.name,
-                            wallpaper.author,
-                            wallpaper.url,
-                            wallpaper.thumbUrl);
-                    if (!wallpapers.contains(wall)) {
-                        wallpapers.add(wall);
-                    } else {
-                        LogUtil.e("Duplicate wallpaper found: " +wall.getURL());
+                for (int i = 0; i < list.size(); i++) {
+                    Wallpaper wallpaper = JsonHelper.getTempWallpaper(list.get(i));
+                    if (wallpaper != null) {
+                        if (!wallpapers.contains(wallpaper)) {
+                            wallpapers.add(wallpaper);
+                        } else {
+                            LogUtil.e("Duplicate wallpaper found: " +wallpaper.getURL());
+                        }
                     }
                 }
 

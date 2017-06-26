@@ -128,7 +128,6 @@ public class CandyBarMainActivity extends AppCompatActivity implements
     public static Home sHomeIcon;
     public static int sInstalledAppsCount;
     public static int sIconsCount;
-    public static boolean sRszIoAvailable;
 
     private static final String TAG_HOME = "home";
     private static final String TAG_APPLY = "apply";

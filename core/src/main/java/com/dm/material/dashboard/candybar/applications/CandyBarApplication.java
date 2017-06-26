@@ -10,6 +10,7 @@ import com.dm.material.dashboard.candybar.activities.CandyBarCrashReport;
 import com.dm.material.dashboard.candybar.helpers.LocaleHelper;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
+import com.dm.material.dashboard.candybar.utils.JsonStructure;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -140,6 +141,7 @@ public class CandyBarApplication extends Application {
         private boolean mIsIncludeIconRequestToEmailBody = true;
 
         private boolean mIsCrashReportEnabled = true;
+        private JsonStructure mWallpaperJsonStructure = new JsonStructure.Builder("Wallpapers").build();
 
         public Configuration setNavigationIcon(@NonNull NavigationIcon navigationIcon) {
             mNavigationIcon = navigationIcon;
@@ -252,6 +254,11 @@ public class CandyBarApplication extends Application {
             return this;
         }
 
+        public Configuration setWallpaperJsonStructure(@NonNull JsonStructure jsonStructure) {
+            mWallpaperJsonStructure = jsonStructure;
+            return this;
+        }
+
         public NavigationIcon getNavigationIcon() {
             return mNavigationIcon;
         }
@@ -334,6 +341,10 @@ public class CandyBarApplication extends Application {
 
         public boolean isIncludeIconRequestToEmailBody() {
             return mIsIncludeIconRequestToEmailBody;
+        }
+
+        public JsonStructure getWallpaperJsonStructure() {
+            return mWallpaperJsonStructure;
         }
     }
 

@@ -21,7 +21,6 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.bluelinelabs.logansquare.LoganSquare;
 import com.danimahardhika.android.helpers.animation.AnimationHelper;
 import com.danimahardhika.android.helpers.core.ColorHelper;
 import com.danimahardhika.android.helpers.core.DrawableHelper;
@@ -31,10 +30,10 @@ import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.WallpapersAdapter;
 import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
 import com.dm.material.dashboard.candybar.databases.Database;
+import com.dm.material.dashboard.candybar.helpers.JsonHelper;
 import com.dm.material.dashboard.candybar.helpers.TapIntroHelper;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.items.Wallpaper;
-import com.dm.material.dashboard.candybar.items.WallpaperJSON;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.dm.material.dashboard.candybar.utils.listeners.WallpapersListener;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -173,8 +172,8 @@ public class WallpapersFragment extends Fragment {
         final String wallpaperUrl = getActivity().getResources().getString(R.string.wallpaper_json);
         mGetWallpapers = new AsyncTask<Void, Void, Boolean>() {
 
-            WallpaperJSON wallpapersJSON;
             List<Wallpaper> wallpapers;
+            Database database = Database.get(getActivity());
 
             @Override
             protected void onPreExecute() {
@@ -193,7 +192,6 @@ public class WallpapersFragment extends Fragment {
                 while (!isCancelled()) {
                     try {
                         Thread.sleep(1);
-                        Database database = Database.get(getActivity());
                         if (!refreshing && (database.getWallpapersCount() > 0)) {
                             wallpapers = database.getWallpapers();
                             return true;
@@ -205,18 +203,21 @@ public class WallpapersFragment extends Fragment {
 
                         if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                             InputStream stream = connection.getInputStream();
-                            wallpapersJSON = LoganSquare.parse(stream, WallpaperJSON.class);
+                            List list = JsonHelper.parseList(stream);
+                            if (list == null) {
+                                LogUtil.e("Json error, no array with name: "
+                                        +CandyBarApplication.getConfiguration().getWallpaperJsonStructure().arrayName());
+                                return false;
+                            }
 
-                            if (wallpapersJSON == null) return false;
                             if (refreshing) {
                                 wallpapers = database.getWallpapers();
                                 List<Wallpaper> newWallpapers = new ArrayList<>();
-                                for (WallpaperJSON wallpaper : wallpapersJSON.getWalls) {
-                                    newWallpapers.add(new Wallpaper(
-                                            wallpaper.name,
-                                            wallpaper.author,
-                                            wallpaper.url,
-                                            wallpaper.thumbUrl));
+                                for (int i = 0; i < list.size(); i++) {
+                                    Wallpaper wallpaper = JsonHelper.getWallpaper(getActivity(), list.get(i));
+                                    if (wallpaper != null) {
+                                        newWallpapers.add(wallpaper);
+                                    }
                                 }
 
                                 List<Wallpaper> intersection = (List<Wallpaper>)
@@ -233,7 +234,7 @@ public class WallpapersFragment extends Fragment {
                                         database.getWallpapersCount());
                             } else {
                                 if (database.getWallpapersCount() > 0) database.deleteWallpapers();
-                                database.addWallpapers(wallpapersJSON);
+                                database.addWallpapers(list);
                             }
 
                             wallpapers = database.getWallpapers();
@@ -241,6 +242,7 @@ public class WallpapersFragment extends Fragment {
                         }
                     } catch (Exception e) {
                         LogUtil.e(Log.getStackTraceString(e));
+                        database.close();
                         return false;
                     }
                 }

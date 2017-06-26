@@ -9,14 +9,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
 
-import com.bluelinelabs.logansquare.LoganSquare;
 import com.danimahardhika.android.helpers.core.ColorHelper;
 import com.dm.material.dashboard.candybar.R;
+import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
 import com.dm.material.dashboard.candybar.databases.Database;
+import com.dm.material.dashboard.candybar.helpers.JsonHelper;
 import com.dm.material.dashboard.candybar.helpers.LocaleHelper;
 import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
-import com.dm.material.dashboard.candybar.items.Wallpaper;
-import com.dm.material.dashboard.candybar.items.WallpaperJSON;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -25,6 +24,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -114,6 +114,9 @@ public class CandyBarSplashActivity extends AppCompatActivity {
         final String wallpaperUrl = getResources().getString(R.string.wallpaper_json);
 
         mPrepareCloudWallpapers = new AsyncTask<Void, Void, Boolean>() {
+
+            Database database = Database.get(context);
+
             @Override
             protected Boolean doInBackground(Void... voids) {
                 while (!isCancelled()) {
@@ -122,7 +125,6 @@ public class CandyBarSplashActivity extends AppCompatActivity {
                         if (WallpaperHelper.getWallpaperType(context) != WallpaperHelper.CLOUD_WALLPAPERS)
                             return true;
 
-                        Database database = Database.get(context);
                         if (database.getWallpapersCount() > 0) return true;
 
                         URL url = new URL(wallpaperUrl);
@@ -130,23 +132,30 @@ public class CandyBarSplashActivity extends AppCompatActivity {
                         connection.setConnectTimeout(15000);
                         if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                             InputStream stream = connection.getInputStream();
-                            WallpaperJSON wallpapersJSON = LoganSquare.parse(stream, WallpaperJSON.class);
-                            if (database.getWallpapersCount() > 0) database.deleteWallpapers();
-                            database.addWallpapers(wallpapersJSON);
+                            List list = JsonHelper.parseList(stream);
+                            if (list == null) {
+                                LogUtil.e("Json error, no array with name: "
+                                        + CandyBarApplication.getConfiguration().getWallpaperJsonStructure().arrayName());
+                                return false;
+                            }
 
-                            List<Wallpaper> wallpapers = database.getWallpapers();
-                            if (wallpapers.size() > 0) {
-                                String uri = WallpaperHelper.getThumbnailUrl(
-                                        wallpapers.get(0).getURL(),
-                                        wallpapers.get(0).getThumbUrl());
-                                ImageLoader.getInstance().loadImageSync(uri,
-                                        ImageConfig.getThumbnailSize(),
-                                        ImageConfig.getDefaultImageOptions(true));
+                            if (database.getWallpapersCount() > 0) database.deleteWallpapers();
+                            database.addWallpapers(list);
+
+                            if (list.size() > 0) {
+                                if (list.get(0) instanceof Map) {
+                                    Map map = (Map) list.get(0);
+                                    String thumbUrl = JsonHelper.getThumbUrl(map);
+                                    ImageLoader.getInstance().loadImageSync(thumbUrl,
+                                            ImageConfig.getThumbnailSize(),
+                                            ImageConfig.getDefaultImageOptions(true));
+                                }
                             }
                         }
                         return true;
                     } catch (Exception e) {
                         LogUtil.e(Log.getStackTraceString(e));
+                        database.close();
                         return false;
                     }
                 }

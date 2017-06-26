@@ -11,10 +11,10 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.danimahardhika.android.helpers.core.TimeHelper;
+import com.dm.material.dashboard.candybar.helpers.JsonHelper;
 import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
 import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.items.Wallpaper;
-import com.dm.material.dashboard.candybar.items.WallpaperJSON;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
 
 import java.util.ArrayList;
@@ -61,6 +61,8 @@ public class Database extends SQLiteOpenHelper {
     private static final String KEY_URL = "url";
     private static final String KEY_ADDED_ON = "added_on";
 
+    private Context mContext;
+
     @NonNull
     public static Database get(@NonNull Context context) {
         return new Database(context);
@@ -68,6 +70,7 @@ public class Database extends SQLiteOpenHelper {
 
     private Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        mContext = context;
     }
 
     @Override
@@ -107,6 +110,13 @@ public class Database extends SQLiteOpenHelper {
     @Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         resetDatabase(db, oldVersion);
+    }
+
+    public void close() {
+        if (this.getWritableDatabase().isOpen()) {
+            this.getWritableDatabase().close();
+            LogUtil.e("database forced to close");
+        }
     }
 
     private void resetDatabase(SQLiteDatabase db, int oldVersion) {
@@ -254,46 +264,33 @@ public class Database extends SQLiteOpenHelper {
         return requests;
     }
 
-    public void addWallpapers(WallpaperJSON wallpaper) {
+    public void addWallpapers(List<?> list) {
         String query = "INSERT INTO " +TABLE_WALLPAPERS+ " (" +KEY_NAME+ "," +KEY_AUTHOR+ "," +KEY_URL+ ","
                 +KEY_THUMB_URL+ "," +KEY_ADDED_ON+ ") VALUES (?,?,?,?,?);";
         SQLiteDatabase db = this.getWritableDatabase();
         SQLiteStatement statement = db.compileStatement(query);
         db.beginTransaction();
 
-        for (int i = 0; i < wallpaper.getWalls.size(); i++) {
+        for (int i = 0; i < list.size(); i++) {
             statement.clearBindings();
-            statement.bindString(1, wallpaper.getWalls.get(i).name);
-            statement.bindString(2, wallpaper.getWalls.get(i).author);
-            statement.bindString(3, wallpaper.getWalls.get(i).url);
-            statement.bindString(4, WallpaperHelper.getThumbnailUrl(
-                    wallpaper.getWalls.get(i).url,
-                    wallpaper.getWalls.get(i).thumbUrl));
-            statement.bindString(5, TimeHelper.getLongDateTime());
-            statement.execute();
-        }
-        db.setTransactionSuccessful();
-        db.endTransaction();
-        db.close();
-    }
 
-    public void addWallpapers(List<Wallpaper> wallpapers) {
-        String query = "INSERT INTO " +TABLE_WALLPAPERS+ " (" +KEY_NAME+ "," +KEY_AUTHOR+ "," +KEY_URL+ ","
-                +KEY_THUMB_URL+ "," +KEY_ADDED_ON+ ") VALUES (?,?,?,?,?);";
-        SQLiteDatabase db = this.getWritableDatabase();
-        SQLiteStatement statement = db.compileStatement(query);
-        db.beginTransaction();
+            Wallpaper wallpaper;
+            if (list.get(i) instanceof Wallpaper) {
+                wallpaper = (Wallpaper) list.get(i);
+            } else {
+                wallpaper = JsonHelper.getWallpaper(mContext, list.get(i));
+            }
 
-        for (int i = 0; i < wallpapers.size(); i++) {
-            statement.clearBindings();
-            statement.bindString(1, wallpapers.get(i).getName());
-            statement.bindString(2, wallpapers.get(i).getAuthor());
-            statement.bindString(3, wallpapers.get(i).getURL());
-            statement.bindString(4, WallpaperHelper.getThumbnailUrl(
-                    wallpapers.get(i).getURL(),
-                    wallpapers.get(i).getThumbUrl()));
-            statement.bindString(5, TimeHelper.getLongDateTime());
-            statement.execute();
+            if (wallpaper != null) {
+                statement.bindString(1, wallpaper.getName());
+                statement.bindString(2, wallpaper.getAuthor());
+                statement.bindString(3, wallpaper.getURL());
+                statement.bindString(4, WallpaperHelper.getThumbnailUrl(
+                        wallpaper.getURL(),
+                        wallpaper.getThumbUrl()));
+                statement.bindString(5, TimeHelper.getLongDateTime());
+                statement.execute();
+            }
         }
         db.setTransactionSuccessful();
         db.endTransaction();

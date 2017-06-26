@@ -5,10 +5,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.SparseArrayCompat;
 
-import com.bluelinelabs.logansquare.LoganSquare;
+import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
 import com.dm.material.dashboard.candybar.databases.Database;
 import com.dm.material.dashboard.candybar.items.Wallpaper;
-import com.dm.material.dashboard.candybar.items.WallpaperJSON;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -38,44 +37,44 @@ import java.util.Random;
 
 public class MuzeiHelper {
 
-    private final Database mDatabase;
+    private final Context mContext;
     private final String mDirectory;
 
     public MuzeiHelper(@NonNull Context context, String directory) {
-        mDatabase = Database.get(context);
+        mContext = context;
         mDirectory = directory;
     }
 
     @Nullable
     public Wallpaper getRandomWallpaper(String wallpaperUrl) throws Exception {
-        if (mDatabase.getWallpapersCount() == 0) {
+        Database database = Database.get(mContext);
+        if (database.getWallpapersCount() == 0) {
             URL url = new URL(wallpaperUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setConnectTimeout(15000);
 
             if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 InputStream stream = new BufferedInputStream(connection.getInputStream());
-                WallpaperJSON wallpapers = LoganSquare.parse(stream, WallpaperJSON.class);
-                int size = wallpapers.getWalls.size();
-                if (size > 0) {
-                    int position = getRandomInt(size);
-                    return new Wallpaper(
-                            wallpapers.getWalls.get(position).name,
-                            wallpapers.getWalls.get(position).author,
-                            wallpapers.getWalls.get(position).url,
-                            wallpapers.getWalls.get(position).thumbUrl);
+                List list = JsonHelper.parseList(stream);
+                if (list == null) return null;
+
+                if (list.size() > 0) {
+                    int position = getRandomInt(list.size());
+                    if (CandyBarApplication.getConfiguration().getWallpaperJsonStructure().name() != null) {
+                        return JsonHelper.getWallpaper(mContext, list.get(position));
+                    }
                 }
             }
             return null;
         } else {
-            return mDatabase.getRandomWallpaper();
+            return database.getRandomWallpaper();
         }
     }
 
     @Nullable
     public Wallpaper getRandomDownloadedWallpaper() throws Exception {
         SparseArrayCompat<Wallpaper> downloaded = new SparseArrayCompat<>();
-        List<Wallpaper> wallpapers = mDatabase.getWallpapers();
+        List<Wallpaper> wallpapers = Database.get(mContext).getWallpapers();
         for (Wallpaper wallpaper : wallpapers) {
             File file = new File(mDirectory + File.separator + wallpaper.getName() +
                     WallpaperHelper.IMAGE_EXTENSION);

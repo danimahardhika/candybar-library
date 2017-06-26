@@ -66,6 +66,7 @@ public class PreferencesHelper {
 
     private static final String KEY_LANGUAGE_PREFERENCE = "language_preference";
     private static final String KEY_CURRENT_LOCALE = "current_locale";
+    private static final String KEY_AUTO_INCREMENT = "auto_increment";
 
     public PreferencesHelper(@NonNull Context context) {
         mContext = context;
@@ -345,6 +346,12 @@ public class PreferencesHelper {
             LocaleHelper.setLocale(mContext);
             setTimeToSetLanguagePreference(false);
         }
+    }
+
+    public int getAutoIncrement() {
+        int increment = getSharedPreferences().getInt(KEY_AUTO_INCREMENT, 0);
+        getSharedPreferences().edit().putInt(KEY_AUTO_INCREMENT, (increment + 1)).apply();
+        return increment;
     }
 
     public boolean isConnectedToNetwork() {
