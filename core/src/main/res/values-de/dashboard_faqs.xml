@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="questions">
+        <!-- What is a launcher -->
+        <item>Was ist ein Launcher?</item>
+        <!-- What is an icon pack -->
+        <item>Was ist ein Icon Pack?</item>
+        <!-- How do i use an icon pack? -->
+        <item>Wie benutze ich ein Icon Pack?</item>
+        <!-- How do i apply an icon pack? -->
+        <item>Wie kann ich ein Icon Pack anwenden?</item>
+        <!-- How do i see all icons included? -->
+        <item>Wie sehe ich die inbegriffenen Icons?</item>
+        <!-- I can\'t see a complete icon name -->
+        <item>Ich kann den kompletten Namen eines Icons nicht sehen</item>
+        <!-- How can i replace icons with an alternate icon? -->
+        <item>Wie kann ich Icons durch alternative Icons ersetzen?</item>
+        <!-- How do i request an icon? -->
+        <item>Wie kann ich einen Icon-Wunsch senden?</item>
+        <!-- How can i restore remaining Premium Requests after reinstalling the app? -->
+        <item>Wie kann ich verbliebene Premium Icon-Anfragen nach der Neuinstallation der App wiederherstellen?</item>
+        <!-- After restarting my phone, the icon pack is not applied, it restore to defaults? -->
+        <item>Nach dem Neustart meines Handys ist das Icon Pack nicht mehr angewandt. Auf Standardwerte zurücksetzen?</item>
+        <!-- Why do the icons looks jaggy or pixelated on my phone? -->
+        <item>Wieso sehen Icons verpixelt und kantig auf meinem Handy aus?</item>
+        <!-- I can see the icon included in all icons,
+            but why isn\'t the actual icon on app drawer changed? -->
+        <item>Ich sehe, dass das Icon verfügbar ist,
+aber wieso ist dieses Icon nicht in der App-Übersicht geändert?</item>
+        <!-- What is the \"report bugs\" option? -->
+        <item>Was ist die \"Fehler melden\" Option?</item>
+        <!-- My launcher is listed in the google play description, but why isn\'t it included in apply section? -->
+        <item>Mein Launcher ist in der Google Play-Beschreibung gelistet, aber wieso ist es nicht in der Sektion zum Anwenden gelistet?</item>
+        <!-- Wallpaper can\'t be applied, just showing black screen? -->
+        <item>Hintergrundbild kann nicht angewandt werden und es wird nur ein schwarzer Bildschirm angezeigt.</item>
+        <!-- Muzei: How to load downloaded wallpapers only? -->
+        <item>Muzei: Wie kann ich nur heruntergeladene Hintergrundbilder laden?</item>
+        <!-- Muzei: I don\'t want to keep downloading wallpapers each time the wallpaper changes? -->
+        <item>Muzei: Ich möchte nicht ständig Hintergründe herunterladen, jedes Mal wenn es sich ändert.</item>
+        <!-- Muzei: I only want to use specific wallpapers? -->
+        <item>Muzei: Ich möchte nur spezifische Hintergründe verwenden.</item>
+        <!-- Why are Read &amp; Write External Storage permission needed? -->
+        <item>Wieso braucht man die Erlaubnis zum Lesen &amp; Schreiben des externen Speichers?</item>
+        <!-- Why is Internet permission needed? -->
+        <item>Wieso braucht man eine Internet-Genehmigung?</item>
+        <!-- Why is Access Network State permission needed? -->
+        <item>Wieso sind Netzwerkverbindungsinformationen nötig?</item>
+        <!-- Why is Access Wifi State permission needed? -->
+        <item>Wieso sind WLAN-Verbindungsinformationen nötig?</item>
+        <!-- Why is Set Wallpaper permission needed? -->
+        <item>Wieso braucht man die Erlaubnis Hintergründe festzulegen?</item>
+        <!-- Why is Wake Lock Permission needed? -->
+        <item>Wieso ist die Erlaubnis den Standby-Modus zu deaktivieren nötig?</item>
+    </string-array>
+
+    <string-array name="answers">
+        <!-- What is a launcher -->
+        <item>Der Launcher ist der Teil des Androidbenutzeroberfläche, der zulässt den Startbildschirm anzupassen,
+Apps zu starten, Anrufe zu tätigen und andere Aufgaben auf Android-Geräten zu erfüllen.</item>
+        <!-- What is an icon pack -->
+        <item>Ein Set von Grafiken, das Aussehen deiner Icons in der App-Übersicht ändert</item>
+        <!-- How do i use an icon pack? -->
+        <item>Du brauchst einen Launcher, der benutzerdefinierte Icon Packs unterstützt. Unterstützte Launcher sind in der Play Store-Beschreibung gelistet. Wenn du nicht weißt, welche Launcher genutzt werden können, gehe einfach zur Sektion \"Anwenden\" und installiere es von da.</item>
+        <!-- How do i apply an icon pack? -->
+        <item>Du kannst die Navigationsübersicht öffnen und auf \"Anwenden\" klicken. Wähle deinen Launcher in der Liste aus.
+Wenn dein Launcher nicht gelistet ist, aber dieses Icon Pack damit kompatibel ist
+(in der Google Play-Beschreibung sind kompatible Launcher zu sehen),
+kannst du das Icon Pack manuell aus den Launchereinstellungen anwenden.</item>
+        <!-- How do i see all icons included? -->
+        <item>Du kannst die Navigationsübersicht öffnen und dann öffne \"Icons\"</item>
+        <!-- I can\'t see a complete icon name -->
+        <item>Klicke auf das Icon. Es wird eine Vorschau mit einem größeren Bild und dem kompletten Namen des Icons erscheinen.</item>
+        <!-- How can i replace icons with an alternate icon? -->
+        <item>Es hängt davon ab, welchen Launcher du benutzt hast. Nicht jeder Launcher unterstützt das Bearbeiten von Icons.
+Normalerweise kannst du ein Icon bearbeiten, indem du das Icon anklickst &amp; festhältst oder es doppelt anklickst.</item>
+        <!-- How do i request an icon? -->
+        <item>Du kannst die Navigationsübersicht öffnen und dann \"Icon-Anfrage\" wählen.</item>
+        <!-- How can i restore remaining Premium Requests after reinstalling the app? -->
+        <item>Du kannst die Navigationsübersicht öffnen, dann Einstellungen öffnen und \"Käufe wiederherstellen\" auswählen.
+Wenn du verbliebene Premium-Anfragen vor der Neuinstallation hattest, werden diese wiederhergestellt.</item>
+        <!-- After restarting my phone, the icon pack is not applied, it restore to defaults? -->
+        <item>Es ist passiert, weil das Icon Pack auf die SD-Karte verschoben wurde. Du solltest es im internen Speicher installieren.</item>
+        <!-- Why do the icons looks jaggy or pixelated on my phone? -->
+        <item>Das Problem könnte vom Launcher kommen, welcher eine hohe Auflösung der Icons in den Griff bekommen musste.
+Du kannst das Problem lösen, indem du die Icon-Größe auf 115 - 120% stellst.
+Ansonsten müsstest du deinen Launcher ändern.</item>
+        <!-- I can see the icon included in all icons,
+            but why isn\'t the actual icon on app drawer changed? -->
+        <item>Einstellungen öffnen, herunterscrollen, danach \"Fehler melden\" auswählen.</item>
+        <!-- What is the \"report bugs\" option? -->
+        <item>\"Fehler melden\" wird benutzt, um Fehler in Bezug zum Icon Pack und nicht dem Dashboard zu melden.</item>
+        <!-- My launcher is listed in the google play description, but why isn\'t it included in apply section? -->
+        <item>Nicht jeder Launcher unterstützt eine direkte Anwendung und einige können nicht über das Dashboard geöffnet werden
+Du kannst das Icon Pack manuell aus den jeweiligen Launchereinstellungen anwenden.</item>
+        <!-- Wallpaper can\'t be applied, just showing black screen? -->
+        <item>Wenn du ein Hintergrundbild aus der App festlegst, wird es in den Cache heruntergeladen
+und die Dashboard-App wird versuchen es anzuwenden. Die Anwendung braucht einige Zeit und wird für eine kurze Zeitspanne eine hohe Menge an RAM beanspruchen.
+Ein schwarzes Display könnte erscheinen, weil dein Handy nicht genügend RAM zur Verfügung hat.
+Ein Neustart deines Handys wird das Problem lösen. Nach dem Neustart hat dein Handy wieder mehr RAM zur Verfügung.
+Ansonsten kannst du das heruntergeladene Hintergrundbild aus deiner Galerie als Hintergrund festlegen.</item>
+        <!-- Muzei: How to load downloaded wallpapers only? -->
+        <item>Muzei öffnen, das Icon Pack wählen, Einstellungen. Du wirst eine Option finden, dass nur heruntergeladene Hintergrundbilder geladen werden.
+Du musst die Hintergrundbilder zuerst herunterladen.</item>
+        <!-- Muzei: I don\'t want to keep downloading wallpapers each time the wallpaper changes? -->
+        <item>Wenn ein Hintergrundbild bereits heruntergeladen wurde, wird es aus deinem Gerätespeicher automatisch geladen.
+Muzei wird es nicht ständig herunterladen, wenn sich das Hintergrundbild ändert.
+Du musst die Hintergrundbilder zuerst herunterladen.</item>
+        <!-- Muzei: I only want to use specific wallpapers? -->
+        <item>Dashboard öffnen und lade die Hintergrundbilder herunter, die du in Muzei nutzen möchtest.
+Muzei-Einstellungen öffnen und wähle, dass nur heruntergeladene Hintergrundbilder geladen werden.</item>
+        <!-- Why are Read &amp; Write External Storage permission needed? -->
+        <item>Es wird benutzt, um den Cache zu lesen und zu schreiben und um Daten der Icon-Anfrage zu sammeln.</item>
+        <!-- Why is Internet permission needed? -->
+        <item>Es wird benutzt, um Cloud-Hintergründe zu laden und herunterzuladen.</item>
+        <!-- Why is Access Network State permission needed? -->
+        <item>Es wird benutzt, um zu überprüfen, ob dein Handy eine Internetverbindung hat.</item>
+        <!-- Why is Access Wifi State permission needed? -->
+        <item>Es wird benutzt, um zu überprüfen, ob dein Handy eine Internetverbindung mit einem WLAN-Netzwerk hat, damit Cloud-Hintergründe von Muzei geladen werden können.</item>
+        <!-- Why is Set Wallpaper permission needed? -->
+        <item>Es wird benutzt, um Hintergrundbilder direkt aus der Dashboard App anzuwenden.</item>
+        <!-- Why is Wake Lock Permission needed? -->
+        <item>Es wird von Muzei Live-Hintergrund benutzt</item>
+    </string-array>
+</resources>

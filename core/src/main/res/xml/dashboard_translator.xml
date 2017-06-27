@@ -31,6 +31,12 @@
         link="https://plus.google.com/u/1/104068956670911527102" />
 
     <contributor
+        name="Epikur Prod"
+        contribution="French"
+        image="https://lh3.googleusercontent.com/-tbAsxIJ42pY/AAAAAAAAAAI/AAAAAAAADW8/xmZ0E_JYA6k/s300-p-rw-no/photo.jpg"
+        link="https://plus.google.com/u/1/+Epikurprodcom" />
+
+    <contributor
         name="Morshedul Alam"
         contribution="Bengali"
         image="https://lh3.googleusercontent.com/-Tzs7zUe2DBE/AAAAAAAAAAI/AAAAAAAAAUc/dX4LKPw7TIU/s300-p-rw-no/photo.jpg"
@@ -41,5 +47,11 @@
         contribution="Italian"
         image="https://lh3.googleusercontent.com/-y_QMl45evRc/AAAAAAAAAAI/AAAAAAAAiWY/Jlj2plNvU18/s300-p-rw-no/photo.jpg"
         link="https://plus.google.com/u/1/+DevFraom" />
+
+    <contributor
+        name="Leo Trojnar"
+        contribution="German"
+        image="https://lh3.googleusercontent.com/-Mh_0vnFWt5s/AAAAAAAAAAI/AAAAAAAAAAA/AI6yGXwh8XqGO75T-oSKrodpuKq05PflnA/s300-p-rw-no-mo/photo.jpg"
+        link="https://plus.google.com/u/1/105364152322749829388" />
 
 </resources>
