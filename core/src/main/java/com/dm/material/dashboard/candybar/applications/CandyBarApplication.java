@@ -124,6 +124,7 @@ public class CandyBarApplication extends Application {
         private Style mAboutStyle = Style.PORTRAIT_FLAT_LANDSCAPE_CARD;
         private IconColor mIconColor = IconColor.PRIMARY_TEXT;
 
+        private boolean mIsColoredApplyCard = true;
         private boolean mIsAutomaticIconsCountEnabled = true;
         private int mCustomIconsCount = 0;
         private boolean mIsShowTabIconsCount = false;
@@ -185,6 +186,11 @@ public class CandyBarApplication extends Application {
 
         public Configuration setSocialIconColor(@NonNull IconColor iconColor) {
             mIconColor = iconColor;
+            return this;
+        }
+
+        public Configuration setColoredApplyCard(boolean coloredApplyCard) {
+            mIsColoredApplyCard = coloredApplyCard;
             return this;
         }
 
@@ -289,6 +295,10 @@ public class CandyBarApplication extends Application {
 
         public IconColor getSocialIconColor() {
             return mIconColor;
+        }
+
+        public boolean isColoredApplyCard() {
+            return mIsColoredApplyCard;
         }
 
         public boolean isAutomaticIconsCountEnabled() {

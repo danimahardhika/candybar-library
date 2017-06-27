@@ -94,18 +94,20 @@ public class LauncherAdapter extends RecyclerView.Adapter<LauncherAdapter.ViewHo
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                             super.onLoadingComplete(imageUri, view, loadedImage);
-                            Palette.from(loadedImage).generate(palette -> {
-                                int defaultColor = ColorHelper.getAttributeColor(
-                                        mContext, R.attr.card_background);
-                                int color = palette.getVibrantColor(defaultColor);
-                                if (color == defaultColor)
-                                    color = palette.getMutedColor(defaultColor);
-                                holder.name.setBackgroundColor(
-                                        ColorHelper.getDarkerColor(color, 0.8f));
-                                int text = ColorHelper.getTitleTextColor(
-                                        ColorHelper.getDarkerColor(color, 0.8f));
-                                holder.name.setTextColor(text);
-                            });
+                            if (CandyBarApplication.getConfiguration().isColoredApplyCard()) {
+                                Palette.from(loadedImage).generate(palette -> {
+                                    int defaultColor = ColorHelper.getAttributeColor(
+                                            mContext, R.attr.card_background);
+                                    int color = palette.getVibrantColor(defaultColor);
+                                    if (color == defaultColor)
+                                        color = palette.getMutedColor(defaultColor);
+                                    holder.name.setBackgroundColor(
+                                            ColorHelper.getDarkerColor(color, 0.8f));
+                                    int text = ColorHelper.getTitleTextColor(
+                                            ColorHelper.getDarkerColor(color, 0.8f));
+                                    holder.name.setTextColor(text);
+                                });
+                            }
                         }
                     });
         }
