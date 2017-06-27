@@ -142,14 +142,12 @@ public class CandyBarSplashActivity extends AppCompatActivity {
                             if (database.getWallpapersCount() > 0) database.deleteWallpapers();
                             database.addWallpapers(list);
 
-                            if (list.size() > 0) {
-                                if (list.get(0) instanceof Map) {
-                                    Map map = (Map) list.get(0);
-                                    String thumbUrl = JsonHelper.getThumbUrl(map);
-                                    ImageLoader.getInstance().loadImageSync(thumbUrl,
-                                            ImageConfig.getThumbnailSize(),
-                                            ImageConfig.getDefaultImageOptions(true));
-                                }
+                            if (list.size() > 0 && list.get(0) instanceof Map) {
+                                Map map = (Map) list.get(0);
+                                String thumbUrl = JsonHelper.getThumbUrl(map);
+                                ImageLoader.getInstance().loadImageSync(thumbUrl,
+                                        ImageConfig.getThumbnailSize(),
+                                        ImageConfig.getDefaultImageOptions(true));
                             }
                         }
                         return true;

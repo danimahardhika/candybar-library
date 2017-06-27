@@ -114,7 +114,7 @@ public class IntentAdapter extends BaseAdapter {
                     mApps.get(position).getType() == IntentChooser.TYPE_SUPPORTED) {
                 String packageName = app.applicationInfo.packageName;
                 String activity = app.name;
-                if (packageName.equals("com.google.android.apps.inbox")) {
+                if (("com.google.android.apps.inbox").equals(packageName)) {
                     activity = "com.google.android.apps.bigtop.activities.MainActivity";
                 }
 
