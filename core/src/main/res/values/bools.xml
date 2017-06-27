@@ -3,8 +3,6 @@
 
     <bool name="card_use_compat_padding">true</bool>
 
-    <bool name="tablet_mode">false</bool>
-
     <bool name="fit_system_window">true</bool>
 
 </resources>

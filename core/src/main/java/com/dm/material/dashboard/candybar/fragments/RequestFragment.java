@@ -275,7 +275,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         if (mRecyclerView == null) return;
 
         int padding = 0;
-        boolean tabletMode = getActivity().getResources().getBoolean(R.bool.tablet_mode);
+        boolean tabletMode = getActivity().getResources().getBoolean(R.bool.android_helpers_tablet_mode);
         if (tabletMode || orientation == Configuration.ORIENTATION_LANDSCAPE) {
             padding = getActivity().getResources().getDimensionPixelSize(R.dimen.content_padding);
 

@@ -55,7 +55,7 @@ public class ViewHelper {
         int rightNavBar = 0;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            boolean tabletMode = context.getResources().getBoolean(R.bool.tablet_mode);
+            boolean tabletMode = context.getResources().getBoolean(R.bool.android_helpers_tablet_mode);
             if (tabletMode || orientation == Configuration.ORIENTATION_PORTRAIT) {
                 bottomNavBar = WindowHelper.getNavigationBarHeight(context);
             } else {
