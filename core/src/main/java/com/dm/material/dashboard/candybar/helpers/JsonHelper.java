@@ -56,47 +56,32 @@ public class JsonHelper {
     }
 
     @Nullable
-    public static Wallpaper getWallpaper(@NonNull Context context, @NonNull Object object) {
+    public static Wallpaper getWallpaper(@NonNull Object object) {
         if (object instanceof Map) {
             JsonStructure jsonStructure = CandyBarApplication.getConfiguration().getWallpaperJsonStructure();
             Map map = (Map) object;
             return new Wallpaper(
-                    getGeneratedName(context, map),
-                    String.valueOf(map.get(jsonStructure.author())),
-                    String.valueOf(map.get(jsonStructure.url())),
+                    (String) map.get(jsonStructure.name()),
+                    (String) map.get(jsonStructure.author()),
+                    (String) map.get(jsonStructure.url()),
                     getThumbUrl(map));
         }
         return null;
     }
 
-    @Nullable
-    public static Wallpaper getTempWallpaper(@NonNull Object object) {
-        if (object instanceof Map) {
-            JsonStructure jsonStructure = CandyBarApplication.getConfiguration().getWallpaperJsonStructure();
-            Map map = (Map) object;
-            return new Wallpaper(
-                    "",
-                    "",
-                    String.valueOf(map.get(jsonStructure.url())),
-                    getThumbUrl(map));
-        }
-        return null;
-    }
-
-    public static String getGeneratedName(@NonNull Context context, @NonNull Map map) {
-        JsonStructure jsonStructure = CandyBarApplication.getConfiguration().getWallpaperJsonStructure();
-        if (jsonStructure.name() == null) {
+    public static String getGeneratedName(@NonNull Context context, @Nullable String name) {
+        if (name == null) {
             return "Wallpaper " +Preferences.get(context).getAutoIncrement();
         }
-        return String.valueOf(map.get(jsonStructure.name()));
+        return name;
     }
 
     public static String getThumbUrl(@NonNull Map map) {
         JsonStructure jsonStructure = CandyBarApplication.getConfiguration().getWallpaperJsonStructure();
-        String url = String.valueOf(map.get(jsonStructure.url()));
+        String url = (String) map.get(jsonStructure.url());
         if (jsonStructure.thumbUrl() == null) return url;
 
-        String thumbUrl = String.valueOf(map.get(jsonStructure.thumbUrl()));
+        String thumbUrl = (String) map.get(jsonStructure.thumbUrl());
         if (thumbUrl == null) return url;
         return thumbUrl;
     }

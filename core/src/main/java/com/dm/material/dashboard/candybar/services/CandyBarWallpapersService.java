@@ -67,7 +67,7 @@ public class CandyBarWallpapersService extends IntentService {
 
                 List<Wallpaper> wallpapers = new ArrayList<>();
                 for (int i = 0; i < list.size(); i++) {
-                    Wallpaper wallpaper = JsonHelper.getTempWallpaper(list.get(i));
+                    Wallpaper wallpaper = JsonHelper.getWallpaper(list.get(i));
                     if (wallpaper != null) {
                         if (!wallpapers.contains(wallpaper)) {
                             wallpapers.add(wallpaper);

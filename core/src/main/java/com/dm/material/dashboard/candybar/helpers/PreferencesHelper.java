@@ -348,10 +348,12 @@ public class PreferencesHelper {
         }
     }
 
+    public void setAutoIncrement(int value) {
+        getSharedPreferences().edit().putInt(KEY_AUTO_INCREMENT, value).apply();
+    }
+
     public int getAutoIncrement() {
-        int increment = getSharedPreferences().getInt(KEY_AUTO_INCREMENT, 0);
-        getSharedPreferences().edit().putInt(KEY_AUTO_INCREMENT, (increment + 1)).apply();
-        return increment;
+        return getSharedPreferences().getInt(KEY_AUTO_INCREMENT, 0);
     }
 
     public boolean isConnectedToNetwork() {

@@ -214,7 +214,7 @@ public class WallpapersFragment extends Fragment {
                                 wallpapers = database.getWallpapers();
                                 List<Wallpaper> newWallpapers = new ArrayList<>();
                                 for (int i = 0; i < list.size(); i++) {
-                                    Wallpaper wallpaper = JsonHelper.getWallpaper(getActivity(), list.get(i));
+                                    Wallpaper wallpaper = JsonHelper.getWallpaper(list.get(i));
                                     if (wallpaper != null) {
                                         newWallpapers.add(wallpaper);
                                     }

@@ -81,14 +81,16 @@ public abstract class CandyBarMuzeiService extends RemoteMuzeiArtSource {
     }
 
     private void publishArtwork(Wallpaper wallpaper) {
-        File file = new File(Preferences.get(this).getWallsDirectory()
-                + wallpaper.getName() + WallpaperHelper.IMAGE_EXTENSION);
+        String name = wallpaper.getName() == null ? "Wallpaper" : wallpaper.getName();
+
+        File file = new File(Preferences.get(this).getWallsDirectory(),
+                name + WallpaperHelper.IMAGE_EXTENSION);
         Uri uri = null;
         if (file.exists()) uri = FileHelper.getUriFromFile(this, getPackageName(), file);
         if (uri == null) uri = Uri.parse(wallpaper.getURL());
 
         publishArtwork(new Artwork.Builder()
-                .title(wallpaper.getName())
+                .title(name)
                 .byline(wallpaper.getAuthor())
                 .imageUri(uri)
                 .build());
