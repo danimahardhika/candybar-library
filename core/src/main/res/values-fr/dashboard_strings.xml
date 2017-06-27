@@ -60,7 +60,7 @@ Vous ne pourrez pas l\'utiliser.</string>
     <string name="tap_intro_request_select_desc">Appuyez ici pour sélectionner l\'application manquante dans la demande d\'icône•s</string>
     <string name="tap_intro_request_select_all">Sélectionner toutes les applications manquantes</string>
     <string name="tap_intro_request_select_all_desc">Appuyez ici pour sélectionner toutes les applications dans la demande d\'icônes</string>
-    <string name="tap_intro_request_send">Envoyer la demande d\'icône•s</string>
+    <string name="tap_intro_request_send">Envoyer la demande d\'icône(s)</string>
     <string name="tap_intro_request_send_desc">Appuyez ici pour envoyer les applications manquantes sélectionnées</string>
     <string name="tap_intro_request_premium">Demande d\'icônes premium</string>
     <string name="tap_intro_request_premium_desc">Appuyez ici pour acheter un pack de demande d\'icônes premium, ce qui vous permet d\'obtenir vos applications manquantes plus rapidement.</string>
@@ -88,8 +88,8 @@ Définir le fond d\'écran comme écran de verrouillage sur Android Nougat ou ro
     <string name="home_loud_wallpapers">%d fonds d\'écran dans le cloud</string>
     <string name="home_muzei">Fond d\'écran animé Muzei</string>
     <string name="home_icon_request_installed_apps">Total\n%d applications installées</string>
-    <string name="home_icon_request_themed_apps">Modifiée•s\n%d application•s</string>
-    <string name="home_icon_request_missed_apps">Manquante•s\n%d application•s</string>
+    <string name="home_icon_request_themed_apps">Modifiée(s)\n%d application(s)</string>
+    <string name="home_icon_request_missed_apps">Manquante(s)\n%d application(s)</string>
     <!-- Apply -->
     <string name="apply_installed">Launcher•s installé•s</string>
     <string name="apply_supported">Launchers supportés</string>
@@ -107,7 +107,7 @@ Google Play Store pour le télécharger et l\'installer ?</string>
     <!-- Icons -->
     <string name="icons_load_failed">Impossible de charger les icônes</string>
     <!-- Request -->
-    <string name="request_title">Demande d\'icône•s</string>
+    <string name="request_title">Demande d\'icône(s)</string>
     <string name="request_not_selected">Sélectionner les applications à demander</string>
     <string name="request_not_requested">Non demandée</string>
     <string name="request_already_requested">Déjà demandée</string>
@@ -142,7 +142,7 @@ Allez dans les paramètres pour rétablir des Demandes Premium.</string>
 Ouvrez les Paramètres et choisissez \"Restaurer les achats\" pour le restaurer.</string>
     <string name="premium_request_required">Vous devez acheter un pack de demande d\'icônes premium pour faire des demandes d\'icônes</string>
     <!-- Wallpapers -->
-    <string name="wallpaper_new_added">Nouveau fond d\'écran</string>
+    <string name="wallpaper_new_added">Nouveaux fonds d\'écran</string>
     <string name="wallpaper_downloading">Téléchargement du fond d\'écran …</string>
     <string name="wallpaper_download_failed">Impossible de télécharger le fond d\'écran</string>
     <string name="wallpaper_download_cancelled">Téléchargement du fond d\'écran annulé</string>

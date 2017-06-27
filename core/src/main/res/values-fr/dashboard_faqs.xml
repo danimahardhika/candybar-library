@@ -13,7 +13,7 @@
         <!-- How do i see all icons included? -->
         <item>Comment puis-je voir toutes les icônes incluses ?</item>
         <!-- I can\'t see a complete icon name -->
-        <item>Je ne peux pas voir un nom d\'icône complet</item>
+        <item>Je ne peux voir le nom complet d\'une icône</item>
         <!-- How can i replace icons with an alternate icon? -->
         <item>Comment puis-je remplacer des icônes par un icône alternatif ?</item>
         <!-- How do i request an icon? -->
@@ -21,7 +21,7 @@
         <!-- How can i restore remaining Premium Requests after reinstalling the app? -->
         <item>Comment puis-je restaurer les Demandes Premium restantes après avoir réinstallé l\'application ?</item>
         <!-- After restarting my phone, the icon pack is not applied, it restore to defaults? -->
-        <item>Après avoir redémarré mon téléphone, le pack d\'icônes n\'est pas appliqué, est-il réinitialisé ?</item>
+        <item>Après avoir redémarré mon téléphone, le pack d\'icônes n\'est plus appliqué, les icônes ont était restaurées par par défaut ?</item>
         <!-- Why do the icons looks jaggy or pixelated on my phone? -->
         <item>Pourquoi les icônes semblent floues ou pixelisées sur mon téléphone ?</item>
         <!-- I can see the icon included in all icons,
@@ -32,7 +32,7 @@
         <!-- My launcher is listed in the google play description, but why isn\'t it included in apply section? -->
         <item>Mon launcher est listé dans la description Google Play alors pourquoi n\'est-il pas inclus dans la section Appliquer ?</item>
         <!-- Wallpaper can\'t be applied, just showing black screen? -->
-        <item>Le fond d\'écran ne peut pas être appliqué, je n\'ai qu\'un écran noir.</item>
+        <item>Le fond d\'écran ne peut pas être appliqué, je n\'ai qu\'un écran noir ?</item>
         <!-- Muzei: How to load downloaded wallpapers only? -->
         <item>Muzei : comment uniquement charger les fonds d\'écran téléchargés ?</item>
         <!-- Muzei: I don\'t want to keep downloading wallpapers each time the wallpaper changes? -->
@@ -59,9 +59,7 @@
         <!-- What is an icon pack -->
         <item>Un ensemble d\'éléments graphiques qui changera l\'aspect des icônes de votre tiroir d\'applications</item>
         <!-- How do i use an icon pack? -->
-        <item>Vous aurez besoin d\'un launcher qui supporte les packs d\'icônes.
-Les launchers supportés sont listés dans la description du Play Store.
-Si vous hésitez sur les launchers à utiliser, allez simplement à la section \"Appliquer\" puis installez-en un depuis cet endroit.</item>
+        <item>Vous avez besoin d\'un Lanceur avec un support de Pack d\'icônes. Vérifiez la description de votre lanceur sur le Google Play Store pour vérifier si votre lanceur supporte les packs d\'icônes. Si vous ne savez pas quels lanceurs utiliser, allez dans la section Appliquer, et en choisissez un parmi celles qui figures.</item>
         <!-- How do i apply an icon pack? -->
         <item>Vous pouvez ouvrir le panneau de navigation puis sélectionner \"Appliquer\". Choisir un launcher dans la liste.
 Si votre launcher n\'est pas listé ici mais que ce pack d\'icônes est compatible (voir la description Google Play pour les launchers supportés), alors vous pouvez appliquer le pack d\'icônes manuellement depuis les paramètres de votre launcher.</item>
