@@ -72,7 +72,11 @@ public class HomeFragment extends Fragment implements HomeListener{
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLayoutManager(mManager);
-        adjustRecyclerViewPadding();
+
+        if (CandyBarApplication.getConfiguration().getHomeGrid() == CandyBarApplication.GridStyle.FLAT) {
+            int padding = getActivity().getResources().getDimensionPixelSize(R.dimen.card_margin);
+            mRecyclerView.setPadding(padding, padding, 0, 0);
+        }
 
         initHome();
     }
@@ -127,13 +131,6 @@ public class HomeFragment extends Fragment implements HomeListener{
                     ((HomeAdapter) mRecyclerView.getAdapter()).getApplyIndex());
         } catch (Exception e) {
             LogUtil.e(Log.getStackTraceString(e));
-        }
-    }
-
-    private void adjustRecyclerViewPadding() {
-        if (CandyBarApplication.getConfiguration().getHomeGrid() == CandyBarApplication.GridStyle.FLAT) {
-            int padding = getActivity().getResources().getDimensionPixelSize(R.dimen.card_margin);
-            mRecyclerView.setPadding(padding, padding, 0, 0);
         }
     }
 
