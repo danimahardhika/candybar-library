@@ -167,7 +167,7 @@ public class WallpapersAdapter extends RecyclerView.Adapter<WallpapersAdapter.Vi
             image.setRatio(ratio.x, ratio.y);
 
             card = (CardView) itemView.findViewById(R.id.card);
-            if (CandyBarApplication.getConfiguration().getApplyGrid() == CandyBarApplication.GridStyle.FLAT) {
+            if (CandyBarApplication.getConfiguration().getWallpapersGrid() == CandyBarApplication.GridStyle.FLAT) {
                 if (card.getLayoutParams() instanceof GridLayoutManager.LayoutParams) {
                     card.setRadius(0f);
                     card.setUseCompatPadding(false);
