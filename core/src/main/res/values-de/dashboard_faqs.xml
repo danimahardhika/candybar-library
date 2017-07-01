@@ -17,7 +17,7 @@
         <!-- How can i replace icons with an alternate icon? -->
         <item>Wie kann ich Icons durch alternative Icons ersetzen?</item>
         <!-- How do i request an icon? -->
-        <item>Wie kann ich einen Icon-Wunsch senden?</item>
+        <item>Wie kann ich eine Icon-Anfrage senden?</item>
         <!-- How can i restore remaining Premium Requests after reinstalling the app? -->
         <item>Wie kann ich verbliebene Premium Icon-Anfragen nach der Neuinstallation der App wiederherstellen?</item>
         <!-- After restarting my phone, the icon pack is not applied, it restore to defaults? -->
@@ -31,7 +31,7 @@ aber wieso ist dieses Icon nicht in der App-Übersicht geändert?</item>
         <!-- What is the \"report bugs\" option? -->
         <item>Was ist die \"Fehler melden\" Option?</item>
         <!-- My launcher is listed in the google play description, but why isn\'t it included in apply section? -->
-        <item>Mein Launcher ist in der Google Play-Beschreibung gelistet, aber wieso ist es nicht in der Sektion zum Anwenden gelistet?</item>
+        <item>Mein Launcher ist in der Google Play-Beschreibung gelistet, aber wieso ist er nicht in der Sektion zum Anwenden gelistet?</item>
         <!-- Wallpaper can\'t be applied, just showing black screen? -->
         <item>Hintergrundbild kann nicht angewandt werden und es wird nur ein schwarzer Bildschirm angezeigt.</item>
         <!-- Muzei: How to load downloaded wallpapers only? -->
@@ -56,8 +56,7 @@ aber wieso ist dieses Icon nicht in der App-Übersicht geändert?</item>
 
     <string-array name="answers">
         <!-- What is a launcher -->
-        <item>Der Launcher ist der Teil des Androidbenutzeroberfläche, der zulässt den Startbildschirm anzupassen,
-Apps zu starten, Anrufe zu tätigen und andere Aufgaben auf Android-Geräten zu erfüllen.</item>
+        <item>Der Launcher ist der Teil der Androidbenutzeroberfläche, der zulässt den Startbildschirm anzupassen, Apps zu starten, Anrufe zu tätigen und andere Aufgaben auf Android-Geräten zu erfüllen.</item>
         <!-- What is an icon pack -->
         <item>Ein Set von Grafiken, das Aussehen deiner Icons in der App-Übersicht ändert</item>
         <!-- How do i use an icon pack? -->
