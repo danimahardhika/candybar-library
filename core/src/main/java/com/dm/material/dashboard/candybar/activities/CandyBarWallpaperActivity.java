@@ -7,6 +7,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.RectF;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -315,7 +316,10 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.fab) {
-            WallpaperHelper.applyWallpaper(this, mAttacher.getDisplayRect(), mColor, mUrl, mName);
+            RectF rectF = mAttacher.getDisplayRect();
+            WallpaperHelper.applyWallpaper(this,
+                    Preferences.get(this).isWallpaperCrop() ? rectF : null,
+                    mColor, mUrl, mName);
         }
     }
 

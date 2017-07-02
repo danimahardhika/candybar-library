@@ -85,11 +85,6 @@ public class WallpaperHelper {
         return UNKNOWN;
     }
 
-    public static String getThumbnailUrl(String url, String thumbUrl) {
-        if (thumbUrl != null) return thumbUrl;
-        return url;
-    }
-
     public static void launchExternalApp(@NonNull Context context) {
         String packageName = context.getResources().getString(R.string.wallpaper_json);
 
@@ -418,14 +413,35 @@ public class WallpaperHelper {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         float scaleFactor = (float) height / (float) imageSize.getHeight();
                         if (scaleFactor > 1f) {
-                            adjustedSize = new ImageSize(width, height);
-                            adjustedRecF = getScaledRectF(rectF, scaleFactor, scaleFactor);
+                            /*
+                             * Applying original wallpaper size caused a problem (wallpaper zoomed in)
+                             * if wallpaper dimension bigger than device screen resolution
+                             *
+                             * Solution: Resize wallpaper to match screen resolution
+                             */
 
-                            LogUtil.d("adjusted bitmap: " + adjustedSize.getWidth() + " x " + adjustedSize.getHeight());
+                            /*
+                             * Use original wallpaper size:
+                             * adjustedSize = new ImageSize(width, height);
+                             */
+
+                            /*
+                             * Adjust wallpaper size to match screen resolution:
+                             */
+                            float widthScaleFactor = (float) imageSize.getHeight() / (float) height;
+                            int adjustedWidth = Float.valueOf((float) width * widthScaleFactor).intValue();
+                            adjustedSize = new ImageSize(adjustedWidth, imageSize.getHeight());
 
                             if (adjustedRecF != null) {
+                                /*
+                                 * If wallpaper crop enabled, original wallpaper size should be loaded first
+                                 */
+                                adjustedSize = new ImageSize(width, height);
+                                adjustedRecF = getScaledRectF(rectF, scaleFactor, scaleFactor);
                                 LogUtil.d("adjusted recF: " + adjustedRecF);
                             }
+
+                            LogUtil.d("adjusted bitmap: " + adjustedSize.getWidth() + " x " + adjustedSize.getHeight());
                         }
                     }
                     return true;
@@ -534,11 +550,11 @@ public class WallpaperHelper {
                             LogUtil.d("loaded bitmap: " +bitmap.getWidth() +" x "+ bitmap.getHeight());
 
                             if (Preferences.get(context).isWallpaperCrop() && rectF != null) {
-                                Point point = WindowHelper.getScreenSize(context);
+                                ImageSize targetSize = getTargetSize(context);
 
                                 int targetWidth = Double.valueOf(
-                                        ((double) bitmaps[0].getHeight() / (double) point.y)
-                                                * (double) point.x).intValue();
+                                        ((double) bitmaps[0].getHeight() / (double) targetSize.getHeight())
+                                                * (double) targetSize.getWidth()).intValue();
 
                                 bitmap = Bitmap.createBitmap(
                                         targetWidth,
@@ -552,6 +568,14 @@ public class WallpaperHelper {
 
                                 Canvas canvas = new Canvas(bitmap);
                                 canvas.drawBitmap(bitmaps[0], null, rectF, paint);
+
+                                float scaleFactor = (float) targetSize.getHeight() / (float) bitmap.getHeight();
+                                if (scaleFactor < 1f) {
+                                    LogUtil.d("bitmap size is bigger than screen resolution, resizing bitmap");
+                                    int resizedWidth = Float.valueOf((float) bitmap.getWidth() * scaleFactor).intValue();
+                                    bitmap = Bitmap.createScaledBitmap(bitmap, resizedWidth, targetSize.getHeight(), true);
+                                }
+
                             }
 
                             LogUtil.d("generated bitmap: " +bitmap.getWidth() +" x "+ bitmap.getHeight());
