@@ -410,9 +410,8 @@ public class WallpaperHelper {
                         LogUtil.d("original recF: " +rectF);
                     }
 
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        float scaleFactor = (float) height / (float) imageSize.getHeight();
-                        if (scaleFactor > 1f) {
+                    float scaleFactor = (float) height / (float) imageSize.getHeight();
+                    if (scaleFactor > 1f) {
                             /*
                              * Applying original wallpaper size caused a problem (wallpaper zoomed in)
                              * if wallpaper dimension bigger than device screen resolution
@@ -428,21 +427,20 @@ public class WallpaperHelper {
                             /*
                              * Adjust wallpaper size to match screen resolution:
                              */
-                            float widthScaleFactor = (float) imageSize.getHeight() / (float) height;
-                            int adjustedWidth = Float.valueOf((float) width * widthScaleFactor).intValue();
-                            adjustedSize = new ImageSize(adjustedWidth, imageSize.getHeight());
+                        float widthScaleFactor = (float) imageSize.getHeight() / (float) height;
+                        int adjustedWidth = Float.valueOf((float) width * widthScaleFactor).intValue();
+                        adjustedSize = new ImageSize(adjustedWidth, imageSize.getHeight());
 
-                            if (adjustedRecF != null) {
+                        if (adjustedRecF != null) {
                                 /*
                                  * If wallpaper crop enabled, original wallpaper size should be loaded first
                                  */
-                                adjustedSize = new ImageSize(width, height);
-                                adjustedRecF = getScaledRectF(rectF, scaleFactor, scaleFactor);
-                                LogUtil.d("adjusted recF: " + adjustedRecF);
-                            }
-
-                            LogUtil.d("adjusted bitmap: " + adjustedSize.getWidth() + " x " + adjustedSize.getHeight());
+                            adjustedSize = new ImageSize(width, height);
+                            adjustedRecF = getScaledRectF(rectF, scaleFactor, scaleFactor);
+                            LogUtil.d("adjusted recF: " + adjustedRecF);
                         }
+
+                        LogUtil.d("adjusted bitmap: " + adjustedSize.getWidth() + " x " + adjustedSize.getHeight());
                     }
                     return true;
                 } catch (Exception e) {
