@@ -114,8 +114,12 @@ public class Database extends SQLiteOpenHelper {
 
     public void close() {
         if (this.getWritableDatabase().isOpen()) {
-            this.getWritableDatabase().close();
-            LogUtil.e("database forced to close");
+            try {
+                this.getWritableDatabase().close();
+                LogUtil.e("database forced to close");
+            } catch (Exception e) {
+                LogUtil.e(Log.getStackTraceString(e));
+            }
         }
     }
 
@@ -292,9 +296,6 @@ public class Database extends SQLiteOpenHelper {
                     statement.bindString(4, wallpaper.getThumbUrl());
                     statement.bindString(5, TimeHelper.getLongDateTime());
                     statement.execute();
-
-                    Preferences.get(mContext).setAutoIncrement(
-                            Preferences.get(mContext).getAutoIncrement() + 1);
                 }
             }
         }

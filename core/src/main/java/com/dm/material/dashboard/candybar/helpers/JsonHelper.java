@@ -71,7 +71,10 @@ public class JsonHelper {
 
     public static String getGeneratedName(@NonNull Context context, @Nullable String name) {
         if (name == null) {
-            return "Wallpaper " +Preferences.get(context).getAutoIncrement();
+            String generatedName = "Wallpaper " +Preferences.get(context).getAutoIncrement();
+            Preferences.get(context).setAutoIncrement(
+                    Preferences.get(context).getAutoIncrement() + 1);
+            return generatedName;
         }
         return name;
     }
