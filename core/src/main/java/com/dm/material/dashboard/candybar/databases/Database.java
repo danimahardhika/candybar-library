@@ -41,7 +41,7 @@ import java.util.List;
 public class Database extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "candybar_database";
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 8;
 
     private static final String TABLE_REQUEST = "icon_request";
     private static final String TABLE_PREMIUM_REQUEST = "premium_request";
@@ -96,7 +96,7 @@ public class Database extends SQLiteOpenHelper {
                 KEY_URL + " TEXT NOT NULL, " +
                 KEY_THUMB_URL + " TEXT NOT NULL, " +
                 KEY_ADDED_ON + " TEXT NOT NULL, " +
-                "UNIQUE (" +KEY_URL+ ") ON CONFLICT REPLACE)";
+                "UNIQUE (" +KEY_URL+ "))";
         db.execSQL(CREATE_TABLE_REQUEST);
         db.execSQL(CREATE_TABLE_PREMIUM_REQUEST);
         db.execSQL(CREATE_TABLE_WALLPAPER);
