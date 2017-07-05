@@ -578,12 +578,17 @@ public class WallpaperHelper {
 
                             LogUtil.d("generated bitmap: " +bitmap.getWidth() +" x "+ bitmap.getHeight());
 
-                            if (Preferences.get(context).isApplyLockscreen() &&
-                                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                manager.setBitmap(bitmap, null, true, WallpaperManager.FLAG_LOCK | WallpaperManager.FLAG_SYSTEM);
-                            } else {
-                                manager.setBitmap(bitmap);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                if (Preferences.get(context).isApplyLockscreen()) {
+                                    manager.setBitmap(bitmap, null, true, WallpaperManager.FLAG_LOCK | WallpaperManager.FLAG_SYSTEM);
+                                    return true;
+                                }
+
+                                manager.setBitmap(bitmap, null, true, WallpaperManager.FLAG_SYSTEM);
+                                return true;
                             }
+
+                            manager.setBitmap(bitmap);
                             return true;
                         }
                         return false;
