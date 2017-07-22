@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.activities.CandyBarCrashReport;
 import com.dm.material.dashboard.candybar.helpers.LocaleHelper;
+import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
 import com.dm.material.dashboard.candybar.utils.JsonStructure;
@@ -42,6 +43,8 @@ public class CandyBarApplication extends Application {
 
     private static Configuration mConfiguration;
     private Thread.UncaughtExceptionHandler mHandler;
+
+    public static Request.Property sRequestProperty;
 
     public static Configuration getConfiguration() {
         if (mConfiguration == null) {

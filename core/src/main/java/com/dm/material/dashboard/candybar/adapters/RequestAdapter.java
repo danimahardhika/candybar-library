@@ -429,6 +429,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     public void resetSelectedItems() {
+        mSelectedAll = false;
         mSelectedItems.clear();
         try {
             RequestListener listener = (RequestListener) mContext;
@@ -441,7 +442,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return mRequests.get(position);
     }
 
-    private List<Request> getSelectedApps() {
+    public List<Request> getSelectedApps() {
         List<Request> items = new ArrayList<>(mSelectedItems.size());
         for (int i = 0; i < mSelectedItems.size(); i++) {
             int position = mSelectedItems.keyAt(i);

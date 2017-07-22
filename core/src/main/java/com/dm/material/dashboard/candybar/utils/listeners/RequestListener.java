@@ -1,6 +1,6 @@
 package com.dm.material.dashboard.candybar.utils.listeners;
 
-import com.dm.material.dashboard.candybar.items.Request;
+import android.content.Intent;
 
 /*
  * CandyBar - Material Dashboard
@@ -26,6 +26,5 @@ public interface RequestListener {
     void onRequestSelected(int count);
     void onBuyPremiumRequest();
     void onPremiumRequestBought();
-    void onRequestBuilt(Request request);
-
+    void onRequestBuilt(Intent intent, int type);
 }

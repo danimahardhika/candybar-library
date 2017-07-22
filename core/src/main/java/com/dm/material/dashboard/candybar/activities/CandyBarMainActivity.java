@@ -8,6 +8,7 @@ import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -42,6 +43,7 @@ import com.danimahardhika.android.helpers.permission.PermissionCode;
 import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
 import com.dm.material.dashboard.candybar.databases.Database;
 import com.dm.material.dashboard.candybar.fragments.AboutFragment;
+import com.dm.material.dashboard.candybar.fragments.dialog.IntentChooserFragment;
 import com.dm.material.dashboard.candybar.helpers.ConfigurationHelper;
 import com.dm.material.dashboard.candybar.helpers.IconsHelper;
 import com.dm.material.dashboard.candybar.helpers.LicenseCallbackHelper;
@@ -54,6 +56,7 @@ import com.dm.material.dashboard.candybar.items.Icon;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.receivers.CandyBarBroadcastReceiver;
 import com.dm.material.dashboard.candybar.services.CandyBarWallpapersService;
+import com.dm.material.dashboard.candybar.tasks.IconRequestTask;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.dm.material.dashboard.candybar.utils.listeners.SearchListener;
 import com.dm.material.dashboard.candybar.utils.listeners.WallpapersListener;
@@ -67,7 +70,6 @@ import com.dm.material.dashboard.candybar.fragments.SettingsFragment;
 import com.dm.material.dashboard.candybar.fragments.WallpapersFragment;
 import com.dm.material.dashboard.candybar.fragments.dialog.ChangelogFragment;
 import com.dm.material.dashboard.candybar.fragments.dialog.InAppBillingFragment;
-import com.dm.material.dashboard.candybar.fragments.dialog.IntentChooserFragment;
 import com.dm.material.dashboard.candybar.helpers.InAppBillingHelper;
 import com.dm.material.dashboard.candybar.helpers.IntentHelper;
 import com.dm.material.dashboard.candybar.helpers.RequestHelper;
@@ -193,7 +195,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements
         }
 
         checkWallpapers();
-        RequestHelper.prepareIconRequest(this);
+        IconRequestTask.start(this, AsyncTask.THREAD_POOL_EXECUTOR);
         IconsHelper.prepareIconsList(this);
 
         if (Preferences.get(this).isFirstRun() && mProperty.licenseChecker) {
@@ -368,35 +370,51 @@ public class CandyBarMainActivity extends AppCompatActivity implements
     public void onPremiumRequestBought() {
         if (mFragmentTag.equals(TAG_REQUEST)) {
             RequestFragment fragment = (RequestFragment) mFragManager.findFragmentByTag(TAG_REQUEST);
-            if (fragment != null) fragment.premiumRequestBought();
+            if (fragment != null) fragment.refreshIconRequest();
         }
     }
 
     @Override
-    public void onRequestBuilt(Request request) {
-        if (Preferences.get(this).isPremiumRequest()) {
-            if (mBillingProcessor == null) return;
+    public void onRequestBuilt(Intent intent, int type) {
+        if (intent == null) {
+            Toast.makeText(this, "Icon Request: Intent is null", Toast.LENGTH_LONG).show();
+            return;
+        }
 
-            int count = Preferences.get(this).getPremiumRequestCount()
-                    - request.getRequestCount();
-            Preferences.get(this).setPremiumRequestCount(count);
-            if (count == 0) {
-                if (mBillingProcessor.consumePurchase(Preferences
-                        .get(this).getPremiumRequestProductId())) {
-                    Preferences.get(this).setPremiumRequest(false);
-                    Preferences.get(this).setPremiumRequestProductId("");
-                } else {
-                    RequestHelper.showPremiumRequestConsumeFailed(this);
-                    return;
+        if (type == IntentChooserFragment.ICON_REQUEST) {
+            if (RequestFragment.sSelectedRequests == null)
+                return;
+
+            if (Preferences.get(this).isPremiumRequest()) {
+                if (mBillingProcessor == null) return;
+
+                int count = Preferences.get(this).getPremiumRequestCount() - RequestFragment.sSelectedRequests.size();
+                Preferences.get(this).setPremiumRequestCount(count);
+                if (count == 0) {
+                    if (mBillingProcessor.consumePurchase(Preferences
+                            .get(this).getPremiumRequestProductId())) {
+                        Preferences.get(this).setPremiumRequest(false);
+                        Preferences.get(this).setPremiumRequestProductId("");
+                    } else {
+                        RequestHelper.showPremiumRequestConsumeFailed(this);
+                        return;
+                    }
                 }
             }
 
             if (mFragmentTag.equals(TAG_REQUEST)) {
                 RequestFragment fragment = (RequestFragment) mFragManager.findFragmentByTag(TAG_REQUEST);
-                if (fragment != null) fragment.premiumRequestBought();
+                if (fragment != null) fragment.refreshIconRequest();
             }
         }
-        IntentChooserFragment.showIntentChooserDialog(mFragManager, request);
+
+        try {
+            startActivity(intent);
+        } catch (IllegalArgumentException e) {
+            startActivity(Intent.createChooser(intent,
+                    getResources().getString(R.string.email_client)));
+        }
+        CandyBarApplication.sRequestProperty = null;
     }
 
     @Override
@@ -451,7 +469,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements
     public void onInAppBillingRequest() {
         if (mFragmentTag.equals(TAG_REQUEST)) {
             RequestFragment fragment = (RequestFragment) mFragManager.findFragmentByTag(TAG_REQUEST);
-            if (fragment != null) fragment.onInAppBillingSent(mBillingProcessor);
+            if (fragment != null) fragment.prepareRequest(mBillingProcessor);
         }
     }
 

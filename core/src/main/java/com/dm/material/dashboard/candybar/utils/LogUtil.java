@@ -1,6 +1,9 @@
 package com.dm.material.dashboard.candybar.utils;
 
+import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.Toast;
 
 /*
  * CandyBar - Material Dashboard
@@ -38,5 +41,31 @@ public class LogUtil {
     public static void e(String message) {
         if (LogUtil.sIsLoggingEnabled)
             Log.e(TAG, message);
+    }
+
+    public enum Error {
+        ICON_REQUEST_NULL,
+        ICON_REQUEST_PROPERTY_NULL,
+        ICON_REQUEST_PROPERTY_COMPONENT_NULL;
+
+        Error() {}
+
+        public String getMessage() {
+            switch (this) {
+                case ICON_REQUEST_NULL:
+                    return "Error: Icon request is null";
+                case ICON_REQUEST_PROPERTY_NULL:
+                    return "Error: Icon request property is null";
+                case ICON_REQUEST_PROPERTY_COMPONENT_NULL:
+                    return "Error: Email client component is null";
+                default:
+                    return "Error: Unknown";
+            }
+        }
+
+        public void showToast(Context context) {
+            if (context == null) return;
+            Toast.makeText(context, getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 }

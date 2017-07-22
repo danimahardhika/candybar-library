@@ -5,27 +5,31 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
+import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
 import com.dm.material.dashboard.candybar.databases.Database;
 import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
-import com.dm.material.dashboard.candybar.utils.listeners.HomeListener;
 import com.dm.material.dashboard.candybar.utils.listeners.RequestListener;
 
 import org.xmlpull.v1.XmlPullParser;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -49,31 +53,68 @@ import java.util.Locale;
 
 public class RequestHelper {
 
-    @NonNull
-    private static String loadAppFilter(@NonNull Context context) {
+    public static final String APPFILTER = "appfilter.xml";
+    public static final String APPMAP = "appmap.xml";
+    public static final String THEME_RESOURCES = "theme_resources.xml";
+    public static final String ZIP = "icon_request.zip";
+    public static final String REBUILD_ZIP = "rebuild_icon_request.zip";
+
+    @Nullable
+    public static File buildXml(@NonNull Context context, @NonNull List<Request> requests, @NonNull XmlType xmlType) {
         try {
-            StringBuilder sb = new StringBuilder();
+            if (xmlType == XmlType.APPFILTER && !CandyBarApplication.getConfiguration().isGenerateAppFilter()) {
+                return null;
+            } else if (xmlType == XmlType.APPMAP && !CandyBarApplication.getConfiguration().isGenerateAppMap()) {
+                return null;
+            } else if (xmlType == XmlType.THEME_RESOURCES & !CandyBarApplication.getConfiguration().isGenerateThemeResources()) {
+                return null;
+            }
+
+            File file = new File(context.getCacheDir().toString(), xmlType.getFileName());
+            Writer writer = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(file), "UTF8"));
+            writer.append(xmlType.getHeader()).append("\n\n");
+
+            for (Request request : requests) {
+                writer.append(xmlType.getContent(request));
+            }
+            writer.append(xmlType.getFooter());
+            writer.flush();
+            writer.close();
+            return file;
+        } catch (IOException e) {
+            LogUtil.e(Log.getStackTraceString(e));
+        }
+        return null;
+    }
+
+    @NonNull
+    private static HashMap<String, String> getAppFilter(@NonNull Context context, @NonNull Key key) {
+        try {
+            HashMap<String, String> activities = new HashMap<>();
             XmlPullParser xpp = context.getResources().getXml(R.xml.appfilter);
 
             while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
                 if (xpp.getEventType() == XmlPullParser.START_TAG) {
                     if (xpp.getName().equals("item")) {
-                        sb.append(xpp.getAttributeValue(null, "component"));
+                        activities.put(
+                                xpp.getAttributeValue(null, key.getKey()).replace("ComponentInfo{", "").replace("}", ""),
+                                xpp.getAttributeValue(null, key.getValue()).replace("ComponentInfo{", "").replace("}", ""));
                     }
                 }
                 xpp.next();
             }
-            return sb.toString();
+            return activities;
         } catch (Exception e) {
             LogUtil.e(Log.getStackTraceString(e));
         }
-        return "";
+        return new HashMap<>();
     }
 
     @NonNull
-    public static List<Request> loadMissingApps(@NonNull Context context) {
+    public static List<Request> getMissingApps(@NonNull Context context) {
         List<Request> requests = new ArrayList<>();
-        String activities = RequestHelper.loadAppFilter(context);
+        HashMap<String, String> appFilter = getAppFilter(context, Key.ACTIVITY);
         PackageManager packageManager = context.getPackageManager();
 
         Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -91,11 +132,13 @@ public class RequestHelper {
             String packageName = app.activityInfo.packageName;
             String activity = packageName +"/"+ app.activityInfo.name;
 
-            if (!activities.contains(activity)) {
-                String name = LocaleHelper.getOtherAppLocaleName(
-                        context, new Locale("en-US"), packageName);
-                if (name == null)
+            String value = appFilter.get(activity);
+
+            if (value == null) {
+                String name = LocaleHelper.getOtherAppLocaleName(context, new Locale("en"), packageName);
+                if (name == null) {
                     name = app.activityInfo.loadLabel(packageManager).toString();
+                }
 
                 boolean requested = Database.get(context).isRequested(activity);
                 requests.add(new Request(
@@ -106,84 +149,6 @@ public class RequestHelper {
             }
         }
         return requests;
-    }
-
-    public static void prepareIconRequest(@NonNull Context context) {
-        new AsyncTask<Void, Void, Boolean>() {
-
-            @Override
-            protected Boolean doInBackground(Void... voids) {
-                while (!isCancelled()) {
-                    try {
-                        Thread.sleep(1);
-                        if (context.getResources().getBoolean(R.bool.enable_icon_request) ||
-                                context.getResources().getBoolean(R.bool.enable_premium_request)) {
-                            CandyBarMainActivity.sMissedApps = RequestHelper
-                                    .loadMissingApps(context);
-                        }
-                        return true;
-                    } catch (Exception e) {
-                        LogUtil.e(Log.getStackTraceString(e));
-                        return false;
-                    }
-                }
-                return false;
-            }
-
-            @Override
-            protected void onPostExecute(Boolean aBoolean) {
-                super.onPostExecute(aBoolean);
-                if (aBoolean) {
-                    if (context == null) return;
-
-                    FragmentManager fm = ((AppCompatActivity) context).getSupportFragmentManager();
-                    if (fm == null) return;
-
-                    Fragment fragment = fm.findFragmentByTag("home");
-                    if (fragment == null) return;
-
-                    HomeListener listener = (HomeListener) fragment;
-                    listener.onHomeDataUpdated(null);
-                }
-            }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-    }
-
-    public static String writeRequest(@NonNull Request request) {
-        return "\n\n" +
-                request.getName() +
-                "\n" +
-                request.getActivity() +
-                "\n" +
-                "https://play.google.com/store/apps/details?id=" + request.getPackageName();
-    }
-
-    public static String writeAppFilter(@NonNull Request request) {
-        return  "\t<!-- " + request.getName() + " -->" +
-                "\n" +
-                "\t<item component=\"ComponentInfo{" +request.getActivity()+
-                "}\" drawable=\"" +
-                request.getName().toLowerCase().replace(" ", "_") +
-                "\" />" +
-                "\n\n";
-    }
-
-    public static String writeAppMap(@NonNull Request request) {
-        return  "\t<!-- " + request.getName() + " -->" +
-                "\n" +
-                "\t<item class=\"" + request.getPackageName() + "\" name=\"" +
-                request.getName().toLowerCase().replace(" ", "_") +
-                "\" />" +
-                "\n\n";
-    }
-
-    public static String writeThemeResources(@NonNull Request request) {
-        return  "\t<!-- " + request.getName() + " -->" +
-                "\n" +
-                "\t<AppIcon name=\"" +request.getActivity()+ "\" image=\"" +
-                request.getName().toLowerCase().replace(" ", "_") +
-                "\" />" +
-                "\n\n";
     }
 
     public static void showAlreadyRequestedDialog(@NonNull Context context) {
@@ -333,5 +298,83 @@ public class RequestHelper {
 
         RequestListener listener = (RequestListener) context;
         listener.onPiracyAppChecked(isPiracyAppInstalled);
+    }
+
+    public enum XmlType {
+        APPFILTER(RequestHelper.APPFILTER, "<resources>", "</resources>"),
+        APPMAP(RequestHelper.APPMAP, "<appmap>", "</appmap>"),
+        THEME_RESOURCES(RequestHelper.THEME_RESOURCES, "<Theme version=\"1\">", "</Theme>");
+
+        private String fileName;
+        private String header;
+        private String footer;
+
+        XmlType(String fileName, String header, String footer) {
+            this.fileName = fileName;
+            this.header = header;
+            this.footer = footer;
+        }
+
+        private String getFileName() {
+            return fileName;
+        }
+
+        private String getHeader() {
+            return header;
+        }
+
+        private String getFooter() {
+            return footer;
+        }
+
+        private String getContent(@NonNull Request request) {
+            switch (this) {
+                case APPFILTER:
+                    return  "\t<!-- " + request.getName() + " -->" +
+                            "\n" +
+                            "\t<item component=\"ComponentInfo{" +request.getActivity()+
+                            "}\" drawable=\"" +
+                            request.getName().toLowerCase().replace(" ", "_") +
+                            "\" />" +
+                            "\n\n";
+                case APPMAP:
+                    return  "\t<!-- " + request.getName() + " -->" +
+                            "\n" +
+                            "\t<item class=\"" + request.getPackageName() + "\" name=\"" +
+                            request.getName().toLowerCase().replace(" ", "_") +
+                            "\" />" +
+                            "\n\n";
+                case THEME_RESOURCES:
+                    return  "\t<!-- " + request.getName() + " -->" +
+                            "\n" +
+                            "\t<AppIcon name=\"" +request.getActivity()+ "\" image=\"" +
+                            request.getName().toLowerCase().replace(" ", "_") +
+                            "\" />" +
+                            "\n\n";
+                default:
+                    return "";
+            }
+        }
+    }
+
+    public enum Key {
+        ACTIVITY("component", "drawable"),
+        DRAWABLE("drawable", "component");
+
+        private String key;
+        private String value;
+
+        Key(String key, String value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        private String getKey() {
+            return key;
+        }
+
+        private String getValue() {
+            return value;
+        }
     }
 }

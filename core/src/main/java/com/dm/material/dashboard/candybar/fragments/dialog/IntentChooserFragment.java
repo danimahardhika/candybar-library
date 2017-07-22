@@ -22,13 +22,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.IntentAdapter;
+import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
+import com.dm.material.dashboard.candybar.fragments.RequestFragment;
+import com.dm.material.dashboard.candybar.helpers.RequestHelper;
+import com.dm.material.dashboard.candybar.helpers.TypefaceHelper;
 import com.dm.material.dashboard.candybar.items.IntentChooser;
-import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -56,26 +61,24 @@ public class IntentChooserFragment extends DialogFragment {
     private ListView mIntentList;
     private TextView mNoApp;
 
-    private Request mRequest;
+    private int mType;
+    private IntentAdapter mAdapter;
     private AsyncTask<Void, Void, Boolean> mLoadIntentChooser;
 
-    private static final String SUBJECT = "subject";
-    private static final String TEXT = "text";
-    private static final String STREAM = "stream";
+    public static final int ICON_REQUEST = 0;
+    public static final int REBUILD_ICON_REQUEST = 1;
+    public static final String TAG = "candybar.dialog.intent.chooser";
+    private static final String TYPE = "type";
 
-    public static final String TAG = "candybar.dialog.intent.choose";
-
-    private static IntentChooserFragment newInstance(Request request) {
+    private static IntentChooserFragment newInstance(int type) {
         IntentChooserFragment fragment = new IntentChooserFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(SUBJECT, request.getSubject());
-        bundle.putString(TEXT, request.getText());
-        bundle.putString(STREAM, request.getStream());
+        bundle.putInt(TYPE, type);
         fragment.setArguments(bundle);
         return fragment;
     }
 
-    public static void showIntentChooserDialog(@NonNull FragmentManager fm, @NonNull Request request) {
+    public static void showIntentChooserDialog(@NonNull FragmentManager fm, int type) {
         FragmentTransaction ft = fm.beginTransaction();
         Fragment prev = fm.findFragmentByTag(TAG);
         if (prev != null) {
@@ -83,9 +86,15 @@ public class IntentChooserFragment extends DialogFragment {
         }
 
         try {
-            DialogFragment dialog = IntentChooserFragment.newInstance(request);
+            DialogFragment dialog = IntentChooserFragment.newInstance(type);
             dialog.show(ft, TAG);
         } catch (IllegalArgumentException | IllegalStateException ignored) {}
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mType = getArguments().getInt(TYPE);
     }
 
     @NonNull
@@ -93,7 +102,35 @@ public class IntentChooserFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
         builder.customView(R.layout.fragment_intent_chooser, false);
+        builder.typeface(
+                TypefaceHelper.getMedium(getActivity()),
+                TypefaceHelper.getRegular(getActivity()));
+        builder.positiveText(android.R.string.cancel);
+
         MaterialDialog dialog = builder.build();
+        dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(view -> {
+            if (mAdapter == null || mAdapter.isAsyncTaskRunning()) return;
+
+            File file = new File(getActivity().getCacheDir(), RequestHelper.ZIP);
+            if (file.exists()){
+                if (file.delete()) {
+                    LogUtil.e("Intent chooser cancel: icon_request.zip deleted");
+                }
+            }
+
+            File file1 = new File(getActivity().getCacheDir(), RequestHelper.REBUILD_ZIP);
+            if (file1.exists()) {
+                if (file1.delete()) {
+                    if (file1.delete()) {
+                        LogUtil.e("Intent chooser cancel: rebuild_icon_request.zip deleted");
+                    }
+                }
+            }
+
+            RequestFragment.sSelectedRequests = null;
+            CandyBarApplication.sRequestProperty = null;
+            dialog.dismiss();
+        });
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
@@ -105,39 +142,15 @@ public class IntentChooserFragment extends DialogFragment {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        String subject = getArguments().getString(SUBJECT);
-        String text = getArguments().getString(TEXT);
-        String stream = getArguments().getString(STREAM);
-        mRequest = new Request(subject, text, stream);
-    }
-
-    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (savedInstanceState != null) {
-            String subject = savedInstanceState.getString(SUBJECT);
-            String text = savedInstanceState.getString(TEXT);
-            String stream = savedInstanceState.getString(STREAM);
-            mRequest = new Request(subject, text, stream);
-        }
-
-        if (mRequest != null) loadIntentChooser();
+        loadIntentChooser();
     }
 
     @Override
     public void onDismiss(DialogInterface dialog) {
         if (mLoadIntentChooser != null) mLoadIntentChooser.cancel(true);
         super.onDismiss(dialog);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putString(SUBJECT, mRequest.getSubject());
-        outState.putString(TEXT, mRequest.getText());
-        outState.putString(STREAM, mRequest.getStream());
-        super.onSaveInstanceState(outState);
     }
 
     private void loadIntentChooser() {
@@ -212,18 +225,12 @@ public class IntentChooserFragment extends DialogFragment {
             protected void onPostExecute(Boolean aBoolean) {
                 super.onPostExecute(aBoolean);
                 if (aBoolean && apps != null) {
-                    IntentAdapter adapter = new IntentAdapter(getActivity(),
-                            apps, mRequest);
-                    mIntentList.setAdapter(adapter);
+                    mAdapter = new IntentAdapter(getActivity(), apps, mType);
+                    mIntentList.setAdapter(mAdapter);
 
                     if (apps.size() == 0) {
                         mNoApp.setVisibility(View.VISIBLE);
                         setCancelable(true);
-                    }
-
-                    if (apps.size() == 1) {
-                        if (apps.get(0).getApp().activityInfo.packageName.equals("com.google.android.apps.inbox"))
-                            setCancelable(true);
                     }
                 } else {
                     dismiss();

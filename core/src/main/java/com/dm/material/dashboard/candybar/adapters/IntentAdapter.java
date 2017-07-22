@@ -1,17 +1,14 @@
 package com.dm.material.dashboard.candybar.adapters;
 
-import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
-import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -21,16 +18,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.danimahardhika.android.helpers.core.ColorHelper;
-import com.danimahardhika.android.helpers.core.FileHelper;
 import com.dm.material.dashboard.candybar.R;
+import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
+import com.dm.material.dashboard.candybar.fragments.RequestFragment;
 import com.dm.material.dashboard.candybar.fragments.dialog.IntentChooserFragment;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.items.IntentChooser;
 import com.dm.material.dashboard.candybar.items.Request;
+import com.dm.material.dashboard.candybar.tasks.IconRequestBuilderTask;
+import com.dm.material.dashboard.candybar.tasks.PremiumRequestBuilderTask;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
 
-import java.io.File;
 import java.util.List;
+
+import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 /*
  * CandyBar - Material Dashboard
@@ -54,13 +55,13 @@ public class IntentAdapter extends BaseAdapter {
 
     private final Context mContext;
     private final List<IntentChooser> mApps;
-    private final Request mRequest;
+    private int mType;
+    private AsyncTask mAsyncTask;
 
-    public IntentAdapter(@NonNull Context context, @NonNull List<IntentChooser> apps,
-                         @NonNull Request request) {
+    public IntentAdapter(@NonNull Context context, @NonNull List<IntentChooser> apps, int type) {
         mContext = context;
         mApps = apps;
-        mRequest = request;
+        mType = type;
     }
 
     @Override
@@ -112,22 +113,43 @@ public class IntentAdapter extends BaseAdapter {
             ActivityInfo app = mApps.get(position).getApp().activityInfo;
             if (mApps.get(position).getType() == IntentChooser.TYPE_RECOMMENDED ||
                     mApps.get(position).getType() == IntentChooser.TYPE_SUPPORTED) {
-                String packageName = app.applicationInfo.packageName;
-                String activity = app.name;
-                if (("com.google.android.apps.inbox").equals(packageName)) {
-                    activity = "com.google.android.apps.bigtop.activities.MainActivity";
+                if (mAsyncTask != null) return;
+
+                holder.icon.setVisibility(View.GONE);
+                holder.progressBar.setVisibility(View.VISIBLE);
+
+                if (CandyBarApplication.sRequestProperty == null) {
+                    CandyBarApplication.sRequestProperty = new Request.Property(null, null, null);
                 }
+                CandyBarApplication.sRequestProperty.setComponentName(
+                        new ComponentName(app.applicationInfo.packageName, app.name));
 
-                ComponentName name = new ComponentName(packageName, activity);
-                sendRequest(name);
-
-                FragmentManager fm = ((AppCompatActivity) mContext).getSupportFragmentManager();
-                if (fm != null) {
-                    DialogFragment dialog = (DialogFragment) fm.findFragmentByTag(
-                            IntentChooserFragment.TAG);
-                    if (dialog!= null) {
-                        dialog.dismiss();
-                    }
+                if (mType == IntentChooserFragment.ICON_REQUEST) {
+                    mAsyncTask = IconRequestBuilderTask.start(mContext, () -> {
+                        mAsyncTask = null;
+                        FragmentManager fm = ((AppCompatActivity) mContext).getSupportFragmentManager();
+                        if (fm != null) {
+                            DialogFragment dialog = (DialogFragment) fm.findFragmentByTag(
+                                    IntentChooserFragment.TAG);
+                            if (dialog!= null) {
+                                dialog.dismiss();
+                            }
+                        }
+                    }, AsyncTask.THREAD_POOL_EXECUTOR);
+                } else if (mType == IntentChooserFragment.REBUILD_ICON_REQUEST) {
+                    mAsyncTask = PremiumRequestBuilderTask.start(mContext, () -> {
+                        mAsyncTask = null;
+                        FragmentManager fm = ((AppCompatActivity) mContext).getSupportFragmentManager();
+                        if (fm != null) {
+                            DialogFragment dialog = (DialogFragment) fm.findFragmentByTag(
+                                    IntentChooserFragment.TAG);
+                            if (dialog!= null) {
+                                dialog.dismiss();
+                            }
+                        }
+                    }, AsyncTask.THREAD_POOL_EXECUTOR);
+                } else {
+                    LogUtil.e("Intent chooser type unknown: " +mType);
                 }
                 return;
             }
@@ -139,6 +161,10 @@ public class IntentAdapter extends BaseAdapter {
         return view;
     }
 
+    public boolean isAsyncTaskRunning() {
+        return mAsyncTask != null;
+    }
+
     private class ViewHolder {
 
         private final TextView name;
@@ -146,6 +172,7 @@ public class IntentAdapter extends BaseAdapter {
         private final ImageView icon;
         private final LinearLayout container;
         private final View divider;
+        private final MaterialProgressBar progressBar;
 
         ViewHolder(View view) {
             name = (TextView) view.findViewById(R.id.name);
@@ -153,48 +180,7 @@ public class IntentAdapter extends BaseAdapter {
             icon = (ImageView) view.findViewById(R.id.icon);
             container = (LinearLayout) view.findViewById(R.id.container);
             divider = view.findViewById(R.id.divider);
+            progressBar = (MaterialProgressBar) view.findViewById(R.id.progress);
         }
     }
-
-    private void sendRequest(ComponentName name) {
-        try {
-            Intent intent = new Intent(Intent.ACTION_SEND);
-            intent = addIntentExtra(intent);
-            intent.setComponent(name);
-            intent.addCategory(Intent.CATEGORY_LAUNCHER);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            mContext.startActivity(intent);
-        } catch (IllegalArgumentException e) {
-            try {
-                Intent intent = new Intent(Intent.ACTION_SEND);
-                intent = addIntentExtra(intent);
-                mContext.startActivity(Intent.createChooser(intent,
-                        mContext.getResources().getString(R.string.email_client)));
-            }
-            catch (ActivityNotFoundException e1) {
-                LogUtil.e(Log.getStackTraceString(e1));
-            }
-        }
-    }
-
-    private Intent addIntentExtra(@NonNull Intent intent) {
-        intent.setType("message/rfc822");
-        if (mRequest.getStream() != null) {
-            File zip = new File(mRequest.getStream());
-            Uri uri = FileHelper.getUriFromFile(mContext, mContext.getPackageName(), zip);
-            if (uri == null) uri = Uri.fromFile(zip);
-            intent.putExtra(Intent.EXTRA_STREAM, uri);
-            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        }
-
-        intent.putExtra(Intent.EXTRA_EMAIL,
-                new String[]{mContext.getResources().getString(R.string.dev_email)});
-        intent.putExtra(Intent.EXTRA_SUBJECT, mRequest.getSubject());
-        intent.putExtra(Intent.EXTRA_TEXT, mRequest.getText());
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-        return intent;
-    }
-
 }

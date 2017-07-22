@@ -21,7 +21,6 @@ import com.dm.material.dashboard.candybar.adapters.SettingsAdapter;
 import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
 import com.dm.material.dashboard.candybar.databases.Database;
 import com.dm.material.dashboard.candybar.fragments.dialog.IntentChooserFragment;
-import com.dm.material.dashboard.candybar.helpers.DeviceHelper;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.helpers.IconsHelper;
 import com.dm.material.dashboard.candybar.helpers.LocaleHelper;
@@ -34,11 +33,7 @@ import com.dm.material.dashboard.candybar.items.Setting;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -218,17 +213,12 @@ public class SettingsFragment extends Fragment {
         new AsyncTask<Void, Void, Boolean>() {
 
             MaterialDialog dialog;
-            StringBuilder sb;
             List<Request> requests;
-            String zipFile;
-
             String log = "";
 
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                sb = new StringBuilder();
-
                 MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
                 builder.typeface(
                         TypefaceHelper.getMedium(getActivity()),
@@ -248,47 +238,33 @@ public class SettingsFragment extends Fragment {
                     try {
                         Thread.sleep(1);
                         File directory = getActivity().getCacheDir();
-                        File appFilter = new File(directory.toString() + "/" + "appfilter.xml");
-
                         requests = Database.get(getActivity()).getPremiumRequest(null);
-
                         if (requests.size() == 0) return true;
 
-                        sb.append(DeviceHelper.getDeviceInfo(getActivity()));
-
+                        File appFilter = RequestHelper.buildXml(getActivity(), requests, RequestHelper.XmlType.APPFILTER);
+                        File appMap = RequestHelper.buildXml(getActivity(), requests, RequestHelper.XmlType.APPMAP);
+                        File themeResources = RequestHelper.buildXml(getActivity(), requests, RequestHelper.XmlType.THEME_RESOURCES);
                         List<String> files = new ArrayList<>();
-                        Writer out = new BufferedWriter(new OutputStreamWriter(
-                                new FileOutputStream(appFilter), "UTF8"));
 
                         for (int i = 0; i < requests.size(); i++) {
-                            String activity = requests.get(i).getActivity();
-                            String packageName = activity.substring(0, activity.lastIndexOf("/"));
-                            Request request = new Request(
-                                    requests.get(i).getName(),
-                                    packageName,
-                                    activity,
-                                    true);
-
-                            String string = RequestHelper.writeRequest(request);
-                            sb.append(string);
-                            sb.append("\n").append("Order Id : ").append(requests.get(i).getOrderId());
-                            sb.append("\n").append("Product Id : ").append(requests.get(i).getProductId());
-
-                            String string1 = RequestHelper.writeAppFilter(request);
-                            out.append(string1);
-
                             Drawable drawable = DrawableHelper.getHighQualityIcon(
-                                    getActivity(), request.getPackageName());
-
-                            String icon = IconsHelper.saveIcon(files, directory, drawable, request.getName());
+                                    getActivity(), requests.get(i).getPackageName());
+                            String icon = IconsHelper.saveIcon(files, directory, drawable, requests.get(i).getName());
                             if (icon != null) files.add(icon);
                         }
 
-                        out.flush();
-                        out.close();
-                        files.add(appFilter.toString());
+                        if (appFilter != null) {
+                            files.add(appFilter.toString());
+                        }
 
-                        zipFile = FileHelper.createZip(files, new File(directory.toString() + "/" + "icon_request.zip"));
+                        if (appMap != null) {
+                            files.add(appMap.toString());
+                        }
+
+                        if (themeResources != null) {
+                            files.add(themeResources.toString());
+                        }
+                        FileHelper.createZip(files, new File(directory.toString(), RequestHelper.REBUILD_ZIP));
                         return true;
                     } catch (Exception e) {
                         log = e.toString();
@@ -310,19 +286,13 @@ public class SettingsFragment extends Fragment {
                         return;
                     }
 
-                    String subject = "Rebuild Premium Icon Request "+
-                            getActivity().getResources().getString(R.string.app_name);
-
-                    Request request = new Request(subject, sb.toString(), zipFile);
                     IntentChooserFragment.showIntentChooserDialog(getActivity()
-                            .getSupportFragmentManager(), request);
+                            .getSupportFragmentManager(), IntentChooserFragment.REBUILD_ICON_REQUEST);
                 } else {
-                    Toast.makeText(getActivity(), "Failed " +log, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Failed: " +log, Toast.LENGTH_LONG).show();
                 }
                 dialog = null;
-                sb.setLength(0);
             }
-
         }.execute();
     }
 }

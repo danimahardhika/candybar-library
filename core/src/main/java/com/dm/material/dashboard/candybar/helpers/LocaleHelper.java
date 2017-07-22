@@ -97,7 +97,7 @@ public class LocaleHelper {
     }
 
     @Nullable
-    static String getOtherAppLocaleName(Context context, Locale locale, String packageName) {
+    public static String getOtherAppLocaleName(@NonNull Context context, @NonNull Locale locale, @NonNull String packageName) {
         try {
             PackageManager packageManager = context.getPackageManager();
             ApplicationInfo info = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA);

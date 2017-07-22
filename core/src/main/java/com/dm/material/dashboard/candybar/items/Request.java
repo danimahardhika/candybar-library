@@ -18,38 +18,24 @@ package com.dm.material.dashboard.candybar.items;
  * limitations under the License.
  */
 
+import android.content.ComponentName;
+import android.support.annotation.Nullable;
+
 public class Request {
 
     private String mName;
     private String mActivity;
     private String mPackageName;
-    private String mSubject;
-    private String mText;
-    private String mStream;
     private String mOrderId;
     private String mProductId;
     private String mRequestedOn;
     private boolean mRequested;
-    private int mRequestCount;
 
     public Request(String name, String packageName, String activity, boolean requested) {
         mName = name;
         mPackageName = packageName;
         mActivity = activity;
         mRequested = requested;
-    }
-
-    public Request(String subject, String text, String stream) {
-        mSubject = subject;
-        mText = text;
-        mStream = stream;
-    }
-
-    public Request(String subject, String text, String stream, int requestCount) {
-        mSubject = subject;
-        mText = text;
-        mStream = stream;
-        mRequestCount = requestCount;
     }
 
     public Request(String orderId, String productId, String name, String activity) {
@@ -64,6 +50,9 @@ public class Request {
     }
 
     public String getPackageName() {
+        if (mPackageName == null) {
+            return mActivity.substring(0, mActivity.lastIndexOf("/"));
+        }
         return mPackageName;
     }
 
@@ -79,22 +68,6 @@ public class Request {
         mRequested = requested;
     }
 
-    public String getSubject() {
-        return mSubject;
-    }
-
-    public String getText() {
-        return mText;
-    }
-
-    public String getStream() {
-        return mStream;
-    }
-
-    public int getRequestCount() {
-        return mRequestCount;
-    }
-
     public String getOrderId() {
         return mOrderId;
     }
@@ -105,5 +78,35 @@ public class Request {
 
     public String getRequestedOn() {
         return mRequestedOn;
+    }
+
+    public static class Property {
+
+        private ComponentName componentName;
+        private final String orderId;
+        private final String productId;
+
+        public Property(ComponentName componentName, String orderId, String productId){
+            this.componentName = componentName;
+            this.orderId = orderId;
+            this.productId = productId;
+        }
+
+        @Nullable
+        public ComponentName getComponentName() {
+            return componentName;
+        }
+
+        public String getOrderId() {
+            return orderId;
+        }
+
+        public String getProductId() {
+            return productId;
+        }
+
+        public void setComponentName(ComponentName componentName) {
+            this.componentName = componentName;
+        }
     }
 }
