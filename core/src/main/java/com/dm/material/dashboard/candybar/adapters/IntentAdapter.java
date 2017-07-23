@@ -20,7 +20,6 @@ import android.widget.Toast;
 import com.danimahardhika.android.helpers.core.ColorHelper;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
-import com.dm.material.dashboard.candybar.fragments.RequestFragment;
 import com.dm.material.dashboard.candybar.fragments.dialog.IntentChooserFragment;
 import com.dm.material.dashboard.candybar.helpers.DrawableHelper;
 import com.dm.material.dashboard.candybar.items.IntentChooser;

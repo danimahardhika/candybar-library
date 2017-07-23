@@ -1,7 +1,6 @@
 package com.dm.material.dashboard.candybar.utils;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
 
