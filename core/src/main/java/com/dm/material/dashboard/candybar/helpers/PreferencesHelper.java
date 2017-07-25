@@ -261,7 +261,7 @@ public class PreferencesHelper {
         getSharedPreferences().edit().putBoolean(KEY_APPLY_LOCKSCREEN, bool).apply();
     }
 
-    String getLatestCrashLog() {
+    public String getLatestCrashLog() {
         return getSharedPreferences().getString(KEY_LATEST_CRASHLOG, "");
     }
 
