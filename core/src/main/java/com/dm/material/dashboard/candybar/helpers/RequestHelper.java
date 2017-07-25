@@ -89,7 +89,7 @@ public class RequestHelper {
     }
 
     @NonNull
-    private static HashMap<String, String> getAppFilter(@NonNull Context context, @NonNull Key key) {
+    public static HashMap<String, String> getAppFilter(@NonNull Context context, @NonNull Key key) {
         try {
             HashMap<String, String> activities = new HashMap<>();
             XmlPullParser xpp = context.getResources().getXml(R.xml.appfilter);
