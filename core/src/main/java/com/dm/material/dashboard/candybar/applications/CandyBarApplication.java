@@ -45,6 +45,7 @@ public class CandyBarApplication extends Application {
     private Thread.UncaughtExceptionHandler mHandler;
 
     public static Request.Property sRequestProperty;
+    public static String sZipPath = null;
 
     public static Configuration getConfiguration() {
         if (mConfiguration == null) {
