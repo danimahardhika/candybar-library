@@ -28,7 +28,6 @@ import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.IntentAdapter;
 import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
 import com.dm.material.dashboard.candybar.fragments.RequestFragment;
-import com.dm.material.dashboard.candybar.helpers.RequestHelper;
 import com.dm.material.dashboard.candybar.helpers.TypefaceHelper;
 import com.dm.material.dashboard.candybar.items.IntentChooser;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
@@ -111,18 +110,11 @@ public class IntentChooserFragment extends DialogFragment {
         dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(view -> {
             if (mAdapter == null || mAdapter.isAsyncTaskRunning()) return;
 
-            File file = new File(getActivity().getCacheDir(), RequestHelper.ZIP);
-            if (file.exists()){
-                if (file.delete()) {
-                    LogUtil.e("Intent chooser cancel: icon_request.zip deleted");
-                }
-            }
-
-            File file1 = new File(getActivity().getCacheDir(), RequestHelper.REBUILD_ZIP);
-            if (file1.exists()) {
-                if (file1.delete()) {
-                    if (file1.delete()) {
-                        LogUtil.e("Intent chooser cancel: rebuild_icon_request.zip deleted");
+            if (CandyBarApplication.sZipPath != null) {
+                File file = new File(CandyBarApplication.sZipPath);
+                if (file.exists()) {
+                    if (file.delete()) {
+                        LogUtil.e(String.format("Intent chooser cancel: %s deleted", file.getName()));
                     }
                 }
             }

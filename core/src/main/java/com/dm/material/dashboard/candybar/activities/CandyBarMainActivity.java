@@ -415,6 +415,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements
                     getResources().getString(R.string.email_client)));
         }
         CandyBarApplication.sRequestProperty = null;
+        CandyBarApplication.sZipPath = null;
     }
 
     @Override

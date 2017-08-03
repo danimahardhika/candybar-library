@@ -159,12 +159,15 @@ public class PremiumRequestBuilderTask extends AsyncTask<Void, Void, Boolean> {
 
     private Intent addIntentExtra(@NonNull Intent intent, String emailBody) {
         intent.setType("message/rfc822");
-        File zip = new File(mContext.getCacheDir(), RequestHelper.REBUILD_ZIP);
-        if (zip.exists()) {
-            Uri uri = FileHelper.getUriFromFile(mContext, mContext.getPackageName(), zip);
-            if (uri == null) uri = Uri.fromFile(zip);
-            intent.putExtra(Intent.EXTRA_STREAM, uri);
-            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        if (CandyBarApplication.sZipPath != null) {
+            File zip = new File(CandyBarApplication.sZipPath);
+            if (zip.exists()) {
+                Uri uri = FileHelper.getUriFromFile(mContext, mContext.getPackageName(), zip);
+                if (uri == null) uri = Uri.fromFile(zip);
+                intent.putExtra(Intent.EXTRA_STREAM, uri);
+                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            }
         }
 
         String subject = "Rebuild Premium Request " +mContext.getResources().getString(R.string.app_name);

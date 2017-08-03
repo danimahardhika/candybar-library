@@ -19,7 +19,6 @@ import com.dm.material.dashboard.candybar.databases.Database;
 import com.dm.material.dashboard.candybar.fragments.RequestFragment;
 import com.dm.material.dashboard.candybar.fragments.dialog.IntentChooserFragment;
 import com.dm.material.dashboard.candybar.helpers.DeviceHelper;
-import com.dm.material.dashboard.candybar.helpers.RequestHelper;
 import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
@@ -187,12 +186,15 @@ public class IconRequestBuilderTask extends AsyncTask<Void, Void, Boolean> {
 
     private Intent addIntentExtra(@NonNull Intent intent, String emailBody) {
         intent.setType("message/rfc822");
-        File zip = new File(mContext.getCacheDir(), RequestHelper.ZIP);
-        if (zip.exists()) {
-            Uri uri = FileHelper.getUriFromFile(mContext, mContext.getPackageName(), zip);
-            if (uri == null) uri = Uri.fromFile(zip);
-            intent.putExtra(Intent.EXTRA_STREAM, uri);
-            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        if (CandyBarApplication.sZipPath != null) {
+            File zip = new File(CandyBarApplication.sZipPath);
+            if (zip.exists()) {
+                Uri uri = FileHelper.getUriFromFile(mContext, mContext.getPackageName(), zip);
+                if (uri == null) uri = Uri.fromFile(zip);
+                intent.putExtra(Intent.EXTRA_STREAM, uri);
+                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            }
         }
 
         String subject = Preferences.get(mContext).isPremiumRequest() ?

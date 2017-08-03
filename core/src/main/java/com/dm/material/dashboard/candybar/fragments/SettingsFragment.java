@@ -264,7 +264,8 @@ public class SettingsFragment extends Fragment {
                         if (themeResources != null) {
                             files.add(themeResources.toString());
                         }
-                        FileHelper.createZip(files, new File(directory.toString(), RequestHelper.REBUILD_ZIP));
+                        CandyBarApplication.sZipPath = FileHelper.createZip(files, new File(directory.toString(),
+                                RequestHelper.getGeneratedZipName(RequestHelper.REBUILD_ZIP)));
                         return true;
                     } catch (Exception e) {
                         log = e.toString();

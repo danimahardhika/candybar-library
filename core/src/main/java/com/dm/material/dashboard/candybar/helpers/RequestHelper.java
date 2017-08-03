@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.danimahardhika.android.helpers.core.TimeHelper;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
 import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
@@ -27,6 +28,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -58,6 +60,11 @@ public class RequestHelper {
     public static final String THEME_RESOURCES = "theme_resources.xml";
     public static final String ZIP = "icon_request.zip";
     public static final String REBUILD_ZIP = "rebuild_icon_request.zip";
+
+    public static String getGeneratedZipName(@NonNull String baseName) {
+        return baseName.substring(0, baseName.lastIndexOf(".")) +"_"+ TimeHelper.getDateTime(
+                new SimpleDateFormat("dd_MM_yyyy_HH_mm_ss", Locale.getDefault())) +".zip";
+    }
 
     @Nullable
     public static File buildXml(@NonNull Context context, @NonNull List<Request> requests, @NonNull XmlType xmlType) {

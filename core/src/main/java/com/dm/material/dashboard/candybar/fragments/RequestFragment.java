@@ -430,7 +430,9 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                         if (themeResources != null) {
                             files.add(themeResources.toString());
                         }
-                        FileHelper.createZip(files, new File(directory.toString(), RequestHelper.ZIP));
+
+                        CandyBarApplication.sZipPath = FileHelper.createZip(files, new File(directory.toString(),
+                                RequestHelper.getGeneratedZipName(RequestHelper.ZIP)));
                         return true;
                     } catch (Exception e) {
                         LogUtil.e(Log.getStackTraceString(e));
