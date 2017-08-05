@@ -16,7 +16,6 @@ import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
 import com.dm.material.dashboard.candybar.databases.Database;
 import com.dm.material.dashboard.candybar.fragments.dialog.IntentChooserFragment;
 import com.dm.material.dashboard.candybar.helpers.DeviceHelper;
-import com.dm.material.dashboard.candybar.helpers.RequestHelper;
 import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.dm.material.dashboard.candybar.utils.listeners.RequestListener;
@@ -87,7 +86,6 @@ public class PremiumRequestBuilderTask extends AsyncTask<Void, Void, Boolean> {
                 List<Request> requests = mDatabase.getPremiumRequest(null);
 
                 for (int i = 0; i < requests.size(); i++) {
-
                     stringBuilder.append("\n\n")
                             .append(requests.get(i).getName())
                             .append("\n")
