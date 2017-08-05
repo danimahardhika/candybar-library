@@ -45,7 +45,6 @@ import com.dm.material.dashboard.candybar.databases.Database;
 import com.dm.material.dashboard.candybar.fragments.AboutFragment;
 import com.dm.material.dashboard.candybar.fragments.dialog.IntentChooserFragment;
 import com.dm.material.dashboard.candybar.helpers.ConfigurationHelper;
-import com.dm.material.dashboard.candybar.helpers.IconsHelper;
 import com.dm.material.dashboard.candybar.helpers.LicenseCallbackHelper;
 import com.dm.material.dashboard.candybar.helpers.LocaleHelper;
 import com.dm.material.dashboard.candybar.helpers.NavigationViewHelper;
@@ -57,6 +56,7 @@ import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.receivers.CandyBarBroadcastReceiver;
 import com.dm.material.dashboard.candybar.services.CandyBarWallpapersService;
 import com.dm.material.dashboard.candybar.tasks.IconRequestTask;
+import com.dm.material.dashboard.candybar.tasks.IconsLoaderTask;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.dm.material.dashboard.candybar.utils.listeners.SearchListener;
 import com.dm.material.dashboard.candybar.utils.listeners.WallpapersListener;
@@ -196,7 +196,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements
 
         checkWallpapers();
         IconRequestTask.start(this, AsyncTask.THREAD_POOL_EXECUTOR);
-        IconsHelper.prepareIconsList(this);
+        IconsLoaderTask.start(this);
 
         if (Preferences.get(this).isFirstRun() && mProperty.licenseChecker) {
             mLicenseHelper = new LicenseHelper(this);

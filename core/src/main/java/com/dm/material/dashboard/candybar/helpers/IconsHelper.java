@@ -5,17 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.XmlResourceParser;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -23,12 +19,10 @@ import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
 import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
 import com.dm.material.dashboard.candybar.fragments.dialog.IconPreviewFragment;
-import com.dm.material.dashboard.candybar.items.Home;
 import com.dm.material.dashboard.candybar.items.Icon;
 import com.dm.material.dashboard.candybar.utils.AlphanumComparator;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
-import com.dm.material.dashboard.candybar.utils.listeners.HomeListener;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -38,7 +32,6 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import static com.danimahardhika.android.helpers.core.DrawableHelper.getResourceId;
 import static com.danimahardhika.android.helpers.core.FileHelper.getUriFromFile;
@@ -134,107 +127,6 @@ public class IconsHelper {
             }
         });
         return icons;
-    }
-
-    public static void prepareIconsList(@NonNull Context context) {
-        new AsyncTask<Void, Void, Boolean>() {
-
-            Home home = null;
-
-            @Override
-            protected Boolean doInBackground(Void... voids) {
-                while (!isCancelled()) {
-                    try {
-                        Thread.sleep(1);
-                        if (CandyBarMainActivity.sSections == null) {
-                            CandyBarMainActivity.sSections = IconsHelper.getIconsList(context);
-
-                            for (int i = 0; i < CandyBarMainActivity.sSections.size(); i++) {
-                                List<Icon> icons = CandyBarMainActivity.sSections.get(i).getIcons();
-
-                                if (context.getResources().getBoolean(R.bool.show_icon_name)) {
-                                    for (Icon icon : icons) {
-                                        boolean replacer = context.getResources().getBoolean(
-                                                R.bool.enable_icon_name_replacer);
-                                        String name = replaceName(context, replacer, icon.getTitle());
-                                        icon.setTitle(name);
-                                    }
-                                }
-
-                                if (context.getResources().getBoolean(R.bool.enable_icons_sort)) {
-                                    Collections.sort(icons, new AlphanumComparator() {
-                                        @Override
-                                        public int compare(Object o1, Object o2) {
-                                            String s1 = ((Icon) o1).getTitle();
-                                            String s2 = ((Icon) o2).getTitle();
-                                            return super.compare(s1, s2);
-                                        }
-                                    });
-
-                                    CandyBarMainActivity.sSections.get(i).setIcons(icons);
-                                }
-                            }
-
-                            if (CandyBarApplication.getConfiguration().isShowTabAllIcons()) {
-                                List<Icon> icons = getTabAllIcons();
-                                CandyBarMainActivity.sSections.add(new Icon(
-                                        CandyBarApplication.getConfiguration().getTabAllIconsTitle(), icons));
-                            }
-                        }
-
-                        if (CandyBarMainActivity.sHomeIcon != null) return true;
-
-                        Random random = new Random();
-                        int index = random.nextInt(CandyBarMainActivity.sSections.size());
-                        List<Icon> icons = CandyBarMainActivity.sSections.get(index).getIcons();
-                        index = random.nextInt(icons.size());
-                        Icon icon = icons.get(index);
-
-                        BitmapFactory.Options options = new BitmapFactory.Options();
-                        options.inJustDecodeBounds = true;
-                        BitmapFactory.decodeResource(context.getResources(),
-                                icon.getRes(), options);
-
-                        if (!context.getResources().getBoolean(R.bool.show_icon_name)) {
-                            String name = replaceName(context, true, icon.getTitle());
-                            icon.setTitle(name);
-                        }
-
-                        home = new Home(
-                                icon.getRes(),
-                                icon.getTitle(),
-                                String.format(context.getResources().getString(R.string.home_icon_dimension),
-                                        options.outWidth +" x "+ options.outHeight),
-                                Home.Type.DIMENSION);
-                        CandyBarMainActivity.sHomeIcon = home;
-                        return true;
-                    } catch (Exception e) {
-                        LogUtil.e(Log.getStackTraceString(e));
-                        return false;
-                    }
-                }
-                return false;
-            }
-
-            @Override
-            protected void onPostExecute(Boolean aBoolean) {
-                super.onPostExecute(aBoolean);
-                if (aBoolean) {
-                    if (home == null) return;
-
-                    if (context == null) return;
-
-                    FragmentManager fm = ((AppCompatActivity) context).getSupportFragmentManager();
-                    if (fm == null) return;
-
-                    Fragment fragment = fm.findFragmentByTag("home");
-                    if (fragment == null) return;
-
-                    HomeListener listener = (HomeListener) fragment;
-                    listener.onHomeDataUpdated(home);
-                }
-            }
-        }.execute();
     }
 
     public static String replaceName(@NonNull Context context, boolean iconReplacer, String name) {
