@@ -13,6 +13,7 @@ import com.danimahardhika.android.helpers.core.FileHelper;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.helpers.DeviceHelper;
 import com.dm.material.dashboard.candybar.helpers.ReportBugsHelper;
+import com.dm.material.dashboard.candybar.helpers.RequestHelper;
 import com.dm.material.dashboard.candybar.helpers.TypefaceHelper;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
@@ -46,6 +47,7 @@ public class ReportBugsTask extends AsyncTask<Void, Void, Boolean> {
 
     private Context mContext;
     private String mDescription;
+    private String mZipPath = null;
     private StringBuilder mStringBuilder;
     private MaterialDialog mDialog;
 
@@ -103,7 +105,8 @@ public class ReportBugsTask extends AsyncTask<Void, Void, Boolean> {
                 File crashLog = ReportBugsHelper.buildCrashLog(mContext, stackTrace);
                 if (crashLog != null) files.add(crashLog.toString());
 
-                FileHelper.createZip(files, new File(mContext.getCacheDir(), ReportBugsHelper.REPORT_BUGS));
+                mZipPath = FileHelper.createZip(files, new File(mContext.getCacheDir(),
+                        RequestHelper.getGeneratedZipName(ReportBugsHelper.REPORT_BUGS)));
                 return true;
             } catch (Exception e) {
                 LogUtil.e(Log.getStackTraceString(e));
@@ -126,10 +129,15 @@ public class ReportBugsTask extends AsyncTask<Void, Void, Boolean> {
                     "Report Bugs " + (mContext.getString(
                             R.string.app_name)));
             intent.putExtra(Intent.EXTRA_TEXT, mStringBuilder.toString());
-            Uri uri = getUriFromFile(mContext, mContext.getPackageName(),
-                    new File(mContext.getCacheDir(), ReportBugsHelper.REPORT_BUGS));
-            if (uri != null) {
-                intent.putExtra(Intent.EXTRA_STREAM, uri);
+
+            if (mZipPath != null) {
+                File zip = new File(mZipPath);
+                if (zip.exists()) {
+                    Uri uri = getUriFromFile(mContext, mContext.getPackageName(), zip);
+                    if (uri == null) uri = Uri.fromFile(zip);
+                    intent.putExtra(Intent.EXTRA_STREAM, uri);
+                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                }
             }
 
             mContext.startActivity(Intent.createChooser(intent,
@@ -138,5 +146,7 @@ public class ReportBugsTask extends AsyncTask<Void, Void, Boolean> {
             Toast.makeText(mContext, R.string.report_bugs_failed,
                     Toast.LENGTH_LONG).show();
         }
+
+        mZipPath = null;
     }
 }
