@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Intent;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.activities.CandyBarCrashReport;
@@ -16,7 +17,10 @@ import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
@@ -127,6 +131,7 @@ public class CandyBarApplication extends Application {
         private GridStyle mWallpapersGrid = GridStyle.CARD;
         private Style mAboutStyle = Style.PORTRAIT_FLAT_LANDSCAPE_CARD;
         private IconColor mIconColor = IconColor.PRIMARY_TEXT;
+        private List<OtherApp> mOtherApps = null;
 
         private boolean mIsColoredApplyCard = true;
         private boolean mIsAutomaticIconsCountEnabled = true;
@@ -269,6 +274,11 @@ public class CandyBarApplication extends Application {
             return this;
         }
 
+        public Configuration setOtherApps(@NonNull OtherApp[] otherApps) {
+            mOtherApps = Arrays.asList(otherApps);
+            return this;
+        }
+
         public NavigationIcon getNavigationIcon() {
             return mNavigationIcon;
         }
@@ -360,6 +370,11 @@ public class CandyBarApplication extends Application {
         public JsonStructure getWallpaperJsonStructure() {
             return mWallpaperJsonStructure;
         }
+
+        @Nullable
+        public List<OtherApp> getOtherApps() {
+            return mOtherApps;
+        }
     }
 
     public enum NavigationIcon {
@@ -389,5 +404,36 @@ public class CandyBarApplication extends Application {
     public enum IconColor {
         PRIMARY_TEXT,
         ACCENT
+    }
+
+    public static class OtherApp {
+
+        private String mIcon;
+        private String mTitle;
+        private String mDescription;
+        private String mUrl;
+
+        public OtherApp(String icon, String title, String description, String url) {
+            mIcon = icon;
+            mTitle = title;
+            mDescription = description;
+            mUrl = url;
+        }
+
+        public String getIcon() {
+            return mIcon;
+        }
+
+        public String getTitle() {
+            return mTitle;
+        }
+
+        public String getDescription() {
+            return mDescription;
+        }
+
+        public String getUrl() {
+            return mUrl;
+        }
     }
 }
