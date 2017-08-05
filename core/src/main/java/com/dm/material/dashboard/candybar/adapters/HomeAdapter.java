@@ -32,6 +32,7 @@ import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
 import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
 import com.dm.material.dashboard.candybar.fragments.dialog.IconPreviewFragment;
+import com.dm.material.dashboard.candybar.fragments.dialog.OtherAppsFragment;
 import com.dm.material.dashboard.candybar.helpers.ViewHelper;
 import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
 import com.dm.material.dashboard.candybar.items.Home;
@@ -573,6 +574,11 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public void onClick(View view) {
             int id = view.getId();
             if (id == R.id.container) {
+                if (CandyBarApplication.getConfiguration().getOtherApps() != null) {
+                    OtherAppsFragment.showOtherAppsDialog(((AppCompatActivity) mContext).getSupportFragmentManager());
+                    return;
+                }
+
                 String link = mContext.getResources().getString(R.string.google_play_dev);
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
                 intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
