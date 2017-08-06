@@ -9,13 +9,14 @@
     <string name="navigation_view_settings">Impostazioni</string>
     <string name="navigation_view_faqs">FAQs</string>
     <string name="navigation_view_about">Info</string>
+    <string name="navigation_view_donate">Supporta lo sviluppo</string>
     <!-- Muzei -->
     <string name="muzei_settings">Impostazioni Muzei</string>
     <string name="minute">Minuti</string>
     <string name="hour">Ore</string>
     <string name="save_setting">Salva</string>
     <string name="muzei_refresh_duration">Reimposta Durata</string>
-    <string name="muzei_wifi_only">"Reimposta Durata WiFi "</string>
+    <string name="muzei_wifi_only">Reimposta Durata WiFi</string>
     <string name="muzei_downloaded_only">carica solo i Wallpapers scaricati</string>
     <string name="muzei_settings_ignored">Icon pack non contiene Wallpapers, impostazione ignorata.</string>
     <string name="muzei_settings_saved">Impostazioni Salvate</string>
@@ -64,6 +65,7 @@ Non puoi usare l\'app.</string>
     <string name="tap_intro_request_premium">Richiesta icone Premium</string>
     <string name="tap_intro_request_premium_desc">Clicca qui per acquistare la Richiesta Premium, con questa funzione le tue icone avranno la precedenza sulle altre richieste.</string>
     <string name="tap_intro_wallpapers_option">Opzioni Wallpapers</string>
+    <string name="tap_intro_wallpapers_option_desc">Clicca e tieni premuto qui per mostrare le opzioni del wallpaper, %s applica wallpaper.</string>
     <string name="tap_intro_wallpapers_option_desc_download">Scarica o</string>
     <string name="tap_intro_wallpapers_preview">Anteprima Wallpaper</string>
     <string name="tap_intro_wallpapers_preview_desc">Clicca qui per visualizzare l\'anteprima delle dimensioni reali del Wallpapers</string>
