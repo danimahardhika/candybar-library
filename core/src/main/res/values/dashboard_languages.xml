@@ -10,6 +10,7 @@
         <item>Italian</item>
         <item>Korean</item>
         <item>Polish</item>
+        <item>Russian</item>
         <item>Spanish</item>
     </string-array>
 
@@ -22,6 +23,7 @@
         <item>it_IT</item>
         <item>ko_KR</item>
         <item>pl_PL</item>
+        <item>ru_RU</item>
         <item>es_ES</item>
     </string-array>
 </resources>
