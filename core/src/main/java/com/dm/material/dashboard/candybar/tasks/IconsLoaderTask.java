@@ -70,7 +70,8 @@ public class IconsLoaderTask extends AsyncTask<Void, Void, Boolean> {
                     for (int i = 0; i < CandyBarMainActivity.sSections.size(); i++) {
                         List<Icon> icons = CandyBarMainActivity.sSections.get(i).getIcons();
 
-                        if (mContext.getResources().getBoolean(R.bool.show_icon_name)) {
+                        if (mContext.getResources().getBoolean(R.bool.show_icon_name) ||
+                                mContext.getResources().getBoolean(R.bool.enable_icon_name_replacer)) {
                             for (Icon icon : icons) {
                                 boolean replacer = mContext.getResources().getBoolean(
                                         R.bool.enable_icon_name_replacer);
