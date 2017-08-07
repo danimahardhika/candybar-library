@@ -19,19 +19,19 @@
         <!-- How do i request an icon? -->
         <item>アイコンをリクエストするには？</item>
         <!-- How can i restore remaining Premium Requests after reinstalling the app? -->
-        <item>アプリを再インストールした後に残っているプレミアムリクエストを復元するには？</item>
+        <item>残っているプレミアムリクエストをアプリを再インストールした後に復元するには？</item>
         <!-- After restarting my phone, the icon pack is not applied, it restore to defaults? -->
-        <item>端末を再起動した後、アイコンパックが適用されず、デフォルトに戻ったのですが？</item>
+        <item>端末を再起動した後、アイコンパックが適用されず、デフォルトに戻るのですが？</item>
         <!-- Why do the icons looks jaggy or pixelated on my phone? -->
         <item>なぜアイコンがギザギザしたりモザイクがかかったように見えるのですか？</item>
         <!-- I can see the icon included in all icons,
             but why isn\'t the actual icon on app drawer changed? -->
         <item>アイコンがすべてのアイコンには含まれているように見えますが、
-実際にはアプリドロワーのアイコンが変更されないのですが？</item>
+アプリドロワーで実際のアイコンが変更されないのですが？</item>
         <!-- What is the \"report bugs\" option? -->
         <item>「バグを報告」オプションとは？</item>
         <!-- My launcher is listed in the google play description, but why isn\'t it included in apply section? -->
-        <item>Google Playの説明に使っているランチャーが表示されますが、なぜ「適用」セクションに表示されないのですか？</item>
+        <item>Google Playの説明に使用しているランチャーが記載されていますが、なぜ「適用」セクションに表示されないのですか？</item>
         <!-- Wallpaper can\'t be applied, just showing black screen? -->
         <item>壁紙を適用できず、黒い画面が表示されるのですが？</item>
         <!-- Muzei: How to load downloaded wallpapers only? -->
@@ -56,8 +56,8 @@
 
     <string-array name="answersew">
         <!-- What is a launcher -->
-        <item>ランチャーはアンドロイドのユーザーインターフェースの一部で、Android端末でホーム画面をカスタマイズしたり、
-モバイルアプリを起動したり、電話をかけたり、他のタスクを行うことができます。</item>
+        <item>ランチャーはAndroidのユーザーインターフェースの一部で、Android端末でホーム画面をカスタマイズしたり、
+モバイルアプリを起動したり、電話をかけたり、その他のタスクを行うことができます。</item>
         <!-- What is an icon pack -->
         <item>アプリのドロワーアイコンの見た目を変更する画像の集合です</item>
         <!-- How do i use an icon pack? -->
@@ -79,7 +79,7 @@
         <!-- How do i request an icon? -->
         <item>ナビゲーションドロワーを開き、「アイコンリクエスト」を開くことができます。</item>
         <!-- How can i restore remaining Premium Requests after reinstalling the app? -->
-        <item>ナビゲーションドロワーを開き、「設定」を開き、「注文を復元」を選択することがあります。
+        <item>ナビゲーションドロワーを開き、「設定」を開き、「注文を復元」を選択することができます。
 再インストール前にプレミアムリクエストがあった場合、それが復元されます。</item>
         <!-- After restarting my phone, the icon pack is not applied, it restore to defaults? -->
         <item>アイコンパックがSDカードに移動されたために起こります。アイコンパックは内部ストレージにインストールされる必要があります。</item>
@@ -115,7 +115,7 @@ Muzeiの設定を開き、「ダウンロード済みの壁紙のみ読み込む
         <!-- Why is Internet permission needed? -->
         <item>その権限はクラウドベースの壁紙を読み込み、ダウンロードするために使用されます。</item>
         <!-- Why is Access Network State permission needed? -->
-        <item>その権限はお使いの端末がインターネットに接続されているかどうか確認するために使われます。</item>
+        <item>その権限はお使いの端末がインターネットに接続されているかどうか確認するために使用されます。</item>
         <!-- Why is Access Wifi State permission needed? -->
         <item>その権限はお使いのデバイスがインターネットに接続されているか確認し、Muzeiからクラウドの壁紙を読み込むために使用されます。</item>
         <!-- Why is Set Wallpaper permission needed? -->

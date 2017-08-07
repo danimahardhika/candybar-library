@@ -43,8 +43,8 @@
     <string name="license_checking">ライセンスをチェックしています…</string>
     <string name="license_check">ライセンスのチェック</string>
     <string name="license_check_success">ライセンスのチェックが成功しました。Playストアからアプリをダウンロードしていただきありがとうございます。</string>
-    <string name="license_check_failed">ライセンスのチェックに失敗しました。あなたはPlayストアからこのアプリをダウンロードしていませんでした。 
-あなたはアプリを利用することはできません。</string>
+    <string name="license_check_failed">ライセンスのチェックに失敗しました。あなたはこのアプリをPlayストアからダウンロードしていません。
+あなたはこのアプリを利用することはできません。</string>
     <string name="license_check_retry">ライセンスをチェックできません。しばらくしてからもう一度やり直してください。</string>
     <!-- Share -->
     <string name="share_app_title">%sをチェック！</string>
@@ -208,7 +208,7 @@ Google Playストアを開きダウンロードしてインストールします
     <string name="intent_email_supported">対応しています</string>
     <string name="intent_email_recommended">推奨</string>
     <string name="intent_email_not_supported">対応していません</string>
-    <string name="intent_email_not_supported_message">対応されていないメールクライアントが選択されました。他のメールクライアントを選択してください</string>
+    <string name="intent_email_not_supported_message">非対応のメールクライアントが選択されました。他のメールクライアントを選択してください</string>
     <!-- About -->
     <string name="about_contributors_title">貢献者</string>
     <!-- Report Bugs -->
