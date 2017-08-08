@@ -113,7 +113,7 @@ public class FAQsAdapter extends RecyclerView.Adapter<FAQsAdapter.ViewHolder> {
             } else if (viewType == TYPE_FOOTER) {
                 holderId = TYPE_FOOTER;
 
-                if (!Preferences.get(mContext).isShadowEnabled()) {
+                if (!Preferences.get(mContext).isCardShadowEnabled()) {
                     View shadow = itemView.findViewById(R.id.shadow);
                     shadow.setVisibility(View.GONE);
                 }

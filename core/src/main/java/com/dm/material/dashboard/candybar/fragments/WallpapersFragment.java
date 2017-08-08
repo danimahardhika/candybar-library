@@ -87,7 +87,7 @@ public class WallpapersFragment extends Fragment {
         mFastScroll = (RecyclerFastScroller) view.findViewById(R.id.fastscroll);
         mPopupBubble = (DrawMeButton) view.findViewById(R.id.popup_bubble);
 
-        if (!Preferences.get(getActivity()).isShadowEnabled()) {
+        if (!Preferences.get(getActivity()).isToolbarShadowEnabled()) {
             View shadow = view.findViewById(R.id.shadow);
             if (shadow != null) shadow.setVisibility(View.GONE);
         }

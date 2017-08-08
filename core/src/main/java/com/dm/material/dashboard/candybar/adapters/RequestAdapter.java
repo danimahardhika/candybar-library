@@ -242,7 +242,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
             }
 
-            if (!Preferences.get(mContext).isShadowEnabled() && card != null) {
+            if (!Preferences.get(mContext).isCardShadowEnabled() && card != null) {
                 card.setCardElevation(0);
             }
 
@@ -310,7 +310,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
             }
 
-            if (!Preferences.get(mContext).isShadowEnabled()) {
+            if (!Preferences.get(mContext).isCardShadowEnabled()) {
                 if (card != null) card.setCardElevation(0);
             }
 
@@ -350,7 +350,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         FooterViewHolder(View itemView) {
             super(itemView);
             View shadow = itemView.findViewById(R.id.shadow);
-            if (!Preferences.get(mContext).isShadowEnabled()) {
+            if (!Preferences.get(mContext).isCardShadowEnabled()) {
                 shadow.setVisibility(View.GONE);
             }
         }

@@ -417,7 +417,7 @@ public class LauncherHelper {
                 applyEvie(context, launcherPackage, launcherName);
                 break;
             case FLICK:
-                //Todo:
+                //Todo: fix direct apply for flick launcher
                 try {
                     final Intent flick = context.getPackageManager().getLaunchIntentForPackage(
                             "com.universallauncher.universallauncher");

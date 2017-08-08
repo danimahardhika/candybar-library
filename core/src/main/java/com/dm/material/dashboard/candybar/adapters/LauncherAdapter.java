@@ -157,7 +157,7 @@ public class LauncherAdapter extends RecyclerView.Adapter<LauncherAdapter.ViewHo
                         }
                     }
                 }
-                if (!Preferences.get(mContext).isShadowEnabled()) {
+                if (!Preferences.get(mContext).isCardShadowEnabled()) {
                     if (card != null) card.setCardElevation(0);
                 }
 

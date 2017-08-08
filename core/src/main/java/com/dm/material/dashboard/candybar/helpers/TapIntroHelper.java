@@ -68,7 +68,7 @@ public class TapIntroHelper {
                             .titleTextColorInt(primary)
                             .descriptionTextColorInt(secondary)
                             .targetCircleColorInt(primary)
-                            .drawShadow(Preferences.get(context).isShadowEnabled());
+                            .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
 
                     if (title != null) {
                         tapTarget.titleTypeface(title);
@@ -102,7 +102,7 @@ public class TapIntroHelper {
                                                 .targetCircleColorInt(primary)
                                                 .targetRadius((int) targetRadius)
                                                 .tintTarget(false)
-                                                .drawShadow(Preferences.get(context).isShadowEnabled());
+                                                .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
 
                                         if (title != null) {
                                             tapTarget.titleTypeface(title);
@@ -164,7 +164,7 @@ public class TapIntroHelper {
                         .titleTextColorInt(primary)
                         .descriptionTextColorInt(secondary)
                         .targetCircleColorInt(primary)
-                        .drawShadow(Preferences.get(context).isShadowEnabled());
+                        .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
 
                 if (title != null) {
                     tapTarget.titleTypeface(title);
@@ -227,7 +227,7 @@ public class TapIntroHelper {
                                             .titleTextColorInt(primary)
                                             .descriptionTextColorInt(secondary)
                                             .targetCircleColorInt(primary)
-                                            .drawShadow(Preferences.get(context).isShadowEnabled());
+                                            .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
 
                                     if (title != null) {
                                         tapTarget.titleTypeface(title);
@@ -251,7 +251,7 @@ public class TapIntroHelper {
                             .titleTextColorInt(primary)
                             .descriptionTextColorInt(secondary)
                             .targetCircleColorInt(primary)
-                            .drawShadow(Preferences.get(context).isShadowEnabled());
+                            .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
 
                     if (title != null) {
                         tapTarget.titleTypeface(title);
@@ -273,7 +273,7 @@ public class TapIntroHelper {
                             .descriptionTextColorInt(secondary)
                             .targetCircleColorInt(primary)
                             .tintTarget(false)
-                            .drawShadow(Preferences.get(context).isShadowEnabled());
+                            .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
 
                     if (title != null) {
                         tapTarget.titleTypeface(title);
@@ -308,7 +308,7 @@ public class TapIntroHelper {
                                                     .targetCircleColorInt(primary)
                                                     .targetRadius((int) targetRadius)
                                                     .tintTarget(false)
-                                                    .drawShadow(Preferences.get(context).isShadowEnabled());
+                                                    .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
 
                                             if (title != null) {
                                                 tapTarget.titleTypeface(title);
@@ -391,7 +391,7 @@ public class TapIntroHelper {
                                     .targetCircleColorInt(primary)
                                     .targetRadius((int) targetRadius)
                                     .tintTarget(false)
-                                    .drawShadow(Preferences.get(context).isShadowEnabled());
+                                    .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
 
                             TapTarget tapTarget1 = TapTarget.forView(view,
                                     context.getResources().getString(R.string.tap_intro_wallpapers_preview),
@@ -401,7 +401,7 @@ public class TapIntroHelper {
                                     .targetCircleColorInt(primary)
                                     .targetRadius((int) targetRadius)
                                     .tintTarget(false)
-                                    .drawShadow(Preferences.get(context).isShadowEnabled());
+                                    .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
 
                             if (title != null) {
                                 tapTarget.titleTypeface(title);
@@ -465,7 +465,7 @@ public class TapIntroHelper {
                             .descriptionTextColorInt(secondary)
                             .targetCircleColorInt(primary)
                             .outerCircleColorInt(color)
-                            .drawShadow(Preferences.get(context).isShadowEnabled());
+                            .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
 
                     if (title != null) {
                         tapTarget.titleTypeface(title);
@@ -485,7 +485,7 @@ public class TapIntroHelper {
                                 .descriptionTextColorInt(secondary)
                                 .targetCircleColorInt(primary)
                                 .outerCircleColorInt(color)
-                                .drawShadow(Preferences.get(context).isShadowEnabled());
+                                .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
 
                         if (title != null) {
                             tapTarget1.titleTypeface(title);
@@ -509,7 +509,7 @@ public class TapIntroHelper {
                             .targetCircleColorInt(primary)
                             .outerCircleColorInt(color)
                             .tintTarget(false)
-                            .drawShadow(Preferences.get(context).isShadowEnabled());
+                            .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
 
                     if (title != null) {
                         tapTarget.titleTypeface(title);

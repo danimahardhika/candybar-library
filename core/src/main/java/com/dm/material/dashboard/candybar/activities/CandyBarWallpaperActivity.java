@@ -150,7 +150,7 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
         setSupportActionBar(toolbar);
 
         mFab.setOnClickListener(this);
-        if (!Preferences.get(this).isShadowEnabled()) {
+        if (!Preferences.get(this).isFabShadowEnabled()) {
             mFab.setCompatElevation(0f);
         }
 

@@ -45,7 +45,7 @@ public class AboutFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_about, container, false);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
 
-        if (!Preferences.get(getActivity()).isShadowEnabled()) {
+        if (!Preferences.get(getActivity()).isToolbarShadowEnabled()) {
             View shadow = view.findViewById(R.id.shadow);
             if (shadow != null) shadow.setVisibility(View.GONE);
         }

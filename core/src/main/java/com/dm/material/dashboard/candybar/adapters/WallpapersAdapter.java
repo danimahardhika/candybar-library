@@ -181,7 +181,7 @@ public class WallpapersAdapter extends RecyclerView.Adapter<WallpapersAdapter.Vi
                 }
             }
 
-            if (!Preferences.get(mContext).isShadowEnabled()) {
+            if (!Preferences.get(mContext).isCardShadowEnabled()) {
                 card.setCardElevation(0);
             }
 

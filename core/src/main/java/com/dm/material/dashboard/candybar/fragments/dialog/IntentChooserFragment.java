@@ -121,6 +121,7 @@ public class IntentChooserFragment extends DialogFragment {
 
             RequestFragment.sSelectedRequests = null;
             CandyBarApplication.sRequestProperty = null;
+            CandyBarApplication.sZipPath = null;
             dialog.dismiss();
         });
         dialog.setCancelable(false);

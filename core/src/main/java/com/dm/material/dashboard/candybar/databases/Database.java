@@ -287,7 +287,7 @@ public class Database extends SQLiteOpenHelper {
             }
 
             if (wallpaper != null) {
-                if (wallpaper.getAuthor() != null && wallpaper.getURL() != null) {
+                if (wallpaper.getURL() != null) {
                     String name = JsonHelper.getGeneratedName(mContext, wallpaper.getName());
 
                     statement.bindString(1, name);

@@ -70,7 +70,7 @@ public class FAQsFragment extends Fragment {
         mSearchResult = (TextView) view.findViewById(R.id.search_result);
         mFastScroll = (RecyclerFastScroller) view.findViewById(R.id.fastscroll);
 
-        if (!Preferences.get(getActivity()).isShadowEnabled()) {
+        if (!Preferences.get(getActivity()).isToolbarShadowEnabled()) {
             View shadow = view.findViewById(R.id.shadow);
             if (shadow != null) shadow.setVisibility(View.GONE);
         }

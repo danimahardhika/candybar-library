@@ -135,8 +135,20 @@ public class PreferencesHelper {
         getSharedPreferences().edit().putBoolean(KEY_DARK_THEME, bool).apply();
     }
 
-    public boolean isShadowEnabled() {
-        return CandyBarApplication.getConfiguration().isShadowEnabled();
+    public boolean isToolbarShadowEnabled() {
+        return CandyBarApplication.getConfiguration().getShadowOptions().isToolbarEnabled();
+    }
+
+    public boolean isCardShadowEnabled() {
+        return CandyBarApplication.getConfiguration().getShadowOptions().isCardEnabled();
+    }
+
+    public boolean isFabShadowEnabled() {
+        return CandyBarApplication.getConfiguration().getShadowOptions().isFabEnabled();
+    }
+
+    public boolean isTapIntroShadowEnabled() {
+        return CandyBarApplication.getConfiguration().getShadowOptions().isTapIntroEnabled();
     }
 
     public void setRotateTime (int time) {

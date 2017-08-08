@@ -17,7 +17,6 @@ import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -142,6 +141,7 @@ public class CandyBarApplication extends Application {
         private String[] mCategoryForTabAllIcons = null;
 
         private boolean mIsShadowEnabled = true;
+        private ShadowOptions mShadowOptions = new ShadowOptions();
         private boolean mIsDashboardThemingEnabled = true;
         private int mWallpaperGridPreviewQuality = 4;
 
@@ -231,6 +231,12 @@ public class CandyBarApplication extends Application {
 
         public Configuration setShadowEnabled(boolean shadowEnabled) {
             mIsShadowEnabled = shadowEnabled;
+            mShadowOptions = new ShadowOptions(shadowEnabled);
+            return this;
+        }
+
+        public Configuration setShadowEnabled(@NonNull ShadowOptions shadowOptions) {
+            mShadowOptions = shadowOptions;
             return this;
         }
 
@@ -339,8 +345,9 @@ public class CandyBarApplication extends Application {
             return mCategoryForTabAllIcons;
         }
 
-        public boolean isShadowEnabled() {
-            return mIsShadowEnabled;
+        @NonNull
+        public ShadowOptions getShadowOptions() {
+            return mShadowOptions;
         }
 
         public boolean isDashboardThemingEnabled() {
@@ -404,6 +411,58 @@ public class CandyBarApplication extends Application {
     public enum IconColor {
         PRIMARY_TEXT,
         ACCENT
+    }
+
+    public static class ShadowOptions {
+
+        private boolean mIsToolbarEnabled;
+        private boolean mIsCardEnabled;
+        private boolean mIsFabEnabled;
+        private boolean mIsTapIntroEnabled;
+
+        public ShadowOptions() {
+            mIsToolbarEnabled = mIsCardEnabled = mIsFabEnabled = mIsTapIntroEnabled = true;
+        }
+
+        public ShadowOptions(boolean shadowEnabled) {
+            mIsToolbarEnabled = mIsCardEnabled = mIsFabEnabled = mIsTapIntroEnabled= shadowEnabled;
+        }
+
+        public ShadowOptions setToolbarEnabled(boolean toolbarEnabled) {
+            mIsToolbarEnabled = toolbarEnabled;
+            return this;
+        }
+
+        public ShadowOptions setCardEnabled(boolean cardEnabled) {
+            mIsCardEnabled = cardEnabled;
+            return this;
+        }
+
+        public ShadowOptions setFabEnabled(boolean fabEnabled) {
+            mIsFabEnabled = fabEnabled;
+            return this;
+        }
+
+        public ShadowOptions setTapIntroEnabled(boolean tapIntroEnabled) {
+            mIsTapIntroEnabled = tapIntroEnabled;
+            return this;
+        }
+
+        public boolean isToolbarEnabled() {
+            return mIsToolbarEnabled;
+        }
+
+        public boolean isCardEnabled() {
+            return mIsCardEnabled;
+        }
+
+        public boolean isFabEnabled() {
+            return mIsFabEnabled;
+        }
+
+        public boolean isTapIntroEnabled() {
+            return mIsTapIntroEnabled;
+        }
     }
 
     public static class OtherApp {

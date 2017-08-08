@@ -99,7 +99,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         mFastScroll = (RecyclerFastScroller) view.findViewById(R.id.fastscroll);
         mProgress = (ProgressBar) view.findViewById(R.id.progress);
 
-        if (!Preferences.get(getActivity()).isShadowEnabled()) {
+        if (!Preferences.get(getActivity()).isToolbarShadowEnabled()) {
             View shadow = view.findViewById(R.id.shadow);
             if (shadow != null) shadow.setVisibility(View.GONE);
         }
@@ -122,7 +122,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                 getActivity(), R.drawable.ic_fab_send, color));
         mFab.setOnClickListener(this);
 
-        if (!Preferences.get(getActivity()).isShadowEnabled()) {
+        if (!Preferences.get(getActivity()).isFabShadowEnabled()) {
             mFab.setCompatElevation(0f);
         }
 

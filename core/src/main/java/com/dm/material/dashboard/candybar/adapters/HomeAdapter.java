@@ -320,7 +320,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             }
 
-            if (!Preferences.get(mContext).isShadowEnabled()) {
+            if (!Preferences.get(mContext).isCardShadowEnabled()) {
                 card.setCardElevation(0);
             }
 
@@ -387,7 +387,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             }
 
-            if (!Preferences.get(mContext).isShadowEnabled()) {
+            if (!Preferences.get(mContext).isCardShadowEnabled()) {
                 card.setCardElevation(0);
             }
 
@@ -458,7 +458,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             }
 
-            if (!Preferences.get(mContext).isShadowEnabled()) {
+            if (!Preferences.get(mContext).isCardShadowEnabled()) {
                 card.setCardElevation(0);
             }
 
@@ -505,7 +505,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             }
 
-            if (!Preferences.get(mContext).isShadowEnabled()) {
+            if (!Preferences.get(mContext).isCardShadowEnabled()) {
                 card.setCardElevation(0);
             }
 
@@ -559,7 +559,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             }
 
-            if (!Preferences.get(mContext).isShadowEnabled()) {
+            if (!Preferences.get(mContext).isCardShadowEnabled()) {
                 card.setCardElevation(0);
             }
 

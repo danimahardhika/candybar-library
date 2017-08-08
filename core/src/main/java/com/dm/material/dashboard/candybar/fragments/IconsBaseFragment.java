@@ -168,7 +168,7 @@ public class IconsBaseFragment extends Fragment {
                     public void onAnimationEnd() {
                         if (getActivity() == null) return;
 
-                        if (Preferences.get(getActivity()).isShadowEnabled()) {
+                        if (Preferences.get(getActivity()).isToolbarShadowEnabled()) {
                             AnimationHelper.fade(getActivity().findViewById(R.id.shadow)).start();
                         }
 

@@ -273,7 +273,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         FooterViewHolder(View itemView) {
             super(itemView);
-            if (!Preferences.get(mContext).isShadowEnabled()) {
+            if (!Preferences.get(mContext).isCardShadowEnabled()) {
                 View shadow = itemView.findViewById(R.id.shadow);
                 shadow.setVisibility(View.GONE);
             }

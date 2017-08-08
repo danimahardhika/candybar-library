@@ -206,7 +206,7 @@ public class AboutAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
             }
 
-            if (!Preferences.get(mContext).isShadowEnabled()) {
+            if (!Preferences.get(mContext).isCardShadowEnabled()) {
                 if (card != null) card.setCardElevation(0);
 
                 profile.setShadowRadius(0f);
@@ -239,7 +239,7 @@ public class AboutAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
             }
 
-            if (!Preferences.get(mContext).isShadowEnabled()) {
+            if (!Preferences.get(mContext).isCardShadowEnabled()) {
                 if (card != null) card.setCardElevation(0);
             }
 
@@ -286,7 +286,7 @@ public class AboutAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
             }
 
-            if (!Preferences.get(mContext).isShadowEnabled()) {
+            if (!Preferences.get(mContext).isCardShadowEnabled()) {
                 if (card != null) card.setCardElevation(0);
             }
 
@@ -352,7 +352,7 @@ public class AboutAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         ShadowViewHolder(View itemView) {
             super(itemView);
-            if (!Preferences.get(mContext).isShadowEnabled()) {
+            if (!Preferences.get(mContext).isCardShadowEnabled()) {
                 View shadow = itemView.findViewById(R.id.shadow);
                 shadow.setVisibility(View.GONE);
             }
