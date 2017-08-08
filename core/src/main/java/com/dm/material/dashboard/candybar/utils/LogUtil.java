@@ -43,6 +43,9 @@ public class LogUtil {
     }
 
     public enum Error {
+        APPFILTER_NULL,
+        DATABASE_ERROR,
+        INSTALLED_APPS_NULL,
         ICON_REQUEST_NULL,
         ICON_REQUEST_PROPERTY_NULL,
         ICON_REQUEST_PROPERTY_COMPONENT_NULL;
@@ -51,6 +54,12 @@ public class LogUtil {
 
         public String getMessage() {
             switch (this) {
+                case APPFILTER_NULL:
+                    return "Error: Unable to read appfilter.xml";
+                case DATABASE_ERROR:
+                    return "Error: Unable to read database";
+                case INSTALLED_APPS_NULL:
+                    return "Error: Unable to collect installed apps";
                 case ICON_REQUEST_NULL:
                     return "Error: Icon request is null";
                 case ICON_REQUEST_PROPERTY_NULL:

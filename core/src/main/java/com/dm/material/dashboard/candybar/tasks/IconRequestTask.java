@@ -1,6 +1,9 @@
 package com.dm.material.dashboard.candybar.tasks;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -10,10 +13,18 @@ import android.util.Log;
 
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
+import com.dm.material.dashboard.candybar.databases.Database;
+import com.dm.material.dashboard.candybar.helpers.LocaleHelper;
 import com.dm.material.dashboard.candybar.helpers.RequestHelper;
+import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.dm.material.dashboard.candybar.utils.listeners.HomeListener;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Executor;
 
 /*
@@ -37,6 +48,7 @@ import java.util.concurrent.Executor;
 public class IconRequestTask extends AsyncTask<Void, Void, Boolean> {
 
     private Context mContext;
+    private LogUtil.Error mError;
 
     private IconRequestTask(Context context) {
         this.mContext = context;
@@ -57,11 +69,59 @@ public class IconRequestTask extends AsyncTask<Void, Void, Boolean> {
                 Thread.sleep(1);
                 if (mContext.getResources().getBoolean(R.bool.enable_icon_request) ||
                         mContext.getResources().getBoolean(R.bool.enable_premium_request)) {
-                    CandyBarMainActivity.sMissedApps = RequestHelper.getMissingApps(mContext);
+                    List<Request> requests = new ArrayList<>();
+                    HashMap<String, String> appFilter = RequestHelper.getAppFilter(mContext, RequestHelper.Key.ACTIVITY);
+                    if (appFilter.size() == 0) {
+                        mError = LogUtil.Error.APPFILTER_NULL;
+                        return false;
+                    }
+
+                    PackageManager packageManager = mContext.getPackageManager();
+
+                    Intent intent = new Intent(Intent.ACTION_MAIN);
+                    intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                    List<ResolveInfo> installedApps = packageManager.queryIntentActivities(
+                            intent, PackageManager.GET_RESOLVED_FILTER);
+                    if (installedApps == null || installedApps.size() == 0) {
+                        mError = LogUtil.Error.INSTALLED_APPS_NULL;
+                        return false;
+                    }
+
+                    CandyBarMainActivity.sInstalledAppsCount = installedApps.size();
+
+                    try {
+                        Collections.sort(installedApps,
+                                new ResolveInfo.DisplayNameComparator(packageManager));
+                    } catch (Exception ignored) {}
+
+                    for (ResolveInfo app : installedApps) {
+                        String packageName = app.activityInfo.packageName;
+                        String activity = packageName +"/"+ app.activityInfo.name;
+
+                        String value = appFilter.get(activity);
+
+                        if (value == null) {
+                            String name = LocaleHelper.getOtherAppLocaleName(mContext, new Locale("en"), packageName);
+                            if (name == null) {
+                                name = app.activityInfo.loadLabel(packageManager).toString();
+                            }
+
+                            boolean requested = Database.get(mContext).isRequested(activity);
+                            requests.add(new Request(
+                                    name,
+                                    app.activityInfo.packageName,
+                                    activity,
+                                    requested));
+                        }
+                    }
+
+                    CandyBarMainActivity.sMissedApps = requests;
                 }
                 return true;
             } catch (Exception e) {
                 CandyBarMainActivity.sMissedApps = null;
+                mError = LogUtil.Error.DATABASE_ERROR;
+                Database.get(mContext).close();
                 LogUtil.e(Log.getStackTraceString(e));
                 return false;
             }
@@ -83,6 +143,10 @@ public class IconRequestTask extends AsyncTask<Void, Void, Boolean> {
 
             HomeListener listener = (HomeListener) fragment;
             listener.onHomeDataUpdated(null);
+        } else {
+            if (mError != null) {
+                mError.showToast(mContext);
+            }
         }
     }
 }
