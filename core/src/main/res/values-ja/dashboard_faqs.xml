@@ -54,7 +54,7 @@
         <item>なぜ「端末のスリープを無効にする」権限が必要なのですか？</item>
     </string-array>
 
-    <string-array name="answersew">
+    <string-array name="answers">
         <!-- What is a launcher -->
         <item>ランチャーはAndroidのユーザーインターフェースの一部で、Android端末でホーム画面をカスタマイズしたり、
 モバイルアプリを起動したり、電話をかけたり、その他のタスクを行うことができます。</item>
