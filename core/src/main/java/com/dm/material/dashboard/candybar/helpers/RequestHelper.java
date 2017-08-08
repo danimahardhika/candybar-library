@@ -104,9 +104,16 @@ public class RequestHelper {
             while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
                 if (xpp.getEventType() == XmlPullParser.START_TAG) {
                     if (xpp.getName().equals("item")) {
-                        activities.put(
-                                xpp.getAttributeValue(null, key.getKey()).replace("ComponentInfo{", "").replace("}", ""),
-                                xpp.getAttributeValue(null, key.getValue()).replace("ComponentInfo{", "").replace("}", ""));
+                        String sKey = xpp.getAttributeValue(null, key.getKey());
+                        String sValue = xpp.getAttributeValue(null, key.getValue());
+
+                        if (sKey != null && sValue != null) {
+                            activities.put(
+                                    sKey.replace("ComponentInfo{", "").replace("}", ""),
+                                    sValue.replace("ComponentInfo{", "").replace("}", ""));
+                        } else {
+                            LogUtil.e("Appfilter Error\nKey: " +sKey+ "\nValue: " +sValue);
+                        }
                     }
                 }
                 xpp.next();
