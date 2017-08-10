@@ -140,7 +140,6 @@ public class CandyBarApplication extends Application {
         private String mTabAllIconsTitle = "All Icons";
         private String[] mCategoryForTabAllIcons = null;
 
-        private boolean mIsShadowEnabled = true;
         private ShadowOptions mShadowOptions = new ShadowOptions();
         private boolean mIsDashboardThemingEnabled = true;
         private int mWallpaperGridPreviewQuality = 4;
@@ -230,7 +229,6 @@ public class CandyBarApplication extends Application {
         }
 
         public Configuration setShadowEnabled(boolean shadowEnabled) {
-            mIsShadowEnabled = shadowEnabled;
             mShadowOptions = new ShadowOptions(shadowEnabled);
             return this;
         }
