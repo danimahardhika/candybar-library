@@ -241,8 +241,6 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                         RequestHelper.showIconRequestLimitDialog(getActivity());
                         return;
                     }
-
-                    Preferences.get(getActivity()).setRegularRequestUsed((used + selected));
                 }
 
                 sendRequest(null);

@@ -385,6 +385,11 @@ public class CandyBarMainActivity extends AppCompatActivity implements
             if (RequestFragment.sSelectedRequests == null)
                 return;
 
+            if (getResources().getBoolean(R.bool.enable_icon_request_limit)) {
+                int used = Preferences.get(this).getRegularRequestUsed();
+                Preferences.get(this).setRegularRequestUsed((used + RequestFragment.sSelectedRequests.size()));
+            }
+
             if (Preferences.get(this).isPremiumRequest()) {
                 if (mBillingProcessor == null) return;
 
