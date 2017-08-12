@@ -87,15 +87,10 @@ public class IntentAdapter extends BaseAdapter {
             view.setTag(holder);
         } else {
             holder = (ViewHolder) view.getTag();
-            holder.divider.setVisibility(View.VISIBLE);
         }
 
         holder.icon.setImageDrawable(DrawableHelper.getAppIcon(mContext, mApps.get(position).getApp()));
         holder.name.setText(mApps.get(position).getApp().loadLabel(mContext.getPackageManager()).toString());
-
-        if (position == mApps.size()-1) {
-            holder.divider.setVisibility(View.GONE);
-        }
 
         if (mApps.get(position).getType() == IntentChooser.TYPE_SUPPORTED) {
             holder.type.setTextColor(ColorHelper.getAttributeColor(mContext, android.R.attr.textColorSecondary));
@@ -170,7 +165,6 @@ public class IntentAdapter extends BaseAdapter {
         private final TextView type;
         private final ImageView icon;
         private final LinearLayout container;
-        private final View divider;
         private final MaterialProgressBar progressBar;
 
         ViewHolder(View view) {
@@ -178,7 +172,6 @@ public class IntentAdapter extends BaseAdapter {
             type = (TextView) view.findViewById(R.id.type);
             icon = (ImageView) view.findViewById(R.id.icon);
             container = (LinearLayout) view.findViewById(R.id.container);
-            divider = view.findViewById(R.id.divider);
             progressBar = (MaterialProgressBar) view.findViewById(R.id.progress);
         }
     }

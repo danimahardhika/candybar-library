@@ -38,8 +38,7 @@
         android:layout_below="@+id/intent_text"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:dividerHeight="0dp"
-        android:divider="@android:color/transparent"
+        android:dividerHeight="@dimen/content_divider_size"
+        android:divider="?android:attr/listDivider"
         android:listSelector="@android:color/transparent"/>
-
 </RelativeLayout>
