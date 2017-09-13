@@ -45,8 +45,8 @@ android {
     defaultConfig {
         minSdkVersion rootProject.ext.MinSdk
         targetSdkVersion rootProject.ext.TargetSdk
-        versionCode 332
-        versionName "3.3.2"
+        versionCode 333
+        versionName "3.3.3"
         vectorDrawables.useSupportLibrary = true
     }
 
@@ -98,7 +98,7 @@ dependencies {
     compile 'com.google.android.apps.muzei:muzei-api:2.0'
     compile 'org.sufficientlysecure:html-textview:3.4'
     compile 'me.grantland:autofittextview:0.2.1'
-    compile 'com.github.KeepSafe:TapTargetView:-SNAPSHOT@aar'
+    compile 'com.github.KeepSafe:TapTargetView:1.9.1'
     
     compile 'com.github.danimahardhika:DrawMe:4a672e78fc'
     compile 'com.github.danimahardhika:cafebar:1.1.5'
