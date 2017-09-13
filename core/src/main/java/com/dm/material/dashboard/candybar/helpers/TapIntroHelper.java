@@ -59,7 +59,8 @@ public class TapIntroHelper {
                 tapTargetSequence.continueOnCancel(true);
 
                 Typeface title = TypefaceHelper.getMedium(context);
-                Typeface description = TypefaceHelper.getRegular(context);
+                //Todo:
+                //Typeface description = TypefaceHelper.getRegular(context);
 
                 if (toolbar != null) {
                     TapTarget tapTarget = TapTarget.forToolbarNavigationIcon(toolbar,
@@ -71,12 +72,13 @@ public class TapIntroHelper {
                             .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
 
                     if (title != null) {
-                        tapTarget.titleTypeface(title);
+                        tapTarget.textTypeface(title);
                     }
 
-                    if (description != null) {
-                        tapTarget.descriptionTypeface(description);
-                    }
+                    //Todo:
+                    //if (description != null) {
+                        //tapTarget.descriptionTypeface(description);
+                    //}
 
                     tapTargetSequence.target(tapTarget);
                 }
@@ -105,12 +107,12 @@ public class TapIntroHelper {
                                                 .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
 
                                         if (title != null) {
-                                            tapTarget.titleTypeface(title);
+                                            tapTarget.textTypeface(title);
                                         }
 
-                                        if (description != null) {
-                                            tapTarget.descriptionTypeface(description);
-                                        }
+                                        //if (description != null) {
+                                            //tapTarget.descriptionTypeface(description);
+                                        //}
 
                                         tapTargetSequence.target(tapTarget);
                                     }
@@ -167,12 +169,12 @@ public class TapIntroHelper {
                         .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
 
                 if (title != null) {
-                    tapTarget.titleTypeface(title);
+                    tapTarget.textTypeface(title);
                 }
 
-                if (description != null) {
-                    tapTarget.descriptionTypeface(description);
-                }
+                //if (description != null) {
+                    //tapTarget.descriptionTypeface(description);
+                //}
 
                 TapTargetView.showFor(activity, tapTarget,
                         new TapTargetView.Listener() {
@@ -230,12 +232,12 @@ public class TapIntroHelper {
                                             .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
 
                                     if (title != null) {
-                                        tapTarget.titleTypeface(title);
+                                        tapTarget.textTypeface(title);
                                     }
 
-                                    if (description != null) {
-                                        tapTarget.descriptionTypeface(description);
-                                    }
+                                    //if (description != null) {
+                                        //tapTarget.descriptionTypeface(description);
+                                    //}
 
                                     tapTargetSequence.target(tapTarget);
                                 }
@@ -254,12 +256,12 @@ public class TapIntroHelper {
                             .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
 
                     if (title != null) {
-                        tapTarget.titleTypeface(title);
+                        tapTarget.textTypeface(title);
                     }
 
-                    if (description != null) {
-                        tapTarget.descriptionTypeface(description);
-                    }
+                    //if (description != null) {
+                        //tapTarget.descriptionTypeface(description);
+                    //}
 
                     tapTargetSequence.target(tapTarget);
                 }
@@ -276,12 +278,12 @@ public class TapIntroHelper {
                             .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
 
                     if (title != null) {
-                        tapTarget.titleTypeface(title);
+                        tapTarget.textTypeface(title);
                     }
 
-                    if (description != null) {
-                        tapTarget.descriptionTypeface(description);
-                    }
+                    //if (description != null) {
+                        //tapTarget.descriptionTypeface(description);
+                    //}
 
                     tapTargetSequence.target(tapTarget);
                 }
@@ -311,12 +313,12 @@ public class TapIntroHelper {
                                                     .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
 
                                             if (title != null) {
-                                                tapTarget.titleTypeface(title);
+                                                tapTarget.textTypeface(title);
                                             }
 
-                                            if (description != null) {
-                                                tapTarget.descriptionTypeface(description);
-                                            }
+                                            //if (description != null) {
+                                                //tapTarget.descriptionTypeface(description);
+                                            //}
 
                                             tapTargetSequence.target(tapTarget);
                                         }
@@ -404,14 +406,14 @@ public class TapIntroHelper {
                                     .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
 
                             if (title != null) {
-                                tapTarget.titleTypeface(title);
-                                tapTarget1.titleTypeface(title);
+                                tapTarget.textTypeface(title);
+                                tapTarget1.textTypeface(title);
                             }
 
-                            if (description != null) {
-                                tapTarget.descriptionTypeface(description);
-                                tapTarget1.descriptionTypeface(description);
-                            }
+                            //if (description != null) {
+                                //tapTarget.descriptionTypeface(description);
+                                //tapTarget1.descriptionTypeface(description);
+                            //}
 
                             tapTargetSequence.target(tapTarget);
                             tapTargetSequence.target(tapTarget1);
@@ -468,12 +470,12 @@ public class TapIntroHelper {
                             .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
 
                     if (title != null) {
-                        tapTarget.titleTypeface(title);
+                        tapTarget.textTypeface(title);
                     }
 
-                    if (description != null) {
-                        tapTarget.descriptionTypeface(description);
-                    }
+                    //if (description != null) {
+                        //tapTarget.descriptionTypeface(description);
+                    //}
 
                     tapTargetSequence.target(tapTarget);
 
@@ -488,12 +490,12 @@ public class TapIntroHelper {
                                 .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
 
                         if (title != null) {
-                            tapTarget1.titleTypeface(title);
+                            tapTarget1.textTypeface(title);
                         }
 
-                        if (description != null) {
-                            tapTarget1.descriptionTypeface(description);
-                        }
+                        //if (description != null) {
+                            //tapTarget1.descriptionTypeface(description);
+                        //}
 
                         tapTargetSequence.target(tapTarget1);
                     }
@@ -512,12 +514,12 @@ public class TapIntroHelper {
                             .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
 
                     if (title != null) {
-                        tapTarget.titleTypeface(title);
+                        tapTarget.textTypeface(title);
                     }
 
-                    if (description != null) {
-                        tapTarget.descriptionTypeface(description);
-                    }
+                    //if (description != null) {
+                        //tapTarget.descriptionTypeface(description);
+                    //}
 
                     tapTargetSequence.target(tapTarget);
                 }
