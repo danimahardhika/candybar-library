@@ -27,7 +27,6 @@
     <!-- Menu -->
     <string name="menu_search">Search</string>
     <string name="menu_save">Save to Device</string>
-    <string name="menu_wallpaper_settings">Wallpaper Settings</string>
     <string name="menu_select_all">Select All</string>
 
     <string name="menu_wallpaper_crop">Crop Wallpaper</string>
@@ -85,9 +84,6 @@
     <string name="tap_intro_wallpapers_option_desc_download">download or</string>
     <string name="tap_intro_wallpapers_preview">Preview wallpaper</string>
     <string name="tap_intro_wallpapers_preview_desc">Tap here to preview full size of the wallpaper</string>
-    <string name="tap_intro_wallpaper_preview_settings">Wallpaper settings</string>
-    <string name="tap_intro_wallpaper_preview_settings_desc">Tap here to open wallpaper settings.
-        Enable set wallpaper as lockscreen background on Android Nougat or enable wallpaper crop.</string>
     <string name="tap_intro_wallpaper_preview_save">Save wallpaper</string>
     <string name="tap_intro_wallpaper_preview_save_desc">Tap here to download and save wallpaper to your device so you can use it later</string>
     <string name="tap_intro_wallpaper_preview_apply">Apply wallpaper</string>
@@ -179,11 +175,6 @@
     <string name="wallpaper_already_downloaded">Wallpaper already downloaded</string>
     <string name="wallpaper_downloading">Downloading wallpaper …</string>
     <string name="wallpaper_download_failed">Unable to download wallpaper</string>
-    <string name="wallpaper_download_cancelled">Wallpaper download cancelled</string>
-    <string name="wallpaper_downloaded">Wallpaper saved to</string>
-    <string name="wallpaper_download_exist">Wallpaper with name %s already exist, do you want to replace it?</string>
-    <string name="wallpaper_download_exist_replace">Replace</string>
-    <string name="wallpaper_download_exist_new">Create New</string>
 
     <string name="wallpaper_loading">Loading wallpaper …</string>
     <string name="wallpaper_applying">Applying wallpaper …</string>
@@ -191,24 +182,9 @@
     <string name="wallpaper_apply_failed">Unable to apply wallpaper</string>
     <string name="wallpaper_apply_cancelled">Wallpaper apply cancelled</string>
     <string name="connection_failed">Unable to fetch data from server</string>
-    <string name="wallpaper_apply_scroll">Wallpaper crop will be disabled if you apply from this option</string>
 
-    <string name="wallpaper_settings_crop">Wallpaper Crop</string>
-    <string name="wallpaper_settings_crop_desc">Enable wallpaper crop. Wallpaper will be cropped based on current view of wallpaper preview.
-        Pinch or double tap to zoom wallpaper.</string>
-    <string name="wallpaper_settings_lockscreen">Lockscreen Background</string>
-    <string name="wallpaper_settings_lockscreen_desc">Apply will set wallpaper as both homescreen and lockscreen background</string>
-    <string name="wallpaper_settings_lockscreen_not_available">Lockscreen background only available on Android Nougat</string>
-
-    <string name="wallpaper_preview_full">Preview wallpaper with original size</string>
     <string name="wallpaper_apply">Apply wallpaper</string>
     <string name="wallpaper_save_to_device">Save wallpaper</string>
-
-    <!-- Wallpaper Tooltips -->
-    <string name="wallpaper_tooltip_preview">You are currently previewing wallpaper with smaller resolution,
-        which may looks blurry and pixelated.</string>
-    <string name="wallpaper_tooltip_preview_icon_tap">Tap this icon to previews wallpaper with original size</string>
-    <string name="wallpaper_tooltip_dont_show">Don\'t show again</string>
 
     <!-- Preferences -->
     <string name="pref_data_header">Data &amp; Cache</string>
@@ -238,7 +214,6 @@
 
     <string name="pref_wallpaper_header">Wallpaper</string>
     <string name="pref_wallpaper_location">Wallpaper Save Location</string>
-    <string name="pref_wallpaper_location_desc">Try to download at least one wallpaper first</string>
 
     <string name="pref_language_header">Language</string>
 
