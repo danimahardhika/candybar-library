@@ -101,9 +101,9 @@ dependencies {
     compile 'com.github.KeepSafe:TapTargetView:1.9.1'
     
     compile 'com.github.danimahardhika:DrawMe:4a672e78fc'
-    compile 'com.github.danimahardhika:cafebar:1.1.5'
-    compile 'com.github.danimahardhika.android-helpers:core:0.0.5'
-    compile 'com.github.danimahardhika.android-helpers:animation:0.0.5'
-    compile 'com.github.danimahardhika.android-helpers:license:0.0.5'
-    compile 'com.github.danimahardhika.android-helpers:permission:0.0.5'
+    compile 'com.github.danimahardhika:cafebar:1.1.8'
+    compile 'com.github.danimahardhika.android-helpers:core:0.0.7'
+    compile 'com.github.danimahardhika.android-helpers:animation:0.0.7'
+    compile 'com.github.danimahardhika.android-helpers:license:0.0.7'
+    compile 'com.github.danimahardhika.android-helpers:permission:0.0.7'
 }
