@@ -133,13 +133,17 @@ public class LicensesFragment extends DialogFragment {
             @Override
             protected void onPostExecute(Boolean aBoolean) {
                 super.onPostExecute(aBoolean);
+                mLoadLicenses = null;
+
+                if (getActivity() == null) return;
+                if (getActivity().isFinishing()) return;
+
                 LocaleHelper.setLocale(getActivity());
                 if (aBoolean) {
                     mWebView.setVisibility(View.VISIBLE);
                     mWebView.loadDataWithBaseURL(null,
                             sb.toString(), "text/html", "utf-8", null);
                 }
-                mLoadLicenses = null;
             }
         }.execute();
     }

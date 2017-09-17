@@ -45,14 +45,12 @@ import java.util.concurrent.Executor;
 public class PremiumRequestBuilderTask extends AsyncTask<Void, Void, Boolean> {
 
     private Context mContext;
-    private Database mDatabase;
     private PremiumRequestBuilderCallback mCallback;
     private String mEmailBody;
     private LogUtil.Error mError;
 
     private PremiumRequestBuilderTask(Context context, PremiumRequestBuilderCallback callback) {
         mContext = context;
-        mDatabase = Database.get(context);
         mCallback = callback;
     }
 
@@ -83,7 +81,7 @@ public class PremiumRequestBuilderTask extends AsyncTask<Void, Void, Boolean> {
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append(DeviceHelper.getDeviceInfo(mContext));
 
-                List<Request> requests = mDatabase.getPremiumRequest(null);
+                List<Request> requests = Database.get(mContext).getPremiumRequest(null);
 
                 for (int i = 0; i < requests.size(); i++) {
                     stringBuilder.append("\n\n")
@@ -104,7 +102,6 @@ public class PremiumRequestBuilderTask extends AsyncTask<Void, Void, Boolean> {
                 mEmailBody = stringBuilder.toString();
                 return true;
             } catch (Exception e) {
-                mDatabase.close();
                 CandyBarApplication.sRequestProperty = null;
                 LogUtil.e(Log.getStackTraceString(e));
                 return false;

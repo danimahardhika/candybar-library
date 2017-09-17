@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,6 @@ import com.dm.material.dashboard.candybar.helpers.TapIntroHelper;
 import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
 import com.dm.material.dashboard.candybar.items.Home;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
-import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.dm.material.dashboard.candybar.utils.listeners.HomeListener;
 
 import java.util.ArrayList;
@@ -125,13 +123,9 @@ public class HomeFragment extends Fragment implements HomeListener{
 
     @Override
     public void onHomeIntroInit() {
-        try {
-            TapIntroHelper.showHomeIntros(getActivity(),
-                    mRecyclerView, mManager,
-                    ((HomeAdapter) mRecyclerView.getAdapter()).getApplyIndex());
-        } catch (Exception e) {
-            LogUtil.e(Log.getStackTraceString(e));
-        }
+        TapIntroHelper.showHomeIntros(getActivity(),
+                mRecyclerView, mManager,
+                ((HomeAdapter) mRecyclerView.getAdapter()).getApplyIndex());
     }
 
     private void initHome() {

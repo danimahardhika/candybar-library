@@ -88,7 +88,7 @@ public class LocaleHelper {
         return new Language("English", new Locale("en", "US"));
     }
 
-    static Locale getLocale(String language) {
+    public static Locale getLocale(String language) {
         String[] codes = language.split("_");
         if (codes.length == 2) {
             return new Locale(codes[0], codes[1]);

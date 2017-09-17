@@ -217,6 +217,11 @@ public class IntentChooserFragment extends DialogFragment {
             @Override
             protected void onPostExecute(Boolean aBoolean) {
                 super.onPostExecute(aBoolean);
+                mLoadIntentChooser = null;
+
+                if (getActivity() == null) return;
+                if (getActivity().isFinishing()) return;
+
                 if (aBoolean && apps != null) {
                     mAdapter = new IntentAdapter(getActivity(), apps, mType);
                     mIntentList.setAdapter(mAdapter);
@@ -230,7 +235,6 @@ public class IntentChooserFragment extends DialogFragment {
                     Toast.makeText(getActivity(), R.string.intent_email_failed,
                             Toast.LENGTH_LONG).show();
                 }
-                mLoadIntentChooser = null;
             }
         }.execute();
     }

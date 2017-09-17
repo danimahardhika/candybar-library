@@ -12,12 +12,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 
 import com.danimahardhika.android.helpers.core.ColorHelper;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.HomeAdapter;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
+import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetSequence;
 import com.getkeepsafe.taptargetview.TapTargetView;
@@ -52,96 +54,100 @@ public class TapIntroHelper {
             Toolbar toolbar = (Toolbar) activity.findViewById(R.id.toolbar);
 
             new Handler().postDelayed(() -> {
-                int primary = ColorHelper.getAttributeColor(context, R.attr.toolbar_icon);
-                int secondary = ColorHelper.setColorAlpha(primary, 0.7f);
+                try {
+                    int primary = ColorHelper.getAttributeColor(context, R.attr.toolbar_icon);
+                    int secondary = ColorHelper.setColorAlpha(primary, 0.7f);
 
-                TapTargetSequence tapTargetSequence = new TapTargetSequence(activity);
-                tapTargetSequence.continueOnCancel(true);
+                    TapTargetSequence tapTargetSequence = new TapTargetSequence(activity);
+                    tapTargetSequence.continueOnCancel(true);
 
-                Typeface title = TypefaceHelper.getMedium(context);
-                //Todo:
-                //Typeface description = TypefaceHelper.getRegular(context);
+                    Typeface title = TypefaceHelper.getMedium(context);
+                    //Todo:
+                    //Typeface description = TypefaceHelper.getRegular(context);
 
-                if (toolbar != null) {
-                    TapTarget tapTarget = TapTarget.forToolbarNavigationIcon(toolbar,
-                            context.getResources().getString(R.string.tap_intro_home_navigation),
-                            context.getResources().getString(R.string.tap_intro_home_navigation_desc))
-                            .titleTextColorInt(primary)
-                            .descriptionTextColorInt(secondary)
-                            .targetCircleColorInt(primary)
-                            .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
+                    if (toolbar != null) {
+                        TapTarget tapTarget = TapTarget.forToolbarNavigationIcon(toolbar,
+                                context.getResources().getString(R.string.tap_intro_home_navigation),
+                                context.getResources().getString(R.string.tap_intro_home_navigation_desc))
+                                .titleTextColorInt(primary)
+                                .descriptionTextColorInt(secondary)
+                                .targetCircleColorInt(primary)
+                                .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
 
-                    if (title != null) {
-                        tapTarget.textTypeface(title);
+                        if (title != null) {
+                            tapTarget.textTypeface(title);
+                        }
+
+                        //Todo:
+                        //if (description != null) {
+                        //tapTarget.descriptionTypeface(description);
+                        //}
+
+                        tapTargetSequence.target(tapTarget);
                     }
 
-                    //Todo:
-                    //if (description != null) {
-                        //tapTarget.descriptionTypeface(description);
-                    //}
+                    if (recyclerView != null) {
+                        HomeAdapter adapter = (HomeAdapter) recyclerView.getAdapter();
+                        if (adapter != null) {
+                            if (context.getResources().getBoolean(R.bool.enable_apply)) {
+                                if (position >= 0 && position < adapter.getItemCount()) {
+                                    RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(position);
+                                    if (holder != null) {
+                                        View view = holder.itemView;
+                                        if (view != null) {
+                                            float targetRadius = toDp(context, view.getMeasuredWidth()) - 20f;
 
-                    tapTargetSequence.target(tapTarget);
-                }
+                                            String desc = String.format(context.getResources().getString(R.string.tap_intro_home_apply_desc),
+                                                    context.getResources().getString(R.string.app_name));
+                                            TapTarget tapTarget = TapTarget.forView(view,
+                                                    context.getResources().getString(R.string.tap_intro_home_apply),
+                                                    desc)
+                                                    .titleTextColorInt(primary)
+                                                    .descriptionTextColorInt(secondary)
+                                                    .targetCircleColorInt(primary)
+                                                    .targetRadius((int) targetRadius)
+                                                    .tintTarget(false)
+                                                    .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
 
-                if (recyclerView != null) {
-                    HomeAdapter adapter = (HomeAdapter) recyclerView.getAdapter();
-                    if (adapter != null) {
-                        if (context.getResources().getBoolean(R.bool.enable_apply)) {
-                            if (position >= 0 && position < adapter.getItemCount()) {
-                                RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(position);
-                                if (holder != null) {
-                                    View view = holder.itemView;
-                                    if (view != null) {
-                                        float targetRadius = toDp(context, view.getMeasuredWidth()) - 20f;
+                                            if (title != null) {
+                                                tapTarget.textTypeface(title);
+                                            }
 
-                                        String desc = String.format(context.getResources().getString(R.string.tap_intro_home_apply_desc),
-                                                context.getResources().getString(R.string.app_name));
-                                        TapTarget tapTarget = TapTarget.forView(view,
-                                                context.getResources().getString(R.string.tap_intro_home_apply),
-                                                desc)
-                                                .titleTextColorInt(primary)
-                                                .descriptionTextColorInt(secondary)
-                                                .targetCircleColorInt(primary)
-                                                .targetRadius((int) targetRadius)
-                                                .tintTarget(false)
-                                                .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
-
-                                        if (title != null) {
-                                            tapTarget.textTypeface(title);
-                                        }
-
-                                        //if (description != null) {
+                                            //if (description != null) {
                                             //tapTarget.descriptionTypeface(description);
-                                        //}
+                                            //}
 
-                                        tapTargetSequence.target(tapTarget);
+                                            tapTargetSequence.target(tapTarget);
+                                        }
                                     }
                                 }
                             }
                         }
                     }
-                }
 
-                tapTargetSequence.listener(new TapTargetSequence.Listener() {
-                    @Override
-                    public void onSequenceFinish() {
-                        Preferences.get(context).setTimeToShowHomeIntro(false);
-                    }
-
-                    @Override
-                    public void onSequenceStep(TapTarget tapTarget, boolean b) {
-                        if (manager != null) {
-                            if (position >= 0)
-                                manager.scrollToPosition(position);
+                    tapTargetSequence.listener(new TapTargetSequence.Listener() {
+                        @Override
+                        public void onSequenceFinish() {
+                            Preferences.get(context).setTimeToShowHomeIntro(false);
                         }
-                    }
 
-                    @Override
-                    public void onSequenceCanceled(TapTarget tapTarget) {
+                        @Override
+                        public void onSequenceStep(TapTarget tapTarget, boolean b) {
+                            if (manager != null) {
+                                if (position >= 0)
+                                    manager.scrollToPosition(position);
+                            }
+                        }
 
-                    }
-                });
-                tapTargetSequence.start();
+                        @Override
+                        public void onSequenceCanceled(TapTarget tapTarget) {
+
+                        }
+                    });
+                    tapTargetSequence.start();
+                } catch (Exception e) {
+                    LogUtil.e(Log.getStackTraceString(e));
+                }
             }, 100);
         }
     }
@@ -154,37 +160,41 @@ public class TapIntroHelper {
             if (toolbar == null) return;
 
             new Handler().postDelayed(() -> {
-                int primary = ColorHelper.getAttributeColor(context, R.attr.toolbar_icon);
-                int secondary = ColorHelper.setColorAlpha(primary, 0.7f);
+                try {
+                    int primary = ColorHelper.getAttributeColor(context, R.attr.toolbar_icon);
+                    int secondary = ColorHelper.setColorAlpha(primary, 0.7f);
 
-                Typeface title = TypefaceHelper.getMedium(context);
-                Typeface description = TypefaceHelper.getRegular(context);
+                    Typeface title = TypefaceHelper.getMedium(context);
+                    Typeface description = TypefaceHelper.getRegular(context);
 
-                TapTarget tapTarget = TapTarget.forToolbarMenuItem(toolbar, R.id.menu_search,
-                        context.getResources().getString(R.string.tap_intro_icons_search),
-                        context.getResources().getString(R.string.tap_intro_icons_search_desc))
-                        .titleTextColorInt(primary)
-                        .descriptionTextColorInt(secondary)
-                        .targetCircleColorInt(primary)
-                        .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
+                    TapTarget tapTarget = TapTarget.forToolbarMenuItem(toolbar, R.id.menu_search,
+                            context.getResources().getString(R.string.tap_intro_icons_search),
+                            context.getResources().getString(R.string.tap_intro_icons_search_desc))
+                            .titleTextColorInt(primary)
+                            .descriptionTextColorInt(secondary)
+                            .targetCircleColorInt(primary)
+                            .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
 
-                if (title != null) {
-                    tapTarget.textTypeface(title);
-                }
+                    if (title != null) {
+                        tapTarget.textTypeface(title);
+                    }
 
-                //if (description != null) {
+                    //if (description != null) {
                     //tapTarget.descriptionTypeface(description);
-                //}
+                    //}
 
-                TapTargetView.showFor(activity, tapTarget,
-                        new TapTargetView.Listener() {
+                    TapTargetView.showFor(activity, tapTarget,
+                            new TapTargetView.Listener() {
 
-                            @Override
-                            public void onTargetDismissed(TapTargetView view, boolean userInitiated) {
-                                super.onTargetDismissed(view, userInitiated);
-                                Preferences.get(context).setTimeToShowIconsIntro(false);
-                            }
-                        });
+                                @Override
+                                public void onTargetDismissed(TapTargetView view, boolean userInitiated) {
+                                    super.onTargetDismissed(view, userInitiated);
+                                    Preferences.get(context).setTimeToShowIconsIntro(false);
+                                }
+                            });
+                } catch (Exception e) {
+                    LogUtil.e(Log.getStackTraceString(e));
+                }
             }, 100);
         }
     }
@@ -202,151 +212,155 @@ public class TapIntroHelper {
             Toolbar toolbar = (Toolbar) activity.findViewById(R.id.toolbar);
 
             new Handler().postDelayed(() -> {
-                int primary = ColorHelper.getAttributeColor(context, R.attr.toolbar_icon);
-                int secondary = ColorHelper.setColorAlpha(primary, 0.7f);
+                try {
+                    int primary = ColorHelper.getAttributeColor(context, R.attr.toolbar_icon);
+                    int secondary = ColorHelper.setColorAlpha(primary, 0.7f);
 
-                TapTargetSequence tapTargetSequence = new TapTargetSequence(activity);
-                tapTargetSequence.continueOnCancel(true);
+                    TapTargetSequence tapTargetSequence = new TapTargetSequence(activity);
+                    tapTargetSequence.continueOnCancel(true);
 
-                Typeface title = TypefaceHelper.getMedium(context);
-                Typeface description = TypefaceHelper.getRegular(context);
+                    Typeface title = TypefaceHelper.getMedium(context);
+                    Typeface description = TypefaceHelper.getRegular(context);
 
-                if (recyclerView != null) {
-                    int position = 0;
-                    if (Preferences.get(context).isPremiumRequestEnabled())
-                        position += 1;
+                    if (recyclerView != null) {
+                        int position = 0;
+                        if (Preferences.get(context).isPremiumRequestEnabled())
+                            position += 1;
 
-                    if (recyclerView.getAdapter() != null) {
-                        if (position < recyclerView.getAdapter().getItemCount()) {
-                            RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(position);
+                        if (recyclerView.getAdapter() != null) {
+                            if (position < recyclerView.getAdapter().getItemCount()) {
+                                RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(position);
 
-                            if (holder != null) {
-                                View view = holder.itemView.findViewById(R.id.checkbox);
-                                if (view != null) {
-                                    TapTarget tapTarget = TapTarget.forView(view,
-                                            context.getResources().getString(R.string.tap_intro_request_select),
-                                            context.getResources().getString(R.string.tap_intro_request_select_desc))
-                                            .titleTextColorInt(primary)
-                                            .descriptionTextColorInt(secondary)
-                                            .targetCircleColorInt(primary)
-                                            .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
+                                if (holder != null) {
+                                    View view = holder.itemView.findViewById(R.id.checkbox);
+                                    if (view != null) {
+                                        TapTarget tapTarget = TapTarget.forView(view,
+                                                context.getResources().getString(R.string.tap_intro_request_select),
+                                                context.getResources().getString(R.string.tap_intro_request_select_desc))
+                                                .titleTextColorInt(primary)
+                                                .descriptionTextColorInt(secondary)
+                                                .targetCircleColorInt(primary)
+                                                .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
 
-                                    if (title != null) {
-                                        tapTarget.textTypeface(title);
-                                    }
+                                        if (title != null) {
+                                            tapTarget.textTypeface(title);
+                                        }
 
-                                    //if (description != null) {
+                                        //if (description != null) {
                                         //tapTarget.descriptionTypeface(description);
-                                    //}
+                                        //}
 
-                                    tapTargetSequence.target(tapTarget);
+                                        tapTargetSequence.target(tapTarget);
+                                    }
                                 }
                             }
                         }
                     }
-                }
 
-                if (toolbar != null) {
-                    TapTarget tapTarget = TapTarget.forToolbarMenuItem(toolbar, R.id.menu_select_all,
-                            context.getResources().getString(R.string.tap_intro_request_select_all),
-                            context.getResources().getString(R.string.tap_intro_request_select_all_desc))
-                            .titleTextColorInt(primary)
-                            .descriptionTextColorInt(secondary)
-                            .targetCircleColorInt(primary)
-                            .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
+                    if (toolbar != null) {
+                        TapTarget tapTarget = TapTarget.forToolbarMenuItem(toolbar, R.id.menu_select_all,
+                                context.getResources().getString(R.string.tap_intro_request_select_all),
+                                context.getResources().getString(R.string.tap_intro_request_select_all_desc))
+                                .titleTextColorInt(primary)
+                                .descriptionTextColorInt(secondary)
+                                .targetCircleColorInt(primary)
+                                .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
 
-                    if (title != null) {
-                        tapTarget.textTypeface(title);
+                        if (title != null) {
+                            tapTarget.textTypeface(title);
+                        }
+
+                        //if (description != null) {
+                        //tapTarget.descriptionTypeface(description);
+                        //}
+
+                        tapTargetSequence.target(tapTarget);
                     }
 
-                    //if (description != null) {
+                    View fab = activity.findViewById(R.id.fab);
+                    if (fab != null) {
+                        TapTarget tapTarget = TapTarget.forView(activity.findViewById(R.id.fab),
+                                context.getResources().getString(R.string.tap_intro_request_send),
+                                context.getResources().getString(R.string.tap_intro_request_send_desc))
+                                .titleTextColorInt(primary)
+                                .descriptionTextColorInt(secondary)
+                                .targetCircleColorInt(primary)
+                                .tintTarget(false)
+                                .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
+
+                        if (title != null) {
+                            tapTarget.textTypeface(title);
+                        }
+
+                        //if (description != null) {
                         //tapTarget.descriptionTypeface(description);
-                    //}
+                        //}
 
-                    tapTargetSequence.target(tapTarget);
-                }
-
-                View fab = activity.findViewById(R.id.fab);
-                if (fab != null) {
-                    TapTarget tapTarget = TapTarget.forView(activity.findViewById(R.id.fab),
-                            context.getResources().getString(R.string.tap_intro_request_send),
-                            context.getResources().getString(R.string.tap_intro_request_send_desc))
-                            .titleTextColorInt(primary)
-                            .descriptionTextColorInt(secondary)
-                            .targetCircleColorInt(primary)
-                            .tintTarget(false)
-                            .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
-
-                    if (title != null) {
-                        tapTarget.textTypeface(title);
+                        tapTargetSequence.target(tapTarget);
                     }
 
-                    //if (description != null) {
-                        //tapTarget.descriptionTypeface(description);
-                    //}
+                    if (Preferences.get(context).isPremiumRequestEnabled()) {
+                        if (!Preferences.get(context).isPremiumRequest()) {
+                            if (recyclerView != null) {
+                                int position = 0;
 
-                    tapTargetSequence.target(tapTarget);
-                }
+                                if (recyclerView.getAdapter() != null) {
+                                    if (position < recyclerView.getAdapter().getItemCount()) {
+                                        RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(position);
 
-                if (Preferences.get(context).isPremiumRequestEnabled()) {
-                    if (!Preferences.get(context).isPremiumRequest()) {
-                        if (recyclerView != null) {
-                            int position = 0;
+                                        if (holder != null) {
+                                            View view = holder.itemView.findViewById(R.id.buy);
+                                            if (view != null) {
+                                                float targetRadius = toDp(context, view.getMeasuredWidth()) - 10f;
 
-                            if (recyclerView.getAdapter() != null) {
-                                if (position < recyclerView.getAdapter().getItemCount()) {
-                                    RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(position);
+                                                TapTarget tapTarget = TapTarget.forView(view,
+                                                        context.getResources().getString(R.string.tap_intro_request_premium),
+                                                        context.getResources().getString(R.string.tap_intro_request_premium_desc))
+                                                        .titleTextColorInt(primary)
+                                                        .descriptionTextColorInt(secondary)
+                                                        .targetCircleColorInt(primary)
+                                                        .targetRadius((int) targetRadius)
+                                                        .tintTarget(false)
+                                                        .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
 
-                                    if (holder != null) {
-                                        View view = holder.itemView.findViewById(R.id.buy);
-                                        if (view != null) {
-                                            float targetRadius = toDp(context, view.getMeasuredWidth()) - 10f;
+                                                if (title != null) {
+                                                    tapTarget.textTypeface(title);
+                                                }
 
-                                            TapTarget tapTarget = TapTarget.forView(view,
-                                                    context.getResources().getString(R.string.tap_intro_request_premium),
-                                                    context.getResources().getString(R.string.tap_intro_request_premium_desc))
-                                                    .titleTextColorInt(primary)
-                                                    .descriptionTextColorInt(secondary)
-                                                    .targetCircleColorInt(primary)
-                                                    .targetRadius((int) targetRadius)
-                                                    .tintTarget(false)
-                                                    .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
-
-                                            if (title != null) {
-                                                tapTarget.textTypeface(title);
-                                            }
-
-                                            //if (description != null) {
+                                                //if (description != null) {
                                                 //tapTarget.descriptionTypeface(description);
-                                            //}
+                                                //}
 
-                                            tapTargetSequence.target(tapTarget);
+                                                tapTargetSequence.target(tapTarget);
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
                     }
+
+                    tapTargetSequence.listener(new TapTargetSequence.Listener() {
+                        @Override
+                        public void onSequenceFinish() {
+                            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+                            Preferences.get(context).setTimeToShowRequestIntro(false);
+                        }
+
+                        @Override
+                        public void onSequenceStep(TapTarget tapTarget, boolean b) {
+
+                        }
+
+                        @Override
+                        public void onSequenceCanceled(TapTarget tapTarget) {
+
+                        }
+                    });
+                    tapTargetSequence.start();
+                } catch (Exception e) {
+                    LogUtil.e(Log.getStackTraceString(e));
                 }
-
-                tapTargetSequence.listener(new TapTargetSequence.Listener() {
-                    @Override
-                    public void onSequenceFinish() {
-                        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-                        Preferences.get(context).setTimeToShowRequestIntro(false);
-                    }
-
-                    @Override
-                    public void onSequenceStep(TapTarget tapTarget, boolean b) {
-
-                    }
-
-                    @Override
-                    public void onSequenceCanceled(TapTarget tapTarget) {
-
-                    }
-                });
-                tapTargetSequence.start();
             }, 100);
         }
     }
@@ -447,100 +461,88 @@ public class TapIntroHelper {
         if (Preferences.get(context).isTimeToShowWallpaperPreviewIntro()) {
             AppCompatActivity activity = (AppCompatActivity) context;
 
-            Toolbar toolbar = (Toolbar) activity.findViewById(R.id.toolbar);
+            View rootView = activity.findViewById(R.id.rootview);
+            if (rootView == null) return;
 
             new Handler().postDelayed(() -> {
-                int primary = ColorHelper.getTitleTextColor(color);
-                int secondary = ColorHelper.setColorAlpha(primary, 0.7f);
-
-                TapTargetSequence tapTargetSequence = new TapTargetSequence(activity);
-                tapTargetSequence.continueOnCancel(true);
-
-                Typeface title = TypefaceHelper.getMedium(context);
-                Typeface description = TypefaceHelper.getRegular(context);
-
-                if (toolbar != null) {
-                    TapTarget tapTarget = TapTarget.forToolbarMenuItem(toolbar, R.id.menu_wallpaper_settings,
-                            context.getResources().getString(R.string.tap_intro_wallpaper_preview_settings),
-                            context.getResources().getString(R.string.tap_intro_wallpaper_preview_settings_desc))
-                            .titleTextColorInt(primary)
-                            .descriptionTextColorInt(secondary)
-                            .targetCircleColorInt(primary)
-                            .outerCircleColorInt(color)
-                            .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
-
-                    if (title != null) {
-                        tapTarget.textTypeface(title);
+                try {
+                    int baseColor = color;
+                    if (baseColor == 0) {
+                        baseColor = ColorHelper.getAttributeColor(context, R.attr.colorAccent);
                     }
 
-                    //if (description != null) {
-                        //tapTarget.descriptionTypeface(description);
-                    //}
+                    int primary = ColorHelper.getTitleTextColor(baseColor);
+                    int secondary = ColorHelper.setColorAlpha(primary, 0.7f);
 
-                    tapTargetSequence.target(tapTarget);
+                    TapTargetSequence tapTargetSequence = new TapTargetSequence(activity);
+                    tapTargetSequence.continueOnCancel(true);
 
-                    if (context.getResources().getBoolean(R.bool.enable_wallpaper_download)) {
-                        TapTarget tapTarget1 = TapTarget.forToolbarMenuItem(toolbar, R.id.menu_save,
-                                context.getResources().getString(R.string.tap_intro_wallpaper_preview_save),
-                                context.getResources().getString(R.string.tap_intro_wallpaper_preview_save_desc))
-                                .titleTextColorInt(primary)
-                                .descriptionTextColorInt(secondary)
-                                .targetCircleColorInt(primary)
-                                .outerCircleColorInt(color)
-                                .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
+                    Typeface title = TypefaceHelper.getMedium(context);
+                    //Todo:
+                    //Typeface description = TypefaceHelper.getRegular(context);
 
-                        if (title != null) {
-                            tapTarget1.textTypeface(title);
-                        }
+                    View apply = rootView.findViewById(R.id.menu_apply);
+                    View save = rootView.findViewById(R.id.menu_save);
 
-                        //if (description != null) {
-                            //tapTarget1.descriptionTypeface(description);
-                        //}
-
-                        tapTargetSequence.target(tapTarget1);
-                    }
-                }
-
-                View fab = activity.findViewById(R.id.fab);
-                if (fab != null) {
-                    TapTarget tapTarget = TapTarget.forView(fab,
+                    TapTarget tapTarget = TapTarget.forView(apply,
                             context.getResources().getString(R.string.tap_intro_wallpaper_preview_apply),
                             context.getResources().getString(R.string.tap_intro_wallpaper_preview_apply_desc))
                             .titleTextColorInt(primary)
                             .descriptionTextColorInt(secondary)
                             .targetCircleColorInt(primary)
-                            .outerCircleColorInt(color)
-                            .tintTarget(false)
-                            .drawShadow(Preferences.get(context).isTapIntroShadowEnabled());
+                            .outerCircleColorInt(baseColor)
+                            .drawShadow(true);
+
+                    TapTarget tapTarget1 = TapTarget.forView(save,
+                            context.getResources().getString(R.string.tap_intro_wallpaper_preview_save),
+                            context.getResources().getString(R.string.tap_intro_wallpaper_preview_save_desc))
+                            .titleTextColorInt(primary)
+                            .descriptionTextColorInt(secondary)
+                            .targetCircleColorInt(primary)
+                            .outerCircleColorInt(baseColor)
+                            .drawShadow(true);
 
                     if (title != null) {
+                        //Todo:
+                        //tapTarget.titleTypeface(title);
+                        //tapTarget1.titleTypeface(title);
+                        //tapTarget2.titleTypeface(title);
                         tapTarget.textTypeface(title);
+                        tapTarget1.textTypeface(title);
                     }
 
                     //if (description != null) {
-                        //tapTarget.descriptionTypeface(description);
+                    //Todo:
+                    //tapTarget.descriptionTypeface(description);
+                    //tapTarget1.descriptionTypeface(description);
+                    //tapTarget2.descriptionTypeface(description);
                     //}
 
                     tapTargetSequence.target(tapTarget);
+                    if (context.getResources().getBoolean(R.bool.enable_wallpaper_download)) {
+                        tapTargetSequence.target(tapTarget1);
+                    }
+
+                    tapTargetSequence.listener(new TapTargetSequence.Listener() {
+                        @Override
+                        public void onSequenceFinish() {
+                            Preferences.get(context).setTimeToShowWallpaperPreviewIntro(false);
+                        }
+
+                        @Override
+                        public void onSequenceStep(TapTarget tapTarget, boolean b) {
+
+                        }
+
+                        @Override
+                        public void onSequenceCanceled(TapTarget tapTarget) {
+
+                        }
+                    });
+                    tapTargetSequence.start();
+                } catch (Exception e) {
+                    LogUtil.e(Log.getStackTraceString(e));
                 }
-
-                tapTargetSequence.listener(new TapTargetSequence.Listener() {
-                    @Override
-                    public void onSequenceFinish() {
-                        Preferences.get(context).setTimeToShowWallpaperPreviewIntro(false);
-                    }
-
-                    @Override
-                    public void onSequenceStep(TapTarget tapTarget, boolean b) {
-
-                    }
-
-                    @Override
-                    public void onSequenceCanceled(TapTarget tapTarget) {
-
-                    }
-                });
-                tapTargetSequence.start();
             }, 100);
         }
     }

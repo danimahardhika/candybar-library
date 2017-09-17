@@ -107,11 +107,14 @@ public class IconRequestTask extends AsyncTask<Void, Void, Boolean> {
                             }
 
                             boolean requested = Database.get(mContext).isRequested(activity);
-                            requests.add(new Request(
-                                    name,
-                                    app.activityInfo.packageName,
-                                    activity,
-                                    requested));
+                            Request request = Request.Builder()
+                                    .name(name)
+                                    .packageName(app.activityInfo.packageName)
+                                    .activity(activity)
+                                    .requested(requested)
+                                    .build();
+
+                            requests.add(request);
                         }
                     }
 
@@ -121,7 +124,6 @@ public class IconRequestTask extends AsyncTask<Void, Void, Boolean> {
             } catch (Exception e) {
                 CandyBarMainActivity.sMissedApps = null;
                 mError = LogUtil.Error.DATABASE_ERROR;
-                Database.get(mContext).close();
                 LogUtil.e(Log.getStackTraceString(e));
                 return false;
             }
@@ -132,9 +134,10 @@ public class IconRequestTask extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean aBoolean) {
         super.onPostExecute(aBoolean);
-        if (aBoolean) {
-            if (mContext == null) return;
+        if (mContext == null) return;
+        if (((AppCompatActivity) mContext).isFinishing()) return;
 
+        if (aBoolean) {
             FragmentManager fm = ((AppCompatActivity) mContext).getSupportFragmentManager();
             if (fm == null) return;
 

@@ -223,6 +223,11 @@ public class InAppBillingFragment extends DialogFragment {
             @Override
             protected void onPostExecute(Boolean aBoolean) {
                 super.onPostExecute(aBoolean);
+                mLoadInAppProducts = null;
+
+                if (getActivity() == null) return;
+                if (getActivity().isFinishing()) return;
+
                 mProgress.setVisibility(View.GONE);
                 if (aBoolean) {
                     mAdapter = new InAppBillingAdapter(getActivity(), inAppBillings);
@@ -234,7 +239,6 @@ public class InAppBillingFragment extends DialogFragment {
                         Toast.makeText(getActivity(), R.string.billing_load_product_failed,
                                 Toast.LENGTH_LONG).show();
                 }
-                mLoadInAppProducts = null;
             }
 
         }.execute();

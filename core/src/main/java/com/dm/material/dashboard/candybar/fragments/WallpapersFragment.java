@@ -173,7 +173,6 @@ public class WallpapersFragment extends Fragment {
         mGetWallpapers = new AsyncTask<Void, Void, Boolean>() {
 
             List<Wallpaper> wallpapers;
-            Database database = Database.get(getActivity());
 
             @Override
             protected void onPreExecute() {
@@ -192,8 +191,8 @@ public class WallpapersFragment extends Fragment {
                 while (!isCancelled()) {
                     try {
                         Thread.sleep(1);
-                        if (!refreshing && (database.getWallpapersCount() > 0)) {
-                            wallpapers = database.getWallpapers();
+                        if (!refreshing && (Database.get(getActivity()).getWallpapersCount() > 0)) {
+                            wallpapers = Database.get(getActivity()).getWallpapers();
                             return true;
                         }
 
@@ -206,12 +205,12 @@ public class WallpapersFragment extends Fragment {
                             List list = JsonHelper.parseList(stream);
                             if (list == null) {
                                 LogUtil.e("Json error, no array with name: "
-                                        +CandyBarApplication.getConfiguration().getWallpaperJsonStructure().arrayName());
+                                        +CandyBarApplication.getConfiguration().getWallpaperJsonStructure().getArrayName());
                                 return false;
                             }
 
                             if (refreshing) {
-                                wallpapers = database.getWallpapers();
+                                wallpapers = Database.get(getActivity()).getWallpapers();
                                 List<Wallpaper> newWallpapers = new ArrayList<>();
                                 for (int i = 0; i < list.size(); i++) {
                                     Wallpaper wallpaper = JsonHelper.getWallpaper(list.get(i));
@@ -227,22 +226,24 @@ public class WallpapersFragment extends Fragment {
                                 List<Wallpaper> newlyAdded = (List<Wallpaper>)
                                         ListHelper.difference(intersection, newWallpapers);
 
-                                database.deleteWallpapers(deleted);
-                                database.addWallpapers(newlyAdded);
+                                Database.get(getActivity()).deleteWallpapers(deleted);
+                                Database.get(getActivity()).addWallpapers(newlyAdded);
 
                                 Preferences.get(getActivity()).setAvailableWallpapersCount(
-                                        database.getWallpapersCount());
+                                        Database.get(getActivity()).getWallpapersCount());
                             } else {
-                                if (database.getWallpapersCount() > 0) database.deleteWallpapers();
-                                database.addWallpapers(list);
+                                if (Database.get(getActivity()).getWallpapersCount() > 0) {
+                                    Database.get(getActivity()).deleteWallpapers();
+                                }
+
+                                Database.get(getActivity()).addWallpapers(list);
                             }
 
-                            wallpapers = database.getWallpapers();
+                            wallpapers = Database.get(getActivity()).getWallpapers();
                             return true;
                         }
                     } catch (Exception e) {
                         LogUtil.e(Log.getStackTraceString(e));
-                        database.close();
                         return false;
                     }
                 }

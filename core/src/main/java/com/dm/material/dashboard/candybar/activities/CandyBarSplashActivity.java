@@ -73,13 +73,17 @@ public class CandyBarSplashActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (mPrepareCloudWallpapers != null) mPrepareCloudWallpapers.cancel(true);
+        if (mPrepareCloudWallpapers != null) {
+            mPrepareCloudWallpapers.cancel(true);
+        }
         super.onBackPressed();
     }
 
     @Override
     protected void onDestroy() {
-        if (mPrepareApp != null) mPrepareApp.cancel(true);
+        if (mPrepareApp != null) {
+            mPrepareApp.cancel(true);
+        }
         super.onDestroy();
     }
 
@@ -103,7 +107,10 @@ public class CandyBarSplashActivity extends AppCompatActivity {
             protected void onPostExecute(Boolean aBoolean) {
                 super.onPostExecute(aBoolean);
                 mPrepareApp = null;
-                startActivity(new Intent(CandyBarSplashActivity.this, mMainActivity));
+                Intent intent = new Intent(CandyBarSplashActivity.this, mMainActivity);
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 finish();
             }
@@ -115,8 +122,6 @@ public class CandyBarSplashActivity extends AppCompatActivity {
 
         mPrepareCloudWallpapers = new AsyncTask<Void, Void, Boolean>() {
 
-            Database database = Database.get(context);
-
             @Override
             protected Boolean doInBackground(Void... voids) {
                 while (!isCancelled()) {
@@ -125,7 +130,8 @@ public class CandyBarSplashActivity extends AppCompatActivity {
                         if (WallpaperHelper.getWallpaperType(context) != WallpaperHelper.CLOUD_WALLPAPERS)
                             return true;
 
-                        if (database.getWallpapersCount() > 0) return true;
+                        if (Database.get(context.getApplicationContext()).getWallpapersCount() > 0)
+                            return true;
 
                         URL url = new URL(wallpaperUrl);
                         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -135,12 +141,15 @@ public class CandyBarSplashActivity extends AppCompatActivity {
                             List list = JsonHelper.parseList(stream);
                             if (list == null) {
                                 LogUtil.e("Json error, no array with name: "
-                                        + CandyBarApplication.getConfiguration().getWallpaperJsonStructure().arrayName());
+                                        + CandyBarApplication.getConfiguration().getWallpaperJsonStructure().getArrayName());
                                 return false;
                             }
 
-                            if (database.getWallpapersCount() > 0) database.deleteWallpapers();
-                            database.addWallpapers(list);
+                            if (Database.get(context.getApplicationContext()).getWallpapersCount() > 0) {
+                                Database.get(context.getApplicationContext()).deleteWallpapers();
+                            }
+
+                            Database.get(context.getApplicationContext()).addWallpapers(list);
 
                             if (list.size() > 0 && list.get(0) instanceof Map) {
                                 Map map = (Map) list.get(0);
@@ -153,7 +162,6 @@ public class CandyBarSplashActivity extends AppCompatActivity {
                         return true;
                     } catch (Exception e) {
                         LogUtil.e(Log.getStackTraceString(e));
-                        database.close();
                         return false;
                     }
                 }

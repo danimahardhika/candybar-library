@@ -123,4 +123,7 @@
         <item name="colorControlActivated">?attr/colorAccent</item>
     </style>
 
+    <style name="RippleStyleLight">
+        <item name="colorControlHighlight">#44FFFFFF</item>
+    </style>
 </resources>

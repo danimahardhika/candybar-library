@@ -1,5 +1,8 @@
 package com.dm.material.dashboard.candybar.items;
 
+import android.content.ComponentName;
+import android.support.annotation.Nullable;
+
 /*
  * CandyBar - Material Dashboard
  *
@@ -18,9 +21,6 @@ package com.dm.material.dashboard.candybar.items;
  * limitations under the License.
  */
 
-import android.content.ComponentName;
-import android.support.annotation.Nullable;
-
 public class Request {
 
     private String mName;
@@ -31,16 +31,7 @@ public class Request {
     private String mRequestedOn;
     private boolean mRequested;
 
-    public Request(String name, String packageName, String activity, boolean requested) {
-        mName = name;
-        mPackageName = packageName;
-        mActivity = activity;
-        mRequested = requested;
-    }
-
-    public Request(String orderId, String productId, String name, String activity) {
-        mOrderId = orderId;
-        mProductId = productId;
+    private Request(String name, String activity) {
         mName = name;
         mActivity = activity;
     }
@@ -49,9 +40,12 @@ public class Request {
         return mName;
     }
 
+    @Nullable
     public String getPackageName() {
         if (mPackageName == null) {
-            return mActivity.substring(0, mActivity.lastIndexOf("/"));
+            if (mActivity.length() > 0) {
+                return mActivity.substring(0, mActivity.lastIndexOf("/"));
+            }
         }
         return mPackageName;
     }
@@ -64,10 +58,6 @@ public class Request {
         return mRequested;
     }
 
-    public void setRequested(boolean requested) {
-        mRequested = requested;
-    }
-
     public String getOrderId() {
         return mOrderId;
     }
@@ -78,6 +68,92 @@ public class Request {
 
     public String getRequestedOn() {
         return mRequestedOn;
+    }
+
+    public void setPackageName(String packageName) {
+        mPackageName = packageName;
+    }
+
+    public void setOrderId(String orderId) {
+        mOrderId = orderId;
+    }
+
+    public void setProductId(String productId) {
+        mProductId = productId;
+    }
+
+    public void setRequestedOn(String requestedOn) {
+        mRequestedOn = requestedOn;
+    }
+
+    public void setRequested(boolean requested) {
+        mRequested = requested;
+    }
+
+    public static Builder Builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+
+        private String mName;
+        private String mActivity;
+        private String mPackageName;
+        private String mOrderId;
+        private String mProductId;
+        private String mRequestedOn;
+        private boolean mRequested;
+
+        private Builder() {
+            mName = "";
+            mActivity = "";
+            mRequested = false;
+        }
+
+        public Builder name(String name) {
+            mName = name;
+            return this;
+        }
+
+        public Builder activity(String activity) {
+            mActivity = activity;
+            return this;
+        }
+
+        public Builder packageName(String packageName) {
+            mPackageName = packageName;
+            return this;
+        }
+
+        public Builder orderId(String orderId) {
+            mOrderId = orderId;
+            return this;
+        }
+
+        public Builder productId(String productId) {
+            mProductId = productId;
+            return this;
+        }
+
+        public Builder requestedOn(String requestedOn) {
+            mRequestedOn = requestedOn;
+            return this;
+        }
+
+        public Builder requested(boolean requested) {
+            mRequested = requested;
+            return this;
+        }
+
+        public Request build() {
+            Request request = new Request(mName, mActivity);
+            request.setPackageName(mPackageName);
+            request.setRequestedOn(mRequestedOn);
+            request.setRequested(mRequested);
+            request.setOrderId(mOrderId);
+            request.setProductId(mProductId);
+            return request;
+        }
     }
 
     public static class Property {

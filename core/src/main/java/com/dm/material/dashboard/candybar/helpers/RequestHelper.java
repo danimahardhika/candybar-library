@@ -155,11 +155,14 @@ public class RequestHelper {
                 }
 
                 boolean requested = Database.get(context).isRequested(activity);
-                requests.add(new Request(
-                        name,
-                        app.activityInfo.packageName,
-                        activity,
-                        requested));
+                Request request = Request.Builder()
+                        .name(name)
+                        .packageName(app.activityInfo.packageName)
+                        .activity(activity)
+                        .requested(requested)
+                        .build();
+
+                requests.add(request);
             }
         }
         return requests;

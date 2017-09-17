@@ -4,8 +4,11 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
 import com.dm.material.dashboard.candybar.databases.Database;
 import com.dm.material.dashboard.candybar.items.Wallpaper;
+import com.dm.material.dashboard.candybar.utils.JsonStructure;
+import com.dm.material.dashboard.candybar.utils.LogUtil;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -46,8 +49,7 @@ public class MuzeiHelper {
 
     @Nullable
     public Wallpaper getRandomWallpaper(String wallpaperUrl) throws Exception {
-        Database database = Database.get(mContext);
-        if (database.getWallpapersCount() == 0) {
+        if (Database.get(mContext).getWallpapersCount() == 0) {
             URL url = new URL(wallpaperUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setConnectTimeout(15000);
@@ -55,16 +57,27 @@ public class MuzeiHelper {
             if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 InputStream stream = new BufferedInputStream(connection.getInputStream());
                 List list = JsonHelper.parseList(stream);
-                if (list == null) return null;
+                if (list == null) {
+                    JsonStructure jsonStructure = CandyBarApplication.getConfiguration().getWallpaperJsonStructure();
+                    LogUtil.e("Muzei: Json error: wallpaper array with name "
+                            +jsonStructure.getArrayName() +" not found");
+                    return null;
+                }
 
                 if (list.size() > 0) {
                     int position = getRandomInt(list.size());
-                    return JsonHelper.getWallpaper(list.get(position));
+                    Wallpaper wallpaper = JsonHelper.getWallpaper(list.get(position));
+                    if (wallpaper != null) {
+                        if (wallpaper.getName() == null) {
+                            wallpaper.setName("Wallpaper");
+                        }
+                    }
+                    return wallpaper;
                 }
             }
             return null;
         } else {
-            return database.getRandomWallpaper();
+            return Database.get(mContext).getRandomWallpaper();
         }
     }
 
@@ -84,11 +97,12 @@ public class MuzeiHelper {
         int size = downloaded.size();
         if (size > 0) {
             int position = getRandomInt(size);
-            return new Wallpaper(
-                    downloaded.get(position).getName(),
-                    downloaded.get(position).getAuthor(),
-                    downloaded.get(position).getURL(),
-                    downloaded.get(position).getThumbUrl());
+            return Wallpaper.Builder()
+                    .name(downloaded.get(position).getName())
+                    .author(downloaded.get(position).getAuthor())
+                    .url(downloaded.get(position).getURL())
+                    .thumbUrl(downloaded.get(position).getThumbUrl())
+                    .build();
         }
         return null;
     }

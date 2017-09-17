@@ -132,6 +132,7 @@ public class CandyBarApplication extends Application {
         private IconColor mIconColor = IconColor.PRIMARY_TEXT;
         private List<OtherApp> mOtherApps = null;
 
+        private boolean mIsHighQualityPreviewEnabled = false;
         private boolean mIsColoredApplyCard = true;
         private boolean mIsAutomaticIconsCountEnabled = true;
         private int mCustomIconsCount = 0;
@@ -283,6 +284,11 @@ public class CandyBarApplication extends Application {
             return this;
         }
 
+        public Configuration setHighQualityPreviewEnabled(boolean highQualityPreviewEnabled) {
+            mIsHighQualityPreviewEnabled = highQualityPreviewEnabled;
+            return this;
+        }
+
         public NavigationIcon getNavigationIcon() {
             return mNavigationIcon;
         }
@@ -370,6 +376,10 @@ public class CandyBarApplication extends Application {
 
         public boolean isIncludeIconRequestToEmailBody() {
             return mIsIncludeIconRequestToEmailBody;
+        }
+
+        public boolean isHighQualityPreviewEnabled() {
+            return mIsHighQualityPreviewEnabled;
         }
 
         public JsonStructure getWallpaperJsonStructure() {

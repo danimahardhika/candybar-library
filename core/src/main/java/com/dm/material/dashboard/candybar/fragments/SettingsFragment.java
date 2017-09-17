@@ -169,14 +169,10 @@ public class SettingsFragment extends Fragment {
                     getActivity().getResources().getString(R.string.pref_wallpaper_header),
                     "", "", "", Setting.Type.HEADER, -1));
 
-            String directory = getActivity().getResources().getString(R.string.pref_wallpaper_location_desc);
-            if (Preferences.get(getActivity()).getWallsDirectory().length() > 0) {
-                directory = Preferences.get(getActivity()).getWallsDirectory() + File.separator;
-            }
-
             settings.add(new Setting(-1, "",
                     getActivity().getResources().getString(R.string.pref_wallpaper_location),
-                    directory, "", Setting.Type.WALLPAPER, -1));
+                    WallpaperHelper.getDefaultWallpapersDirectory(getActivity()).toString(), "",
+                    Setting.Type.WALLPAPER, -1));
         }
 
         settings.add(new Setting(R.drawable.ic_toolbar_language,

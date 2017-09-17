@@ -241,6 +241,7 @@ public class IconsBaseFragment extends Fragment {
             protected void onPostExecute(Boolean aBoolean) {
                 super.onPostExecute(aBoolean);
                 mProgress.setVisibility(View.GONE);
+
                 if (aBoolean) {
                     setHasOptionsMenu(true);
                     PagerIconsAdapter adapter = new PagerIconsAdapter(
@@ -249,11 +250,7 @@ public class IconsBaseFragment extends Fragment {
 
                     updateTabTypeface();
 
-                    try {
-                        TapIntroHelper.showIconsIntro(getActivity());
-                    } catch (Exception e) {
-                        LogUtil.e(Log.getStackTraceString(e));
-                    }
+                    TapIntroHelper.showIconsIntro(getActivity());
                 } else {
                     Toast.makeText(getActivity(), R.string.icons_load_failed,
                             Toast.LENGTH_LONG).show();

@@ -1,6 +1,5 @@
 package com.dm.material.dashboard.candybar.helpers;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -8,7 +7,6 @@ import android.util.Log;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
 import com.dm.material.dashboard.candybar.items.Wallpaper;
-import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.JsonStructure;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
 
@@ -43,11 +41,11 @@ public class JsonHelper {
         JsonStructure jsonStructure = CandyBarApplication.getConfiguration().getWallpaperJsonStructure();
 
         try {
-            if (jsonStructure.arrayName() == null) {
+            if (jsonStructure.getArrayName() == null) {
                 list = LoganSquare.parseList(stream, Map.class);
             } else {
                 Map<String, List> map = LoganSquare.parseMap(stream, List.class);
-                list = map.get(jsonStructure.arrayName());
+                list = map.get(jsonStructure.getArrayName());
             }
         } catch (IOException e) {
             LogUtil.e(Log.getStackTraceString(e));
@@ -60,31 +58,22 @@ public class JsonHelper {
         if (object instanceof Map) {
             JsonStructure jsonStructure = CandyBarApplication.getConfiguration().getWallpaperJsonStructure();
             Map map = (Map) object;
-            return new Wallpaper(
-                    (String) map.get(jsonStructure.name()),
-                    (String) map.get(jsonStructure.author()),
-                    (String) map.get(jsonStructure.url()),
-                    getThumbUrl(map));
+            return Wallpaper.Builder()
+                    .name((String) map.get(jsonStructure.getName()))
+                    .author((String) map.get(jsonStructure.getAuthor()))
+                    .url((String) map.get(jsonStructure.getUrl()))
+                    .thumbUrl(getThumbUrl(map))
+                    .build();
         }
         return null;
     }
 
-    public static String getGeneratedName(@NonNull Context context, @Nullable String name) {
-        if (name == null) {
-            String generatedName = "Wallpaper " +Preferences.get(context).getAutoIncrement();
-            Preferences.get(context).setAutoIncrement(
-                    Preferences.get(context).getAutoIncrement() + 1);
-            return generatedName;
-        }
-        return name;
-    }
-
     public static String getThumbUrl(@NonNull Map map) {
         JsonStructure jsonStructure = CandyBarApplication.getConfiguration().getWallpaperJsonStructure();
-        String url = (String) map.get(jsonStructure.url());
-        if (jsonStructure.thumbUrl() == null) return url;
+        String url = (String) map.get(jsonStructure.getUrl());
+        if (jsonStructure.getThumbUrl() == null) return url;
 
-        String thumbUrl = (String) map.get(jsonStructure.thumbUrl());
+        String thumbUrl = (String) map.get(jsonStructure.getThumbUrl());
         if (thumbUrl == null) return url;
         return thumbUrl;
     }

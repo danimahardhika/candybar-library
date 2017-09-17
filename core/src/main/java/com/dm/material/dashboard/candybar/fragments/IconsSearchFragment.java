@@ -228,6 +228,11 @@ public class IconsSearchFragment extends Fragment {
             @Override
             protected void onPostExecute(Boolean aBoolean) {
                 super.onPostExecute(aBoolean);
+                mGetIcons = null;
+
+                if (getActivity() == null) return;
+                if (getActivity().isFinishing()) return;
+
                 if (aBoolean) {
                     mAdapter = new IconsAdapter(getActivity(), icons, true);
                     mRecyclerView.setAdapter(mAdapter);
@@ -238,7 +243,6 @@ public class IconsSearchFragment extends Fragment {
                     Toast.makeText(getActivity(), R.string.icons_load_failed,
                             Toast.LENGTH_LONG).show();
                 }
-                mGetIcons = null;
             }
         }.execute();
     }

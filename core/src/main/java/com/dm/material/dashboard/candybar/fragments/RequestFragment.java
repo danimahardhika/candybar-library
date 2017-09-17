@@ -338,11 +338,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                             .interpolator(new LinearOutSlowInInterpolator())
                             .start();
 
-                    try {
-                        TapIntroHelper.showRequestIntro(getActivity(), mRecyclerView);
-                    } catch (Exception e) {
-                        LogUtil.e(Log.getStackTraceString(e));
-                    }
+                    TapIntroHelper.showRequestIntro(getActivity(), mRecyclerView);
                 } else {
                     mRecyclerView.setAdapter(null);
                     Toast.makeText(getActivity(), getActivity().getResources().getString(

@@ -119,17 +119,19 @@ public class IntentAdapter extends BaseAdapter {
                         new ComponentName(app.applicationInfo.packageName, app.name));
 
                 if (mType == IntentChooserFragment.ICON_REQUEST) {
-                    mAsyncTask = IconRequestBuilderTask.start(mContext, () -> {
-                        mAsyncTask = null;
-                        FragmentManager fm = ((AppCompatActivity) mContext).getSupportFragmentManager();
-                        if (fm != null) {
-                            DialogFragment dialog = (DialogFragment) fm.findFragmentByTag(
-                                    IntentChooserFragment.TAG);
-                            if (dialog!= null) {
-                                dialog.dismiss();
-                            }
-                        }
-                    }, AsyncTask.THREAD_POOL_EXECUTOR);
+                    mAsyncTask = IconRequestBuilderTask.prepare(mContext)
+                            .callback(() -> {
+                                mAsyncTask = null;
+                                FragmentManager fm = ((AppCompatActivity) mContext).getSupportFragmentManager();
+                                if (fm != null) {
+                                    DialogFragment dialog = (DialogFragment) fm.findFragmentByTag(
+                                            IntentChooserFragment.TAG);
+                                    if (dialog!= null) {
+                                        dialog.dismiss();
+                                    }
+                                }
+                            })
+                            .start(AsyncTask.THREAD_POOL_EXECUTOR);
                 } else if (mType == IntentChooserFragment.REBUILD_ICON_REQUEST) {
                     mAsyncTask = PremiumRequestBuilderTask.start(mContext, () -> {
                         mAsyncTask = null;

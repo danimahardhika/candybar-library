@@ -57,6 +57,7 @@ import com.dm.material.dashboard.candybar.receivers.CandyBarBroadcastReceiver;
 import com.dm.material.dashboard.candybar.services.CandyBarWallpapersService;
 import com.dm.material.dashboard.candybar.tasks.IconRequestTask;
 import com.dm.material.dashboard.candybar.tasks.IconsLoaderTask;
+import com.dm.material.dashboard.candybar.utils.Extras;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.dm.material.dashboard.candybar.utils.listeners.SearchListener;
 import com.dm.material.dashboard.candybar.utils.listeners.WallpapersListener;
@@ -131,15 +132,6 @@ public class CandyBarMainActivity extends AppCompatActivity implements
     public static int sInstalledAppsCount;
     public static int sIconsCount;
 
-    private static final String TAG_HOME = "home";
-    private static final String TAG_APPLY = "apply";
-    private static final String TAG_ICONS = "icons";
-    private static final String TAG_REQUEST = "request";
-    private static final String TAG_WALLPAPERS = "wallpapers";
-    private static final String TAG_SETTINGS = "settings";
-    private static final String TAG_FAQS = "faqs";
-    private static final String TAG_ABOUT = "about";
-
     /**
      * @deprecated use {{@link #initMainActivity(Bundle, InAppBillingHelper.Property)}} instead
      */
@@ -150,7 +142,6 @@ public class CandyBarMainActivity extends AppCompatActivity implements
         InAppBillingHelper.Property property = new InAppBillingHelper.Property(licenseChecker, salt, licenseKey,
                 donationProductsId, premiumRequestProductsId, premiumRequestProductsCount);
         initMainActivity(savedInstanceState, property);
-
     }
 
     public void initMainActivity(@Nullable Bundle savedInstanceState, InAppBillingHelper.Property property) {
@@ -163,6 +154,8 @@ public class CandyBarMainActivity extends AppCompatActivity implements
                 Preferences.get(this).isDarkTheme() ?
                         R.color.navigationBarDark : R.color.navigationBar));
         registerBroadcastReceiver();
+
+        Database.get(this.getApplicationContext());
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
@@ -183,7 +176,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements
 
         mPosition = mLastPosition = 0;
         if (savedInstanceState != null) {
-            mPosition = mLastPosition = savedInstanceState.getInt("position", 0);
+            mPosition = mLastPosition = savedInstanceState.getInt(Extras.EXTRA_POSITION, 0);
             onSearchExpanded(false);
         }
 
@@ -241,9 +234,10 @@ public class CandyBarMainActivity extends AppCompatActivity implements
 
     @Override
     protected void onResume() {
-        super.onResume();
         RequestHelper.checkPiracyApp(this);
+        Database.get(this.getApplicationContext()).openDatabase();
         IntentHelper.sAction = IntentHelper.getAction(getIntent());
+        super.onResume();
     }
 
     @Override
@@ -263,12 +257,14 @@ public class CandyBarMainActivity extends AppCompatActivity implements
 
         CandyBarMainActivity.sMissedApps = null;
         CandyBarMainActivity.sHomeIcon = null;
+        Database.get(this.getApplicationContext()).closeDatabase();
         super.onDestroy();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt("position", mPosition);
+        outState.putInt(Extras.EXTRA_POSITION, mPosition);
+        Database.get(this.getApplicationContext()).closeDatabase();
         super.onSaveInstanceState(outState);
     }
 
@@ -284,7 +280,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements
             return;
         }
 
-        if (!mFragmentTag.equals(TAG_HOME)) {
+        if (!mFragmentTag.equals(Extras.TAG_HOME)) {
             mPosition = mLastPosition = 0;
             setFragment(getFragment(mPosition));
             return;
@@ -323,7 +319,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements
 
     @Override
     public void onRequestSelected(int count) {
-        if (mFragmentTag.equals(TAG_REQUEST)) {
+        if (mFragmentTag.equals(Extras.TAG_REQUEST)) {
             String title = getResources().getString(R.string.navigation_view_request);
             if (count > 0) title += " ("+ count +")";
             mToolbarTitle.setText(title);
@@ -368,8 +364,8 @@ public class CandyBarMainActivity extends AppCompatActivity implements
 
     @Override
     public void onPremiumRequestBought() {
-        if (mFragmentTag.equals(TAG_REQUEST)) {
-            RequestFragment fragment = (RequestFragment) mFragManager.findFragmentByTag(TAG_REQUEST);
+        if (mFragmentTag.equals(Extras.TAG_REQUEST)) {
+            RequestFragment fragment = (RequestFragment) mFragManager.findFragmentByTag(Extras.TAG_REQUEST);
             if (fragment != null) fragment.refreshIconRequest();
         }
     }
@@ -407,8 +403,8 @@ public class CandyBarMainActivity extends AppCompatActivity implements
                 }
             }
 
-            if (mFragmentTag.equals(TAG_REQUEST)) {
-                RequestFragment fragment = (RequestFragment) mFragManager.findFragmentByTag(TAG_REQUEST);
+            if (mFragmentTag.equals(Extras.TAG_REQUEST)) {
+                RequestFragment fragment = (RequestFragment) mFragManager.findFragmentByTag(Extras.TAG_REQUEST);
                 if (fragment != null) fragment.refreshIconRequest();
             }
         }
@@ -435,7 +431,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements
         if (mBillingProcessor.loadOwnedPurchasesFromGoogle()) {
             List<String> productsId = mBillingProcessor.listOwnedProducts();
             if (productsId != null) {
-                SettingsFragment fragment = (SettingsFragment) mFragManager.findFragmentByTag(TAG_SETTINGS);
+                SettingsFragment fragment = (SettingsFragment) mFragManager.findFragmentByTag(Extras.TAG_SETTINGS);
                 if (fragment != null) fragment.restorePurchases(productsId,
                         mProperty.premiumRequestProductsId, mProperty.premiumRequestProductsCount);
             }
@@ -473,8 +469,8 @@ public class CandyBarMainActivity extends AppCompatActivity implements
 
     @Override
     public void onInAppBillingRequest() {
-        if (mFragmentTag.equals(TAG_REQUEST)) {
-            RequestFragment fragment = (RequestFragment) mFragManager.findFragmentByTag(TAG_REQUEST);
+        if (mFragmentTag.equals(Extras.TAG_REQUEST)) {
+            RequestFragment fragment = (RequestFragment) mFragManager.findFragmentByTag(Extras.TAG_REQUEST);
             if (fragment != null) fragment.prepareRequest(mBillingProcessor);
         }
     }
@@ -493,13 +489,13 @@ public class CandyBarMainActivity extends AppCompatActivity implements
                 return;
             }
 
-            int size = intent.getIntExtra("size", 0);
+            int size = intent.getIntExtra(Extras.EXTRA_SIZE, 0);
             int offlineSize = Database.get(this).getWallpapersCount();
             Preferences.get(this).setAvailableWallpapersCount(size);
 
             if (size > offlineSize) {
-                if (mFragmentTag.equals(TAG_HOME)) {
-                    HomeFragment fragment = (HomeFragment) mFragManager.findFragmentByTag(TAG_HOME);
+                if (mFragmentTag.equals(Extras.TAG_HOME)) {
+                    HomeFragment fragment = (HomeFragment) mFragManager.findFragmentByTag(Extras.TAG_HOME);
                     if (fragment != null) fragment.resetWallpapersCount();
                 }
 
@@ -761,30 +757,30 @@ public class CandyBarMainActivity extends AppCompatActivity implements
     }
 
     private Fragment getFragment(int position) {
-        mFragmentTag = TAG_HOME;
+        mFragmentTag = Extras.TAG_HOME;
         if (position == 0) {
-            mFragmentTag = TAG_HOME;
+            mFragmentTag = Extras.TAG_HOME;
             return new HomeFragment();
         } else if (position == 1) {
-            mFragmentTag = TAG_APPLY;
+            mFragmentTag = Extras.TAG_APPLY;
             return new ApplyFragment();
         } else if (position == 2) {
-            mFragmentTag = TAG_ICONS;
+            mFragmentTag = Extras.TAG_ICONS;
             return new IconsBaseFragment();
         } else if (position == 3) {
-            mFragmentTag = TAG_REQUEST;
+            mFragmentTag = Extras.TAG_REQUEST;
             return new RequestFragment();
         } else if (position == 4) {
-            mFragmentTag = TAG_WALLPAPERS;
+            mFragmentTag = Extras.TAG_WALLPAPERS;
             return new WallpapersFragment();
         } else if (position == 5) {
-            mFragmentTag = TAG_SETTINGS;
+            mFragmentTag = Extras.TAG_SETTINGS;
             return new SettingsFragment();
         } else if (position == 6) {
-            mFragmentTag = TAG_FAQS;
+            mFragmentTag = Extras.TAG_FAQS;
             return new FAQsFragment();
         } else if (position == 7) {
-            mFragmentTag = TAG_ABOUT;
+            mFragmentTag = Extras.TAG_ABOUT;
             return new AboutFragment();
         }
         return new HomeFragment();
@@ -795,17 +791,17 @@ public class CandyBarMainActivity extends AppCompatActivity implements
             case IntentHelper.ICON_PICKER :
             case IntentHelper.IMAGE_PICKER :
                 mPosition = mLastPosition = 2;
-                mFragmentTag = TAG_ICONS;
+                mFragmentTag = Extras.TAG_ICONS;
                 return new IconsBaseFragment();
             case IntentHelper.WALLPAPER_PICKER :
                 if (WallpaperHelper.getWallpaperType(this) == WallpaperHelper.CLOUD_WALLPAPERS) {
                     mPosition = mLastPosition = 4;
-                    mFragmentTag = TAG_WALLPAPERS;
+                    mFragmentTag = Extras.TAG_WALLPAPERS;
                     return new WallpapersFragment();
                 }
             default :
                 mPosition = mLastPosition = 0;
-                mFragmentTag = TAG_HOME;
+                mFragmentTag = Extras.TAG_HOME;
                 return new HomeFragment();
         }
     }

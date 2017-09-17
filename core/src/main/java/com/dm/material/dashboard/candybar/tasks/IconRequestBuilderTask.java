@@ -11,7 +11,6 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.danimahardhika.android.helpers.core.FileHelper;
-import com.danimahardhika.android.helpers.core.TimeHelper;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.activities.CandyBarMainActivity;
 import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
@@ -48,24 +47,29 @@ import java.util.concurrent.Executor;
 public class IconRequestBuilderTask extends AsyncTask<Void, Void, Boolean> {
 
     private Context mContext;
-    private Database mDatabase;
     private IconRequestBuilderCallback mCallback;
     private String mEmailBody;
     private LogUtil.Error mError;
 
-    private IconRequestBuilderTask(Context context, IconRequestBuilderCallback callback) {
+    private IconRequestBuilderTask(Context context) {
         mContext = context;
-        mDatabase = Database.get(this.mContext);
+    }
+
+    public IconRequestBuilderTask callback(IconRequestBuilderCallback callback) {
         mCallback = callback;
+        return this;
     }
 
-    public static AsyncTask start(@NonNull Context context, @Nullable IconRequestBuilderCallback callback) {
-        return start(context, callback, SERIAL_EXECUTOR);
+    public AsyncTask start() {
+        return start(SERIAL_EXECUTOR);
     }
 
-    public static AsyncTask start(@NonNull Context context, @Nullable IconRequestBuilderCallback callback,
-                                  @NonNull Executor executor) {
-        return new IconRequestBuilderTask(context, callback).executeOnExecutor(executor);
+    public AsyncTask start(@NonNull Executor executor) {
+        return executeOnExecutor(executor);
+    }
+
+    public static IconRequestBuilderTask prepare(@NonNull Context context) {
+        return new IconRequestBuilderTask(context);
     }
 
     @Override
@@ -105,17 +109,16 @@ public class IconRequestBuilderTask extends AsyncTask<Void, Void, Boolean> {
 
                 for (int i = 0; i < RequestFragment.sSelectedRequests.size(); i++) {
                     Request request = CandyBarMainActivity.sMissedApps.get(RequestFragment.sSelectedRequests.get(i));
-                    mDatabase.addRequest(request.getName(),
-                            request.getActivity(),
-                            TimeHelper.getLongDateTime());
+                    Database.get(mContext).addRequest(null, request);
 
                     if (Preferences.get(mContext).isPremiumRequest()) {
-                        mDatabase.addPremiumRequest(
-                                CandyBarApplication.sRequestProperty.getOrderId(),
-                                CandyBarApplication.sRequestProperty.getProductId(),
-                                request.getName(),
-                                request.getActivity(),
-                                TimeHelper.getLongDateTime());
+                        Request premiumRequest = Request.Builder()
+                                .name(request.getName())
+                                .activity(request.getActivity())
+                                .productId(CandyBarApplication.sRequestProperty.getProductId())
+                                .orderId(CandyBarApplication.sRequestProperty.getOrderId())
+                                .build();
+                        Database.get(mContext).addPremiumRequest(null, premiumRequest);
                     }
 
                     if (CandyBarApplication.getConfiguration().isIncludeIconRequestToEmailBody()) {
@@ -132,7 +135,6 @@ public class IconRequestBuilderTask extends AsyncTask<Void, Void, Boolean> {
                 mEmailBody = stringBuilder.toString();
                 return true;
             } catch (Exception e) {
-                mDatabase.close();
                 CandyBarApplication.sRequestProperty = null;
                 RequestFragment.sSelectedRequests = null;
                 LogUtil.e(Log.getStackTraceString(e));

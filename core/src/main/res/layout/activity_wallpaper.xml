@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingPrefix"
     android:id="@+id/rootview"
@@ -15,81 +14,91 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop"/>
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        style="?android:attr/progressBarStyleLarge"/>
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+    <ImageView
+        android:id="@+id/back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/content_margin"
+        android:layout_gravity="top|start"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:theme="@style/RippleStyleLight"/>
+
+    <LinearLayout
+        android:id="@+id/bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="bottom"
+        android:visibility="gone">
+
+        <View
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="?attr/actionBarSize"
-            android:background="@color/wallpaperToolbar"
-            android:visibility="invisible">
+            android:layout_height="@dimen/toolbar_shadow"
+            android:background="@drawable/reverse_shadow"/>
+
+        <LinearLayout
+            android:id="@+id/bottom_bar_container"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/bottom_bar_height"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:background="#66000000">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/content_margin"
-                android:paddingBottom="@dimen/content_margin"
+                android:paddingTop="@dimen/content_padding"
+                android:paddingBottom="@dimen/content_padding"
+                android:paddingLeft="@dimen/content_margin"
+                android:paddingStart="@dimen/content_margin"
+                android:paddingRight="@dimen/content_margin"
+                android:paddingEnd="@dimen/content_margin"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/toolbar_title"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_content_title"
                     android:maxLines="1"
                     android:ellipsize="end"
-                    android:textSize="@dimen/text_content_title"
                     fontPath="fonts/Font-Medium.ttf"/>
 
                 <TextView
-                    android:id="@+id/toolbar_subtitle"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/author"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_content"
                     android:maxLines="1"
                     android:ellipsize="end"
-                    android:textSize="@dimen/text_content"
                     fontPath="fonts/Font-Regular.ttf"/>
-
             </LinearLayout>
 
-        </android.support.v7.widget.Toolbar>
+            <ImageView
+                android:id="@+id/menu_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/content_margin"
+                android:visibility="gone"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:theme="@style/RippleStyle"/>
 
-        <ProgressBar
-            android:id="@+id/progress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="gone"
-            style="?android:attr/progressBarStyleLarge"/>
-
-        <ProgressBar
-            android:id="@+id/bottom_progress"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_gravity="bottom"
-            android:visibility="gone"
-            android:indeterminate="false"
-            android:progressDrawable="@drawable/progressbar_track_flat"
-            style="?android:attr/progressBarStyleHorizontal"/>
-
-    </FrameLayout>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="@dimen/fab_size"
-        android:layout_height="@dimen/fab_size"
-        android:layout_gravity="bottom|end"
-        android:layout_marginRight="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
-        android:visibility="gone"
-        app:backgroundTint="?attr/colorAccent" />
-
+            <ImageView
+                android:id="@+id/menu_apply"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/content_margin"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:theme="@style/RippleStyle"/>
+        </LinearLayout>
+    </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

@@ -183,12 +183,16 @@ public class CreditsFragment extends DialogFragment {
             @Override
             protected void onPostExecute(Boolean aBoolean) {
                 super.onPostExecute(aBoolean);
+                mGetCredits = null;
+
+                if (getActivity() == null) return;
+                if (getActivity().isFinishing()) return;
+
                 if (aBoolean) {
                     mListView.setAdapter(new CreditsAdapter(getActivity(), credits));
                 } else {
                     dismiss();
                 }
-                mGetCredits = null;
             }
         }.execute();
     }

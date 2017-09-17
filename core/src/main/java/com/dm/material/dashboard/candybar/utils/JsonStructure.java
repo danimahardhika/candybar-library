@@ -29,25 +29,25 @@ public class JsonStructure {
     }
 
     @Nullable
-    public String arrayName() {
+    public String getArrayName() {
         return mBuilder.mArrayName;
     }
 
     @Nullable
-    public String name() {
+    public String getName() {
         return mBuilder.mName;
     }
 
-    public String author() {
+    public String getAuthor() {
         return mBuilder.mAuthor;
     }
 
-    public String url() {
+    public String getUrl() {
         return mBuilder.mUrl;
     }
 
     @Nullable
-    public String thumbUrl() {
+    public String getThumbUrl() {
         return mBuilder.mThumbUrl;
     }
 
