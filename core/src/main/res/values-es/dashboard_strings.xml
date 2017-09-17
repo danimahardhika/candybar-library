@@ -64,7 +64,7 @@ No podrás utilizar la aplicación.</string>
     <string name="tap_intro_request_send_desc">Pulsa aquí para enviar las aplicaciones perdidas seleccionadas</string>
     <string name="tap_intro_request_premium">Solicitud de un icono premium</string>
     <string name="tap_intro_request_premium_desc">Pulsa aquí para comprar el paquete de solicitud de paquete de iconos, con la solicitud premium de iconos puedes obtener tus aplicaciones solicitadas más rápido.</string>
-    <string name="tap_intro_wallpapers_option">Opciones del fonos de pantalla</string>
+    <string name="tap_intro_wallpapers_option">Opciones de fondos de pantalla</string>
     <string name="tap_intro_wallpapers_option_desc">Pulsa aquí y mantén para mostrar las opciones del fondo de pantalla, %s establecer fondo de pantalla.</string>
     <string name="tap_intro_wallpapers_option_desc_download">Descargar o</string>
     <string name="tap_intro_wallpapers_preview">Vista preliminar del fondo de pantalla</string>

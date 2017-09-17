@@ -3,7 +3,7 @@
 
     <string-array name="questions">
         <!-- What is a launcher -->
-        <item>¿Qué es una launcher?</item>
+        <item>¿Qué es un launcher?</item>
         <!-- What is an icon pack -->
         <item>¿Qué es un paquete de iconos?</item>
         <!-- How do i use an icon pack? -->
