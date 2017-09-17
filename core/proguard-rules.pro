@@ -19,6 +19,10 @@
 -keep class !android.support.v7.internal.view.menu.**,android.support.** {*;}
 -keep class android.support.v7.graphics.** { *; }
 
+-keep class android.support.design.widget.** { *; }
+-keep interface android.support.design.widget.** { *; }
+-dontwarn android.support.design.**
+
 -renamesourcefileattribute SourceFile
 -keepattributes SourceFile,LineNumberTable
 
