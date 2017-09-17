@@ -5,25 +5,25 @@
     <string name="navigation_view_apply">Applica</string>
     <string name="navigation_view_icons">Icone</string>
     <string name="navigation_view_request">Richiesta Icone</string>
-    <string name="navigation_view_wallpapers">Wallpapers</string>
+    <string name="navigation_view_wallpapers">Sfondi</string>
     <string name="navigation_view_settings">Impostazioni</string>
-    <string name="navigation_view_faqs">FAQs</string>
+    <string name="navigation_view_faqs">FAQ</string>
     <string name="navigation_view_about">Info</string>
     <string name="navigation_view_donate">Supporta lo sviluppo</string>
     <!-- Muzei -->
     <string name="muzei_settings">Impostazioni Muzei</string>
     <string name="minute">Minuti</string>
-    <string name="hour">Ore</string>
+    <string name="hour">Ora</string>
     <string name="save_setting">Salva</string>
-    <string name="muzei_refresh_duration">Reimposta Durata</string>
-    <string name="muzei_wifi_only">Reimposta Durata WiFi</string>
-    <string name="muzei_downloaded_only">carica solo i Wallpapers scaricati</string>
-    <string name="muzei_settings_ignored">Icon pack non contiene Wallpapers, impostazione ignorata.</string>
+    <string name="muzei_refresh_duration">Ricarica durata</string>
+    <string name="muzei_wifi_only">Ricarica solo dal WiFi</string>
+    <string name="muzei_downloaded_only">Carica solo gli sfondi scaricati</string>
+    <string name="muzei_settings_ignored">L\'icon pack non contiene sfondi, impostazione ignorata.</string>
     <string name="muzei_settings_saved">Impostazioni Salvate</string>
     <!-- Menu -->
     <string name="menu_search">Cerca</string>
-    <string name="menu_save">Salva sul Dispositivo</string>
-    <string name="menu_wallpaper_settings">Impostazioni Wallpapers</string>
+    <string name="menu_save">Salva sul dispositivo</string>
+    <string name="menu_wallpaper_settings">Impostazioni Sfondi</string>
     <string name="menu_select_all">Seleziona Tutto</string>
     <!-- Dialog -->
     <string name="open">Apri</string>
@@ -36,60 +36,59 @@
     <string name="search_faqs">Domande o risposte</string>
     <string name="search_icon">Nome Icona</string>
     <!-- Changelog -->
-    <string name="changelog_version">Novità</string>
+    <string name="changelog_version">Versione</string>
     <!-- InAppBilling -->
-    <string name="billing_load_product_failed">impossibile caricare i prodotti \"InApp Purchase\"</string>
+    <string name="billing_load_product_failed">Impossibile caricare i prodotti acquistati InApp</string>
     <!-- License -->
     <string name="license_checking">Cerco Licenza …</string>
     <string name="license_check">Licenza Trovata!</string>
-    <string name="license_check_success">Ricerca Licenza fatta, grazie per aver scaricato l\'app dal PlayStore.</string>
+    <string name="license_check_success">Check di licenza superato, grazie per aver scaricato l\'app dal Play Store.</string>
     <string name="license_check_failed">Ricerca Licenza fallita, non hai scaricato l\'app dal PlayStore.
 Non puoi usare l\'app.</string>
-    <string name="license_check_retry">Impossibile cercare la Licenza, riprova tra qualche minuto.</string>
+    <string name="license_check_retry">Impossibile cercare la Licenza, riprova tra poco.</string>
     <!-- Share -->
     <string name="share_app_title">Hey! Ti consiglio questa applicazione %s</string>
     <string name="share_app_body">Guarda %1$s, questo icon pack è fantastico! %2$s</string>
     <!-- Tap Intro -->
-    <string name="tap_intro_home_navigation">Menù Navigazione</string>
-    <string name="tap_intro_home_navigation_desc">Fai un Tap qui oppure fai uno Swype verso destra per aprire il Menù Navigazione</string>
+    <string name="tap_intro_home_navigation">Menù di navigazione</string>
+    <string name="tap_intro_home_navigation_desc">Tocca qui oppure fai uno swype verso destra per aprire il menù di navigazione</string>
     <string name="tap_intro_home_apply">Applica Icone</string>
     <string name="tap_intro_home_apply_desc">Clicca per applicare %s</string>
     <string name="tap_intro_icons_search">Cerca</string>
-    <string name="tap_intro_icons_search_desc">Clicca qui per cercare un\'icona</string>
-    <string name="tap_intro_request_select">Selezione le app non funzionanti</string>
-    <string name="tap_intro_request_select_desc">Clicca qui per selezionare le icone non funzionanti</string>
-    <string name="tap_intro_request_select_all">Seleziona tutte le icone non funzionanti</string>
-    <string name="tap_intro_request_select_all_desc">Clicca qui per selezionare tutte le icone da inviare come richiesta.</string>
-    <string name="tap_intro_request_send">Invia Richiesta Icone</string>
-    <string name="tap_intro_request_send_desc">Clicca qui per inviare le icone selezionate</string>
+    <string name="tap_intro_icons_search_desc">Tocca qui per cercare un\'icona</string>
+    <string name="tap_intro_request_select">Seleziona le app mancanti</string>
+    <string name="tap_intro_request_select_desc">Tocca qui per selezionare le app mancanti per una richiesta icone</string>
+    <string name="tap_intro_request_select_all">Seleziona tutte le app mancanti</string>
+    <string name="tap_intro_request_select_all_desc">Tocca qui per selezionare tutte le app mancanti per una richiesta icone</string>
+    <string name="tap_intro_request_send">Invia richiesta icone</string>
+    <string name="tap_intro_request_send_desc">Tocca qui per inviare le app selezionate</string>
     <string name="tap_intro_request_premium">Richiesta icone Premium</string>
     <string name="tap_intro_request_premium_desc">Clicca qui per acquistare la Richiesta Premium, con questa funzione le tue icone avranno la precedenza sulle altre richieste.</string>
-    <string name="tap_intro_wallpapers_option">Opzioni Wallpapers</string>
-    <string name="tap_intro_wallpapers_option_desc">Clicca e tieni premuto qui per mostrare le opzioni del wallpaper, %s applica wallpaper.</string>
+    <string name="tap_intro_wallpapers_option">Opzioni sfondo</string>
+    <string name="tap_intro_wallpapers_option_desc">Tocca e tieni premuto qui per mostrare le opzioni dello sfondo, %s applica sfondo.</string>
     <string name="tap_intro_wallpapers_option_desc_download">Scarica o</string>
-    <string name="tap_intro_wallpapers_preview">Anteprima Wallpaper</string>
-    <string name="tap_intro_wallpapers_preview_desc">Clicca qui per visualizzare l\'anteprima delle dimensioni reali del Wallpapers</string>
-    <string name="tap_intro_wallpaper_preview_settings">Impostazioni Wallpapers</string>
-    <string name="tap_intro_wallpaper_preview_settings_desc">Clicca qui per aprire Impostazioni Wallpapers.
-Applicare i wallpapers alla lock screen (Android Nougat) o abilitare il Wallpapers crop.</string>
-    <string name="tap_intro_wallpaper_preview_save">Salva wallpapers</string>
-    <string name="tap_intro_wallpaper_preview_save_desc">Clicca qui per scaricare e salvare il wallpaper sul tuo dispositivo.</string>
-    <string name="tap_intro_wallpaper_preview_apply">Applica wallpaper</string>
+    <string name="tap_intro_wallpapers_preview">Anteprima sfondo</string>
+    <string name="tap_intro_wallpapers_preview_desc">Tocca qui per visualizzare l\'anteprima delle dimensioni reali dello sfondo</string>
+    <string name="tap_intro_wallpaper_preview_settings">Impostazioni sfondo</string>
+    <string name="tap_intro_wallpaper_preview_settings_desc">Tocca qui per aprire le impostazioni degli sfondi. Puoi scegliere se impostare lo sfondo come lockscreen su Android Nougat (o superiore) o abilitare il ritaglio.</string>
+    <string name="tap_intro_wallpaper_preview_save">Salva sfondo</string>
+    <string name="tap_intro_wallpaper_preview_save_desc">Tocca qui per scaricare e salvare lo sfondo sul tuo dispositivo così potrai utilizzarlo successivamente</string>
+    <string name="tap_intro_wallpaper_preview_apply">Applica sfondo</string>
     <string name="tap_intro_wallpaper_preview_apply_desc">Imposta come sfondo della home</string>
     <!-- Home -->
-    <string name="home_more_apps_header">Altre Apps</string>
-    <string name="home_more_apps">Altre app sul PlayStore</string>
+    <string name="home_more_apps_header">Altre App</string>
+    <string name="home_more_apps">Guarda le altre app pubblicate sul Play Store</string>
     <string name="home_rate_and_review">Valuta e Recensisci</string>
     <string name="home_apply_icon_pack">Applica %s</string>
     <string name="home_donate">Dona</string>
-    <string name="home_donate_desc">Supporta lo svilluppatore dell\'icon pack</string>
-    <string name="home_icons">Icone customizzate</string>
-    <string name="home_icon_dimension">%s dimensione pixel icone</string>
-    <string name="home_loud_wallpapers">%d cloud wallpapers</string>
-    <string name="home_muzei">Muzei live wallpaper</string>
-    <string name="home_icon_request_installed_apps">%d icone installate in totale</string>
-    <string name="home_icon_request_themed_apps">%d icone supportate</string>
-    <string name="home_icon_request_missed_apps">%d icone mancanti</string>
+    <string name="home_donate_desc">Supporta lo sviluppatore dell\'icon pack</string>
+    <string name="home_icons">Icone personalizzate</string>
+    <string name="home_icon_dimension">icone di %s pixel</string>
+    <string name="home_loud_wallpapers">%d sfondi in cloud</string>
+    <string name="home_muzei">Muzei Live Wallpaper</string>
+    <string name="home_icon_request_installed_apps">%d app installate in totale</string>
+    <string name="home_icon_request_themed_apps">%d app supportate</string>
+    <string name="home_icon_request_missed_apps">%d app mancanti</string>
     <!-- Apply -->
     <string name="apply_installed">Launcher installati</string>
     <string name="apply_supported">Launcher supportati</string>
@@ -102,7 +101,7 @@ Applicare i wallpapers alla lock screen (Android Nougat) o abilitare il Wallpape
     <string name="apply_lg_home">Per applicare questo Icon pack apri Settings - Display - Home Screen - Theme</string>
     <string name="apply_lg_home_not_available">LG Home non è disponibile su questo dispositivo</string>
     <string name="apply_lg_home_failed">Impossibile aprire le impostazioni di LG Home, prova ad applicare l\'icon pack manualmente dalle impostazioni del Launcher.</string>
-    <string name="apply_lg_home_nougat">LG Home su Android Nougat non supporta più gli Icon Pack. Scarica un Launcher dal Play Store per utilizzare questa app.</string>
+    <string name="apply_lg_home_nougat">LG Home su Android Nougat non supporta piu gli Icon Pack. Scarica un Launcher dal Play Store per utilizzare questa app.</string>
     <!-- Icons -->
     <string name="icons_load_failed">Impossibile caricare le icone</string>
     <!-- Request -->
@@ -135,95 +134,96 @@ devi utilizzarle tutte prima di acquistare di nuovo la funzione Premium</string>
 \n\nDevi prima completare la funzione Premium per poter usare la richiesta di icone gratuita di nuovo.</string>
     <string name="premium_request_consume_failed">Impossibile utilizzare la funzione Premium, controlla che il tuo dispositivo sia connesso ad internet e prova di nuovo.
 Vai nelle Impostazioni per resettare la funzione Premium</string>
-    <string name="premium_request_rebuilding">Rebuilding Richiesta Icone Premium …</string>
-    <string name="premium_request_rebuilding_empty">Nessuna Richiesta Premium fatta</string>
+    <string name="premium_request_rebuilding">Riscrivendo Richiesta Premium …</string>
+    <string name="premium_request_rebuilding_empty">Nessuna Richiesta Premium effettuata</string>
     <string name="premium_request_exist">Hai ancora a disposizione la Richiesta Icone Premium.
 Apri Impostazioni e scegli \"Azzera Acquisti\".</string>
-    <string name="premium_request_required">Devi acquistare una richiesta premium per inviare una richiesta di icone.</string>
+    <string name="premium_request_required">Devi acquistare una richiesta premium per fare una richiesta icone</string>
     <!-- Wallpapers -->
-    <string name="wallpaper_new_added">Nuovi Wallpaper</string>
-    <string name="wallpaper_downloading">Scarico wallpaper …</string>
-    <string name="wallpaper_download_failed">Impossibile scaricare wallpaper</string>
-    <string name="wallpaper_download_cancelled">Download wallpaper cancellato</string>
-    <string name="wallpaper_downloaded">Wallpaper salvato in</string>
-    <string name="wallpaper_download_exist">Il wallpaper con il nome  %s è già presente, vuoi sostituirlo?</string>
+    <string name="wallpaper_new_added">Nuovi sfondi</string>
+    <string name="wallpaper_downloading">Download sfondo …</string>
+    <string name="wallpaper_download_failed">Impossibile scaricare lo sfondo</string>
+    <string name="wallpaper_download_cancelled">Download sfondo interrotto</string>
+    <string name="wallpaper_downloaded">Sfondo salvato in</string>
+    <string name="wallpaper_download_exist">Lo sfondo con il nome  %s è già presente, vuoi sostituirlo?</string>
     <string name="wallpaper_download_exist_replace">Sostituisci</string>
     <string name="wallpaper_download_exist_new">Crea Nuovo</string>
-    <string name="wallpaper_loading">Carico Wallpaper …</string>
-    <string name="wallpaper_applying">Applico wallpaper …</string>
-    <string name="wallpaper_applied">Wallpaper applicato</string>
-    <string name="wallpaper_apply_failed">Impossibile applicare wallpapers</string>
-    <string name="wallpaper_apply_cancelled">Azione Applico wallpaper cancelata</string>
+    <string name="wallpaper_loading">Caricando lo sfondo …</string>
+    <string name="wallpaper_applying">Applicando lo sfondo …</string>
+    <string name="wallpaper_applied">Sfondo applicato</string>
+    <string name="wallpaper_apply_failed">Impossibile applicare lo sfondo</string>
+    <string name="wallpaper_apply_cancelled">\"Applica sfondo\" interrotto</string>
     <string name="connection_failed">Impossibile recuperare i dati dal server</string>
-    <string name="wallpaper_apply">Imposta come Wallpaper</string>
-    <string name="wallpaper_apply_scroll">Impostazione taglia wallpapers non è abilitata da queste opzioni</string>
-    <string name="wallpaper_settings_crop">Wallpaper tagliato</string>
-    <string name="wallpaper_settings_crop_desc">Abilita taglio wallpaper. Il wallpaper sarà ritagliato come visualizzato nell\'anteprima.
-Pinch o doppio tap per modificare le dimensioni.</string>
+    <string name="wallpaper_apply">Imposta come sfondo</string>
+    <string name="wallpaper_apply_scroll">Ritaglia sfondo sarà disabilitata se applichi questa opzione</string>
+    <string name="wallpaper_settings_crop">Sfondo ritagliato</string>
+    <string name="wallpaper_settings_crop_desc">Abilita ritaglio sfondo. Lo sfondo sarà ritagliato basandosi sull\'anteprima attualmente visualizzato.
+Usa il pinch to zoom o il doppio tocco per modificare le dimensioni dello sfondo.</string>
     <string name="wallpaper_settings_lockscreen">Sfondo Lockscreen</string>
-    <string name="wallpaper_settings_lockscreen_desc">il wallpaper è stato applicato sulla homescreen e sulla lockscreen</string>
-    <string name="wallpaper_settings_lockscreen_not_available">I wallpapers nella lockscreen sono disponibili soltanto su Android Nougat</string>
+    <string name="wallpaper_settings_lockscreen_desc">Impostare lo sfondo sia sulla schermata home che su quella di sblocco</string>
+    <string name="wallpaper_settings_lockscreen_not_available">Gli sfondi per la lockscreen sono disponibili soltanto su Android Nougat o superiore</string>
     <!-- Preferences -->
-    <string name="pref_data_header">Data &amp; Cache</string>
+    <string name="pref_data_header">Data e Cache</string>
     <string name="pref_data_cache">Pulisci Cache</string>
-    <string name="pref_data_cache_desc">"Rimuovi le cache create sulla memoria del tuo dispositivo per l'invio di richieste di icone, visualizzazioni di immagini e altro. "</string>
+    <string name="pref_data_cache_desc">Rimuovi la cache delle immagini dal tuo dispositivo, creata dopo aver aperto quest\'app, richiesto icone mancanti e aver caricato le miniature degli sfondi sul cloud.</string>
     <string name="pref_data_cache_size">Dimensioni Cache: %s</string>
-    <string name="pref_data_cache_clear_dialog">Sei sicuro di voler cancellare le cache?</string>
-    <string name="pref_data_cache_cleared">Cache cancellate</string>
-    <string name="pref_data_request">Pulisci \"Richiesta icone\" Data</string>
-    <string name="pref_data_request_desc">Rimuovi i \"Data\" della richiesta icone create dopo aver inviato una richiesta di icone mancanti?</string>
-    <string name="pref_data_request_clear_dialog">Sei sicuro di voler cancellare i \"Data\"?</string>
-    <string name="pref_data_request_cleared">\"Data\" Richiesta icone cancellati</string>
+    <string name="pref_data_cache_clear_dialog">Sei sicuro di voler svuotare la cache?</string>
+    <string name="pref_data_cache_cleared">Cache svuotata</string>
+    <string name="pref_data_request">Pulisci i dati della richiesta icone</string>
+    <string name="pref_data_request_desc">Rimuovi i dati della richiesta icone, creati dopo aver richiesto le app mancanti.</string>
+    <string name="pref_data_request_clear_dialog">Sei sicuro di voler cancellare i dati della richiesta icone?</string>
+    <string name="pref_data_request_cleared">Dati richiesta icone cancellati</string>
     <string name="pref_premium_request_header">Richiesta Icone Premium</string>
     <string name="pref_premium_request_restore">Azzera Acquisti</string>
-    <string name="pref_premium_request_restore_desc">Azzera richieste premium dopo aver reinstallato l\'icon pack?</string>
-    <string name="pref_premium_request_restore_success">Richiesta Icone Premium Azzerato</string>
-    <string name="pref_premium_request_restore_empty">Non hai nessun pacchetto di richieste premium acquistato</string>
+    <string name="pref_premium_request_restore_desc">Ripristina richieste premium dopo aver reinstallato l\'icon pack</string>
+    <string name="pref_premium_request_restore_success">Richieste Premium ripristinate</string>
+    <string name="pref_premium_request_restore_empty">Non hai acquistato nessun pacchetto</string>
     <string name="pref_premium_request_rebuild">Rebuild Richiesta Icone Premium</string>
-    <string name="pref_premium_request_rebuild_desc">Inviare tutti i dati della Richiesta Icone Premium</string>
+    <string name="pref_premium_request_rebuild_desc">Raccogli tutti i dati delle richieste premium di icone per rinviarli</string>
     <string name="pref_theme_header">Tema</string>
     <string name="pref_theme_dark">Tema scuro</string>
-    <string name="pref_theme_dark_desc">Usa il tema scuro come default</string>
-    <string name="pref_wallpaper_header">Wallpaper</string>
-    <string name="pref_wallpaper_location">Destinazione Wallpaper salvati</string>
-    <string name="pref_wallpaper_location_desc">Prova prima a scaricare un wallpaper</string>
+    <string name="pref_theme_dark_desc">Usa colori scuri per il tema dell\'applicazione</string>
+    <string name="pref_wallpaper_header">Sfondo</string>
+    <string name="pref_wallpaper_location">Destinazione sfondi salvati</string>
+    <string name="pref_wallpaper_location_desc">Prova prima a scaricare almeno uno sfondo</string>
     <string name="pref_language_header">Lingua</string>
-    <string name="pref_others_report_bugs">Riporta Bugs</string>
-    <string name="pref_others_changelog">Novità</string>
-    <string name="pref_others_reset_tutorial">Reset Tutorial</string>
-    <string name="pref_others_reset_tutorial_reset">Tutorial Reset</string>
+    <string name="pref_others_header">Altri</string>
+    <string name="pref_others_report_bugs">Riporta Bug</string>
+    <string name="pref_others_changelog">Changelog</string>
+    <string name="pref_others_reset_tutorial">Resetta il tutorial</string>
+    <string name="pref_others_reset_tutorial_reset">Tutorial resettato</string>
     <!-- Permission -->
-    <string name="permission_storage_denied">E\' necessario abilitare i permessi per salvare i wallpaper</string>
+    <string name="permission_storage_denied">Sono necessari i permessi di memorizzazione per salvare lo sfondo</string>
     <!-- Intent -->
-    <string name="email_client">Scegli quale applicazione mail usare</string>
-    <string name="no_email_app">Nessun applicazione email</string>
-    <string name="no_browser">Nessuna applicazione per aprire url</string>
+    <string name="email_client">Scegli il client per le email</string>
+    <string name="no_email_app">Nessun\'applicazione per inviare email</string>
+    <string name="no_browser">Nessun\'applicazione per aprire url</string>
     <string name="intent_email_failed">Impossibile visualizzare l\'applicazione email</string>&gt;
     
-    <string name="intent_email_supported">Supportata</string>
-    <string name="intent_email_recommended">raccomandata</string>
-    <string name="intent_email_not_supported">Non supportata</string>
+    <string name="intent_email_supported">Supportato</string>
+    <string name="intent_email_recommended">Raccomandato</string>
+    <string name="intent_email_not_supported">Non supportato</string>
     <string name="intent_email_not_supported_message">hai selezionato un\'applicazione non supportate, per favore, seleziona un\'altra app</string>
     <!-- About -->
     <string name="about_contributors_title">Collaboratori</string>
     <!-- Report Bugs -->
-    <string name="report_bugs_desc">Per favore, inserisci una descrizione del bug che hai riscontrato</string>
+    <string name="report_bugs_desc">Per favore, descrivi che tipo di problema vuoi riportare</string>
     <string name="report_bugs_desc_hint">Descrizione</string>
     <string name="report_bugs_desc_empty">Per favore, inserisci una descrizione</string>
     <string name="report_bugs_building">Creazione lista activity …</string>
-    <string name="report_bugs_failed">impossibile creare una lista activity</string>
+    <string name="report_bugs_failed">Impossibile creare lista activity</string>
     <string name="report_bugs_send">Invia Report</string>
     <!-- Support Development -->
-    <string name="donation_success">Grazie per aver donato! ne farò un buon uso!</string>
+    <string name="donation_success">Grazie per aver fatto una donazione! Ne farò un buon uso!</string>
     <!-- Crash Report -->
     <string name="crash_report">Crash Report</string>
-    <string name="crash_report_message">Sfortunatamente l\'app %s si è interrotta inaspettatamente. Scegli Invia Report per aiutarci a risolvere il problema appena riscontrato</string>
+    <string name="crash_report_message">Sfortunatamente %s si è chiusa inaspettatamente. Scegli \"Invia Report\" per aiutare lo sviluppatore a risolvere il problema.</string>
     <string name="crash_report_send">" Invia Report"</string>
     <!-- Please don't modify this -->
     <string name="about_dashboard">CandyBar</string>
-    <string name="about_dashboard_dev">Candybar è un progetto in Open Source sotto Licenza Apache 2.0 per Android disponibile su GitHub sviluppata da Dani Mahardhika</string>
-    <string name="about_open_source_licenses">Licenza Open Source</string>
-    <string name="about_dashboard_contributors">candyBar Collaboratori</string>
-    <string name="about_dashboard_translator">CandyBar Traduttori</string>
+    <string name="about_dashboard_dev">Candybar è un progetto Open Source sotto Licenza Apache 2.0 per Android disponibile su GitHub e gratis da usare, sviluppata da Dani Mahardhika.</string>
+    <string name="about_open_source_licenses">Licenze Open Source</string>
+    <string name="about_dashboard_contributors">Collaboratori della CandyBar</string>
+    <string name="about_dashboard_translator">Traduttori della CandyBar</string>
     <!-- DrawerToggle -->
 </resources>

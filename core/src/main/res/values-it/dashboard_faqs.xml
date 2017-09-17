@@ -3,7 +3,7 @@
 
     <string-array name="questions">
         <!-- What is a launcher -->
-        <item>Che cosa è un Launcher?</item>
+        <item>Che cosa è un launcher?</item>
         <!-- What is an icon pack -->
         <item>Che cosa è un icon pack?</item>
         <!-- How do i use an icon pack? -->
@@ -15,26 +15,26 @@
         <!-- I can\'t see a complete icon name -->
         <item>Non posso visualizzare l\'intero nome delle icone</item>
         <!-- How can i replace icons with an alternate icon? -->
-        <item>Come posso sostituire un\'icona con le alternative presenti nell\'icon pack?</item>
+        <item>Come posso sostituire le icone con una alternativa?</item>
         <!-- How do i request an icon? -->
         <item>Come posso richiedere un\'icona mancante?</item>
         <!-- How can i restore remaining Premium Requests after reinstalling the app? -->
         <item>Come posso resettare la funzione \"Richiesta Premium\" dopo aver reinstallato l\'app?</item>
         <!-- After restarting my phone, the icon pack is not applied, it restore to defaults? -->
-        <item>Dopo il riavvio l\'icon pack non è più applicato, le impostazioni sono ritornate come da default?</item>
+        <item>Dopo aver riavviato il mio dispositivo, l\'icon pack non è applicato, ripristina i valori predefiniti?</item>
         <!-- Why do the icons looks jaggy or pixelated on my phone? -->
         <item>Perche le icone si vedono sgranate o pixellate sul mio telefono?</item>
         <!-- I can see the icon included in all icons,
             but why isn\'t the actual icon on app drawer changed? -->
-        <item>L\'icona è presente all\'interno dell\'icon pack ma non si applica automaticamente, perchè?</item>
+        <item>Perché l\'icona è presente all\'interno dell\'icon pack ma non si applica automaticamente?</item>
         <!-- What is the \"report bugs\" option? -->
-        <item>Che cosa è l\'opzione \"Riporta bugs\"?</item>
+        <item>Che cosa è l\'opzione \"Riporta bug\"?</item>
         <!-- My launcher is listed in the google play description, but why isn\'t it included in apply section? -->
-        <item>Il mio launcher risulta compatibile nella descrizione del Playstore ma non appare nella sezione \"Applica\" dell\'app, perchè?</item>
+        <item>Perché il mio launcher è elencato nella descrizione del Play Store ma non appare nella sezione \"Applica\" dell\'app?</item>
         <!-- Wallpaper can\'t be applied, just showing black screen? -->
         <item>Non riesco a caricare i wallpapers, vedo solo un\'immagine nera, perchè?</item>
         <!-- Muzei: How to load downloaded wallpapers only? -->
-        <item>Muzei: Come posso far caricare solo i wallpapers scaricati?</item>
+        <item>Muzei: Come caricare solo gli sfondi scaricati?</item>
         <!-- Muzei: I don\'t want to keep downloading wallpapers each time the wallpaper changes? -->
         <item>Muzei: Non voglio che Muzei continui a scaricare gli sfondi ogni volta che ne cambia uno.</item>
         <!-- Muzei: I only want to use specific wallpapers? -->
@@ -87,9 +87,9 @@ Per risolvere basta spostarla sulla memoria interna del tuo dispositivo.</item>
 Puoi ovviare a questo problema scalando la dimensione delle icone (115 / 120%) o cambiando il launcher che stai usando.</item>
         <!-- I can see the icon included in all icons,
             but why isn\'t the actual icon on app drawer changed? -->
-        <item>Apri le Impostazioni e cerca la voce \"Riporta Bugs\"</item>
+        <item>\"Riporta Bug\" è una funzione che serve a riportare eventuali errori riscontrati durante il normale utilizzo dell\'icon pack.</item>
         <!-- What is the \"report bugs\" option? -->
-        <item>\"Riporta Bugs\" è una funzione che serve a riportare eventuali errori riscontrati durante il normale utilizzo dell\'icon pack.</item>
+        <item>Apri le Impostazioni e cerca la voce \"Riporta Bug\"</item>
         <!-- My launcher is listed in the google play description, but why isn\'t it included in apply section? -->
         <item>Non tutti i Launcher permettono di applicare direttamente l\'icon pack da questa applicazione.
 In questo caso puoi applicare l\'icon pack manualmente dalle impostazioni del launcher che stai usando.</item>
@@ -104,22 +104,21 @@ In alternativa puoi scaricare il wallpapers sul tuo dispositivo, quindi dalle ga
 Qui vedrai un\'opzione che ti permetterà di caricare solo i Wallpapers scaricati. (ricorda che prima devi scaricare i Wallpapers dall\'applicazione)</item>
         <!-- Muzei: I don\'t want to keep downloading wallpapers each time the wallpaper changes? -->
         <item>Se hai già scaricato un Wallpapers, questo verrà caricato direttamente nella memoria interna del tuo dispositivo.
-Muzei quindi non scaricherà più i Wallpapers dal Cloud, ma li caricherà direttamente dalla memoria interna del tuo dispositivo.</item>
+            Muzei quindi non scaricherà più i Wallpapers dal Cloud, ma li caricherà direttamente dalla memoria interna del tuo dispositivo.</item>
         <!-- Muzei: I only want to use specific wallpapers? -->
         <item>Apri l\'app e scarica i Wallpapers che vuoi usare in Muzei.
 Apri le impostazioni di Muzei quindi scegli l\'opzione per caricare solo i Wallpapers scaricati.</item>
         <!-- Why are Read &amp; Write External Storage permission needed? -->
-        <item>Questa funzione è usata per leggere e scrive le \"chace\" ed inviare la richiesta di icone mancanti.</item>
+        <item>È usata per leggere e scrive la cache e memorizzare i dati sulla richiesta di icone.</item>
         <!-- Why is Internet permission needed? -->
-        <item>Questa funzione è usata per caricare i Wallpapers presenti nei server cloud e per poterli scaricare.</item>
+        <item>È usata per caricare gli sfondi presenti sul cloud e per poterli scaricare.</item>
         <!-- Why is Access Network State permission needed? -->
         <item>Questa funzione serve per verificare se il tuo dispositivo ha una connessione internet attiva oppure no.</item>
         <!-- Why is Access Wifi State permission needed? -->
-        <item>Questa funzione serve a vedere se il tuo dispositivo è connesso ad una rete WiFi oppure no, e per poter caricare i Wallpapers su Muzei.</item>
+        <item>Questa funzione serve a vedere se il tuo dispositivo è connesso ad una rete WiFi oppure no, e per poter caricare gli sfondi su Muzei.</item>
         <!-- Why is Set Wallpaper permission needed? -->
-        <item>Questa funzione serve ad applicare i wallpapers direttamente dall\'interno dell\'applicazione.</item>
+        <item>Questa funzione serve ad applicare gli sfondi direttamente dall\'interno dell\'applicazione.</item>
         <!-- Why is Wake Lock Permission needed? -->
-        <item>questa funzione è usata da Muzei Live Wallpapers</item>
+        <item>È usata da Muzei Live Wallpaper</item>
     </string-array>
-
 </resources>
