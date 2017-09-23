@@ -4,6 +4,7 @@
     <string-array name="languages_name">
         <item>English</item>
         <item>Bengali</item>
+        <item>Chinese Simplified</item>
         <item>French</item>
         <item>German</item>
         <item>Hindi</item>
@@ -18,6 +19,7 @@
     <string-array name="languages_code">
         <item>en_US</item>
         <item>bn_IN</item>
+        <item>zh_CN</item>
         <item>fr_FR</item>
         <item>de_DE</item>
         <item>hi_IN</item>
