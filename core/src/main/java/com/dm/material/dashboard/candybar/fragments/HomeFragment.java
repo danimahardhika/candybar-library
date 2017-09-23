@@ -19,6 +19,7 @@ import com.dm.material.dashboard.candybar.helpers.TapIntroHelper;
 import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
 import com.dm.material.dashboard.candybar.items.Home;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
+import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.dm.material.dashboard.candybar.utils.listeners.HomeListener;
 
 import java.util.ArrayList;
@@ -101,7 +102,10 @@ public class HomeFragment extends Fragment implements HomeListener{
                 }
             }
 
-            adapter.addNewContent(home);
+            int dimensionsIndex = adapter.getDimensionsIndex();
+            if (dimensionsIndex < 0) {
+                adapter.addNewContent(home);
+            }
             return;
         }
 

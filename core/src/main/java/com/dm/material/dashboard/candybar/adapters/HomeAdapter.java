@@ -621,6 +621,21 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return index;
     }
 
+    public int getDimensionsIndex() {
+        int index = -1;
+        for (int i = 0; i < getItemCount(); i++) {
+            int type = getItemViewType(i);
+            if (type == TYPE_CONTENT) {
+                int pos = i - 1;
+                if (mHomes.get(pos).getType() == Home.Type.DIMENSION) {
+                    index = i;
+                    break;
+                }
+            }
+        }
+        return index;
+    }
+
     public int getIconRequestIndex() {
         int index = -1;
         for (int i = 0; i < getItemCount(); i++) {
