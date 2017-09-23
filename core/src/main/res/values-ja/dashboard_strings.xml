@@ -23,8 +23,10 @@
     <!-- Menu -->
     <string name="menu_search">検索</string>
     <string name="menu_save">端末に保存</string>
-    <string name="menu_wallpaper_settings">壁紙の設定</string>
     <string name="menu_select_all">すべて選択</string>
+    <string name="menu_wallpaper_crop">壁紙を切り抜く</string>
+    <string name="menu_apply_homescreen">ホーム画面</string>
+    <string name="menu_apply_lockscreen">ロック画面</string>
     <!-- Dialog -->
     <string name="open">開く</string>
     <string name="close">閉じる</string>
@@ -43,7 +45,7 @@
     <string name="license_checking">ライセンスをチェックしています…</string>
     <string name="license_check">ライセンスのチェック</string>
     <string name="license_check_success">ライセンスのチェックが成功しました。Playストアからアプリをダウンロードしていただきありがとうございます。</string>
-    <string name="license_check_failed">ライセンスのチェックに失敗しました。あなたはこのアプリをPlayストアからダウンロードしていません。
+    <string name="license_check_failed">ライセンスのチェックに失敗しました。あなたはこのアプリをPlayストアからダウンロードしていません。 
 あなたはこのアプリを利用することはできません。</string>
     <string name="license_check_retry">ライセンスをチェックできません。しばらくしてからもう一度やり直してください。</string>
     <!-- Share -->
@@ -70,11 +72,8 @@
     <string name="tap_intro_wallpapers_option_desc_download">ダウンロードまたは</string>
     <string name="tap_intro_wallpapers_preview">壁紙をプレビュー</string>
     <string name="tap_intro_wallpapers_preview_desc">フルサイズの壁紙をプレビューするにはここをタップします</string>
-    <string name="tap_intro_wallpaper_preview_settings">壁紙の設定</string>
-    <string name="tap_intro_wallpaper_preview_settings_desc">壁紙の設定を開くにはここをタップします。 
-Android Nougatで壁紙をロック画面の背景として設定するか、壁紙の切り抜きを有効にします。</string>
     <string name="tap_intro_wallpaper_preview_save">壁紙を保存</string>
-    <string name="tap_intro_wallpaper_preview_save_desc">壁紙を後で使用するためにダウンロードして端末に保存するにはここをタップします</string>
+    <string name="tap_intro_wallpaper_preview_save_desc">後で使用するために壁紙をダウンロードして端末に保存するにはここをタップします</string>
     <string name="tap_intro_wallpaper_preview_apply">壁紙を適用</string>
     <string name="tap_intro_wallpaper_preview_apply_desc">壁紙をホーム画面の背景に設定するにはここをタップします</string>
     <!-- Home -->
@@ -84,7 +83,7 @@ Android Nougatで壁紙をロック画面の背景として設定するか、壁
     <string name="home_apply_icon_pack">%sを適用</string>
     <string name="home_donate">寄付</string>
     <string name="home_donate_desc">アイコンパックの開発を支援します</string>
-    <string name="home_icons">カスタムアイコン</string>
+    <string name="home_icons">個のカスタムアイコン</string>
     <string name="home_icon_dimension">アイコンの寸法：%s</string>
     <string name="home_loud_wallpapers">%d枚のクラウドの壁紙</string>
     <string name="home_muzei">Muzeiライブ壁紙</string>
@@ -144,13 +143,9 @@ Google Playストアを開きダウンロードしてインストールします
     <string name="premium_request_required">アイコンリクエストを作成するにはプレミアムアイコンリクエストパッケージを購入する必要があります。</string>
     <!-- Wallpapers -->
     <string name="wallpaper_new_added">新しい壁紙</string>
+    <string name="wallpaper_already_downloaded">壁紙は既にダウンロード済みです</string>
     <string name="wallpaper_downloading">壁紙をダウンロードしています…</string>
     <string name="wallpaper_download_failed">壁紙をダウンロードできません</string>
-    <string name="wallpaper_download_cancelled">壁紙のダウンロードはキャンセルされました</string>
-    <string name="wallpaper_downloaded">壁紙を以下の場所に保存しました：</string>
-    <string name="wallpaper_download_exist">壁紙「%s」は既に存在します。置き換えてよろしいですか？</string>
-    <string name="wallpaper_download_exist_replace">置き換え</string>
-    <string name="wallpaper_download_exist_new">別名で保存</string>
     <string name="wallpaper_loading">壁紙を読み込んでいます…</string>
     <string name="wallpaper_applying">壁紙を適用しています…</string>
     <string name="wallpaper_applied">壁紙を適用しました</string>
@@ -158,13 +153,7 @@ Google Playストアを開きダウンロードしてインストールします
     <string name="wallpaper_apply_cancelled">壁紙の適用はキャンセルされました</string>
     <string name="connection_failed">サーバーからデータを取得できません</string>
     <string name="wallpaper_apply">壁紙に設定</string>
-    <string name="wallpaper_apply_scroll">このオプションから適用する場合、壁紙の切り抜きは無効になります</string>
-    <string name="wallpaper_settings_crop">壁紙の切り抜き</string>
-    <string name="wallpaper_settings_crop_desc">壁紙の切り抜きを有効にします。壁紙はプレビューの現在の表示を元に切り抜かれます。
- 壁紙をズームするにはピンチインまたはダブルタップします。</string>
-    <string name="wallpaper_settings_lockscreen">ロック画面の背景</string>
-    <string name="wallpaper_settings_lockscreen_desc">適用で壁紙をホーム画面とロック画面の両方の背景に設定します</string>
-    <string name="wallpaper_settings_lockscreen_not_available">ロック画面の背景はAndroid Nougatでのみ利用可能です</string>
+    <string name="wallpaper_save_to_device">壁紙を保存</string>
     <!-- Preferences -->
     <string name="pref_data_header">データ &amp; キャッシュ</string>
     <string name="pref_data_cache">キャッシュを消去</string>
@@ -190,7 +179,6 @@ Google Playストアを開きダウンロードしてインストールします
     <string name="pref_theme_dark_desc">アプリケーションのテーマでダークカラーを使用します</string>
     <string name="pref_wallpaper_header">壁紙</string>
     <string name="pref_wallpaper_location">壁紙の保存場所</string>
-    <string name="pref_wallpaper_location_desc">まず壁紙を少なくとも1枚ダウンロードしてみてください</string>
     <string name="pref_language_header">言語</string>
     <string name="pref_others_header">その他</string>
     <string name="pref_others_report_bugs">バグを報告</string>
