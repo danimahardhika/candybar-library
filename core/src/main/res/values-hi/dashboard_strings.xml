@@ -23,8 +23,10 @@
     <!-- Menu -->
     <string name="menu_search">खोज</string>
     <string name="menu_save">डिवाइस पर सहेजें</string>
-    <string name="menu_wallpaper_settings">वॉलपेपर सेटिंग</string>
     <string name="menu_select_all">सभी का चयन करे</string>
+    <string name="menu_wallpaper_crop">क्रौप वॉलपेपर</string>
+    <string name="menu_apply_homescreen">होमस्क्रीन</string>
+    <string name="menu_apply_lockscreen">लॉकस्क्रीन</string>
     <!-- Dialog -->
     <string name="open">खोलें</string>
     <string name="close">बंद करे</string>
@@ -70,9 +72,6 @@
     <string name="tap_intro_wallpapers_option_desc_download">डाउनलोड या</string>
     <string name="tap_intro_wallpapers_preview">वॉलपेपर का पूर्वावलोकन</string>
     <string name="tap_intro_wallpapers_preview_desc">वॉलपेपर के पूर्ण आकार का पूर्वावलोकन करने के लिए यहां टैप करें</string>
-    <string name="tap_intro_wallpaper_preview_settings">वॉलपेपर सेटिंग</string>
-    <string name="tap_intro_wallpaper_preview_settings_desc">वॉलपेपर सेटिंग खोलने के लिए यहां टैप करें
-एंड्रॉइड नोऊगेट पर लॉकस्क्रीन पृष्ठभूमि के रूप में वॉलपेपर सेट करें या वॉलपेपर छांटना को सक्षम करें</string>
     <string name="tap_intro_wallpaper_preview_save">वॉलपेपर सहेजे</string>
     <string name="tap_intro_wallpaper_preview_save_desc">वॉलपेपर अपने डिवाइस पर डाउनलोड करने के लिए यहां टैप करें ताकि आप इसे बाद में उपयोग कर सकें</string>
     <string name="tap_intro_wallpaper_preview_apply">वॉलपेपर लागु करें</string>
@@ -97,7 +96,7 @@
     <string name="apply_manual">%1$s सीधे लागू करने का समर्थन नहीं करता है, तो आप लॉन्चर सेटिंग से मैन्युअल रूप से %2$s को लागू कर सकते हैं।</string>
     <string name="apply_manual_evie">होमस्क्रीन पर टैप करके रखें - सेटिंग्स - आइकॉन पैक चयन करें %s</string>
     <string name="apply_launch_failed">सेटिंग %s लांच करने में असमर्थ</string>
-    <string name="apply_launcher_not_installed">%s इंस्टॉल नहीं है क्या आप खोलना चाहते हैं
+    <string name="apply_launcher_not_installed">%s  इंस्टॉल नहीं है क्या आप खोलना चाहते हैं
 डाउनलोड और इंस्टॉल करने के लिए गूगल प्ले  स्टोर?</string>
     <string name="apply_cmtheme_not_available">CM Theme प्रबंधक इस डिवाइस पर उपलब्ध नहीं है</string>
     <string name="apply_cmtheme_failed">सीएम थीम मैनेजर को लॉन्च करने में असमर्थ, आप सेटिंग से मैन्युअल रूप से आइकन पैक को लागू करने का प्रयास कर सकते हैं।</string>
@@ -143,13 +142,9 @@
     <string name="premium_request_required">आइकन निवेदन बनाने के लिए आपको एक प्रीमियम आइकन अनुरोध पैकेज खरीदने की आवश्यकता है</string>
     <!-- Wallpapers -->
     <string name="wallpaper_new_added">नये वॉलपेपर</string>
+    <string name="wallpaper_already_downloaded">वॉलपेपर पहले से ही डाउनलोड हैं</string>
     <string name="wallpaper_downloading">वॉलपेपर डाउनलोड किया जा रहा है …</string>
     <string name="wallpaper_download_failed">वॉलपेपर डाउनलोड करने में असमर्थ</string>
-    <string name="wallpaper_download_cancelled">वॉलपेपर डाउनलोड रद्द</string>
-    <string name="wallpaper_downloaded">वॉलपेपर को यहाँ सहेजे</string>
-    <string name="wallpaper_download_exist">नाम के साथ वॉलपेपर %s पहले से मौजूद है, क्या आप इसे बदलना चाहते हैं?</string>
-    <string name="wallpaper_download_exist_replace">बदलें</string>
-    <string name="wallpaper_download_exist_new">नया बनाएं</string>
     <string name="wallpaper_loading">वॉलपेपर लोड हो रहा …</string>
     <string name="wallpaper_applying">वॉलपेपर लागु किया जा रहा …</string>
     <string name="wallpaper_applied">वॉलपेपर लागु किया गया</string>
@@ -157,13 +152,7 @@
     <string name="wallpaper_apply_cancelled">वॉलपेपर लागु प्रिक्रिया रद्द</string>
     <string name="connection_failed">सर्वर से डाटा लेने में असमर्थ</string>
     <string name="wallpaper_apply">वॉलपेपर पर लगायें</string>
-    <string name="wallpaper_apply_scroll">यदि आप इस विकल्प से लागु करते हैं तो वॉलपेपर छांटना को अक्षम कर दिया जाएगा</string>
-    <string name="wallpaper_settings_crop">वॉलपेपर छांटे</string>
-    <string name="wallpaper_settings_crop_desc">वॉलपेपर छांटने सक्षम करें वॉलपेपर पूर्वावलोकन के वर्तमान दृश्य के आधार पर वॉलपेपर छंटने हो जाएगा।
-वॉलपेपर ज़ूम करने के लिए पिंच या डबल टैप करें</string>
-    <string name="wallpaper_settings_lockscreen">लॉकस्क्रीन पृष्ठभूमि</string>
-    <string name="wallpaper_settings_lockscreen_desc">लागू होमस्क्रीन और लॉकस्क्रीन पृष्ठभूमि दोनों के रूप में वॉलपेपर सेट करेगा</string>
-    <string name="wallpaper_settings_lockscreen_not_available">लॉकस्क्रीन पृष्ठभूमि केवल एंड्रॉइड नोऊगैट पर उपलब्ध है</string>
+    <string name="wallpaper_save_to_device">वॉलपेपर सेव करें</string>
     <!-- Preferences -->
     <string name="pref_data_header">डेटा और कैश</string>
     <string name="pref_data_cache">कैश हटायें</string>
@@ -189,7 +178,6 @@
     <string name="pref_theme_dark_desc">एप्लिकेशन थीम के लिए गहरे रंग का प्रयोग करें</string>
     <string name="pref_wallpaper_header">वॉलपेपर</string>
     <string name="pref_wallpaper_location">वॉलपेपर सहेजने की जगह</string>
-    <string name="pref_wallpaper_location_desc">कम से कम एक वॉलपेपर पहले डाउनलोड करने का प्रयास करें</string>
     <string name="pref_language_header">भाषा</string>
     <string name="pref_others_header">अन्य</string>
     <string name="pref_others_report_bugs">"त्रुटी की सिकायत "</string>
@@ -202,7 +190,7 @@
     <string name="email_client">ईमेल क्लाइंट चुने</string>
     <string name="no_email_app">ईमेल भेजने के लिए कोई एप्लिकेशन नहीं है</string>
     <string name="no_browser">Url खोलने के लिए कोई एप्लिकेशन नहीं है</string>
-    <string name="intent_email_failed">ईमेल एप्लिकेशन को प्रदर्शित करने में असमर्थ</string>&gt;
+    <string name="intent_email_failed">ईमेल एप्लिकेशन को प्रदर्शित करने में असमर्थ</string>
     
     <string name="intent_email_supported">समर्थित</string>
     <string name="intent_email_recommended">संस्तुत</string>
