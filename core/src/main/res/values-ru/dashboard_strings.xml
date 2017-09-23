@@ -102,7 +102,7 @@
     <string name="apply_lg_home">Чтобы применить этот пакет значков откройте настройки - Дисплей - главный экран - Тема</string>
     <string name="apply_lg_home_not_available">LG Home не доступен на этом устройстве</string>
     <string name="apply_lg_home_failed">Не удалось запустить настройки LG Home, Вы можете попробовать применить значок вручную в настройках.</string>
-    <string name="apply_lg_home_nougat">" LG Home с андроид 7.0+ больше не поддерживает набор значков. Вам нужен настраиваемый лаунчер для использования значков."</string>
+    <string name="apply_lg_home_nougat">LG Home с андроид 7.0+ больше не поддерживает набор значков. Вам нужен настраиваемый лаунчер для использования значков.</string>
     <!-- Icons -->
     <string name="icons_load_failed">Не удалось загрузить иконки</string>
     <!-- Request -->
@@ -188,7 +188,7 @@
     <string name="email_client">Выберите почтовый клиент</string>
     <string name="no_email_app">Нет приложений для отправки сообщения</string>
     <string name="no_browser">Нет приложений для открытия ссылок</string>
-    <string name="intent_email_failed">Не удалось отобразить приложения для сообщения</string>&gt;
+    <string name="intent_email_failed">Не удалось отобразить приложения для сообщения</string>
     
     <string name="intent_email_supported">Поддерживается</string>
     <string name="intent_email_recommended">Рекомендуется</string>
