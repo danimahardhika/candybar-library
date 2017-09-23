@@ -23,8 +23,10 @@
     <!-- Menu -->
     <string name="menu_search">Поиск</string>
     <string name="menu_save">Сохранить на устройство</string>
-    <string name="menu_wallpaper_settings">Настройки Обоев</string>
     <string name="menu_select_all">Выделить всё</string>
+    <string name="menu_wallpaper_crop">Обрезать обои</string>
+    <string name="menu_apply_homescreen">Домашний экран</string>
+    <string name="menu_apply_lockscreen">Экран блокировки</string>
     <!-- Dialog -->
     <string name="open">Открыть</string>
     <string name="close">Закрыть</string>
@@ -69,8 +71,6 @@
     <string name="tap_intro_wallpapers_option_desc_download">скачать или</string>
     <string name="tap_intro_wallpapers_preview">Просмотр фона</string>
     <string name="tap_intro_wallpapers_preview_desc">Нажмите здесь, чтобы просмотреть полный размер обоев</string>
-    <string name="tap_intro_wallpaper_preview_settings">Настройки обоев</string>
-    <string name="tap_intro_wallpaper_preview_settings_desc">"Нажмите здесь, чтобы открыть настройки обоев. "</string>
     <string name="tap_intro_wallpaper_preview_save">Сохранить обои</string>
     <string name="tap_intro_wallpaper_preview_save_desc">Нажмите здесь, чтобы скачать и сохранить обои на вашем устройстве, чтобы  использовать их позже</string>
     <string name="tap_intro_wallpaper_preview_apply">Применить обои</string>
@@ -102,7 +102,7 @@
     <string name="apply_lg_home">Чтобы применить этот пакет значков откройте настройки - Дисплей - главный экран - Тема</string>
     <string name="apply_lg_home_not_available">LG Home не доступен на этом устройстве</string>
     <string name="apply_lg_home_failed">Не удалось запустить настройки LG Home, Вы можете попробовать применить значок вручную в настройках.</string>
-    <string name="apply_lg_home_nougat">LG Home с андроид 7.0+ больше не поддерживает набор значков. Вам нужен настраиваемый лаунчер для использования значков.</string>
+    <string name="apply_lg_home_nougat">" LG Home с андроид 7.0+ больше не поддерживает набор значков. Вам нужен настраиваемый лаунчер для использования значков."</string>
     <!-- Icons -->
     <string name="icons_load_failed">Не удалось загрузить иконки</string>
     <!-- Request -->
@@ -142,27 +142,17 @@
     <string name="premium_request_required">Вам нужно купить пакет Премиум запросов для новых запросов</string>
     <!-- Wallpapers -->
     <string name="wallpaper_new_added">Новые обои</string>
+    <string name="wallpaper_already_downloaded">Обои уже скачаны</string>
     <string name="wallpaper_downloading">Загрузка обоев …</string>
     <string name="wallpaper_download_failed">Не удалось загрузить обои</string>
-    <string name="wallpaper_download_cancelled">Загрузка обоев отменена</string>
-    <string name="wallpaper_downloaded">Обои сохранены на</string>
-    <string name="wallpaper_download_exist">Обои с названием %s уже существуют, заменить?</string>
-    <string name="wallpaper_download_exist_replace">Заменить</string>
-    <string name="wallpaper_download_exist_new">Создать новые</string>
     <string name="wallpaper_loading">Загрузка обоев …</string>
     <string name="wallpaper_applying">Применение обоев …</string>
     <string name="wallpaper_applied">Обои применены</string>
     <string name="wallpaper_apply_failed">Не удалось применить обои</string>
     <string name="wallpaper_apply_cancelled">Применение обоев отменено</string>
     <string name="connection_failed">Невозможно получить данные с сервера</string>
-    <string name="wallpaper_apply">Установить как обои</string>
-    <string name="wallpaper_apply_scroll">Обрезка обоев будет отключена, если вы применить этот вариант</string>
-    <string name="wallpaper_settings_crop">Обрезка обоев</string>
-    <string name="wallpaper_settings_crop_desc">Позволяет обрезать обои. Обои будут обрезаны на основе текущего вида обоев предварительного просмотра. 
-Нажмите дважды, чтобы увеличить обои.</string>
-    <string name="wallpaper_settings_lockscreen">Обои экрана блокировки</string>
-    <string name="wallpaper_settings_lockscreen_desc">Применять обои для рабочего стола и экрана блокировки</string>
-    <string name="wallpaper_settings_lockscreen_not_available">Обои экрана блокировки доступны только на андроид 7.0+</string>
+    <string name="wallpaper_apply">Применить обои</string>
+    <string name="wallpaper_save_to_device">Сохранить обои</string>
     <!-- Preferences -->
     <string name="pref_data_header">Данные и кэш</string>
     <string name="pref_data_cache">Очистить кэш</string>
@@ -186,7 +176,6 @@
     <string name="pref_theme_dark_desc">Использовать темную тему приложения</string>
     <string name="pref_wallpaper_header">Обои</string>
     <string name="pref_wallpaper_location">Место сохранения обоев</string>
-    <string name="pref_wallpaper_location_desc">Попробуйте скачать обои</string>
     <string name="pref_language_header">Язык</string>
     <string name="pref_others_header">Другое</string>
     <string name="pref_others_report_bugs">Отчет об ошибках</string>
@@ -199,7 +188,7 @@
     <string name="email_client">Выберите почтовый клиент</string>
     <string name="no_email_app">Нет приложений для отправки сообщения</string>
     <string name="no_browser">Нет приложений для открытия ссылок</string>
-    <string name="intent_email_failed">Не удалось отобразить приложения для сообщения</string>
+    <string name="intent_email_failed">Не удалось отобразить приложения для сообщения</string>&gt;
     
     <string name="intent_email_supported">Поддерживается</string>
     <string name="intent_email_recommended">Рекомендуется</string>
