@@ -28,6 +28,8 @@ import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.dm.material.dashboard.candybar.utils.listeners.InAppBillingListener;
 
+import java.lang.ref.WeakReference;
+
 /*
  * CandyBar - Material Dashboard
  *
@@ -59,7 +61,7 @@ public class InAppBillingFragment extends DialogFragment {
     private InAppBillingAdapter mAdapter;
     private AsyncTask<Void, Void, Boolean> mLoadInAppProducts;
 
-    private static BillingProcessor mBillingProcessor;
+    private static WeakReference<BillingProcessor> mBillingProcessor;
 
     private static final String TYPE = "type";
     private static final String KEY = "key";
@@ -83,7 +85,7 @@ public class InAppBillingFragment extends DialogFragment {
     public static void showInAppBillingDialog(@NonNull FragmentManager fm, BillingProcessor billingProcessor,
                                               int type, @NonNull String key, @NonNull String[] productId,
                                               int[] productCount) {
-        mBillingProcessor = billingProcessor;
+        mBillingProcessor = new WeakReference<>(billingProcessor);
         FragmentTransaction ft = fm.beginTransaction();
         Fragment prev = fm.findFragmentByTag(TAG);
         if (prev != null) {
@@ -193,7 +195,7 @@ public class InAppBillingFragment extends DialogFragment {
                         }
 
                         for (int i = 0; i < mProductsId.length; i++) {
-                            SkuDetails product = mBillingProcessor
+                            SkuDetails product = mBillingProcessor.get()
                                     .getPurchaseListingDetails(mProductsId[i]);
                             if (product != null) {
                                 InAppBilling inAppBilling;

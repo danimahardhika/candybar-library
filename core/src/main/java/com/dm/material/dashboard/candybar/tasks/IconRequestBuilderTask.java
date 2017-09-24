@@ -24,6 +24,7 @@ import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.dm.material.dashboard.candybar.utils.listeners.RequestListener;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.concurrent.Executor;
 
 /*
@@ -46,17 +47,17 @@ import java.util.concurrent.Executor;
 
 public class IconRequestBuilderTask extends AsyncTask<Void, Void, Boolean> {
 
-    private Context mContext;
-    private IconRequestBuilderCallback mCallback;
+    private WeakReference<Context> mContext;
+    private WeakReference<IconRequestBuilderCallback> mCallback;
     private String mEmailBody;
     private LogUtil.Error mError;
 
     private IconRequestBuilderTask(Context context) {
-        mContext = context;
+        mContext = new WeakReference<>(context);
     }
 
     public IconRequestBuilderTask callback(IconRequestBuilderCallback callback) {
-        mCallback = callback;
+        mCallback = new WeakReference<>(callback);
         return this;
     }
 
@@ -93,9 +94,9 @@ public class IconRequestBuilderTask extends AsyncTask<Void, Void, Boolean> {
                 }
 
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append(DeviceHelper.getDeviceInfo(mContext));
+                stringBuilder.append(DeviceHelper.getDeviceInfo(mContext.get()));
 
-                if (Preferences.get(mContext).isPremiumRequest()) {
+                if (Preferences.get(mContext.get()).isPremiumRequest()) {
                     if (CandyBarApplication.sRequestProperty.getOrderId() != null) {
                         stringBuilder.append("Order Id: ")
                                 .append(CandyBarApplication.sRequestProperty.getOrderId());
@@ -109,16 +110,16 @@ public class IconRequestBuilderTask extends AsyncTask<Void, Void, Boolean> {
 
                 for (int i = 0; i < RequestFragment.sSelectedRequests.size(); i++) {
                     Request request = CandyBarMainActivity.sMissedApps.get(RequestFragment.sSelectedRequests.get(i));
-                    Database.get(mContext).addRequest(null, request);
+                    Database.get(mContext.get()).addRequest(null, request);
 
-                    if (Preferences.get(mContext).isPremiumRequest()) {
+                    if (Preferences.get(mContext.get()).isPremiumRequest()) {
                         Request premiumRequest = Request.Builder()
                                 .name(request.getName())
                                 .activity(request.getActivity())
                                 .productId(CandyBarApplication.sRequestProperty.getProductId())
                                 .orderId(CandyBarApplication.sRequestProperty.getOrderId())
                                 .build();
-                        Database.get(mContext).addPremiumRequest(null, premiumRequest);
+                        Database.get(mContext.get()).addPremiumRequest(null, premiumRequest);
                     }
 
                     if (CandyBarApplication.getConfiguration().isIncludeIconRequestToEmailBody()) {
@@ -149,10 +150,12 @@ public class IconRequestBuilderTask extends AsyncTask<Void, Void, Boolean> {
         super.onPostExecute(aBoolean);
         if (aBoolean) {
             try {
-                if (mCallback != null) mCallback.onFinished();
+                if (mCallback != null && mCallback.get() != null)
+                    mCallback.get().onFinished();
 
                 RequestListener listener = (RequestListener) mContext;
-                listener.onRequestBuilt(getIntent(CandyBarApplication.sRequestProperty.getComponentName(), mEmailBody),
+                listener.onRequestBuilt(getIntent(CandyBarApplication.sRequestProperty
+                                .getComponentName(), mEmailBody),
                         IntentChooserFragment.ICON_REQUEST);
             } catch (Exception e) {
                 LogUtil.e(Log.getStackTraceString(e));
@@ -160,7 +163,7 @@ public class IconRequestBuilderTask extends AsyncTask<Void, Void, Boolean> {
         } else {
             if (mError != null) {
                 LogUtil.e(mError.getMessage());
-                mError.showToast(mContext);
+                mError.showToast(mContext.get());
             }
         }
     }
@@ -192,19 +195,19 @@ public class IconRequestBuilderTask extends AsyncTask<Void, Void, Boolean> {
         if (CandyBarApplication.sZipPath != null) {
             File zip = new File(CandyBarApplication.sZipPath);
             if (zip.exists()) {
-                Uri uri = FileHelper.getUriFromFile(mContext, mContext.getPackageName(), zip);
+                Uri uri = FileHelper.getUriFromFile(mContext.get(), mContext.get().getPackageName(), zip);
                 if (uri == null) uri = Uri.fromFile(zip);
                 intent.putExtra(Intent.EXTRA_STREAM, uri);
                 intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             }
         }
 
-        String subject = Preferences.get(mContext).isPremiumRequest() ?
+        String subject = Preferences.get(mContext.get()).isPremiumRequest() ?
                 "Premium Icon Request " : "Icon Request ";
-        subject += mContext.getResources().getString(R.string.app_name);
+        subject += mContext.get().getResources().getString(R.string.app_name);
 
         intent.putExtra(Intent.EXTRA_EMAIL,
-                new String[]{mContext.getResources().getString(R.string.dev_email)});
+                new String[]{mContext.get().getResources().getString(R.string.dev_email)});
         intent.putExtra(Intent.EXTRA_SUBJECT, subject);
         intent.putExtra(Intent.EXTRA_TEXT, emailBody);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |

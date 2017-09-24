@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -19,6 +20,7 @@ import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -45,14 +47,14 @@ import static com.danimahardhika.android.helpers.core.FileHelper.getUriFromFile;
 
 public class ReportBugsTask extends AsyncTask<Void, Void, Boolean> {
 
-    private Context mContext;
+    private final WeakReference<Context> mContext;
     private String mDescription;
     private String mZipPath = null;
     private StringBuilder mStringBuilder;
     private MaterialDialog mDialog;
 
     private ReportBugsTask(Context context, String description) {
-        mContext = context;
+        mContext = new WeakReference<>(context);
         mDescription = description;
     }
 
@@ -67,10 +69,10 @@ public class ReportBugsTask extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(mContext);
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(mContext.get());
         builder.typeface(
-                TypefaceHelper.getMedium(mContext),
-                TypefaceHelper.getRegular(mContext))
+                TypefaceHelper.getMedium(mContext.get()),
+                TypefaceHelper.getRegular(mContext.get()))
                 .content(R.string.report_bugs_building)
                 .progress(true, 0)
                 .progressIndeterminateStyle(true)
@@ -89,23 +91,23 @@ public class ReportBugsTask extends AsyncTask<Void, Void, Boolean> {
                 Thread.sleep(1);
                 List<String> files = new ArrayList<>();
 
-                mStringBuilder.append(DeviceHelper.getDeviceInfo(mContext))
+                mStringBuilder.append(DeviceHelper.getDeviceInfo(mContext.get()))
                         .append("\n").append(mDescription).append("\n");
 
-                File brokenAppFilter = ReportBugsHelper.buildBrokenAppFilter(mContext);
+                File brokenAppFilter = ReportBugsHelper.buildBrokenAppFilter(mContext.get());
                 if (brokenAppFilter != null) files.add(brokenAppFilter.toString());
 
-                File brokenDrawables = ReportBugsHelper.buildBrokenDrawables(mContext);
+                File brokenDrawables = ReportBugsHelper.buildBrokenDrawables(mContext.get());
                 if (brokenDrawables != null) files.add(brokenDrawables.toString());
 
-                File activityList = ReportBugsHelper.buildActivityList(mContext);
+                File activityList = ReportBugsHelper.buildActivityList(mContext.get());
                 if (activityList != null) files.add(activityList.toString());
 
-                String stackTrace = Preferences.get(mContext).getLatestCrashLog();
-                File crashLog = ReportBugsHelper.buildCrashLog(mContext, stackTrace);
+                String stackTrace = Preferences.get(mContext.get()).getLatestCrashLog();
+                File crashLog = ReportBugsHelper.buildCrashLog(mContext.get(), stackTrace);
                 if (crashLog != null) files.add(crashLog.toString());
 
-                mZipPath = FileHelper.createZip(files, new File(mContext.getCacheDir(),
+                mZipPath = FileHelper.createZip(files, new File(mContext.get().getCacheDir(),
                         RequestHelper.getGeneratedZipName(ReportBugsHelper.REPORT_BUGS)));
                 return true;
             } catch (Exception e) {
@@ -119,31 +121,34 @@ public class ReportBugsTask extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean aBoolean) {
         super.onPostExecute(aBoolean);
+        if (mContext.get() == null) return;
+        if (((AppCompatActivity) mContext.get()).isFinishing()) return;
+
         mDialog.dismiss();
         if (aBoolean) {
             final Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("message/rfc822");
             intent.putExtra(Intent.EXTRA_EMAIL,
-                    new String[]{mContext.getResources().getString(R.string.dev_email)});
+                    new String[]{mContext.get().getResources().getString(R.string.dev_email)});
             intent.putExtra(Intent.EXTRA_SUBJECT,
-                    "Report Bugs " + (mContext.getString(
+                    "Report Bugs " + (mContext.get().getString(
                             R.string.app_name)));
             intent.putExtra(Intent.EXTRA_TEXT, mStringBuilder.toString());
 
             if (mZipPath != null) {
                 File zip = new File(mZipPath);
                 if (zip.exists()) {
-                    Uri uri = getUriFromFile(mContext, mContext.getPackageName(), zip);
+                    Uri uri = getUriFromFile(mContext.get(), mContext.get().getPackageName(), zip);
                     if (uri == null) uri = Uri.fromFile(zip);
                     intent.putExtra(Intent.EXTRA_STREAM, uri);
                     intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 }
             }
 
-            mContext.startActivity(Intent.createChooser(intent,
-                    mContext.getResources().getString(R.string.email_client)));
+            mContext.get().startActivity(Intent.createChooser(intent,
+                    mContext.get().getResources().getString(R.string.email_client)));
         } else {
-            Toast.makeText(mContext, R.string.report_bugs_failed,
+            Toast.makeText(mContext.get(), R.string.report_bugs_failed,
                     Toast.LENGTH_LONG).show();
         }
 

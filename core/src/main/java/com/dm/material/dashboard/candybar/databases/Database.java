@@ -19,6 +19,7 @@ import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,14 +71,14 @@ public class Database extends SQLiteOpenHelper {
 
     private final Context mContext;
 
-    private static Database mDatabase;
+    private static WeakReference<Database> mDatabase;
     private SQLiteDatabase mSQLiteDatabase;
 
     public static Database get(@NonNull Context context) {
-        if (mDatabase == null) {
-            mDatabase = new Database(context);
+        if (mDatabase == null || mDatabase.get() == null) {
+            mDatabase = new WeakReference<>(new Database(context));
         }
-        return mDatabase;
+        return mDatabase.get();
     }
 
     private Database(Context context) {
@@ -179,20 +180,20 @@ public class Database extends SQLiteOpenHelper {
 
     public boolean openDatabase() {
         try {
-            if (mDatabase == null) {
+            if (mDatabase == null || mDatabase.get() == null) {
                 LogUtil.e("Database error: openDatabase() database instance is null");
                 return false;
             }
 
-            if (mDatabase.mSQLiteDatabase == null) {
-                mDatabase.mSQLiteDatabase = mDatabase.getWritableDatabase();
+            if (mDatabase.get().mSQLiteDatabase == null) {
+                mDatabase.get().mSQLiteDatabase = mDatabase.get().getWritableDatabase();
             }
 
-            if (!mDatabase.mSQLiteDatabase.isOpen()) {
+            if (!mDatabase.get().mSQLiteDatabase.isOpen()) {
                 LogUtil.e("Database error: database openable false, trying to open the database again");
-                mDatabase.mSQLiteDatabase = mDatabase.getWritableDatabase();
+                mDatabase.get().mSQLiteDatabase = mDatabase.get().getWritableDatabase();
             }
-            return mDatabase.mSQLiteDatabase.isOpen();
+            return mDatabase.get().mSQLiteDatabase.isOpen();
         } catch (SQLiteException | NullPointerException e) {
             LogUtil.e(Log.getStackTraceString(e));
             return false;
@@ -201,16 +202,16 @@ public class Database extends SQLiteOpenHelper {
 
     public boolean closeDatabase() {
         try {
-            if (mDatabase == null) {
+            if (mDatabase == null || mDatabase.get() == null) {
                 LogUtil.e("Database error: closeDatabase() database instance is null");
                 return false;
             }
 
-            if (mDatabase.mSQLiteDatabase == null) {
+            if (mDatabase.get().mSQLiteDatabase == null) {
                 LogUtil.e("Database error: trying to close database which is not opened");
                 return false;
             }
-            mDatabase.mSQLiteDatabase.close();
+            mDatabase.get().mSQLiteDatabase.close();
             return true;
         } catch (SQLiteException | NullPointerException e) {
             LogUtil.e(Log.getStackTraceString(e));
@@ -226,7 +227,7 @@ public class Database extends SQLiteOpenHelper {
                 return;
             }
 
-            database = mDatabase.mSQLiteDatabase;
+            database = mDatabase.get().mSQLiteDatabase;
         }
 
         ContentValues values = new ContentValues();
@@ -246,7 +247,7 @@ public class Database extends SQLiteOpenHelper {
             return false;
         }
 
-        Cursor cursor = mDatabase.mSQLiteDatabase.query(TABLE_REQUEST, null, KEY_ACTIVITY + " = ?",
+        Cursor cursor = mDatabase.get().mSQLiteDatabase.query(TABLE_REQUEST, null, KEY_ACTIVITY + " = ?",
                 new String[]{activity}, null, null, null, null);
         int rowCount = cursor.getCount();
         cursor.close();
@@ -261,7 +262,7 @@ public class Database extends SQLiteOpenHelper {
                 return new ArrayList<>();
             }
 
-            database = mDatabase.mSQLiteDatabase;
+            database = mDatabase.get().mSQLiteDatabase;
         }
 
         List<Request> requests = new ArrayList<>();
@@ -290,7 +291,7 @@ public class Database extends SQLiteOpenHelper {
                 return;
             }
 
-            database = mDatabase.mSQLiteDatabase;
+            database = mDatabase.get().mSQLiteDatabase;
         }
 
         ContentValues values = new ContentValues();
@@ -314,7 +315,7 @@ public class Database extends SQLiteOpenHelper {
                 return new ArrayList<>();
             }
 
-            database = mDatabase.mSQLiteDatabase;
+            database = mDatabase.get().mSQLiteDatabase;
         }
 
         List<Request> requests = new ArrayList<>();
@@ -344,8 +345,8 @@ public class Database extends SQLiteOpenHelper {
 
         String query = "INSERT OR IGNORE INTO " +TABLE_WALLPAPERS+ " (" +KEY_NAME+ "," +KEY_AUTHOR+ "," +KEY_URL+ ","
                 +KEY_THUMB_URL+ "," +KEY_ADDED_ON+ ") VALUES (?,?,?,?,?);";
-        SQLiteStatement statement = mDatabase.mSQLiteDatabase.compileStatement(query);
-        mDatabase.mSQLiteDatabase.beginTransaction();
+        SQLiteStatement statement = mDatabase.get().mSQLiteDatabase.compileStatement(query);
+        mDatabase.get().mSQLiteDatabase.beginTransaction();
 
         for (int i = 0; i < list.size(); i++) {
             statement.clearBindings();
@@ -377,8 +378,8 @@ public class Database extends SQLiteOpenHelper {
                 }
             }
         }
-        mDatabase.mSQLiteDatabase.setTransactionSuccessful();
-        mDatabase.mSQLiteDatabase.endTransaction();
+        mDatabase.get().mSQLiteDatabase.setTransactionSuccessful();
+        mDatabase.get().mSQLiteDatabase.endTransaction();
     }
 
     public void updateWallpaper(Wallpaper wallpaper) {
@@ -408,7 +409,7 @@ public class Database extends SQLiteOpenHelper {
         }
 
         if (values.size() > 0) {
-            mDatabase.mSQLiteDatabase.update(TABLE_WALLPAPERS,
+            mDatabase.get().mSQLiteDatabase.update(TABLE_WALLPAPERS,
                     values, KEY_URL +" = ?", new String[]{wallpaper.getURL()});
         }
     }
@@ -419,7 +420,7 @@ public class Database extends SQLiteOpenHelper {
             return 0;
         }
 
-        Cursor cursor = mDatabase.mSQLiteDatabase.query(TABLE_WALLPAPERS,
+        Cursor cursor = mDatabase.get().mSQLiteDatabase.query(TABLE_WALLPAPERS,
                 null, null, null, null, null, null, null);
         int rowCount = cursor.getCount();
         cursor.close();
@@ -434,7 +435,7 @@ public class Database extends SQLiteOpenHelper {
         }
 
         Wallpaper wallpaper = null;
-        Cursor cursor = mDatabase.mSQLiteDatabase.query(TABLE_WALLPAPERS,
+        Cursor cursor = mDatabase.get().mSQLiteDatabase.query(TABLE_WALLPAPERS,
                 null, KEY_URL +" = ?", new String[]{url}, null, null, null, "1");
         if (cursor.moveToFirst()) {
             do {
@@ -474,7 +475,7 @@ public class Database extends SQLiteOpenHelper {
         }
 
         List<Wallpaper> wallpapers = new ArrayList<>();
-        Cursor cursor = mDatabase.mSQLiteDatabase.query(TABLE_WALLPAPERS,
+        Cursor cursor = mDatabase.get().mSQLiteDatabase.query(TABLE_WALLPAPERS,
                 null, null, null, null, null, KEY_ADDED_ON + " DESC, " +KEY_ID);
         if (cursor.moveToFirst()) {
             do {
@@ -516,7 +517,7 @@ public class Database extends SQLiteOpenHelper {
         }
 
         Wallpaper wallpaper = null;
-        Cursor cursor = mDatabase.mSQLiteDatabase.query(TABLE_WALLPAPERS,
+        Cursor cursor = mDatabase.get().mSQLiteDatabase.query(TABLE_WALLPAPERS,
                 null, null, null, null, null, "RANDOM()", "1");
         if (cursor.moveToFirst()) {
             do {
@@ -544,8 +545,8 @@ public class Database extends SQLiteOpenHelper {
             return;
         }
 
-        mDatabase.mSQLiteDatabase.delete("SQLITE_SEQUENCE", "NAME = ?", new String[]{TABLE_REQUEST});
-        mDatabase.mSQLiteDatabase.delete(TABLE_REQUEST, null, null);
+        mDatabase.get().mSQLiteDatabase.delete("SQLITE_SEQUENCE", "NAME = ?", new String[]{TABLE_REQUEST});
+        mDatabase.get().mSQLiteDatabase.delete(TABLE_REQUEST, null, null);
     }
 
     public void deleteWallpapers(List<Wallpaper> wallpapers) {
@@ -555,7 +556,7 @@ public class Database extends SQLiteOpenHelper {
         }
 
         for (Wallpaper wallpaper : wallpapers) {
-            mDatabase.mSQLiteDatabase.delete(TABLE_WALLPAPERS, KEY_URL +" = ?",
+            mDatabase.get().mSQLiteDatabase.delete(TABLE_WALLPAPERS, KEY_URL +" = ?",
                     new String[]{wallpaper.getURL()});
         }
     }
@@ -566,7 +567,7 @@ public class Database extends SQLiteOpenHelper {
             return;
         }
 
-        mDatabase.mSQLiteDatabase.delete("SQLITE_SEQUENCE", "NAME = ?", new String[]{TABLE_WALLPAPERS});
-        mDatabase.mSQLiteDatabase.delete(TABLE_WALLPAPERS, null, null);
+        mDatabase.get().mSQLiteDatabase.delete("SQLITE_SEQUENCE", "NAME = ?", new String[]{TABLE_WALLPAPERS});
+        mDatabase.get().mSQLiteDatabase.delete(TABLE_WALLPAPERS, null, null);
     }
 }

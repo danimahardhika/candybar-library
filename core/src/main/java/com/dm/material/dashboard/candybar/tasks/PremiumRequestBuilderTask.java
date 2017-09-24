@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.danimahardhika.android.helpers.core.FileHelper;
@@ -21,6 +22,7 @@ import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.dm.material.dashboard.candybar.utils.listeners.RequestListener;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.concurrent.Executor;
 
@@ -44,14 +46,14 @@ import java.util.concurrent.Executor;
 
 public class PremiumRequestBuilderTask extends AsyncTask<Void, Void, Boolean> {
 
-    private Context mContext;
-    private PremiumRequestBuilderCallback mCallback;
+    private final WeakReference<Context> mContext;
+    private final WeakReference<PremiumRequestBuilderCallback> mCallback;
     private String mEmailBody;
     private LogUtil.Error mError;
 
     private PremiumRequestBuilderTask(Context context, PremiumRequestBuilderCallback callback) {
-        mContext = context;
-        mCallback = callback;
+        mContext = new WeakReference<>(context);
+        mCallback = new WeakReference<>(callback);
     }
 
     public static AsyncTask start(@NonNull Context context, @Nullable PremiumRequestBuilderCallback callback) {
@@ -79,9 +81,9 @@ public class PremiumRequestBuilderTask extends AsyncTask<Void, Void, Boolean> {
                 }
 
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append(DeviceHelper.getDeviceInfo(mContext));
+                stringBuilder.append(DeviceHelper.getDeviceInfo(mContext.get()));
 
-                List<Request> requests = Database.get(mContext).getPremiumRequest(null);
+                List<Request> requests = Database.get(mContext.get()).getPremiumRequest(null);
 
                 for (int i = 0; i < requests.size(); i++) {
                     stringBuilder.append("\n\n")
@@ -113,9 +115,13 @@ public class PremiumRequestBuilderTask extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean aBoolean) {
         super.onPostExecute(aBoolean);
+        if (mContext.get() == null) return;
+        if (((AppCompatActivity) mContext.get()).isFinishing()) return;
+
         if (aBoolean) {
             try {
-                if (mCallback != null) mCallback.onFinished();
+                if (mCallback != null && mCallback.get() != null)
+                    mCallback.get().onFinished();
 
                 RequestListener listener = (RequestListener) mContext;
                 listener.onRequestBuilt(getIntent(CandyBarApplication.sRequestProperty.getComponentName(), mEmailBody),
@@ -126,7 +132,7 @@ public class PremiumRequestBuilderTask extends AsyncTask<Void, Void, Boolean> {
         } else {
             if (mError != null) {
                 LogUtil.e(mError.getMessage());
-                mError.showToast(mContext);
+                mError.showToast(mContext.get());
             }
         }
     }
@@ -158,17 +164,17 @@ public class PremiumRequestBuilderTask extends AsyncTask<Void, Void, Boolean> {
         if (CandyBarApplication.sZipPath != null) {
             File zip = new File(CandyBarApplication.sZipPath);
             if (zip.exists()) {
-                Uri uri = FileHelper.getUriFromFile(mContext, mContext.getPackageName(), zip);
+                Uri uri = FileHelper.getUriFromFile(mContext.get(), mContext.get().getPackageName(), zip);
                 if (uri == null) uri = Uri.fromFile(zip);
                 intent.putExtra(Intent.EXTRA_STREAM, uri);
                 intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             }
         }
 
-        String subject = "Rebuild Premium Request " +mContext.getResources().getString(R.string.app_name);
+        String subject = "Rebuild Premium Request " +mContext.get().getResources().getString(R.string.app_name);
 
         intent.putExtra(Intent.EXTRA_EMAIL,
-                new String[]{mContext.getResources().getString(R.string.dev_email)});
+                new String[]{mContext.get().getResources().getString(R.string.dev_email)});
         intent.putExtra(Intent.EXTRA_SUBJECT, subject);
         intent.putExtra(Intent.EXTRA_TEXT, emailBody);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |

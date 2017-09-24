@@ -19,6 +19,7 @@ import com.dm.material.dashboard.candybar.utils.AlphanumComparator;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.dm.material.dashboard.candybar.utils.listeners.HomeListener;
 
+import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -44,11 +45,11 @@ import java.util.concurrent.Executor;
 
 public class IconsLoaderTask extends AsyncTask<Void, Void, Boolean> {
 
-    private Context mContext;
+    private final WeakReference<Context> mContext;
     private Home mHome;
 
     private IconsLoaderTask(Context context) {
-        mContext = context;
+        mContext = new WeakReference<>(context);
     }
 
     public static AsyncTask start(@NonNull Context context) {
@@ -65,23 +66,23 @@ public class IconsLoaderTask extends AsyncTask<Void, Void, Boolean> {
             try {
                 Thread.sleep(1);
                 if (CandyBarMainActivity.sSections == null) {
-                    CandyBarMainActivity.sSections = IconsHelper.getIconsList(mContext);
+                    CandyBarMainActivity.sSections = IconsHelper.getIconsList(mContext.get());
 
                     for (int i = 0; i < CandyBarMainActivity.sSections.size(); i++) {
                         List<Icon> icons = CandyBarMainActivity.sSections.get(i).getIcons();
 
-                        if (mContext.getResources().getBoolean(R.bool.show_icon_name) ||
-                                mContext.getResources().getBoolean(R.bool.enable_icon_name_replacer)) {
+                        if (mContext.get().getResources().getBoolean(R.bool.show_icon_name) ||
+                                mContext.get().getResources().getBoolean(R.bool.enable_icon_name_replacer)) {
                             for (Icon icon : icons) {
-                                boolean replacer = mContext.getResources().getBoolean(
+                                boolean replacer = mContext.get().getResources().getBoolean(
                                         R.bool.enable_icon_name_replacer);
-                                String name = IconsHelper.replaceName(mContext, replacer, icon.getTitle());
+                                String name = IconsHelper.replaceName(mContext.get(), replacer, icon.getTitle());
                                 icon.setTitle(name);
                             }
                         }
 
-                        if (mContext.getResources().getBoolean(R.bool.enable_icons_sort) ||
-                                mContext.getResources().getBoolean(R.bool.enable_icon_name_replacer)) {
+                        if (mContext.get().getResources().getBoolean(R.bool.enable_icons_sort) ||
+                                mContext.get().getResources().getBoolean(R.bool.enable_icon_name_replacer)) {
                             Collections.sort(icons, new AlphanumComparator() {
                                 @Override
                                 public int compare(Object o1, Object o2) {
@@ -112,18 +113,18 @@ public class IconsLoaderTask extends AsyncTask<Void, Void, Boolean> {
 
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inJustDecodeBounds = true;
-                BitmapFactory.decodeResource(mContext.getResources(),
+                BitmapFactory.decodeResource(mContext.get().getResources(),
                         icon.getRes(), options);
 
-                if (!mContext.getResources().getBoolean(R.bool.show_icon_name)) {
-                    String name = IconsHelper.replaceName(mContext, true, icon.getTitle());
+                if (!mContext.get().getResources().getBoolean(R.bool.show_icon_name)) {
+                    String name = IconsHelper.replaceName(mContext.get(), true, icon.getTitle());
                     icon.setTitle(name);
                 }
 
                 mHome = new Home(
                         icon.getRes(),
                         icon.getTitle(),
-                        String.format(mContext.getResources().getString(R.string.home_icon_dimension),
+                        String.format(mContext.get().getResources().getString(R.string.home_icon_dimension),
                                 options.outWidth +" x "+ options.outHeight),
                         Home.Type.DIMENSION);
                 CandyBarMainActivity.sHomeIcon = mHome;
@@ -141,9 +142,9 @@ public class IconsLoaderTask extends AsyncTask<Void, Void, Boolean> {
         super.onPostExecute(aBoolean);
         if (aBoolean) {
             if (mHome == null) return;
-            if (mContext == null) return;
+            if (mContext.get() == null) return;
 
-            FragmentManager fm = ((AppCompatActivity) mContext).getSupportFragmentManager();
+            FragmentManager fm = ((AppCompatActivity) mContext.get()).getSupportFragmentManager();
             if (fm == null) return;
 
             Fragment fragment = fm.findFragmentByTag("home");

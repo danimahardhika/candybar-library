@@ -20,6 +20,7 @@ import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.dm.material.dashboard.candybar.utils.listeners.HomeListener;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -47,11 +48,11 @@ import java.util.concurrent.Executor;
 
 public class IconRequestTask extends AsyncTask<Void, Void, Boolean> {
 
-    private Context mContext;
+    private final WeakReference<Context> mContext;
     private LogUtil.Error mError;
 
     private IconRequestTask(Context context) {
-        this.mContext = context;
+        mContext = new WeakReference<>(context);
     }
 
     public static AsyncTask start(@NonNull Context context) {
@@ -67,16 +68,16 @@ public class IconRequestTask extends AsyncTask<Void, Void, Boolean> {
         while (!isCancelled()) {
             try {
                 Thread.sleep(1);
-                if (mContext.getResources().getBoolean(R.bool.enable_icon_request) ||
-                        mContext.getResources().getBoolean(R.bool.enable_premium_request)) {
+                if (mContext.get().getResources().getBoolean(R.bool.enable_icon_request) ||
+                        mContext.get().getResources().getBoolean(R.bool.enable_premium_request)) {
                     List<Request> requests = new ArrayList<>();
-                    HashMap<String, String> appFilter = RequestHelper.getAppFilter(mContext, RequestHelper.Key.ACTIVITY);
+                    HashMap<String, String> appFilter = RequestHelper.getAppFilter(mContext.get(), RequestHelper.Key.ACTIVITY);
                     if (appFilter.size() == 0) {
                         mError = LogUtil.Error.APPFILTER_NULL;
                         return false;
                     }
 
-                    PackageManager packageManager = mContext.getPackageManager();
+                    PackageManager packageManager = mContext.get().getPackageManager();
 
                     Intent intent = new Intent(Intent.ACTION_MAIN);
                     intent.addCategory(Intent.CATEGORY_LAUNCHER);
@@ -101,12 +102,12 @@ public class IconRequestTask extends AsyncTask<Void, Void, Boolean> {
                         String value = appFilter.get(activity);
 
                         if (value == null) {
-                            String name = LocaleHelper.getOtherAppLocaleName(mContext, new Locale("en"), packageName);
+                            String name = LocaleHelper.getOtherAppLocaleName(mContext.get(), new Locale("en"), packageName);
                             if (name == null) {
                                 name = app.activityInfo.loadLabel(packageManager).toString();
                             }
 
-                            boolean requested = Database.get(mContext).isRequested(activity);
+                            boolean requested = Database.get(mContext.get()).isRequested(activity);
                             Request request = Request.Builder()
                                     .name(name)
                                     .packageName(app.activityInfo.packageName)
@@ -134,11 +135,11 @@ public class IconRequestTask extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean aBoolean) {
         super.onPostExecute(aBoolean);
-        if (mContext == null) return;
-        if (((AppCompatActivity) mContext).isFinishing()) return;
+        if (mContext.get() == null) return;
+        if (((AppCompatActivity) mContext.get()).isFinishing()) return;
 
         if (aBoolean) {
-            FragmentManager fm = ((AppCompatActivity) mContext).getSupportFragmentManager();
+            FragmentManager fm = ((AppCompatActivity) mContext.get()).getSupportFragmentManager();
             if (fm == null) return;
 
             Fragment fragment = fm.findFragmentByTag("home");
@@ -148,7 +149,7 @@ public class IconRequestTask extends AsyncTask<Void, Void, Boolean> {
             listener.onHomeDataUpdated(null);
         } else {
             if (mError != null) {
-                mError.showToast(mContext);
+                mError.showToast(mContext.get());
             }
         }
     }
