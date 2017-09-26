@@ -23,8 +23,10 @@
     <!-- Menu -->
     <string name="menu_search">Buscar</string>
     <string name="menu_save">Guardar en el dispositivo</string>
-    <string name="menu_wallpaper_settings">Ajustes del fondo de pantalla</string>
     <string name="menu_select_all">Seleccionar todos</string>
+    <string name="menu_wallpaper_crop">Recortar fondo de pantalla</string>
+    <string name="menu_apply_homescreen">Pantalla de inicio</string>
+    <string name="menu_apply_lockscreen">Pantalla de bloqueo</string>
     <!-- Dialog -->
     <string name="open">Abrir</string>
     <string name="close">Cerrar</string>
@@ -69,9 +71,6 @@ No podrás utilizar la aplicación.</string>
     <string name="tap_intro_wallpapers_option_desc_download">Descargar o</string>
     <string name="tap_intro_wallpapers_preview">Vista preliminar del fondo de pantalla</string>
     <string name="tap_intro_wallpapers_preview_desc">Pulsa aquí para previsualizar a tamaño completo el fondo de pantalla</string>
-    <string name="tap_intro_wallpaper_preview_settings">Ajustes del fondo de pantalla</string>
-    <string name="tap_intro_wallpaper_preview_settings_desc">Pulsa aquí para abrir los ajustes del fondo de pantalla.
-Habilita el fondo de pantalla en la pantalla de bloqueo en Android Nougat o habilita el recorte del fondo de pantalla.</string>
     <string name="tap_intro_wallpaper_preview_save">Guardar fondo de pantalla</string>
     <string name="tap_intro_wallpaper_preview_save_desc">Pulsa aquí para descargar y guardar el fondo de pantalla en tu dispositivo para poder usarlo más tarde</string>
     <string name="tap_intro_wallpaper_preview_apply">Establecer el fondo de pantalla</string>
@@ -141,27 +140,17 @@ Abre \"Ajustes\" y escoge \"Restaurar las Compras\" para restaurarlo.</string>
     <string name="premium_request_required">Necesitas comprar un paquete de solicitud de iconos premium para realizar solicitudes de iconos</string>
     <!-- Wallpapers -->
     <string name="wallpaper_new_added">Nuevo Fondo de Pantalla</string>
+    <string name="wallpaper_already_downloaded">Fondo de pantalla ya descargado</string>
     <string name="wallpaper_downloading">Descargando fondo de pantalla …</string>
     <string name="wallpaper_download_failed">No se puede descargar el fondo de pantalla</string>
-    <string name="wallpaper_download_cancelled">Descarga del fondo de pantalla cancelada</string>
-    <string name="wallpaper_downloaded">Fondo de pantalla descargado en</string>
-    <string name="wallpaper_download_exist">El fondo de pantalla con nombre %s ya existe, ¿deseas reemplazarlo?</string>
-    <string name="wallpaper_download_exist_replace">Reemplazar</string>
-    <string name="wallpaper_download_exist_new">Crear Nuevo</string>
     <string name="wallpaper_loading">Cargando fondo de pantalla …</string>
     <string name="wallpaper_applying">Estableciendo fondo de pantalla …</string>
     <string name="wallpaper_applied">Fondo de pantalla establecido</string>
     <string name="wallpaper_apply_failed">No se puede establecer el fondo de pantalla</string>
     <string name="wallpaper_apply_cancelled">No se ha establecido el fondo de pantalla. Operación cancelada.</string>
     <string name="connection_failed">No se pueden recuperar los datos del servidor</string>
-    <string name="wallpaper_apply">Establecido como fondo de pantalla</string>
-    <string name="wallpaper_apply_scroll">El recorte del fondo de pantalla será deshabilitado si lo estableces desde esta opción</string>
-    <string name="wallpaper_settings_crop">Recorte de fondo de pantalla</string>
-    <string name="wallpaper_settings_crop_desc">Recorte de fondo de pantalla habilitado. El fondo de pantalla será recortado en función a la vista actual del fondo de pantalla.
-Pinza o pulsa dos veces para hacer zoom sobre el fondo de pantalla.</string>
-    <string name="wallpaper_settings_lockscreen">Fondo de pantalla de la pantalla de bloqueo</string>
-    <string name="wallpaper_settings_lockscreen_desc">\"Establecer\" establecerá el fondo de pantalla tanto en la pantalla de inicio como en la pantalla de bloqueo</string>
-    <string name="wallpaper_settings_lockscreen_not_available">El fondo de pantalla de la pantalla de bloqueo sólo está disponible en Android Nougat</string>
+    <string name="wallpaper_apply">Aplicar fondo de pantalla</string>
+    <string name="wallpaper_save_to_device">Guardar fondo de pantalla</string>
     <!-- Preferences -->
     <string name="pref_data_header">Datos y Caché</string>
     <string name="pref_data_cache">Limpiar Caché</string>
@@ -185,7 +174,6 @@ Pinza o pulsa dos veces para hacer zoom sobre el fondo de pantalla.</string>
     <string name="pref_theme_dark_desc">Usar color oscuro para el tema de la aplicación</string>
     <string name="pref_wallpaper_header">Fondo de pantalla</string>
     <string name="pref_wallpaper_location">Localización de fondos de pantalla guardados</string>
-    <string name="pref_wallpaper_location_desc">Intenta descargar al menos un fondo de pantalla primero</string>
     <string name="pref_language_header">Idioma</string>
     <string name="pref_others_header">Otros</string>
     <string name="pref_others_report_bugs">Informar de Fallos</string>

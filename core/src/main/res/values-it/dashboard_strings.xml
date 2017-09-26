@@ -23,8 +23,10 @@
     <!-- Menu -->
     <string name="menu_search">Cerca</string>
     <string name="menu_save">Salva sul dispositivo</string>
-    <string name="menu_wallpaper_settings">Impostazioni Sfondi</string>
     <string name="menu_select_all">Seleziona Tutto</string>
+    <string name="menu_wallpaper_crop">Taglia sfondo</string>
+    <string name="menu_apply_homescreen">Homescreen</string>
+    <string name="menu_apply_lockscreen">Lockscreen</string>
     <!-- Dialog -->
     <string name="open">Apri</string>
     <string name="close">Chiudi</string>
@@ -48,12 +50,12 @@ Non puoi usare l\'app.</string>
     <string name="license_check_retry">Impossibile cercare la Licenza, riprova tra poco.</string>
     <!-- Share -->
     <string name="share_app_title">Hey! Ti consiglio questa applicazione %s</string>
-    <string name="share_app_body">Guarda %1$s, questo icon pack è fantastico! %2$s</string>
+    <string name="share_app_body">Guarda %1$s, questo icon pack è fantastico!</string>
     <!-- Tap Intro -->
     <string name="tap_intro_home_navigation">Menù di navigazione</string>
     <string name="tap_intro_home_navigation_desc">Tocca qui oppure fai uno swype verso destra per aprire il menù di navigazione</string>
     <string name="tap_intro_home_apply">Applica Icone</string>
-    <string name="tap_intro_home_apply_desc">Clicca per applicare %s</string>
+    <string name="tap_intro_home_apply_desc">Tocca qui per applicare %s</string>
     <string name="tap_intro_icons_search">Cerca</string>
     <string name="tap_intro_icons_search_desc">Tocca qui per cercare un\'icona</string>
     <string name="tap_intro_request_select">Seleziona le app mancanti</string>
@@ -63,14 +65,12 @@ Non puoi usare l\'app.</string>
     <string name="tap_intro_request_send">Invia richiesta icone</string>
     <string name="tap_intro_request_send_desc">Tocca qui per inviare le app selezionate</string>
     <string name="tap_intro_request_premium">Richiesta icone Premium</string>
-    <string name="tap_intro_request_premium_desc">Clicca qui per acquistare la Richiesta Premium, con questa funzione le tue icone avranno la precedenza sulle altre richieste.</string>
+    <string name="tap_intro_request_premium_desc">Tocca qui per acquistare la Richiesta Premium, con questa funzione le tue icone avranno la precedenza sulle altre richieste.</string>
     <string name="tap_intro_wallpapers_option">Opzioni sfondo</string>
     <string name="tap_intro_wallpapers_option_desc">Tocca e tieni premuto qui per mostrare le opzioni dello sfondo, %s applica sfondo.</string>
     <string name="tap_intro_wallpapers_option_desc_download">Scarica o</string>
     <string name="tap_intro_wallpapers_preview">Anteprima sfondo</string>
     <string name="tap_intro_wallpapers_preview_desc">Tocca qui per visualizzare l\'anteprima delle dimensioni reali dello sfondo</string>
-    <string name="tap_intro_wallpaper_preview_settings">Impostazioni sfondo</string>
-    <string name="tap_intro_wallpaper_preview_settings_desc">Tocca qui per aprire le impostazioni degli sfondi. Puoi scegliere se impostare lo sfondo come lockscreen su Android Nougat (o superiore) o abilitare il ritaglio.</string>
     <string name="tap_intro_wallpaper_preview_save">Salva sfondo</string>
     <string name="tap_intro_wallpaper_preview_save_desc">Tocca qui per scaricare e salvare lo sfondo sul tuo dispositivo così potrai utilizzarlo successivamente</string>
     <string name="tap_intro_wallpaper_preview_apply">Applica sfondo</string>
@@ -83,7 +83,7 @@ Non puoi usare l\'app.</string>
     <string name="home_donate">Dona</string>
     <string name="home_donate_desc">Supporta lo sviluppatore dell\'icon pack</string>
     <string name="home_icons">Icone personalizzate</string>
-    <string name="home_icon_dimension">icone di %s pixel</string>
+    <string name="home_icon_dimension">icone grandi %s pixel</string>
     <string name="home_loud_wallpapers">%d sfondi in cloud</string>
     <string name="home_muzei">Muzei Live Wallpaper</string>
     <string name="home_icon_request_installed_apps">%d app installate in totale</string>
@@ -141,13 +141,9 @@ Apri Impostazioni e scegli \"Azzera Acquisti\".</string>
     <string name="premium_request_required">Devi acquistare una richiesta premium per fare una richiesta icone</string>
     <!-- Wallpapers -->
     <string name="wallpaper_new_added">Nuovi sfondi</string>
+    <string name="wallpaper_already_downloaded">Sfondo già scaricato</string>
     <string name="wallpaper_downloading">Download sfondo …</string>
     <string name="wallpaper_download_failed">Impossibile scaricare lo sfondo</string>
-    <string name="wallpaper_download_cancelled">Download sfondo interrotto</string>
-    <string name="wallpaper_downloaded">Sfondo salvato in</string>
-    <string name="wallpaper_download_exist">Lo sfondo con il nome  %s è già presente, vuoi sostituirlo?</string>
-    <string name="wallpaper_download_exist_replace">Sostituisci</string>
-    <string name="wallpaper_download_exist_new">Crea Nuovo</string>
     <string name="wallpaper_loading">Caricando lo sfondo …</string>
     <string name="wallpaper_applying">Applicando lo sfondo …</string>
     <string name="wallpaper_applied">Sfondo applicato</string>
@@ -155,22 +151,16 @@ Apri Impostazioni e scegli \"Azzera Acquisti\".</string>
     <string name="wallpaper_apply_cancelled">\"Applica sfondo\" interrotto</string>
     <string name="connection_failed">Impossibile recuperare i dati dal server</string>
     <string name="wallpaper_apply">Imposta come sfondo</string>
-    <string name="wallpaper_apply_scroll">Ritaglia sfondo sarà disabilitata se applichi questa opzione</string>
-    <string name="wallpaper_settings_crop">Sfondo ritagliato</string>
-    <string name="wallpaper_settings_crop_desc">Abilita ritaglio sfondo. Lo sfondo sarà ritagliato basandosi sull\'anteprima attualmente visualizzato.
-Usa il pinch to zoom o il doppio tocco per modificare le dimensioni dello sfondo.</string>
-    <string name="wallpaper_settings_lockscreen">Sfondo Lockscreen</string>
-    <string name="wallpaper_settings_lockscreen_desc">Impostare lo sfondo sia sulla schermata home che su quella di sblocco</string>
-    <string name="wallpaper_settings_lockscreen_not_available">Gli sfondi per la lockscreen sono disponibili soltanto su Android Nougat o superiore</string>
+    <string name="wallpaper_save_to_device">Salva sfondo</string>
     <!-- Preferences -->
     <string name="pref_data_header">Data e Cache</string>
     <string name="pref_data_cache">Pulisci Cache</string>
-    <string name="pref_data_cache_desc">Rimuovi la cache delle immagini dal tuo dispositivo, creata dopo aver aperto quest\'app, richiesto icone mancanti e aver caricato le miniature degli sfondi sul cloud.</string>
+    <string name="pref_data_cache_desc">Rimuovi la cache delle immagini dalla memoria, creata dopo aver aperto quest\'app, richiesto icone mancanti e aver caricato le miniature degli sfondi sul cloud</string>
     <string name="pref_data_cache_size">Dimensioni Cache: %s</string>
     <string name="pref_data_cache_clear_dialog">Sei sicuro di voler svuotare la cache?</string>
     <string name="pref_data_cache_cleared">Cache svuotata</string>
     <string name="pref_data_request">Pulisci i dati della richiesta icone</string>
-    <string name="pref_data_request_desc">Rimuovi i dati della richiesta icone, creati dopo aver richiesto le app mancanti.</string>
+    <string name="pref_data_request_desc">Rimuovi i dati della richiesta icone, creati dopo aver richiesto le app mancanti</string>
     <string name="pref_data_request_clear_dialog">Sei sicuro di voler cancellare i dati della richiesta icone?</string>
     <string name="pref_data_request_cleared">Dati richiesta icone cancellati</string>
     <string name="pref_premium_request_header">Richiesta Icone Premium</string>
@@ -185,7 +175,6 @@ Usa il pinch to zoom o il doppio tocco per modificare le dimensioni dello sfondo
     <string name="pref_theme_dark_desc">Usa colori scuri per il tema dell\'applicazione</string>
     <string name="pref_wallpaper_header">Sfondo</string>
     <string name="pref_wallpaper_location">Destinazione sfondi salvati</string>
-    <string name="pref_wallpaper_location_desc">Prova prima a scaricare almeno uno sfondo</string>
     <string name="pref_language_header">Lingua</string>
     <string name="pref_others_header">Altri</string>
     <string name="pref_others_report_bugs">Riporta Bug</string>

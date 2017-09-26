@@ -23,8 +23,10 @@
     <!-- Menu -->
     <string name="menu_search">Suchen</string>
     <string name="menu_save">Auf Gerät speichern</string>
-    <string name="menu_wallpaper_settings">Hintergrundbildeinstellungen</string>
     <string name="menu_select_all">Alles auswählen</string>
+    <string name="menu_wallpaper_crop">Hintergrundbild zuschneiden</string>
+    <string name="menu_apply_homescreen">Startbildschirm</string>
+    <string name="menu_apply_lockscreen">Speerbildschirm</string>
     <!-- Dialog -->
     <string name="open">Öffnen</string>
     <string name="close">Schließen</string>
@@ -70,9 +72,6 @@ Mit Premium Icon-Anfragen kannst du deine gewünschte App schneller erhalten.</s
     <string name="tap_intro_wallpapers_option_desc_download">herunterzuladen oder</string>
     <string name="tap_intro_wallpapers_preview">eine Vorschau des Hintergrundbilds zu sehen</string>
     <string name="tap_intro_wallpapers_preview_desc">Klicke hier, für eine Vorschau in voller Größe</string>
-    <string name="tap_intro_wallpaper_preview_settings">Hintergrundbildeinstellungen</string>
-    <string name="tap_intro_wallpaper_preview_settings_desc">Klick hier, um Hintergrundbildeinstellungen zu öffnen.
-Aktiviere die Möglichkeit, dass das Bild als Sperrbildschirmhintergrund in Android Nougat festgelegt wird oder aktiviere den Zuschnitt des Hintergrunds.</string>
     <string name="tap_intro_wallpaper_preview_save">Hintergrundbild speichern</string>
     <string name="tap_intro_wallpaper_preview_save_desc">Klicke hier, um ein Bild auf dein Gerät herunterzuladen, sodass du es später nutzen kannst</string>
     <string name="tap_intro_wallpaper_preview_apply">Hintergrundbild anwenden</string>
@@ -89,8 +88,8 @@ Aktiviere die Möglichkeit, dass das Bild als Sperrbildschirmhintergrund in Andr
     <string name="home_loud_wallpapers">%d Cloud-Hintergründe</string>
     <string name="home_muzei">Muzei Live-Hintergrund</string>
     <string name="home_icon_request_installed_apps">%d\ninstallierte App(s)</string>
-    <string name="home_icon_request_themed_apps">Designte\n%d App(s)</string>
-    <string name="home_icon_request_missed_apps">Fehlende\n%d App(s)</string>
+    <string name="home_icon_request_themed_apps">%d\ndesignte App(s)</string>
+    <string name="home_icon_request_missed_apps">%d\nfehlende App(s)</string>
     <!-- Apply -->
     <string name="apply_installed">Installierte Launcher</string>
     <string name="apply_supported">Unterstützte Launcher</string>
@@ -144,27 +143,17 @@ Einstellungen öffnen, wähle \"Käufe wiederherstellen\", um es wieder zu bekom
     <string name="premium_request_required">Du musst ein Paket zur Premium Icon-Anfrage kaufen, um Icon-Anfragen zu tätigen</string>
     <!-- Wallpapers -->
     <string name="wallpaper_new_added">Neues Hintergrundbild</string>
+    <string name="wallpaper_already_downloaded">Hintergrundbild bereits heruntergeladen</string>
     <string name="wallpaper_downloading">Hintergrundbild wird heruntergeladen …</string>
     <string name="wallpaper_download_failed">Hintergrundbild kann nicht heruntergeladen werden</string>
-    <string name="wallpaper_download_cancelled">Download des Hintergrundbilds abgebrochen</string>
-    <string name="wallpaper_downloaded">Hintergrundbild gespeichert in</string>
-    <string name="wallpaper_download_exist">Ein Hintergrundbild mit dem Namen %s existiert bereits. Willst du es ersetzen?</string>
-    <string name="wallpaper_download_exist_replace">Ersetzen</string>
-    <string name="wallpaper_download_exist_new">Neu erstellen</string>
     <string name="wallpaper_loading">Hintergrundbild wird geladen …</string>
     <string name="wallpaper_applying">Hintergrundbild wird angewandt …</string>
     <string name="wallpaper_applied">Hintergrundbild angewandt</string>
     <string name="wallpaper_apply_failed">Hintergrundbild kann nicht angewandt werden</string>
     <string name="wallpaper_apply_cancelled">Anwendung des Hintergrundbilds abgebrochen</string>
     <string name="connection_failed">Daten können nicht vom Server geholt werden</string>
-    <string name="wallpaper_apply">Als Hintergrundbild festlegen</string>
-    <string name="wallpaper_apply_scroll">Das Zuschneiden des Hintergrundbilds wird deaktiviert, wenn du es über diese Option anwendest</string>
-    <string name="wallpaper_settings_crop">Hintergrundbild zuschneiden</string>
-    <string name="wallpaper_settings_crop_desc">Hintergrundbild zuschneiden aktivieren. Der Hintergrund wird auf Basis der derzeitigen Hintergrundbild-Vorschau zugeschnitten.
-Pinche oder mach einen Doppelklick, um zu zoomen.</string>
-    <string name="wallpaper_settings_lockscreen">Hintergrund des Sperrbildschirms</string>
-    <string name="wallpaper_settings_lockscreen_desc">Die Anwendung wird das Hintergrundbild auf dem Startbildschirm und Sperrbildschirm festlegen</string>
-    <string name="wallpaper_settings_lockscreen_not_available">Hintergrundbild auf dem Sperrbildschirm ist nur auf Android Nougat verfügbar</string>
+    <string name="wallpaper_apply">Hintergrundbild anwenden</string>
+    <string name="wallpaper_save_to_device">Hintergrundbild speichern</string>
     <!-- Preferences -->
     <string name="pref_data_header">Daten &amp; Cache</string>
     <string name="pref_data_cache">Cache löschen</string>
@@ -190,7 +179,6 @@ fehlenden Icons erstellt wurde.</string>
     <string name="pref_theme_dark_desc">Dunkle Farbe als Design für die App verwenden</string>
     <string name="pref_wallpaper_header">Hintergrundbild</string>
     <string name="pref_wallpaper_location">Speicherort der Hintergrundbilder</string>
-    <string name="pref_wallpaper_location_desc">Versuche zuerst ein Hintergrundbild herunterzuladen</string>
     <string name="pref_language_header">Sprache</string>
     <string name="pref_others_header">Weitere</string>
     <string name="pref_others_report_bugs">Fehler melden</string>
@@ -226,7 +214,7 @@ fehlenden Icons erstellt wurde.</string>
     <string name="crash_report_send">Bericht senden</string>
     <!-- Please don't modify this -->
     <string name="about_dashboard">CandyBar</string>
-    <string name="about_dashboard_dev">CandyBar ist ein Open Source Icon Pack Dashboard, das unter Apache License 2.0 lizenziert ist.
+    <string name="about_dashboard_dev">CandyBar ist ein Open Source Icon Pack Dashboard, das unter Apache License 2.0 lizensiert ist. 
 Für Android bei GitHub verfügbar und kostenlos zur Benutzung freigegeben, entwickelt von Dani Mahardhika.</string>
     <string name="about_open_source_licenses">Open-Source-Lizenzen</string>
     <string name="about_dashboard_contributors">Mitwirkende bei CandyBar</string>
