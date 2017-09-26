@@ -120,10 +120,11 @@ public class PremiumRequestBuilderTask extends AsyncTask<Void, Void, Boolean> {
 
         if (aBoolean) {
             try {
-                if (mCallback != null && mCallback.get() != null)
+                if (mCallback != null && mCallback.get() != null) {
                     mCallback.get().onFinished();
+                }
 
-                RequestListener listener = (RequestListener) mContext;
+                RequestListener listener = (RequestListener) mContext.get();
                 listener.onRequestBuilt(getIntent(CandyBarApplication.sRequestProperty.getComponentName(), mEmailBody),
                         IntentChooserFragment.REBUILD_ICON_REQUEST);
             } catch (Exception e) {

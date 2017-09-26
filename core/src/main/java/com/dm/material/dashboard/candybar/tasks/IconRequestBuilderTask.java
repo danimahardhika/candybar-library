@@ -153,7 +153,7 @@ public class IconRequestBuilderTask extends AsyncTask<Void, Void, Boolean> {
                 if (mCallback != null && mCallback.get() != null)
                     mCallback.get().onFinished();
 
-                RequestListener listener = (RequestListener) mContext;
+                RequestListener listener = (RequestListener) mContext.get();
                 listener.onRequestBuilt(getIntent(CandyBarApplication.sRequestProperty
                                 .getComponentName(), mEmailBody),
                         IntentChooserFragment.ICON_REQUEST);
