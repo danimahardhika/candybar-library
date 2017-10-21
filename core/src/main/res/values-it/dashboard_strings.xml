@@ -50,7 +50,7 @@ Non puoi usare l\'app.</string>
     <string name="license_check_retry">Impossibile cercare la Licenza, riprova tra poco.</string>
     <!-- Share -->
     <string name="share_app_title">Hey! Ti consiglio questa applicazione %s</string>
-    <string name="share_app_body">Guarda %1$s, questo icon pack è fantastico!</string>
+    <string name="share_app_body">Guarda %1$s, questo icon pack è fantastico! %2$s</string>
     <!-- Tap Intro -->
     <string name="tap_intro_home_navigation">Menù di navigazione</string>
     <string name="tap_intro_home_navigation_desc">Tocca qui oppure fai uno swype verso destra per aprire il menù di navigazione</string>
