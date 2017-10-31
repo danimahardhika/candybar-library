@@ -30,9 +30,9 @@ allprojects {
     rootProject.ext {
         BuildTools = "26.0.2"
         MinSdk = 15
-        TargetSdk = 27
-        CompileSdk = 27
-        SupportLibrary = "27"
+        TargetSdk = 26
+        CompileSdk = 26
+        SupportLibrary = "26.0.2"
     }
 }
 
