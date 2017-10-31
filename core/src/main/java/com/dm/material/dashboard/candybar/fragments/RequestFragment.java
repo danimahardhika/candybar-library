@@ -242,7 +242,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                     }
                 }
 
-                mAsyncTask = new MissingAppsLoader().execute();
+                mAsyncTask = new RequestLoader(null).execute();
             } else {
                 Toast.makeText(getActivity(), R.string.request_not_selected,
                         Toast.LENGTH_LONG).show();
@@ -355,7 +355,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         private MaterialDialog dialog;
         private boolean noEmailClientError = false;
 
-        private RequestLoader(@NonNull BillingProcessor billingProcessor) {
+        private RequestLoader(BillingProcessor billingProcessor) {
             this.billingProcessor = billingProcessor;
         }
 
