@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatCheckBox;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import com.danimahardhika.android.helpers.core.ColorHelper;
 import com.dm.material.dashboard.candybar.R;
+import com.dm.material.dashboard.candybar.activities.callbacks.MuzeiCallback;
 import com.dm.material.dashboard.candybar.helpers.LocaleHelper;
 import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
@@ -43,17 +45,17 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
  * limitations under the License.
  */
 
-public class CandyBarMuzeiActivity extends AppCompatActivity implements View.OnClickListener {
+public abstract class CandyBarMuzeiActivity extends AppCompatActivity implements View.OnClickListener, MuzeiCallback {
 
     private RadioButton mMinute;
     private RadioButton mHour;
     private NumberPicker mNumberPicker;
-    private AppCompatCheckBox mDownloadedOnly;
     private AppCompatCheckBox mWifiOnly;
 
     private Class<?> mMuzeiService;
 
-    public void initMuzeiActivity(Bundle savedInstanceState, Class<?> muzeiService) {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.setTheme(Preferences.get(this).isDarkTheme() ?
                 R.style.AppThemeDark : R.style.AppTheme);
         super.onCreate(savedInstanceState);
@@ -64,14 +66,13 @@ public class CandyBarMuzeiActivity extends AppCompatActivity implements View.OnC
                 Preferences.get(this).isDarkTheme() ?
                         R.color.navigationBarDark : R.color.navigationBar));
 
-        mMinute = (RadioButton) findViewById(R.id.minute);
-        mHour = (RadioButton) findViewById(R.id.hour);
-        mNumberPicker = (NumberPicker) findViewById(R.id.number_picker);
-        mDownloadedOnly = (AppCompatCheckBox) findViewById(R.id.downloaded_only);
-        mWifiOnly = (AppCompatCheckBox) findViewById(R.id.wifi_only);
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mMinute = findViewById(R.id.minute);
+        mHour = findViewById(R.id.hour);
+        mNumberPicker = findViewById(R.id.number_picker);
+        mWifiOnly = findViewById(R.id.wifi_only);
+        Toolbar mToolbar = findViewById(R.id.toolbar);
 
-        mMuzeiService = muzeiService;
+        mMuzeiService = onInit();
 
         mToolbar.setTitle("");
         setSupportActionBar(mToolbar);
@@ -83,7 +84,6 @@ public class CandyBarMuzeiActivity extends AppCompatActivity implements View.OnC
         mHour.setOnClickListener(this);
 
         mWifiOnly.setChecked(Preferences.get(this).isWifiOnly());
-        mDownloadedOnly.setChecked(Preferences.get(this).isDownloadedOnly());
         mMinute.setChecked(Preferences.get(this).isRotateMinute());
         mHour.setChecked(!mMinute.isChecked());
 
@@ -127,7 +127,6 @@ public class CandyBarMuzeiActivity extends AppCompatActivity implements View.OnC
             Preferences.get(this).setRotateMinute(mMinute.isChecked());
             Preferences.get(this).setRotateTime(rotateTime);
             Preferences.get(this).setWifiOnly(mWifiOnly.isChecked());
-            Preferences.get(this).setDownloadedOnly(mDownloadedOnly.isChecked());
 
             if (mMuzeiService == null) {
                 LogUtil.e("MuzeiService cannot be null");
@@ -158,8 +157,6 @@ public class CandyBarMuzeiActivity extends AppCompatActivity implements View.OnC
             mMinute.setChecked(!mHour.isChecked());
         } else if (id == R.id.wifi_only) {
             mWifiOnly.setChecked(mWifiOnly.isChecked());
-        } else if (id == R.id.downloaded_only) {
-            mDownloadedOnly.setChecked(mDownloadedOnly.isChecked());
         }
     }
 

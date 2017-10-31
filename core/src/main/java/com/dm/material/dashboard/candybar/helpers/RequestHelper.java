@@ -296,7 +296,8 @@ public class RequestHelper {
                 "com.android.vending.billing.InAppBillingService.LUCK",
                 "com.android.vending.billing.InAppBillingService.LOCK",
                 "cc.madkite.freedom",
-                "com.android.vending.billing.InAppBillingService.LACK"
+                "com.android.vending.billing.InAppBillingService.LACK",
+                "com.android.vending.billing.InAppBillingService.CLON"
         };
 
         boolean isPiracyAppInstalled = false;
@@ -355,9 +356,11 @@ public class RequestHelper {
                             "\" />" +
                             "\n\n";
                 case APPMAP:
+                    String packageName = ""+ request.getPackageName()+ "/";
+                    String className = request.getActivity().replaceFirst(packageName, "");
                     return  "\t<!-- " + request.getName() + " -->" +
                             "\n" +
-                            "\t<item class=\"" + request.getPackageName() + "\" name=\"" +
+                            "\t<item class=\"" +className+ "\" name=\"" +
                             request.getName().toLowerCase().replace(" ", "_") +
                             "\" />" +
                             "\n\n";

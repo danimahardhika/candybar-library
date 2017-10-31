@@ -59,16 +59,16 @@ public class FAQsFragment extends Fragment {
     private RecyclerFastScroller mFastScroll;
 
     private FAQsAdapter mAdapter;
-    private AsyncTask<Void, Void, Boolean> mGetFAQs;
+    private AsyncTask mAsyncTask;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_faqs, container, false);
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.faqs_list);
-        mSearchResult = (TextView) view.findViewById(R.id.search_result);
-        mFastScroll = (RecyclerFastScroller) view.findViewById(R.id.fastscroll);
+        mRecyclerView = view.findViewById(R.id.faqs_list);
+        mSearchResult = view.findViewById(R.id.search_result);
+        mFastScroll = view.findViewById(R.id.fastscroll);
 
         if (!Preferences.get(getActivity()).isToolbarShadowEnabled()) {
             View shadow = view.findViewById(R.id.shadow);
@@ -88,7 +88,7 @@ public class FAQsFragment extends Fragment {
         setFastScrollColor(mFastScroll);
         mFastScroll.attachRecyclerView(mRecyclerView);
 
-        getFAQs();
+        mAsyncTask = new FAQsLoader().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override
@@ -124,7 +124,9 @@ public class FAQsFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        if (mGetFAQs != null) mGetFAQs.cancel(true);
+        if (mAsyncTask != null) {
+            mAsyncTask.cancel(true);
+        }
         super.onDestroy();
     }
 
@@ -143,52 +145,52 @@ public class FAQsFragment extends Fragment {
         }
     }
 
-    private void getFAQs() {
-        mGetFAQs = new AsyncTask<Void, Void, Boolean>() {
+    private class FAQsLoader extends AsyncTask<Void, Void, Boolean> {
 
-            List<FAQs> faqs;
-            String[] questions;
-            String[] answers;
+        private List<FAQs> faqs;
+        private String[] questions;
+        private String[] answers;
 
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                faqs = new ArrayList<>();
-                questions = getActivity().getResources().getStringArray(R.array.questions);
-                answers = getActivity().getResources().getStringArray(R.array.answers);
-            }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            faqs = new ArrayList<>();
+            questions =getResources().getStringArray(R.array.questions);
+            answers = getResources().getStringArray(R.array.answers);
+        }
 
-            @Override
-            protected Boolean doInBackground(Void... voids) {
-                while (!isCancelled()) {
-                    try {
-                        Thread.sleep(1);
-                        for (int i = 0; i < questions.length; i++) {
-                            if (i < answers.length) {
-                                FAQs faq = new FAQs(questions[i], answers[i]);
-                                faqs.add(faq);
-                            }
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            while (!isCancelled()) {
+                try {
+                    Thread.sleep(1);
+                    for (int i = 0; i < questions.length; i++) {
+                        if (i < answers.length) {
+                            FAQs faq = new FAQs(questions[i], answers[i]);
+                            faqs.add(faq);
                         }
-                        return true;
-                    } catch (Exception e) {
-                        LogUtil.e(Log.getStackTraceString(e));
-                        return false;
                     }
+                    return true;
+                } catch (Exception e) {
+                    LogUtil.e(Log.getStackTraceString(e));
+                    return false;
                 }
-                return false;
             }
+            return false;
+        }
 
-            @Override
-            protected void onPostExecute(Boolean aBoolean) {
-                super.onPostExecute(aBoolean);
-                if (aBoolean) {
-                    setHasOptionsMenu(true);
-                    mAdapter = new FAQsAdapter(getActivity(), faqs);
-                    mRecyclerView.setAdapter(mAdapter);
-                }
-                mGetFAQs = null;
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            if (getActivity() == null) return;
+            if (getActivity().isFinishing()) return;
+
+            mAsyncTask = null;
+            if (aBoolean) {
+                setHasOptionsMenu(true);
+                mAdapter = new FAQsAdapter(getActivity(), faqs);
+                mRecyclerView.setAdapter(mAdapter);
             }
-
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
     }
 }

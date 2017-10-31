@@ -62,10 +62,11 @@ public class IntentChooserFragment extends DialogFragment {
 
     private int mType;
     private IntentAdapter mAdapter;
-    private AsyncTask<Void, Void, Boolean> mLoadIntentChooser;
+    private AsyncTask mAsyncTask;
 
     public static final int ICON_REQUEST = 0;
     public static final int REBUILD_ICON_REQUEST = 1;
+
     public static final String TAG = "candybar.dialog.intent.chooser";
     private static final String TYPE = "type";
 
@@ -93,7 +94,9 @@ public class IntentChooserFragment extends DialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mType = getArguments().getInt(TYPE);
+        if (getArguments() != null) {
+            mType = getArguments().getInt(TYPE);
+        }
     }
 
     @NonNull
@@ -137,105 +140,104 @@ public class IntentChooserFragment extends DialogFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        loadIntentChooser();
+        mAsyncTask = new IntentChooserLoader().execute();
     }
 
     @Override
     public void onDismiss(DialogInterface dialog) {
-        if (mLoadIntentChooser != null) mLoadIntentChooser.cancel(true);
+        if (mAsyncTask != null) {
+            mAsyncTask.cancel(true);
+        }
         super.onDismiss(dialog);
     }
 
-    private void loadIntentChooser() {
-        mLoadIntentChooser = new AsyncTask<Void, Void, Boolean>() {
+    private class IntentChooserLoader extends AsyncTask<Void, Void, Boolean> {
 
-            List<IntentChooser> apps;
+        private List<IntentChooser> apps;
 
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                apps = new ArrayList<>();
-            }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            apps = new ArrayList<>();
+        }
 
-            @Override
-            protected Boolean doInBackground(Void... voids) {
-                while(!isCancelled()) {
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            while(!isCancelled()) {
+                try {
+                    Thread.sleep(1);
+                    Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto",
+                            getResources().getString(R.string.dev_email),
+                            null));
+                    List<ResolveInfo> resolveInfos = getActivity().getPackageManager()
+                            .queryIntentActivities(intent, 0);
                     try {
-                        Thread.sleep(1);
-                        Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto",
-                                getActivity().getResources().getString(R.string.dev_email),
-                                null));
-                        List<ResolveInfo> resolveInfos = getActivity().getPackageManager()
-                                .queryIntentActivities(intent, 0);
-                        try {
-                            Collections.sort(resolveInfos, new ResolveInfo.DisplayNameComparator(
-                                    getActivity().getPackageManager()));
-                        } catch (Exception ignored){}
+                        Collections.sort(resolveInfos, new ResolveInfo.DisplayNameComparator(
+                                getActivity().getPackageManager()));
+                    } catch (Exception ignored){}
 
-                        for (ResolveInfo resolveInfo : resolveInfos) {
-                            switch (resolveInfo.activityInfo.packageName) {
-                                case "com.google.android.gm":
-                                    apps.add(new IntentChooser(resolveInfo, IntentChooser.TYPE_RECOMMENDED));
-                                    break;
-                                case "com.google.android.apps.inbox":
-                                    try {
-                                        ComponentName componentName = new ComponentName(resolveInfo.activityInfo.applicationInfo.packageName,
-                                                "com.google.android.apps.bigtop.activities.MainActivity");
-                                        Intent inbox = new Intent(Intent.ACTION_SEND);
-                                        inbox.setComponent(componentName);
+                    for (ResolveInfo resolveInfo : resolveInfos) {
+                        switch (resolveInfo.activityInfo.packageName) {
+                            case "com.google.android.gm":
+                                apps.add(new IntentChooser(resolveInfo, IntentChooser.TYPE_RECOMMENDED));
+                                break;
+                            case "com.google.android.apps.inbox":
+                                try {
+                                    ComponentName componentName = new ComponentName(resolveInfo.activityInfo.applicationInfo.packageName,
+                                            "com.google.android.apps.bigtop.activities.MainActivity");
+                                    Intent inbox = new Intent(Intent.ACTION_SEND);
+                                    inbox.setComponent(componentName);
 
-                                        List<ResolveInfo> list = getActivity().getPackageManager().queryIntentActivities(
-                                                inbox, PackageManager.MATCH_DEFAULT_ONLY);
-                                        if (list.size() > 0) {
-                                            apps.add(new IntentChooser(resolveInfo, IntentChooser.TYPE_SUPPORTED));
-                                            break;
-                                        }
-                                    } catch (ActivityNotFoundException e) {
-                                        LogUtil.e(Log.getStackTraceString(e));
+                                    List<ResolveInfo> list = getActivity().getPackageManager().queryIntentActivities(
+                                            inbox, PackageManager.MATCH_DEFAULT_ONLY);
+                                    if (list.size() > 0) {
+                                        apps.add(new IntentChooser(resolveInfo, IntentChooser.TYPE_SUPPORTED));
+                                        break;
                                     }
+                                } catch (ActivityNotFoundException e) {
+                                    LogUtil.e(Log.getStackTraceString(e));
+                                }
 
-                                    apps.add(new IntentChooser(resolveInfo, IntentChooser.TYPE_NOT_SUPPORTED));
-                                    break;
-                                case "com.android.fallback":
-                                case "com.paypal.android.p2pmobile":
-                                case "com.lonelycatgames.Xplore":
-                                    break;
-                                default:
-                                    apps.add(new IntentChooser(resolveInfo, IntentChooser.TYPE_SUPPORTED));
-                                    break;
-                            }
+                                apps.add(new IntentChooser(resolveInfo, IntentChooser.TYPE_NOT_SUPPORTED));
+                                break;
+                            case "com.android.fallback":
+                            case "com.paypal.android.p2pmobile":
+                            case "com.lonelycatgames.Xplore":
+                                break;
+                            default:
+                                apps.add(new IntentChooser(resolveInfo, IntentChooser.TYPE_SUPPORTED));
+                                break;
                         }
-                        return true;
-                    } catch (Exception e) {
-                        LogUtil.e(Log.getStackTraceString(e));
-                        return false;
                     }
-                }
-                return false;
-            }
-
-            @Override
-            protected void onPostExecute(Boolean aBoolean) {
-                super.onPostExecute(aBoolean);
-                mLoadIntentChooser = null;
-
-                if (getActivity() == null) return;
-                if (getActivity().isFinishing()) return;
-
-                if (aBoolean && apps != null) {
-                    mAdapter = new IntentAdapter(getActivity(), apps, mType);
-                    mIntentList.setAdapter(mAdapter);
-
-                    if (apps.size() == 0) {
-                        mNoApp.setVisibility(View.VISIBLE);
-                        setCancelable(true);
-                    }
-                } else {
-                    dismiss();
-                    Toast.makeText(getActivity(), R.string.intent_email_failed,
-                            Toast.LENGTH_LONG).show();
+                    return true;
+                } catch (Exception e) {
+                    LogUtil.e(Log.getStackTraceString(e));
+                    return false;
                 }
             }
-        }.execute();
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            if (getActivity() == null) return;
+            if (getActivity().isFinishing()) return;
+
+            mAsyncTask = null;
+            if (aBoolean && apps != null) {
+                mAdapter = new IntentAdapter(getActivity(), apps, mType);
+                mIntentList.setAdapter(mAdapter);
+
+                if (apps.size() == 0) {
+                    mNoApp.setVisibility(View.VISIBLE);
+                    setCancelable(true);
+                }
+            } else {
+                dismiss();
+                Toast.makeText(getActivity(), R.string.intent_email_failed,
+                        Toast.LENGTH_LONG).show();
+            }
+        }
     }
 }

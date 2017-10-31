@@ -11,7 +11,6 @@ import android.webkit.URLUtil;
 import com.danimahardhika.android.helpers.core.ColorHelper;
 import com.danimahardhika.android.helpers.core.FileHelper;
 import com.danimahardhika.cafebar.CafeBar;
-import com.danimahardhika.cafebar.CafeBarDuration;
 import com.danimahardhika.cafebar.CafeBarTheme;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.helpers.TypefaceHelper;
@@ -69,7 +68,7 @@ public class WallpaperDownloader {
                     .theme(CafeBarTheme.Custom(ColorHelper.getAttributeColor(mContext, R.attr.card_background)))
                     .floating(true)
                     .fitSystemWindow()
-                    .duration(CafeBarDuration.MEDIUM.getDuration())
+                    .duration(CafeBar.Duration.MEDIUM)
                     .typeface(TypefaceHelper.getRegular(mContext), TypefaceHelper.getBold(mContext))
                     .content(R.string.wallpaper_already_downloaded)
                     .neutralText(R.string.open)

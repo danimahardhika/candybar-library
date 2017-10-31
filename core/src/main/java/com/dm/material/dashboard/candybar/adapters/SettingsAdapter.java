@@ -157,13 +157,13 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         ContentViewHolder(View itemView) {
             super(itemView);
-            title = (TextView) itemView.findViewById(R.id.title);
-            subtitle = (TextView) itemView.findViewById(R.id.subtitle);
-            content = (TextView) itemView.findViewById(R.id.content);
-            footer = (TextView) itemView.findViewById(R.id.footer);
-            checkBox = (AppCompatCheckBox) itemView.findViewById(R.id.checkbox);
+            title = itemView.findViewById(R.id.title);
+            subtitle = itemView.findViewById(R.id.subtitle);
+            content = itemView.findViewById(R.id.content);
+            footer = itemView.findViewById(R.id.footer);
+            checkBox = itemView.findViewById(R.id.checkbox);
             divider = itemView.findViewById(R.id.divider);
-            container = (LinearLayout) itemView.findViewById(R.id.container);
+            container = itemView.findViewById(R.id.container);
 
             container.setOnClickListener(this);
         }

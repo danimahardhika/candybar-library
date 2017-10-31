@@ -279,7 +279,7 @@ public class TapIntroHelper {
 
                     View fab = activity.findViewById(R.id.fab);
                     if (fab != null) {
-                        TapTarget tapTarget = TapTarget.forView(activity.findViewById(R.id.fab),
+                        TapTarget tapTarget = TapTarget.forView(fab,
                                 context.getResources().getString(R.string.tap_intro_request_send),
                                 context.getResources().getString(R.string.tap_intro_request_send_desc))
                                 .titleTextColorInt(primary)

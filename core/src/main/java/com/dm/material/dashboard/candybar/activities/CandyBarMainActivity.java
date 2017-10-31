@@ -40,6 +40,8 @@ import com.danimahardhika.android.helpers.core.DrawableHelper;
 import com.danimahardhika.android.helpers.core.SoftKeyboardHelper;
 import com.danimahardhika.android.helpers.license.LicenseHelper;
 import com.danimahardhika.android.helpers.permission.PermissionCode;
+import com.dm.material.dashboard.candybar.activities.callbacks.ActivityCallback;
+import com.dm.material.dashboard.candybar.activities.configurations.ActivityConfiguration;
 import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
 import com.dm.material.dashboard.candybar.databases.Database;
 import com.dm.material.dashboard.candybar.fragments.AboutFragment;
@@ -106,9 +108,9 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
  * limitations under the License.
  */
 
-public class CandyBarMainActivity extends AppCompatActivity implements
+public abstract class CandyBarMainActivity extends AppCompatActivity implements
         ActivityCompat.OnRequestPermissionsResultCallback, RequestListener, InAppBillingListener,
-        SearchListener, WallpapersListener {
+        SearchListener, WallpapersListener, ActivityCallback {
 
     private TextView mToolbarTitle;
     private DrawerLayout mDrawerLayout;
@@ -124,27 +126,16 @@ public class CandyBarMainActivity extends AppCompatActivity implements
 
     private boolean mIsMenuVisible = true;
 
-    private InAppBillingHelper.Property mProperty;
-
     public static List<Request> sMissedApps;
     public static List<Icon> sSections;
     public static Home sHomeIcon;
     public static int sInstalledAppsCount;
     public static int sIconsCount;
 
-    /**
-     * @deprecated use {{@link #initMainActivity(Bundle, InAppBillingHelper.Property)}} instead
-     */
-    @Deprecated
-    public void initMainActivity(@Nullable Bundle savedInstanceState, boolean licenseChecker, byte[] salt,
-                                 String licenseKey, String[] donationProductsId,
-                                 String[] premiumRequestProductsId, int[] premiumRequestProductsCount) {
-        InAppBillingHelper.Property property = new InAppBillingHelper.Property(licenseChecker, salt, licenseKey,
-                donationProductsId, premiumRequestProductsId, premiumRequestProductsCount);
-        initMainActivity(savedInstanceState, property);
-    }
+    private ActivityConfiguration mConfig;
 
-    public void initMainActivity(@Nullable Bundle savedInstanceState, InAppBillingHelper.Property property) {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.setTheme(Preferences.get(this).isDarkTheme() ?
                 R.style.AppThemeDark : R.style.AppTheme);
         super.onCreate(savedInstanceState);
@@ -155,19 +146,20 @@ public class CandyBarMainActivity extends AppCompatActivity implements
                         R.color.navigationBarDark : R.color.navigationBar));
         registerBroadcastReceiver();
 
+        mConfig = onInit();
+
         Database.get(this.getApplicationContext());
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        mToolbarTitle = (TextView) findViewById(R.id.toolbar_title);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mNavigationView = findViewById(R.id.navigation_view);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        mToolbarTitle = findViewById(R.id.toolbar_title);
 
         toolbar.setPopupTheme(Preferences.get(this).isDarkTheme() ?
                 R.style.AppThemeDark : R.style.AppTheme);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
-        mProperty = property;
         mFragManager = getSupportFragmentManager();
 
         initNavigationView(toolbar);
@@ -191,16 +183,16 @@ public class CandyBarMainActivity extends AppCompatActivity implements
         IconRequestTask.start(this, AsyncTask.THREAD_POOL_EXECUTOR);
         IconsLoaderTask.start(this);
 
-        if (Preferences.get(this).isFirstRun() && mProperty.licenseChecker) {
+        if (Preferences.get(this).isFirstRun() && mConfig.isLicenseCheckerEnabled()) {
             mLicenseHelper = new LicenseHelper(this);
-            mLicenseHelper.run(mProperty.licenseKey, mProperty.salt, new LicenseCallbackHelper(this));
+            mLicenseHelper.run(mConfig.getLicenseKey(), mConfig.getRandomString(), new LicenseCallbackHelper(this));
             return;
         }
 
         if (Preferences.get(this).isNewVersion())
             ChangelogFragment.showChangelog(mFragManager);
 
-        if (mProperty.licenseChecker && !Preferences.get(this).isLicensed()) {
+        if (mConfig.isLicenseCheckerEnabled() && !Preferences.get(this).isLicensed()) {
             finish();
         }
     }
@@ -338,7 +330,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements
                 if (products != null) {
                     boolean isProductIdExist = false;
                     for (String product : products) {
-                        for (String premiumRequestProductId : mProperty.premiumRequestProductsId) {
+                        for (String premiumRequestProductId : mConfig.getPremiumRequestProductsId()) {
                             if (premiumRequestProductId.equals(product)) {
                                 isProductIdExist = true;
                                 break;
@@ -356,9 +348,9 @@ public class CandyBarMainActivity extends AppCompatActivity implements
             InAppBillingFragment.showInAppBillingDialog(getSupportFragmentManager(),
                     mBillingProcessor,
                     InAppBillingHelper.PREMIUM_REQUEST,
-                    mProperty.licenseKey,
-                    mProperty.premiumRequestProductsId,
-                    mProperty.premiumRequestProductsCount);
+                    mConfig.getLicenseKey(),
+                    mConfig.getDonationProductsId(),
+                    mConfig.getPremiumRequestProductsCount());
         }
     }
 
@@ -433,7 +425,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements
             if (productsId != null) {
                 SettingsFragment fragment = (SettingsFragment) mFragManager.findFragmentByTag(Extras.TAG_SETTINGS);
                 if (fragment != null) fragment.restorePurchases(productsId,
-                        mProperty.premiumRequestProductsId, mProperty.premiumRequestProductsCount);
+                        mConfig.getPremiumRequestProductsId(), mConfig.getPremiumRequestProductsCount());
             }
         }
     }
@@ -553,8 +545,8 @@ public class CandyBarMainActivity extends AppCompatActivity implements
         InAppBillingFragment.showInAppBillingDialog(mFragManager,
                 mBillingProcessor,
                 InAppBillingHelper.DONATE,
-                mProperty.licenseKey,
-                mProperty.donationProductsId,
+                mConfig.getLicenseKey(),
+                mConfig.getDonationProductsId(),
                 null);
     }
 
@@ -634,10 +626,10 @@ public class CandyBarMainActivity extends AppCompatActivity implements
         String imageUrl = getResources().getString(R.string.navigation_view_header);
         String titleText = getResources().getString(R.string.navigation_view_header_title);
         View header = mNavigationView.getHeaderView(0);
-        HeaderView image = (HeaderView) header.findViewById(R.id.header_image);
-        LinearLayout container = (LinearLayout) header.findViewById(R.id.header_title_container);
-        TextView title = (TextView )header.findViewById(R.id.header_title);
-        TextView version = (TextView) header.findViewById(R.id.header_version);
+        HeaderView image = header.findViewById(R.id.header_image);
+        LinearLayout container = header.findViewById(R.id.header_title_container);
+        TextView title = header.findViewById(R.id.header_title);
+        TextView version = header.findViewById(R.id.header_version);
 
         if (CandyBarApplication.getConfiguration().getNavigationViewHeader() == CandyBarApplication.NavigationViewHeader.MINI) {
             image.setRatio(16, 9);
@@ -674,7 +666,7 @@ public class CandyBarMainActivity extends AppCompatActivity implements
 
             if (BillingProcessor.isIabServiceAvailable(this)) {
                 mBillingProcessor = new BillingProcessor(this.getApplicationContext(),
-                        mProperty.licenseKey, new InAppBillingHelper(this));
+                        mConfig.getLicenseKey(), new InAppBillingHelper(this));
             }
         }
     }

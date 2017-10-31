@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -84,20 +85,19 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     private MenuItem mMenuItem;
     private RequestAdapter mAdapter;
     private StaggeredGridLayoutManager mManager;
-    private AsyncTask<Void, Void, Boolean> mGetMissingApps;
-    private AsyncTask<Void, Void, Boolean> mSendRequest;
+    private AsyncTask mAsyncTask;
 
     public static List<Integer> sSelectedRequests;
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_request, container, false);
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.request_list);
-        mFab = (FloatingActionButton) view.findViewById(R.id.fab);
-        mFastScroll = (RecyclerFastScroller) view.findViewById(R.id.fastscroll);
-        mProgress = (ProgressBar) view.findViewById(R.id.progress);
+        mRecyclerView = view.findViewById(R.id.request_list);
+        mFab =  view.findViewById(R.id.fab);
+        mFastScroll = view.findViewById(R.id.fastscroll);
+        mProgress = view.findViewById(R.id.progress);
 
         if (!Preferences.get(getActivity()).isToolbarShadowEnabled()) {
             View shadow = view.findViewById(R.id.shadow);
@@ -110,7 +110,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(false);
-        resetRecyclerViewPadding(getActivity().getResources().getConfiguration().orientation);
+        resetRecyclerViewPadding(getResources().getConfiguration().orientation);
 
         mProgress.getIndeterminateDrawable().setColorFilter(
                 ColorHelper.getAttributeColor(getActivity(), R.attr.colorAccent),
@@ -128,8 +128,6 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.getItemAnimator().setChangeDuration(0);
-        mRecyclerView.setHasFixedSize(false);
-
         mManager = new StaggeredGridLayoutManager(
                 getActivity().getResources().getInteger(R.integer.request_column_count),
                 StaggeredGridLayoutManager.VERTICAL);
@@ -138,14 +136,14 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         setFastScrollColor(mFastScroll);
         mFastScroll.attachRecyclerView(mRecyclerView);
 
-        getMissingApps();
+        mAsyncTask = new MissingAppsLoader().execute();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         resetRecyclerViewPadding(newConfig.orientation);
-        if (mGetMissingApps != null) return;
+        if (mAsyncTask != null) return;
 
         int[] positions = mManager.findFirstVisibleItemPositions(null);
 
@@ -171,8 +169,9 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onDestroy() {
-        if (mGetMissingApps != null) mGetMissingApps.cancel(true);
-        if (mSendRequest != null) mSendRequest.cancel(true);
+        if (mAsyncTask != null) {
+            mAsyncTask.cancel(true);
+        }
         super.onDestroy();
     }
 
@@ -206,11 +205,11 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                     return;
                 }
 
-                boolean requestLimit = getActivity().getResources().getBoolean(
+                boolean requestLimit = getResources().getBoolean(
                         R.bool.enable_icon_request_limit);
-                boolean iconRequest = getActivity().getResources().getBoolean(
+                boolean iconRequest = getResources().getBoolean(
                         R.bool.enable_icon_request);
-                boolean premiumRequest = getActivity().getResources().getBoolean(
+                boolean premiumRequest =getResources().getBoolean(
                         R.bool.enable_premium_request);
 
                 if (Preferences.get(getActivity()).isPremiumRequest()) {
@@ -243,7 +242,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                     }
                 }
 
-                sendRequest(null);
+                mAsyncTask = new MissingAppsLoader().execute();
             } else {
                 Toast.makeText(getActivity(), R.string.request_not_selected,
                         Toast.LENGTH_LONG).show();
@@ -255,7 +254,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         if (mRecyclerView == null) return;
 
         int padding = 0;
-        boolean tabletMode = getActivity().getResources().getBoolean(R.bool.android_helpers_tablet_mode);
+        boolean tabletMode = getResources().getBoolean(R.bool.android_helpers_tablet_mode);
         if (tabletMode || orientation == Configuration.ORIENTATION_LANDSCAPE) {
             padding = getActivity().getResources().getDimensionPixelSize(R.dimen.content_padding);
 
@@ -271,7 +270,9 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
     }
 
     public void prepareRequest(BillingProcessor billingProcessor) {
-        sendRequest(billingProcessor);
+        if (mAsyncTask != null) return;
+
+        mAsyncTask = new RequestLoader(billingProcessor).execute();
     }
 
     public void refreshIconRequest() {
@@ -291,173 +292,177 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         RequestFragment.sSelectedRequests = null;
     }
 
-    private void getMissingApps() {
-        mGetMissingApps = new AsyncTask<Void, Void, Boolean>() {
+    private class MissingAppsLoader extends AsyncTask<Void, Void, Boolean> {
 
-            List<Request> requests;
+        private List<Request> requests;
 
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                if (CandyBarMainActivity.sMissedApps == null) {
-                    mProgress.setVisibility(View.VISIBLE);
-                }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            if (CandyBarMainActivity.sMissedApps == null) {
+                mProgress.setVisibility(View.VISIBLE);
             }
+        }
 
-            @Override
-            protected Boolean doInBackground(Void... voids) {
-                while (!isCancelled()) {
-                    try {
-                        Thread.sleep(1);
-                        if (CandyBarMainActivity.sMissedApps == null) {
-                            CandyBarMainActivity.sMissedApps = RequestHelper.getMissingApps(getActivity());
-                        }
-
-                        requests = CandyBarMainActivity.sMissedApps;
-                        return true;
-                    } catch (Exception e) {
-                        LogUtil.e(Log.getStackTraceString(e));
-                        return false;
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            while (!isCancelled()) {
+                try {
+                    Thread.sleep(1);
+                    if (CandyBarMainActivity.sMissedApps == null) {
+                        CandyBarMainActivity.sMissedApps = RequestHelper.getMissingApps(getActivity());
                     }
-                }
-                return false;
-            }
 
-            @Override
-            protected void onPostExecute(Boolean aBoolean) {
-                super.onPostExecute(aBoolean);
-                mGetMissingApps = null;
-                mProgress.setVisibility(View.GONE);
-                if (aBoolean) {
-                    setHasOptionsMenu(true);
-                    mAdapter = new RequestAdapter(getActivity(),
-                            requests, mManager.getSpanCount());
-                    mRecyclerView.setAdapter(mAdapter);
-
-                    AnimationHelper.show(mFab)
-                            .interpolator(new LinearOutSlowInInterpolator())
-                            .start();
-
-                    TapIntroHelper.showRequestIntro(getActivity(), mRecyclerView);
-                } else {
-                    mRecyclerView.setAdapter(null);
-                    Toast.makeText(getActivity(), getActivity().getResources().getString(
-                            R.string.request_appfilter_failed), Toast.LENGTH_LONG).show();
+                    requests = CandyBarMainActivity.sMissedApps;
+                    return true;
+                } catch (Exception e) {
+                    LogUtil.e(Log.getStackTraceString(e));
+                    return false;
                 }
             }
+            return false;
+        }
 
-        }.execute();
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            if (getActivity() == null) return;
+            if (getActivity().isFinishing()) return;
+
+            mAsyncTask = null;
+            mProgress.setVisibility(View.GONE);
+            if (aBoolean) {
+                setHasOptionsMenu(true);
+                mAdapter = new RequestAdapter(getActivity(),
+                        requests, mManager.getSpanCount());
+                mRecyclerView.setAdapter(mAdapter);
+
+                AnimationHelper.show(mFab)
+                        .interpolator(new LinearOutSlowInInterpolator())
+                        .start();
+
+                TapIntroHelper.showRequestIntro(getActivity(), mRecyclerView);
+            } else {
+                mRecyclerView.setAdapter(null);
+                Toast.makeText(getActivity(), R.string.request_appfilter_failed, Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
-    private void sendRequest(BillingProcessor billingProcessor) {
-        mSendRequest = new AsyncTask<Void, Void, Boolean>() {
+    private class RequestLoader extends AsyncTask<Void, Void, Boolean> {
 
-            MaterialDialog dialog;
-            boolean noEmailClientError = false;
+        private BillingProcessor billingProcessor;
+        private MaterialDialog dialog;
+        private boolean noEmailClientError = false;
 
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-                builder.typeface(
-                        TypefaceHelper.getMedium(getActivity()),
-                        TypefaceHelper.getRegular(getActivity()));
-                builder.content(R.string.request_building);
-                builder.cancelable(false);
-                builder.canceledOnTouchOutside(false);
-                builder.progress(true, 0);
-                builder.progressIndeterminateStyle(true);
+        private RequestLoader(@NonNull BillingProcessor billingProcessor) {
+            this.billingProcessor = billingProcessor;
+        }
 
-                dialog = builder.build();
-                dialog.show();
-            }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+            builder.typeface(
+                    TypefaceHelper.getMedium(getActivity()),
+                    TypefaceHelper.getRegular(getActivity()));
+            builder.content(R.string.request_building);
+            builder.cancelable(false);
+            builder.canceledOnTouchOutside(false);
+            builder.progress(true, 0);
+            builder.progressIndeterminateStyle(true);
 
-            @Override
-            protected Boolean doInBackground(Void... voids) {
-                while (!isCancelled()) {
-                    try {
-                        Thread.sleep(1);
-                        Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto",
-                                getActivity().getResources().getString(R.string.dev_email),
-                                null));
-                        List<ResolveInfo> resolveInfos = getActivity().getPackageManager()
-                                .queryIntentActivities(intent, 0);
-                        if (resolveInfos.size() == 0) {
-                            noEmailClientError = true;
-                            return false;
-                        }
+            dialog = builder.build();
+            dialog.show();
+        }
 
-                        if (Preferences.get(getActivity()).isPremiumRequest()) {
-                            if (billingProcessor == null) return false;
-                            TransactionDetails details = billingProcessor.getPurchaseTransactionDetails(
-                                    Preferences.get(getActivity()).getPremiumRequestProductId());
-                            if (details == null) return false;
-
-                            CandyBarApplication.sRequestProperty = new Request.Property(null,
-                                    details.purchaseInfo.purchaseData.orderId,
-                                    details.purchaseInfo.purchaseData.productId);
-                        }
-
-                        RequestFragment.sSelectedRequests = mAdapter.getSelectedItems();
-                        List<Request> requests = mAdapter.getSelectedApps();
-                        File appFilter = RequestHelper.buildXml(getActivity(), requests, RequestHelper.XmlType.APPFILTER);
-                        File appMap = RequestHelper.buildXml(getActivity(), requests, RequestHelper.XmlType.APPMAP);
-                        File themeResources = RequestHelper.buildXml(getActivity(), requests, RequestHelper.XmlType.THEME_RESOURCES);
-
-                        File directory = getActivity().getCacheDir();
-                        List<String> files = new ArrayList<>();
-
-                        for (Request request : requests) {
-                            Drawable drawable = getHighQualityIcon(getActivity(), request.getPackageName());
-                            String icon = IconsHelper.saveIcon(files, directory, drawable, request.getName());
-                            if (icon != null) files.add(icon);
-                        }
-
-                        if (appFilter != null) {
-                            files.add(appFilter.toString());
-                        }
-
-                        if (appMap != null) {
-                            files.add(appMap.toString());
-                        }
-
-                        if (themeResources != null) {
-                            files.add(themeResources.toString());
-                        }
-
-                        CandyBarApplication.sZipPath = FileHelper.createZip(files, new File(directory.toString(),
-                                RequestHelper.getGeneratedZipName(RequestHelper.ZIP)));
-                        return true;
-                    } catch (Exception e) {
-                        LogUtil.e(Log.getStackTraceString(e));
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            while (!isCancelled()) {
+                try {
+                    Thread.sleep(1);
+                    Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto",
+                            getResources().getString(R.string.dev_email),
+                            null));
+                    List<ResolveInfo> resolveInfos = getActivity().getPackageManager()
+                            .queryIntentActivities(intent, 0);
+                    if (resolveInfos.size() == 0) {
+                        noEmailClientError = true;
                         return false;
                     }
-                }
-                return false;
-            }
 
-            @Override
-            protected void onPostExecute(Boolean aBoolean) {
-                super.onPostExecute(aBoolean);
-                mSendRequest = null;
+                    if (Preferences.get(getActivity()).isPremiumRequest()) {
+                        if (billingProcessor == null) return false;
+                        TransactionDetails details = billingProcessor.getPurchaseTransactionDetails(
+                                Preferences.get(getActivity()).getPremiumRequestProductId());
+                        if (details == null) return false;
 
-                dialog.dismiss();
-                if (aBoolean) {
-                    IntentChooserFragment.showIntentChooserDialog(getActivity().getSupportFragmentManager(),
-                            IntentChooserFragment.ICON_REQUEST);
-
-                    mAdapter.resetSelectedItems();
-                    if (mMenuItem != null) mMenuItem.setIcon(R.drawable.ic_toolbar_select_all);
-                } else {
-                    if (noEmailClientError) {
-                        Toast.makeText(getActivity(), R.string.no_email_app,
-                                Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(getActivity(), R.string.request_build_failed,
-                                Toast.LENGTH_LONG).show();
+                        CandyBarApplication.sRequestProperty = new Request.Property(null,
+                                details.purchaseInfo.purchaseData.orderId,
+                                details.purchaseInfo.purchaseData.productId);
                     }
+
+                    RequestFragment.sSelectedRequests = mAdapter.getSelectedItems();
+                    List<Request> requests = mAdapter.getSelectedApps();
+                    File appFilter = RequestHelper.buildXml(getActivity(), requests, RequestHelper.XmlType.APPFILTER);
+                    File appMap = RequestHelper.buildXml(getActivity(), requests, RequestHelper.XmlType.APPMAP);
+                    File themeResources = RequestHelper.buildXml(getActivity(), requests, RequestHelper.XmlType.THEME_RESOURCES);
+
+                    File directory = getActivity().getCacheDir();
+                    List<String> files = new ArrayList<>();
+
+                    for (Request request : requests) {
+                        Drawable drawable = getHighQualityIcon(getActivity(), request.getPackageName());
+                        String icon = IconsHelper.saveIcon(files, directory, drawable, request.getName());
+                        if (icon != null) files.add(icon);
+                    }
+
+                    if (appFilter != null) {
+                        files.add(appFilter.toString());
+                    }
+
+                    if (appMap != null) {
+                        files.add(appMap.toString());
+                    }
+
+                    if (themeResources != null) {
+                        files.add(themeResources.toString());
+                    }
+
+                    CandyBarApplication.sZipPath = FileHelper.createZip(files, new File(directory.toString(),
+                            RequestHelper.getGeneratedZipName(RequestHelper.ZIP)));
+                    return true;
+                } catch (Exception e) {
+                    LogUtil.e(Log.getStackTraceString(e));
+                    return false;
                 }
             }
-        }.execute();
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            if (getActivity() == null) return;
+            if (getActivity().isFinishing()) return;
+
+            mAsyncTask = null;
+            dialog.dismiss();
+            if (aBoolean) {
+                IntentChooserFragment.showIntentChooserDialog(getActivity().getSupportFragmentManager(),
+                        IntentChooserFragment.ICON_REQUEST);
+
+                mAdapter.resetSelectedItems();
+                if (mMenuItem != null) mMenuItem.setIcon(R.drawable.ic_toolbar_select_all);
+            } else {
+                if (noEmailClientError) {
+                    Toast.makeText(getActivity(), R.string.no_email_app,
+                            Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getActivity(), R.string.request_build_failed,
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        }
     }
 }

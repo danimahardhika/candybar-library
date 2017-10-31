@@ -104,14 +104,14 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
         setContentView(R.layout.activity_wallpaper);
         mIsEnter = true;
 
-        mImageView = (ImageView) findViewById(R.id.wallpaper);
-        mProgress = (ProgressBar) findViewById(R.id.progress);
-        mBottomBar = (LinearLayout) findViewById(R.id.bottom_bar);
-        mName = (TextView) findViewById(R.id.name);
-        mAuthor = (TextView) findViewById(R.id.author);
-        mBack = (ImageView) findViewById(R.id.back);
-        mMenuApply = (ImageView) findViewById(R.id.menu_apply);
-        mMenuSave = (ImageView) findViewById(R.id.menu_save);
+        mImageView = findViewById(R.id.wallpaper);
+        mProgress = findViewById(R.id.progress);
+        mBottomBar = findViewById(R.id.bottom_bar);
+        mName = findViewById(R.id.name);
+        mAuthor = findViewById(R.id.author);
+        mBack = findViewById(R.id.back);
+        mMenuApply = findViewById(R.id.menu_apply);
+        mMenuSave = findViewById(R.id.menu_save);
 
         mProgress.getIndeterminateDrawable().setColorFilter(
                 Color.parseColor("#CCFFFFFF"), PorterDuff.Mode.SRC_IN);
@@ -391,7 +391,7 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
     }
 
     private void resetBottomBarPadding() {
-        LinearLayout container = (LinearLayout) findViewById(R.id.bottom_bar_container);
+        LinearLayout container = findViewById(R.id.bottom_bar_container);
         int height = getResources().getDimensionPixelSize(R.dimen.bottom_bar_height);
         int bottom = 0;
         int right = WindowHelper.getNavigationBarHeight(this);

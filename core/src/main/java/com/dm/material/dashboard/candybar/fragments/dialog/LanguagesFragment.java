@@ -46,7 +46,7 @@ public class LanguagesFragment extends DialogFragment {
 
     private ListView mListView;
     private Locale mLocale;
-    private AsyncTask<Void, Void, Boolean> mGetLanguages;
+    private AsyncTask mAsyncTask;
 
     public static final String TAG = "candybar.dialog.languages";
 
@@ -84,7 +84,15 @@ public class LanguagesFragment extends DialogFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getLanguages();
+        mAsyncTask = new LanguagesLoader().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mAsyncTask != null) {
+            mAsyncTask.cancel(true);
+        }
+        super.onDestroy();
     }
 
     @Override
@@ -94,7 +102,6 @@ public class LanguagesFragment extends DialogFragment {
             LocaleHelper.setLocale(getActivity());
             getActivity().recreate();
         }
-        if (mGetLanguages != null) mGetLanguages.cancel(true);
         super.onDismiss(dialog);
     }
 
@@ -103,45 +110,46 @@ public class LanguagesFragment extends DialogFragment {
         dismiss();
     }
 
-    private void getLanguages() {
-        mGetLanguages = new AsyncTask<Void, Void, Boolean>() {
+    private class LanguagesLoader extends AsyncTask<Void, Void, Boolean> {
 
-            List<Language> languages;
-            int index = 0;
+        private List<Language> languages;
+        private int index = 0;
 
-            @Override
-            protected Boolean doInBackground(Void... voids) {
-                while (!isCancelled()) {
-                    try {
-                        Thread.sleep(1);
-                        languages = LocaleHelper.getAvailableLanguages(getActivity());
-                        Locale locale = Preferences.get(getActivity()).getCurrentLocale();
-                        for (int i = 0; i < languages.size(); i++) {
-                            Locale l = languages.get(i).getLocale();
-                            if (l.toString().equals(locale.toString())) {
-                                index = i;
-                                break;
-                            }
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            while (!isCancelled()) {
+                try {
+                    Thread.sleep(1);
+                    languages = LocaleHelper.getAvailableLanguages(getActivity());
+                    Locale locale = Preferences.get(getActivity()).getCurrentLocale();
+                    for (int i = 0; i < languages.size(); i++) {
+                        Locale l = languages.get(i).getLocale();
+                        if (l.toString().equals(locale.toString())) {
+                            index = i;
+                            break;
                         }
-                        return true;
-                    } catch (Exception e) {
-                        LogUtil.e(Log.getStackTraceString(e));
-                        return false;
                     }
+                    return true;
+                } catch (Exception e) {
+                    LogUtil.e(Log.getStackTraceString(e));
+                    return false;
                 }
-                return false;
             }
+            return false;
+        }
 
-            @Override
-            protected void onPostExecute(Boolean aBoolean) {
-                super.onPostExecute(aBoolean);
-                if (aBoolean) {
-                    mListView.setAdapter(new LanguagesAdapter(getActivity(), languages, index));
-                } else {
-                    dismiss();
-                }
-                mGetLanguages = null;
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            if (getActivity() == null) return;
+            if (getActivity().isFinishing()) return;
+
+            mAsyncTask = null;
+            if (aBoolean) {
+                mListView.setAdapter(new LanguagesAdapter(getActivity(), languages, index));
+            } else {
+                dismiss();
             }
-        }.execute();
+        }
     }
 }

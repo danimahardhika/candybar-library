@@ -12,6 +12,7 @@ import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
 import com.dm.material.dashboard.candybar.helpers.LocaleHelper;
 import com.dm.material.dashboard.candybar.items.Language;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Locale;
 
@@ -45,7 +46,6 @@ public class Preferences {
     private static final String KEY_ROTATE_TIME = "rotate_time";
     private static final String KEY_ROTATE_MINUTE = "rotate_minute";
     private static final String KEY_WIFI_ONLY = "wifi_only";
-    private static final String KEY_DOWNLOADED_ONLY = "downloaded_only";
     private static final String KEY_WALLS_DIRECTORY = "wallpaper_directory";
     private static final String KEY_PREMIUM_REQUEST = "premium_request";
     private static final String KEY_PREMIUM_REQUEST_PRODUCT = "premium_request_product";
@@ -67,9 +67,14 @@ public class Preferences {
     private static final String KEY_LANGUAGE_PREFERENCE = "language_preference";
     private static final String KEY_CURRENT_LOCALE = "current_locale";
 
+    private static WeakReference<Preferences> mPreferences;
+
     @NonNull
     public static Preferences get(@NonNull Context context) {
-        return new Preferences(context);
+        if (mPreferences == null || mPreferences.get() == null) {
+            mPreferences = new WeakReference<>(new Preferences(context));
+        }
+        return mPreferences.get();
     }
 
     private Preferences(Context context) {
@@ -187,14 +192,6 @@ public class Preferences {
 
     public void setWifiOnly (boolean bool) {
         getSharedPreferences().edit().putBoolean(KEY_WIFI_ONLY, bool).apply();
-    }
-
-    public void setDownloadedOnly (boolean bool) {
-        getSharedPreferences().edit().putBoolean(KEY_DOWNLOADED_ONLY, bool).apply();
-    }
-
-    public boolean isDownloadedOnly() {
-        return getSharedPreferences().getBoolean(KEY_DOWNLOADED_ONLY, false);
     }
 
     public void setWallsDirectory(String directory) {

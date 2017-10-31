@@ -45,7 +45,7 @@ import java.util.List;
 public class CreditsFragment extends DialogFragment {
 
     private ListView mListView;
-    private AsyncTask<Void, Void, Boolean> mGetCredits;
+    private AsyncTask mAsyncTask;
     private int mType;
 
     private static final String TAG = "candybar.dialog.credits";
@@ -96,18 +96,22 @@ public class CreditsFragment extends DialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mType = getArguments().getInt(TYPE);
+        if (getArguments() != null) {
+            mType = getArguments().getInt(TYPE);
+        }
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getData();
+        mAsyncTask = new CreditsLoader().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override
     public void onDestroyView() {
-        if (mGetCredits != null) mGetCredits.cancel(true);
+        if (mAsyncTask != null) {
+            mAsyncTask.cancel(true);
+        }
         super.onDestroyView();
     }
 
@@ -138,62 +142,59 @@ public class CreditsFragment extends DialogFragment {
         }
     }
 
-    private void getData() {
-        mGetCredits = new AsyncTask<Void, Void, Boolean>() {
+    private class CreditsLoader extends AsyncTask<Void, Void, Boolean> {
 
-            List<Credit> credits;
+        private List<Credit> credits;
 
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                credits = new ArrayList<>();
-            }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            credits = new ArrayList<>();
+        }
 
-            @Override
-            protected Boolean doInBackground(Void... voids) {
-                while (!isCancelled()) {
-                    try {
-                        Thread.sleep(1);
-                        int res = getResource(mType);
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            while (!isCancelled()) {
+                try {
+                    Thread.sleep(1);
+                    int res = getResource(mType);
 
-                        XmlPullParser xpp = getActivity().getResources().getXml(res);
+                    XmlPullParser xpp = getResources().getXml(res);
 
-                        while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
-                            if (xpp.getEventType() == XmlPullParser.START_TAG) {
-                                if (xpp.getName().equals("contributor")) {
-                                    Credit credit = new Credit(
-                                            xpp.getAttributeValue(null, "name"),
-                                            xpp.getAttributeValue(null, "contribution"),
-                                            xpp.getAttributeValue(null, "image"),
-                                            xpp.getAttributeValue(null, "link"));
-                                    credits.add(credit);
-                                }
+                    while (xpp.getEventType() != XmlPullParser.END_DOCUMENT) {
+                        if (xpp.getEventType() == XmlPullParser.START_TAG) {
+                            if (xpp.getName().equals("contributor")) {
+                                Credit credit = new Credit(
+                                        xpp.getAttributeValue(null, "name"),
+                                        xpp.getAttributeValue(null, "contribution"),
+                                        xpp.getAttributeValue(null, "image"),
+                                        xpp.getAttributeValue(null, "link"));
+                                credits.add(credit);
                             }
-                            xpp.next();
                         }
-                        return true;
-                    } catch (Exception e) {
-                        LogUtil.e(Log.getStackTraceString(e));
-                        return false;
+                        xpp.next();
                     }
-                }
-                return false;
-            }
-
-            @Override
-            protected void onPostExecute(Boolean aBoolean) {
-                super.onPostExecute(aBoolean);
-                mGetCredits = null;
-
-                if (getActivity() == null) return;
-                if (getActivity().isFinishing()) return;
-
-                if (aBoolean) {
-                    mListView.setAdapter(new CreditsAdapter(getActivity(), credits));
-                } else {
-                    dismiss();
+                    return true;
+                } catch (Exception e) {
+                    LogUtil.e(Log.getStackTraceString(e));
+                    return false;
                 }
             }
-        }.execute();
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            if (getActivity() == null) return;
+            if (getActivity().isFinishing()) return;
+
+            mAsyncTask = null;
+            if (aBoolean) {
+                mListView.setAdapter(new CreditsAdapter(getActivity(), credits));
+            } else {
+                dismiss();
+            }
+        }
     }
 }

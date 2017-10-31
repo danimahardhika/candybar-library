@@ -25,7 +25,6 @@
             android:textSize="@dimen/text_toolbar_title"
             android:textColor="?attr/toolbar_icon"
             fontPath="fonts/Font-Medium.ttf"/>
-
     </android.support.v7.widget.Toolbar>
 
     <ScrollView
@@ -83,7 +82,6 @@
                     android:textSize="@dimen/text_content_subtitle"
                     app:theme="@style/CheckBoxStyle"
                     fontPath="fonts/Font-Regular.ttf"/>
-
             </LinearLayout>
 
             <android.support.v7.widget.AppCompatCheckBox
@@ -97,21 +95,7 @@
                 android:textSize="@dimen/text_content_subtitle"
                 app:theme="@style/CheckBoxStyle"
                 fontPath="fonts/Font-Regular.ttf"/>
-
-            <android.support.v7.widget.AppCompatCheckBox
-                android:id="@+id/downloaded_only"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:text="@string/muzei_downloaded_only"
-                android:background="@android:color/transparent"
-                android:textColor="?android:attr/textColorPrimary"
-                android:textSize="@dimen/text_content_subtitle"
-                app:theme="@style/CheckBoxStyle"
-                fontPath="fonts/Font-Regular.ttf"/>
-
         </LinearLayout>
-
     </ScrollView>
 
     <View
@@ -119,5 +103,4 @@
         android:layout_height="@dimen/toolbar_shadow"
         android:layout_below="@+id/toolbar"
         android:background="@drawable/toolbar_shadow" />
-
 </RelativeLayout>

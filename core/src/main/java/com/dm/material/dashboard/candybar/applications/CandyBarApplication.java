@@ -42,7 +42,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
  * limitations under the License.
  */
 
-public class CandyBarApplication extends Application {
+public abstract class CandyBarApplication extends Application implements ApplicationCallback {
 
     private static Configuration mConfiguration;
     private Thread.UncaughtExceptionHandler mHandler;
@@ -57,13 +57,11 @@ public class CandyBarApplication extends Application {
         return mConfiguration;
     }
 
-    public void initApplication() {
-        initApplication(new Configuration());
-    }
-
-    public void initApplication(@NonNull Configuration configuration) {
+    @Override
+    public void onCreate() {
         super.onCreate();
-        mConfiguration = configuration;
+        mConfiguration = onInit();
+
         if (!ImageLoader.getInstance().isInited())
             ImageLoader.getInstance().init(ImageConfig.getImageLoaderConfiguration(this));
 

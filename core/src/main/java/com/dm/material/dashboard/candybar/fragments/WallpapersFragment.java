@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -74,18 +75,18 @@ public class WallpapersFragment extends Fragment {
     private RecyclerFastScroller mFastScroll;
     private DrawMeButton mPopupBubble;
 
-    private AsyncTask<Void, Void, Boolean> mGetWallpapers;
+    private AsyncTask mAsyncTask;
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_wallpapers, container, false);
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.wallpapers_grid);
-        mSwipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe);
-        mProgress = (ProgressBar) view.findViewById(R.id.progress);
-        mFastScroll = (RecyclerFastScroller) view.findViewById(R.id.fastscroll);
-        mPopupBubble = (DrawMeButton) view.findViewById(R.id.popup_bubble);
+        mRecyclerView = view.findViewById(R.id.wallpapers_grid);
+        mSwipe = view.findViewById(R.id.swipe);
+        mProgress = view.findViewById(R.id.progress);
+        mFastScroll = view.findViewById(R.id.fastscroll);
+        mPopupBubble = view.findViewById(R.id.popup_bubble);
 
         if (!Preferences.get(getActivity()).isToolbarShadowEnabled()) {
             View shadow = view.findViewById(R.id.shadow);
@@ -121,11 +122,11 @@ public class WallpapersFragment extends Fragment {
 
         mSwipe.setOnRefreshListener(() -> {
             if (mProgress.getVisibility() == View.GONE)
-                getWallpapers(true);
+                mAsyncTask = new WallpapersLoader(true).execute();
             else mSwipe.setRefreshing(false);
         });
 
-        getWallpapers(false);
+        mAsyncTask = new WallpapersLoader(false).execute();
     }
 
     @Override
@@ -137,7 +138,7 @@ public class WallpapersFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        if (mGetWallpapers != null) mGetWallpapers.cancel(true);
+        if (mAsyncTask != null) mAsyncTask.cancel(true);
         ImageLoader.getInstance().getMemoryCache().clear();
         super.onDestroy();
     }
@@ -153,7 +154,7 @@ public class WallpapersFragment extends Fragment {
             AnimationHelper.hide(getActivity().findViewById(R.id.popup_bubble))
                     .start();
 
-            getWallpapers(true);
+            mAsyncTask = new WallpapersLoader(true).execute();
         });
     }
 
@@ -168,114 +169,119 @@ public class WallpapersFragment extends Fragment {
         }
     }
 
-    private void getWallpapers(boolean refreshing) {
-        final String wallpaperUrl = getActivity().getResources().getString(R.string.wallpaper_json);
-        mGetWallpapers = new AsyncTask<Void, Void, Boolean>() {
+    private class WallpapersLoader extends AsyncTask<Void, Void, Boolean> {
 
-            List<Wallpaper> wallpapers;
+        private List<Wallpaper> wallpapers;
+        private boolean refreshing;
 
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                if (!refreshing) mProgress.setVisibility(View.VISIBLE);
-                else mSwipe.setRefreshing(true);
+        private WallpapersLoader(boolean refreshing) {
+            this.refreshing = refreshing;
+        }
 
-                DrawMeButton popupBubble = (DrawMeButton) getActivity().findViewById(R.id.popup_bubble);
-                if (popupBubble.getVisibility() == View.VISIBLE) {
-                    AnimationHelper.hide(popupBubble).start();
-                }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            if (!refreshing) mProgress.setVisibility(View.VISIBLE);
+            else mSwipe.setRefreshing(true);
+
+            DrawMeButton popupBubble = getActivity().findViewById(R.id.popup_bubble);
+            if (popupBubble.getVisibility() == View.VISIBLE) {
+                AnimationHelper.hide(popupBubble).start();
             }
+        }
 
-            @Override
-            protected Boolean doInBackground(Void... voids) {
-                while (!isCancelled()) {
-                    try {
-                        Thread.sleep(1);
-                        if (!refreshing && (Database.get(getActivity()).getWallpapersCount() > 0)) {
-                            wallpapers = Database.get(getActivity()).getWallpapers();
-                            return true;
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            while (!isCancelled()) {
+                try {
+                    Thread.sleep(1);
+                    if (!refreshing && (Database.get(getActivity()).getWallpapersCount() > 0)) {
+                        wallpapers = Database.get(getActivity()).getWallpapers();
+                        return true;
+                    }
+
+                    URL url = new URL(getString(R.string.wallpaper_json));
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setConnectTimeout(15000);
+
+                    if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                        InputStream stream = connection.getInputStream();
+                        List list = JsonHelper.parseList(stream);
+                        if (list == null) {
+                            LogUtil.e("Json error, no array with name: "
+                                    +CandyBarApplication.getConfiguration().getWallpaperJsonStructure().getArrayName());
+                            return false;
                         }
 
-                        URL url = new URL(wallpaperUrl);
-                        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                        connection.setConnectTimeout(15000);
-
-                        if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                            InputStream stream = connection.getInputStream();
-                            List list = JsonHelper.parseList(stream);
-                            if (list == null) {
-                                LogUtil.e("Json error, no array with name: "
-                                        +CandyBarApplication.getConfiguration().getWallpaperJsonStructure().getArrayName());
-                                return false;
-                            }
-
-                            if (refreshing) {
-                                wallpapers = Database.get(getActivity()).getWallpapers();
-                                List<Wallpaper> newWallpapers = new ArrayList<>();
-                                for (int i = 0; i < list.size(); i++) {
-                                    Wallpaper wallpaper = JsonHelper.getWallpaper(list.get(i));
-                                    if (wallpaper != null) {
-                                        newWallpapers.add(wallpaper);
-                                    }
-                                }
-
-                                List<Wallpaper> intersection = (List<Wallpaper>)
-                                        ListHelper.intersect(newWallpapers, wallpapers);
-                                List<Wallpaper> deleted = (List<Wallpaper>)
-                                        ListHelper.difference(intersection, wallpapers);
-                                List<Wallpaper> newlyAdded = (List<Wallpaper>)
-                                        ListHelper.difference(intersection, newWallpapers);
-
-                                Database.get(getActivity()).deleteWallpapers(deleted);
-                                Database.get(getActivity()).addWallpapers(newlyAdded);
-
-                                Preferences.get(getActivity()).setAvailableWallpapersCount(
-                                        Database.get(getActivity()).getWallpapersCount());
-                            } else {
-                                if (Database.get(getActivity()).getWallpapersCount() > 0) {
-                                    Database.get(getActivity()).deleteWallpapers();
-                                }
-
-                                Database.get(getActivity()).addWallpapers(list);
-                            }
-
+                        if (refreshing) {
                             wallpapers = Database.get(getActivity()).getWallpapers();
-                            return true;
+                            List<Wallpaper> newWallpapers = new ArrayList<>();
+                            for (int i = 0; i < list.size(); i++) {
+                                Wallpaper wallpaper = JsonHelper.getWallpaper(list.get(i));
+                                if (wallpaper != null) {
+                                    newWallpapers.add(wallpaper);
+                                }
+                            }
+
+                            List<Wallpaper> intersection = (List<Wallpaper>)
+                                    ListHelper.intersect(newWallpapers, wallpapers);
+                            List<Wallpaper> deleted = (List<Wallpaper>)
+                                    ListHelper.difference(intersection, wallpapers);
+                            List<Wallpaper> newlyAdded = (List<Wallpaper>)
+                                    ListHelper.difference(intersection, newWallpapers);
+
+                            Database.get(getActivity()).deleteWallpapers(deleted);
+                            Database.get(getActivity()).addWallpapers(newlyAdded);
+
+                            Preferences.get(getActivity()).setAvailableWallpapersCount(
+                                    Database.get(getActivity()).getWallpapersCount());
+                        } else {
+                            if (Database.get(getActivity()).getWallpapersCount() > 0) {
+                                Database.get(getActivity()).deleteWallpapers();
+                            }
+
+                            Database.get(getActivity()).addWallpapers(list);
                         }
-                    } catch (Exception e) {
-                        LogUtil.e(Log.getStackTraceString(e));
-                        return false;
+
+                        wallpapers = Database.get(getActivity()).getWallpapers();
+                        return true;
                     }
+                } catch (Exception e) {
+                    LogUtil.e(Log.getStackTraceString(e));
+                    return false;
                 }
-                return false;
             }
+            return false;
+        }
 
-            @Override
-            protected void onPostExecute(Boolean aBoolean) {
-                super.onPostExecute(aBoolean);
-                if (!refreshing) mProgress.setVisibility(View.GONE);
-                else mSwipe.setRefreshing(false);
-                if (aBoolean) {
-                    mRecyclerView.setAdapter(new WallpapersAdapter(getActivity(), wallpapers));
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            if (getActivity() == null) return;
+            if (getActivity().isFinishing()) return;
 
-                    WallpapersListener listener = (WallpapersListener) getActivity();
-                    listener.onWallpapersChecked(new Intent()
-                            .putExtra("size", Preferences.get(getActivity()).getAvailableWallpapersCount())
-                            .putExtra("packageName", getActivity().getPackageName()));
+            mAsyncTask = null;
+            mProgress.setVisibility(View.GONE);
+            mSwipe.setRefreshing(false);
 
-                    try {
-                        TapIntroHelper.showWallpapersIntro(getActivity(), mRecyclerView);
-                    } catch (Exception e) {
-                        LogUtil.e(Log.getStackTraceString(e));
-                    }
-                } else {
-                    Toast.makeText(getActivity(), R.string.connection_failed,
-                            Toast.LENGTH_LONG).show();
+            if (aBoolean) {
+                mRecyclerView.setAdapter(new WallpapersAdapter(getActivity(), wallpapers));
+
+                WallpapersListener listener = (WallpapersListener) getActivity();
+                listener.onWallpapersChecked(new Intent()
+                        .putExtra("size", Preferences.get(getActivity()).getAvailableWallpapersCount())
+                        .putExtra("packageName", getActivity().getPackageName()));
+
+                try {
+                    TapIntroHelper.showWallpapersIntro(getActivity(), mRecyclerView);
+                } catch (Exception e) {
+                    LogUtil.e(Log.getStackTraceString(e));
                 }
-                mGetWallpapers = null;
-                showPopupBubble();
+            } else {
+                Toast.makeText(getActivity(), R.string.connection_failed,
+                        Toast.LENGTH_LONG).show();
             }
-
-        }.execute();
+            showPopupBubble();
+        }
     }
 }

@@ -66,7 +66,7 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
+        mRecyclerView = view.findViewById(R.id.recyclerview);
 
         if (!Preferences.get(getActivity()).isToolbarShadowEnabled()) {
             View shadow = view.findViewById(R.id.shadow);
@@ -206,90 +206,95 @@ public class SettingsFragment extends Fragment {
     }
 
     public void rebuildPremiumRequest() {
-        new AsyncTask<Void, Void, Boolean>() {
+        new PremiumRequestRebuilder().execute();
+    }
 
-            MaterialDialog dialog;
-            List<Request> requests;
-            String log = "";
+    private class PremiumRequestRebuilder extends AsyncTask<Void, Void, Boolean> {
 
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-                builder.typeface(
-                        TypefaceHelper.getMedium(getActivity()),
-                        TypefaceHelper.getRegular(getActivity()));
-                builder.content(R.string.premium_request_rebuilding);
-                builder.cancelable(false);
-                builder.canceledOnTouchOutside(false);
-                builder.progress(true, 0);
-                builder.progressIndeterminateStyle(true);
-                dialog = builder.build();
-                dialog.show();
-            }
+        private MaterialDialog dialog;
+        private List<Request> requests;
+        private String log = "";
 
-            @Override
-            protected Boolean doInBackground(Void... voids) {
-                while (!isCancelled()) {
-                    try {
-                        Thread.sleep(1);
-                        File directory = getActivity().getCacheDir();
-                        requests = Database.get(getActivity()).getPremiumRequest(null);
-                        if (requests.size() == 0) return true;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+            builder.typeface(
+                    TypefaceHelper.getMedium(getActivity()),
+                    TypefaceHelper.getRegular(getActivity()));
+            builder.content(R.string.premium_request_rebuilding);
+            builder.cancelable(false);
+            builder.canceledOnTouchOutside(false);
+            builder.progress(true, 0);
+            builder.progressIndeterminateStyle(true);
+            dialog = builder.build();
+            dialog.show();
+        }
 
-                        File appFilter = RequestHelper.buildXml(getActivity(), requests, RequestHelper.XmlType.APPFILTER);
-                        File appMap = RequestHelper.buildXml(getActivity(), requests, RequestHelper.XmlType.APPMAP);
-                        File themeResources = RequestHelper.buildXml(getActivity(), requests, RequestHelper.XmlType.THEME_RESOURCES);
-                        List<String> files = new ArrayList<>();
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            while (!isCancelled()) {
+                try {
+                    Thread.sleep(1);
+                    File directory = getActivity().getCacheDir();
+                    requests = Database.get(getActivity()).getPremiumRequest(null);
+                    if (requests.size() == 0) return true;
 
-                        for (int i = 0; i < requests.size(); i++) {
-                            Drawable drawable = DrawableHelper.getHighQualityIcon(
-                                    getActivity(), requests.get(i).getPackageName());
-                            String icon = IconsHelper.saveIcon(files, directory, drawable, requests.get(i).getName());
-                            if (icon != null) files.add(icon);
-                        }
+                    File appFilter = RequestHelper.buildXml(getActivity(), requests, RequestHelper.XmlType.APPFILTER);
+                    File appMap = RequestHelper.buildXml(getActivity(), requests, RequestHelper.XmlType.APPMAP);
+                    File themeResources = RequestHelper.buildXml(getActivity(), requests, RequestHelper.XmlType.THEME_RESOURCES);
+                    List<String> files = new ArrayList<>();
 
-                        if (appFilter != null) {
-                            files.add(appFilter.toString());
-                        }
-
-                        if (appMap != null) {
-                            files.add(appMap.toString());
-                        }
-
-                        if (themeResources != null) {
-                            files.add(themeResources.toString());
-                        }
-                        CandyBarApplication.sZipPath = FileHelper.createZip(files, new File(directory.toString(),
-                                RequestHelper.getGeneratedZipName(RequestHelper.REBUILD_ZIP)));
-                        return true;
-                    } catch (Exception e) {
-                        log = e.toString();
-                        LogUtil.e(Log.getStackTraceString(e));
-                        return false;
-                    }
-                }
-                return false;
-            }
-
-            @Override
-            protected void onPostExecute(Boolean aBoolean) {
-                super.onPostExecute(aBoolean);
-                dialog.dismiss();
-                if (aBoolean) {
-                    if (requests.size() == 0) {
-                        Toast.makeText(getActivity(), R.string.premium_request_rebuilding_empty,
-                                Toast.LENGTH_LONG).show();
-                        return;
+                    for (int i = 0; i < requests.size(); i++) {
+                        Drawable drawable = DrawableHelper.getHighQualityIcon(
+                                getActivity(), requests.get(i).getPackageName());
+                        String icon = IconsHelper.saveIcon(files, directory, drawable, requests.get(i).getName());
+                        if (icon != null) files.add(icon);
                     }
 
-                    IntentChooserFragment.showIntentChooserDialog(getActivity()
-                            .getSupportFragmentManager(), IntentChooserFragment.REBUILD_ICON_REQUEST);
-                } else {
-                    Toast.makeText(getActivity(), "Failed: " +log, Toast.LENGTH_LONG).show();
+                    if (appFilter != null) {
+                        files.add(appFilter.toString());
+                    }
+
+                    if (appMap != null) {
+                        files.add(appMap.toString());
+                    }
+
+                    if (themeResources != null) {
+                        files.add(themeResources.toString());
+                    }
+                    CandyBarApplication.sZipPath = FileHelper.createZip(files, new File(directory.toString(),
+                            RequestHelper.getGeneratedZipName(RequestHelper.REBUILD_ZIP)));
+                    return true;
+                } catch (Exception e) {
+                    log = e.toString();
+                    LogUtil.e(Log.getStackTraceString(e));
+                    return false;
                 }
-                dialog = null;
             }
-        }.execute();
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            if (getActivity() == null) return;
+            if (getActivity().isFinishing()) return;
+
+            dialog.dismiss();
+            if (aBoolean) {
+                if (requests.size() == 0) {
+                    Toast.makeText(getActivity(), R.string.premium_request_rebuilding_empty,
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                IntentChooserFragment.showIntentChooserDialog(getActivity()
+                        .getSupportFragmentManager(), IntentChooserFragment.REBUILD_ICON_REQUEST);
+            } else {
+                Toast.makeText(getActivity(), "Failed: " +log, Toast.LENGTH_LONG).show();
+            }
+            dialog = null;
+        }
     }
 }

@@ -90,24 +90,4 @@ public class InAppBillingHelper implements BillingProcessor.IBillingHandler {
             listener.onInAppBillingInitialized(true);
         } catch (Exception ignored) {}
     }
-
-    public static class Property {
-
-        public final boolean licenseChecker;
-        public final byte[] salt;
-        public final String licenseKey;
-        public final String[] donationProductsId;
-        public final String[] premiumRequestProductsId;
-        public final int[] premiumRequestProductsCount;
-
-        public Property(boolean licenseChecker, byte[] salt, String licenseKey, String[] donationProductsId,
-                        String[] premiumRequestProductsId, int[] premiumRequestProductsCount) {
-            this.licenseChecker = licenseChecker;
-            this.salt = salt;
-            this.licenseKey = licenseKey;
-            this.donationProductsId = donationProductsId;
-            this.premiumRequestProductsId = premiumRequestProductsId;
-            this.premiumRequestProductsCount = premiumRequestProductsCount;
-        }
-    }
 }

@@ -4,9 +4,9 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -67,18 +67,18 @@ public class IconsSearchFragment extends Fragment {
     private SearchView mSearchView;
 
     private IconsAdapter mAdapter;
-    private AsyncTask<Void, Void, Boolean> mGetIcons;
+    private AsyncTask mAsyncTask;
 
     public static final String TAG = "icons_search";
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_icons_search, container, false);
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.icons_grid);
-        mFastScroll = (RecyclerFastScroller) view.findViewById(R.id.fastscroll);
-        mSearchResult = (TextView) view.findViewById(R.id.search_result);
+        mRecyclerView = view.findViewById(R.id.icons_grid);
+        mFastScroll = view.findViewById(R.id.fastscroll);
+        mSearchResult = view.findViewById(R.id.search_result);
         return view;
     }
 
@@ -94,7 +94,7 @@ public class IconsSearchFragment extends Fragment {
         mFastScroll.attachRecyclerView(mRecyclerView);
         setFastScrollColor(mFastScroll);
 
-        getIcons();
+        mAsyncTask = new IconsLoader().execute();
     }
 
     @Override
@@ -103,12 +103,12 @@ public class IconsSearchFragment extends Fragment {
         inflater.inflate(R.menu.menu_icons_search, menu);
         MenuItem search = menu.findItem(R.id.menu_search);
 
-        mSearchView = (SearchView) MenuItemCompat.getActionView(search);
+        mSearchView = (SearchView) search.getActionView();
         mSearchView.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI | EditorInfo.IME_ACTION_SEARCH);
         mSearchView.setQueryHint(getActivity().getResources().getString(R.string.search_icon));
         mSearchView.setMaxWidth(Integer.MAX_VALUE);
 
-        MenuItemCompat.expandActionView(search);
+        search.expandActionView();
         mSearchView.setIconifiedByDefault(false);
         mSearchView.clearFocus();
 
@@ -142,7 +142,7 @@ public class IconsSearchFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        if (mGetIcons != null) mGetIcons.cancel(true);
+        if (mAsyncTask != null) mAsyncTask.cancel(true);
         super.onDestroy();
     }
 
@@ -161,89 +161,86 @@ public class IconsSearchFragment extends Fragment {
         }
     }
 
-    private void getIcons() {
-        mGetIcons = new AsyncTask<Void, Void, Boolean>() {
+    private class IconsLoader extends AsyncTask<Void, Void, Boolean> {
 
-            List<Icon> icons;
+        private List<Icon> icons;
 
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                icons = new ArrayList<>();
-            }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            icons = new ArrayList<>();
+        }
 
-            @Override
-            protected Boolean doInBackground(Void... voids) {
-                while (!isCancelled()) {
-                    try {
-                        Thread.sleep(1);
-                        if (CandyBarMainActivity.sSections == null) {
-                            CandyBarMainActivity.sSections = IconsHelper.getIconsList(getActivity());
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            while (!isCancelled()) {
+                try {
+                    Thread.sleep(1);
+                    if (CandyBarMainActivity.sSections == null) {
+                        CandyBarMainActivity.sSections = IconsHelper.getIconsList(getActivity());
 
-                            for (Icon section : CandyBarMainActivity.sSections) {
-                                if (getActivity().getResources().getBoolean(R.bool.show_icon_name)) {
-                                    for (Icon icon : section.getIcons()) {
-                                        String name = IconsHelper.replaceName(getActivity(),
-                                                getActivity().getResources().getBoolean(R.bool.enable_icon_name_replacer),
-                                                icon.getTitle());
-                                        icon.setTitle(name);
-                                    }
+                        for (Icon section : CandyBarMainActivity.sSections) {
+                            if (getActivity().getResources().getBoolean(R.bool.show_icon_name)) {
+                                for (Icon icon : section.getIcons()) {
+                                    String name = IconsHelper.replaceName(getActivity(),
+                                            getActivity().getResources().getBoolean(R.bool.enable_icon_name_replacer),
+                                            icon.getTitle());
+                                    icon.setTitle(name);
                                 }
-                            }
-
-                            if (CandyBarApplication.getConfiguration().isShowTabAllIcons()) {
-                                List<Icon> icons = IconsHelper.getTabAllIcons();
-                                CandyBarMainActivity.sSections.add(new Icon(
-                                        CandyBarApplication.getConfiguration().getTabAllIconsTitle(), icons));
                             }
                         }
 
-                        for (Icon icon : CandyBarMainActivity.sSections) {
-                            if (CandyBarApplication.getConfiguration().isShowTabAllIcons()) {
-                                if (!icon.getTitle().equals(CandyBarApplication.getConfiguration().getTabAllIconsTitle())) {
-                                    icons.addAll(icon.getIcons());
-                                }
-                            } else {
+                        if (CandyBarApplication.getConfiguration().isShowTabAllIcons()) {
+                            List<Icon> icons = IconsHelper.getTabAllIcons();
+                            CandyBarMainActivity.sSections.add(new Icon(
+                                    CandyBarApplication.getConfiguration().getTabAllIconsTitle(), icons));
+                        }
+                    }
+
+                    for (Icon icon : CandyBarMainActivity.sSections) {
+                        if (CandyBarApplication.getConfiguration().isShowTabAllIcons()) {
+                            if (!icon.getTitle().equals(CandyBarApplication.getConfiguration().getTabAllIconsTitle())) {
                                 icons.addAll(icon.getIcons());
                             }
+                        } else {
+                            icons.addAll(icon.getIcons());
                         }
-
-                        Collections.sort(icons, new AlphanumComparator() {
-                            @Override
-                            public int compare(Object o1, Object o2) {
-                                String s1 = ((Icon) o1).getTitle();
-                                String s2 = ((Icon) o2).getTitle();
-                                return super.compare(s1, s2);
-                            }
-                        });
-                        return true;
-                    } catch (Exception e) {
-                        LogUtil.e(Log.getStackTraceString(e));
-                        return false;
                     }
-                }
-                return false;
-            }
 
-            @Override
-            protected void onPostExecute(Boolean aBoolean) {
-                super.onPostExecute(aBoolean);
-                mGetIcons = null;
-
-                if (getActivity() == null) return;
-                if (getActivity().isFinishing()) return;
-
-                if (aBoolean) {
-                    mAdapter = new IconsAdapter(getActivity(), icons, true);
-                    mRecyclerView.setAdapter(mAdapter);
-                    mSearchView.requestFocus();
-                    SoftKeyboardHelper.openKeyboard(getActivity());
-                } else {
-                    //Unable to load all icons
-                    Toast.makeText(getActivity(), R.string.icons_load_failed,
-                            Toast.LENGTH_LONG).show();
+                    Collections.sort(icons, new AlphanumComparator() {
+                        @Override
+                        public int compare(Object o1, Object o2) {
+                            String s1 = ((Icon) o1).getTitle();
+                            String s2 = ((Icon) o2).getTitle();
+                            return super.compare(s1, s2);
+                        }
+                    });
+                    return true;
+                } catch (Exception e) {
+                    LogUtil.e(Log.getStackTraceString(e));
+                    return false;
                 }
             }
-        }.execute();
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            if (getActivity() == null) return;
+            if (getActivity().isFinishing()) return;
+
+            mAsyncTask = null;
+            if (aBoolean) {
+                mAdapter = new IconsAdapter(getActivity(), icons, true);
+                mRecyclerView.setAdapter(mAdapter);
+                mSearchView.requestFocus();
+                SoftKeyboardHelper.openKeyboard(getActivity());
+            } else {
+                //Unable to load all icons
+                Toast.makeText(getActivity(), R.string.icons_load_failed,
+                        Toast.LENGTH_LONG).show();
+            }
+        }
     }
 }
