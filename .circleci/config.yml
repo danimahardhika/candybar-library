@@ -1,4 +1,4 @@
-version: 2
+version: 
 jobs:
   build:
     working_directory: ~/code
