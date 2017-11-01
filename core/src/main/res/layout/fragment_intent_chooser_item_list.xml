@@ -16,6 +16,7 @@
         android:id="@+id/progress"
         android:layout_width="@dimen/icon_size_medium"
         android:layout_height="@dimen/icon_size_medium"
+        android:indeterminate="true"
         android:visibility="gone"
         style="@style/Widget.MaterialProgressBar.ProgressBar"/>
 
