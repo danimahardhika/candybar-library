@@ -18,7 +18,7 @@ android:
     - extra-google-m2repository
     
     # The SDK version used to compile your project
-    - android-27
+    - android-26
 
   licenses:
     - '.+'
