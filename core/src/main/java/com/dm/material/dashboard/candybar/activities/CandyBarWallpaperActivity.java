@@ -233,6 +233,10 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
 
     @Override
     protected void onDestroy() {
+        if (Preferences.get(this).isCropWallpaper()) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
+        }
+
         ImageLoader.getInstance().cancelDisplayTask(mImageView);
         if (mAttacher != null) mAttacher.cleanup();
         super.onDestroy();
