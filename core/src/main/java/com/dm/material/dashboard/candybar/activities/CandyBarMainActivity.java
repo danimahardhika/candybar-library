@@ -9,6 +9,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -145,6 +146,11 @@ public abstract class CandyBarMainActivity extends AppCompatActivity implements
                 Preferences.get(this).isDarkTheme() ?
                         R.color.navigationBarDark : R.color.navigationBar));
         registerBroadcastReceiver();
+
+        //Todo: wait until google fix the issue, then enable wallpaper crop again on API 26+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Preferences.get(this).setCropWallpaper(false);
+        }
 
         mConfig = onInit();
 
