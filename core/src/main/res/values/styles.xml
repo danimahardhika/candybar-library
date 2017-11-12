@@ -35,6 +35,7 @@
         <item name="tab_text">@color/tabText</item>
         <item name="tab_text_selected">@color/tabTextSelected</item>
 
+        <item name="md_background_color">@color/cardBackground</item>
         <item name="md_positive_color">@color/colorAccent</item>
         <item name="md_neutral_color">@color/primaryText</item>
         <item name="md_negative_color">@color/primaryText</item>
