@@ -25,6 +25,9 @@ public class InAppBilling {
     private String mPrice;
     private int mProductCount;
 
+    public static final int DONATE = 0;
+    public static final int PREMIUM_REQUEST = 1;
+
     public InAppBilling(String productId) {
         mProductId = productId;
     }
