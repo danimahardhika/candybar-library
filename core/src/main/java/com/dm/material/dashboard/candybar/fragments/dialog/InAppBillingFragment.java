@@ -17,18 +17,15 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.anjlab.android.iab.v3.BillingProcessor;
 import com.anjlab.android.iab.v3.SkuDetails;
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.InAppBillingAdapter;
-import com.dm.material.dashboard.candybar.helpers.InAppBillingHelper;
 import com.dm.material.dashboard.candybar.helpers.TypefaceHelper;
 import com.dm.material.dashboard.candybar.items.InAppBilling;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
+import com.dm.material.dashboard.candybar.utils.InAppBillingProcessor;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.dm.material.dashboard.candybar.utils.listeners.InAppBillingListener;
-
-import java.lang.ref.WeakReference;
 
 /*
  * CandyBar - Material Dashboard
@@ -61,8 +58,6 @@ public class InAppBillingFragment extends DialogFragment {
     private InAppBillingAdapter mAdapter;
     private AsyncTask mAsyncTask;
 
-    private static WeakReference<BillingProcessor> mBillingProcessor;
-
     private static final String TYPE = "type";
     private static final String KEY = "key";
     private static final String PRODUCT_ID = "product_id";
@@ -82,10 +77,9 @@ public class InAppBillingFragment extends DialogFragment {
         return fragment;
     }
 
-    public static void showInAppBillingDialog(@NonNull FragmentManager fm, BillingProcessor billingProcessor,
+    public static void showInAppBillingDialog(@NonNull FragmentManager fm,
                                               int type, @NonNull String key, @NonNull String[] productId,
                                               int[] productCount) {
-        mBillingProcessor = new WeakReference<>(billingProcessor);
         FragmentTransaction ft = fm.beginTransaction();
         Fragment prev = fm.findFragmentByTag(TAG);
         if (prev != null) {
@@ -113,13 +107,13 @@ public class InAppBillingFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-        builder.title(mType == InAppBillingHelper.DONATE ?
+        builder.title(mType == InAppBilling.DONATE ?
                 R.string.navigation_view_donate : R.string.premium_request)
                 .customView(R.layout.fragment_inapp_dialog, false)
                 .typeface(
                         TypefaceHelper.getMedium(getActivity()),
                         TypefaceHelper.getRegular(getActivity()))
-                .positiveText(mType == InAppBillingHelper.DONATE ?
+                .positiveText(mType == InAppBilling.DONATE ?
                         R.string.donate : R.string.premium_request_buy)
                 .negativeText(R.string.close)
                 .onPositive((dialog, which) -> {
@@ -169,7 +163,6 @@ public class InAppBillingFragment extends DialogFragment {
 
     @Override
     public void onDismiss(DialogInterface dialog) {
-        mBillingProcessor = null;
         if (mAsyncTask != null) {
             mAsyncTask.cancel(true);
         }
@@ -179,7 +172,6 @@ public class InAppBillingFragment extends DialogFragment {
     private class InAppProductsLoader extends AsyncTask<Void, Void, Boolean> {
 
         private InAppBilling[] inAppBillings;
-        private boolean isBillingNotReady = false;
 
         @Override
         protected void onPreExecute() {
@@ -193,13 +185,9 @@ public class InAppBillingFragment extends DialogFragment {
             while (!isCancelled()) {
                 try {
                     Thread.sleep(1);
-                    if (mBillingProcessor == null) {
-                        isBillingNotReady = true;
-                        return false;
-                    }
 
                     for (int i = 0; i < mProductsId.length; i++) {
-                        SkuDetails product = mBillingProcessor.get()
+                        SkuDetails product = InAppBillingProcessor.get(getActivity()).getProcessor()
                                 .getPurchaseListingDetails(mProductsId[i]);
                         if (product != null) {
                             InAppBilling inAppBilling;
@@ -240,9 +228,9 @@ public class InAppBillingFragment extends DialogFragment {
             } else {
                 dismiss();
                 Preferences.get(getActivity()).setInAppBillingType(-1);
-                if (!isBillingNotReady)
-                    Toast.makeText(getActivity(), R.string.billing_load_product_failed,
-                            Toast.LENGTH_LONG).show();
+
+                Toast.makeText(getActivity(), R.string.billing_load_product_failed,
+                        Toast.LENGTH_LONG).show();
             }
         }
     }

@@ -35,7 +35,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.anjlab.android.iab.v3.BillingProcessor;
 import com.danimahardhika.android.helpers.core.ColorHelper;
 import com.danimahardhika.android.helpers.core.DrawableHelper;
 import com.danimahardhika.android.helpers.core.SoftKeyboardHelper;
@@ -61,6 +60,7 @@ import com.dm.material.dashboard.candybar.services.CandyBarWallpapersService;
 import com.dm.material.dashboard.candybar.tasks.IconRequestTask;
 import com.dm.material.dashboard.candybar.tasks.IconsLoaderTask;
 import com.dm.material.dashboard.candybar.utils.Extras;
+import com.dm.material.dashboard.candybar.utils.InAppBillingProcessor;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.dm.material.dashboard.candybar.utils.listeners.SearchListener;
 import com.dm.material.dashboard.candybar.utils.listeners.WallpapersListener;
@@ -74,7 +74,6 @@ import com.dm.material.dashboard.candybar.fragments.SettingsFragment;
 import com.dm.material.dashboard.candybar.fragments.WallpapersFragment;
 import com.dm.material.dashboard.candybar.fragments.dialog.ChangelogFragment;
 import com.dm.material.dashboard.candybar.fragments.dialog.InAppBillingFragment;
-import com.dm.material.dashboard.candybar.helpers.InAppBillingHelper;
 import com.dm.material.dashboard.candybar.helpers.IntentHelper;
 import com.dm.material.dashboard.candybar.helpers.RequestHelper;
 import com.dm.material.dashboard.candybar.items.InAppBilling;
@@ -119,7 +118,6 @@ public abstract class CandyBarMainActivity extends AppCompatActivity implements
 
     private String mFragmentTag;
     private int mPosition, mLastPosition;
-    private BillingProcessor mBillingProcessor;
     private CandyBarBroadcastReceiver mReceiver;
     private ActionBarDrawerToggle mDrawerToggle;
     private FragmentManager mFragManager;
@@ -153,8 +151,7 @@ public abstract class CandyBarMainActivity extends AppCompatActivity implements
         }
 
         mConfig = onInit();
-
-        Database.get(this.getApplicationContext());
+        InAppBillingProcessor.get(this).init(mConfig.getLicenseKey());
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mNavigationView = findViewById(R.id.navigation_view);
@@ -170,7 +167,6 @@ public abstract class CandyBarMainActivity extends AppCompatActivity implements
 
         initNavigationView(toolbar);
         initNavigationViewHeader();
-        initInAppBilling();
 
         mPosition = mLastPosition = 0;
         if (savedInstanceState != null) {
@@ -240,10 +236,7 @@ public abstract class CandyBarMainActivity extends AppCompatActivity implements
 
     @Override
     protected void onDestroy() {
-        if (mBillingProcessor != null) {
-            mBillingProcessor.release();
-            mBillingProcessor = null;
-        }
+        InAppBillingProcessor.get(this).destroy();
 
         if (mLicenseHelper != null) {
             mLicenseHelper.destroy();
@@ -288,7 +281,7 @@ public abstract class CandyBarMainActivity extends AppCompatActivity implements
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (!mBillingProcessor.handleActivityResult(requestCode, resultCode, data))
+        if (!InAppBillingProcessor.get(this).handleActivityResult(requestCode, resultCode, data))
             super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -328,36 +321,35 @@ public abstract class CandyBarMainActivity extends AppCompatActivity implements
     public void onBuyPremiumRequest() {
         if (Preferences.get(this).isPremiumRequest()) {
             RequestHelper.showPremiumRequestStillAvailable(this);
-        } else {
-            if (mBillingProcessor == null) return;
+            return;
+        }
 
-            if (mBillingProcessor.loadOwnedPurchasesFromGoogle()) {
-                List<String> products = mBillingProcessor.listOwnedProducts();
-                if (products != null) {
-                    boolean isProductIdExist = false;
-                    for (String product : products) {
-                        for (String premiumRequestProductId : mConfig.getPremiumRequestProductsId()) {
-                            if (premiumRequestProductId.equals(product)) {
-                                isProductIdExist = true;
-                                break;
-                            }
+        if (InAppBillingProcessor.get(this.getApplicationContext())
+                .getProcessor().loadOwnedPurchasesFromGoogle()) {
+            List<String> products = InAppBillingProcessor.get(this).getProcessor().listOwnedProducts();
+            if (products != null) {
+                boolean isProductIdExist = false;
+                for (String product : products) {
+                    for (String premiumRequestProductId : mConfig.getPremiumRequestProductsId()) {
+                        if (premiumRequestProductId.equals(product)) {
+                            isProductIdExist = true;
+                            break;
                         }
                     }
+                }
 
-                    if (isProductIdExist) {
-                        RequestHelper.showPremiumRequestExist(this);
-                        return;
-                    }
+                if (isProductIdExist) {
+                    RequestHelper.showPremiumRequestExist(this);
+                    return;
                 }
             }
-
-            InAppBillingFragment.showInAppBillingDialog(getSupportFragmentManager(),
-                    mBillingProcessor,
-                    InAppBillingHelper.PREMIUM_REQUEST,
-                    mConfig.getLicenseKey(),
-                    mConfig.getDonationProductsId(),
-                    mConfig.getPremiumRequestProductsCount());
         }
+
+        InAppBillingFragment.showInAppBillingDialog(getSupportFragmentManager(),
+                InAppBilling.PREMIUM_REQUEST,
+                mConfig.getLicenseKey(),
+                mConfig.getPremiumRequestProductsId(),
+                mConfig.getPremiumRequestProductsCount());
     }
 
     @Override
@@ -385,12 +377,10 @@ public abstract class CandyBarMainActivity extends AppCompatActivity implements
             }
 
             if (Preferences.get(this).isPremiumRequest()) {
-                if (mBillingProcessor == null) return;
-
                 int count = Preferences.get(this).getPremiumRequestCount() - RequestFragment.sSelectedRequests.size();
                 Preferences.get(this).setPremiumRequestCount(count);
                 if (count == 0) {
-                    if (mBillingProcessor.consumePurchase(Preferences
+                    if (InAppBillingProcessor.get(this).getProcessor().consumePurchase(Preferences
                             .get(this).getPremiumRequestProductId())) {
                         Preferences.get(this).setPremiumRequest(false);
                         Preferences.get(this).setPremiumRequestProductId("");
@@ -418,16 +408,9 @@ public abstract class CandyBarMainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onInAppBillingInitialized(boolean success) {
-        if (!success) mBillingProcessor = null;
-    }
-
-    @Override
     public void onRestorePurchases() {
-        if (mBillingProcessor == null) return;
-
-        if (mBillingProcessor.loadOwnedPurchasesFromGoogle()) {
-            List<String> productsId = mBillingProcessor.listOwnedProducts();
+        if (InAppBillingProcessor.get(this).getProcessor().loadOwnedPurchasesFromGoogle()) {
+            List<String> productsId = InAppBillingProcessor.get(this).getProcessor().listOwnedProducts();
             if (productsId != null) {
                 SettingsFragment fragment = (SettingsFragment) mFragManager.findFragmentByTag(Extras.TAG_SETTINGS);
                 if (fragment != null) fragment.restorePurchases(productsId,
@@ -439,23 +422,20 @@ public abstract class CandyBarMainActivity extends AppCompatActivity implements
     @Override
     public void onInAppBillingSelected(int type, InAppBilling product) {
         Preferences.get(this).setInAppBillingType(type);
-        if (type == InAppBillingHelper.PREMIUM_REQUEST) {
+        if (type == InAppBilling.PREMIUM_REQUEST) {
             Preferences.get(this).setPremiumRequestCount(product.getProductCount());
             Preferences.get(this).setPremiumRequestTotal(product.getProductCount());
         }
 
-        if (mBillingProcessor != null) mBillingProcessor.purchase(this, product.getProductId());
+        InAppBillingProcessor.get(this).getProcessor().purchase(this, product.getProductId());
     }
 
     @Override
     public void onInAppBillingConsume(int type, String productId) {
-        if (mBillingProcessor == null) return;
-
-        if (mBillingProcessor.consumePurchase(productId)) {
-            if (type == InAppBillingHelper.DONATE) {
+        if (InAppBillingProcessor.get(this).getProcessor().consumePurchase(productId)) {
+            if (type == InAppBilling.DONATE) {
                 new MaterialDialog.Builder(this)
-                        .typeface(
-                                TypefaceHelper.getMedium(this),
+                        .typeface(TypefaceHelper.getMedium(this),
                                 TypefaceHelper.getRegular(this))
                         .title(R.string.navigation_view_donate)
                         .content(R.string.donation_success)
@@ -469,7 +449,7 @@ public abstract class CandyBarMainActivity extends AppCompatActivity implements
     public void onInAppBillingRequest() {
         if (mFragmentTag.equals(Extras.TAG_REQUEST)) {
             RequestFragment fragment = (RequestFragment) mFragManager.findFragmentByTag(Extras.TAG_REQUEST);
-            if (fragment != null) fragment.prepareRequest(mBillingProcessor);
+            if (fragment != null) fragment.prepareRequest();
         }
     }
 
@@ -549,8 +529,7 @@ public abstract class CandyBarMainActivity extends AppCompatActivity implements
 
     public void showSupportDevelopmentDialog() {
         InAppBillingFragment.showInAppBillingDialog(mFragManager,
-                mBillingProcessor,
-                InAppBillingHelper.DONATE,
+                InAppBilling.DONATE,
                 mConfig.getLicenseKey(),
                 mConfig.getDonationProductsId(),
                 null);
@@ -663,18 +642,6 @@ public abstract class CandyBarMainActivity extends AppCompatActivity implements
 
         ImageLoader.getInstance().displayImage(imageUrl, new ImageViewAware(image),
                 ImageConfig.getDefaultImageOptions(true), new ImageSize(720, 720), null, null);
-    }
-
-    private void initInAppBilling() {
-        boolean donation = getResources().getBoolean(R.bool.enable_donation);
-        if (donation || Preferences.get(this).isPremiumRequestEnabled()) {
-            if (mBillingProcessor != null) return;
-
-            if (BillingProcessor.isIabServiceAvailable(this)) {
-                mBillingProcessor = new BillingProcessor(this.getApplicationContext(),
-                        mConfig.getLicenseKey(), new InAppBillingHelper(this));
-            }
-        }
     }
 
     private void registerBroadcastReceiver() {

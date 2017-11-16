@@ -46,6 +46,7 @@ import com.dm.material.dashboard.candybar.helpers.TapIntroHelper;
 import com.dm.material.dashboard.candybar.helpers.TypefaceHelper;
 import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
+import com.dm.material.dashboard.candybar.utils.InAppBillingProcessor;
 import com.dm.material.dashboard.candybar.utils.LogUtil;
 import com.dm.material.dashboard.candybar.utils.listeners.InAppBillingListener;
 import com.pluscubed.recyclerfastscroll.RecyclerFastScroller;
@@ -242,7 +243,7 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                     }
                 }
 
-                mAsyncTask = new RequestLoader(null).execute();
+                mAsyncTask = new RequestLoader().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             } else {
                 Toast.makeText(getActivity(), R.string.request_not_selected,
                         Toast.LENGTH_LONG).show();
@@ -269,10 +270,10 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
         mRecyclerView.setPadding(padding, padding, 0, size + (marginGlobal * 2));
     }
 
-    public void prepareRequest(BillingProcessor billingProcessor) {
+    public void prepareRequest() {
         if (mAsyncTask != null) return;
 
-        mAsyncTask = new RequestLoader(billingProcessor).execute();
+        mAsyncTask = new RequestLoader().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public void refreshIconRequest() {
@@ -351,13 +352,8 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
 
     private class RequestLoader extends AsyncTask<Void, Void, Boolean> {
 
-        private BillingProcessor billingProcessor;
         private MaterialDialog dialog;
         private boolean noEmailClientError = false;
-
-        private RequestLoader(BillingProcessor billingProcessor) {
-            this.billingProcessor = billingProcessor;
-        }
 
         @Override
         protected void onPreExecute() {
@@ -392,8 +388,8 @@ public class RequestFragment extends Fragment implements View.OnClickListener {
                     }
 
                     if (Preferences.get(getActivity()).isPremiumRequest()) {
-                        if (billingProcessor == null) return false;
-                        TransactionDetails details = billingProcessor.getPurchaseTransactionDetails(
+                        TransactionDetails details = InAppBillingProcessor.get(getActivity())
+                                .getProcessor().getPurchaseTransactionDetails(
                                 Preferences.get(getActivity()).getPremiumRequestProductId());
                         if (details == null) return false;
 
