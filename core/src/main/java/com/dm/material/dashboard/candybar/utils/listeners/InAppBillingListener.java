@@ -22,7 +22,6 @@ import com.dm.material.dashboard.candybar.items.InAppBilling;
 
 public interface InAppBillingListener {
 
-    void onInAppBillingInitialized(boolean success);
     void onRestorePurchases();
     void onInAppBillingSelected(int type, InAppBilling product);
     void onInAppBillingConsume(int type, String productId);
