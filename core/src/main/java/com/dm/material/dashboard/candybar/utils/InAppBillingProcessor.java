@@ -66,7 +66,7 @@ public class InAppBillingProcessor implements BillingProcessor.IBillingHandler {
     public void destroy() {
         if (mInAppBilling != null && mInAppBilling.get() != null) {
             if (mInAppBilling.get().getProcessor() != null) {
-                mInAppBilling.get().mBillingProcessor.release();
+                mInAppBilling.get().getProcessor().release();
             }
 
             mInAppBilling.clear();
