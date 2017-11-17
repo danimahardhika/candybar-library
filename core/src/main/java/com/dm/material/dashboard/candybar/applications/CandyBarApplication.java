@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 
 import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.activities.CandyBarCrashReport;
+import com.dm.material.dashboard.candybar.databases.Database;
 import com.dm.material.dashboard.candybar.helpers.LocaleHelper;
 import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
@@ -61,6 +62,7 @@ public abstract class CandyBarApplication extends Application implements Applica
     public void onCreate() {
         super.onCreate();
         mConfiguration = onInit();
+        Database.get(this).openDatabase();
 
         if (!ImageLoader.getInstance().isInited())
             ImageLoader.getInstance().init(ImageConfig.getImageLoaderConfiguration(this));

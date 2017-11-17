@@ -56,6 +56,7 @@ import com.dm.material.dashboard.candybar.items.Home;
 import com.dm.material.dashboard.candybar.items.Icon;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.receivers.CandyBarBroadcastReceiver;
+import com.dm.material.dashboard.candybar.services.CandyBarService;
 import com.dm.material.dashboard.candybar.services.CandyBarWallpapersService;
 import com.dm.material.dashboard.candybar.tasks.IconRequestTask;
 import com.dm.material.dashboard.candybar.tasks.IconsLoaderTask;
@@ -144,6 +145,7 @@ public abstract class CandyBarMainActivity extends AppCompatActivity implements
                 Preferences.get(this).isDarkTheme() ?
                         R.color.navigationBarDark : R.color.navigationBar));
         registerBroadcastReceiver();
+        startService(new Intent(this, CandyBarService.class));
 
         //Todo: wait until google fix the issue, then enable wallpaper crop again on API 26+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -229,7 +231,6 @@ public abstract class CandyBarMainActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         RequestHelper.checkPiracyApp(this);
-        Database.get(this.getApplicationContext()).openDatabase();
         IntentHelper.sAction = IntentHelper.getAction(getIntent());
         super.onResume();
     }
@@ -248,6 +249,7 @@ public abstract class CandyBarMainActivity extends AppCompatActivity implements
 
         CandyBarMainActivity.sMissedApps = null;
         CandyBarMainActivity.sHomeIcon = null;
+        stopService(new Intent(this, CandyBarService.class));
         Database.get(this.getApplicationContext()).closeDatabase();
         super.onDestroy();
     }

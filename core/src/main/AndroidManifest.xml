@@ -33,7 +33,7 @@
 
     <application>
         <meta-data android:name="android.max_aspect" android:value="2.1" />
-     
+
         <activity android:name=".activities.CandyBarCrashReport"
             android:launchMode="singleInstance"
             android:noHistory="true"
@@ -45,6 +45,9 @@
             android:configChanges="orientation|keyboardHidden|screenSize"/>
 
         <service android:name=".services.CandyBarWallpapersService" />
+
+        <service android:name=".services.CandyBarService"
+            android:stopWithTask="false"/>
     </application>
 
 </manifest>
