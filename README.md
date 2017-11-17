@@ -17,7 +17,7 @@ allprojects {
 Add the dependency
 ```Gradle
 dependencies {
-    implementation 'com.github.danimahardhika.candybar-library:core:3.5.0-b2'
+    implementation 'com.github.danimahardhika.candybar-library:core:3.5.0-b4'
 }
 ```
 Or use a snapshot
