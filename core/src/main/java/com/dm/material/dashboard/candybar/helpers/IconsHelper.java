@@ -22,7 +22,7 @@ import com.dm.material.dashboard.candybar.fragments.dialog.IconPreviewFragment;
 import com.dm.material.dashboard.candybar.items.Icon;
 import com.dm.material.dashboard.candybar.utils.AlphanumComparator;
 import com.dm.material.dashboard.candybar.utils.ImageConfig;
-import com.dm.material.dashboard.candybar.utils.LogUtil;
+import com.danimahardhika.android.helpers.core.utils.LogUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.xmlpull.v1.XmlPullParser;

@@ -9,7 +9,7 @@ import com.dm.material.dashboard.candybar.helpers.JsonHelper;
 import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
 import com.dm.material.dashboard.candybar.items.Wallpaper;
 import com.dm.material.dashboard.candybar.receivers.CandyBarBroadcastReceiver;
-import com.dm.material.dashboard.candybar.utils.LogUtil;
+import com.danimahardhika.android.helpers.core.utils.LogUtil;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;

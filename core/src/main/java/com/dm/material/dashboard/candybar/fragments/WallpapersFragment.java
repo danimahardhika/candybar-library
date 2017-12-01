@@ -35,7 +35,7 @@ import com.dm.material.dashboard.candybar.helpers.JsonHelper;
 import com.dm.material.dashboard.candybar.helpers.TapIntroHelper;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
 import com.dm.material.dashboard.candybar.items.Wallpaper;
-import com.dm.material.dashboard.candybar.utils.LogUtil;
+import com.danimahardhika.android.helpers.core.utils.LogUtil;
 import com.dm.material.dashboard.candybar.utils.listeners.WallpapersListener;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.pluscubed.recyclerfastscroll.RecyclerFastScroller;

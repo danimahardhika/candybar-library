@@ -62,7 +62,7 @@ import com.dm.material.dashboard.candybar.tasks.IconRequestTask;
 import com.dm.material.dashboard.candybar.tasks.IconsLoaderTask;
 import com.dm.material.dashboard.candybar.utils.Extras;
 import com.dm.material.dashboard.candybar.utils.InAppBillingProcessor;
-import com.dm.material.dashboard.candybar.utils.LogUtil;
+import com.danimahardhika.android.helpers.core.utils.LogUtil;
 import com.dm.material.dashboard.candybar.utils.listeners.SearchListener;
 import com.dm.material.dashboard.candybar.utils.listeners.WallpapersListener;
 import com.dm.material.dashboard.candybar.R;

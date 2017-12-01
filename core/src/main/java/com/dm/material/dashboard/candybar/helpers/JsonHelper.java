@@ -8,7 +8,7 @@ import com.bluelinelabs.logansquare.LoganSquare;
 import com.dm.material.dashboard.candybar.applications.CandyBarApplication;
 import com.dm.material.dashboard.candybar.items.Wallpaper;
 import com.dm.material.dashboard.candybar.utils.JsonStructure;
-import com.dm.material.dashboard.candybar.utils.LogUtil;
+import com.danimahardhika.android.helpers.core.utils.LogUtil;
 
 import java.io.IOException;
 import java.io.InputStream;

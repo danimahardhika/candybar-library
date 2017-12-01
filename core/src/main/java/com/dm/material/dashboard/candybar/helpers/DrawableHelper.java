@@ -15,7 +15,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.dm.material.dashboard.candybar.R;
-import com.dm.material.dashboard.candybar.utils.LogUtil;
+import com.danimahardhika.android.helpers.core.utils.LogUtil;
 
 /*
  * CandyBar - Material Dashboard

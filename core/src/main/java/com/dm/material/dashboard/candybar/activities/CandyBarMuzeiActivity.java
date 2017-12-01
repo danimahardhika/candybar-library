@@ -23,7 +23,7 @@ import com.dm.material.dashboard.candybar.activities.callbacks.MuzeiCallback;
 import com.dm.material.dashboard.candybar.helpers.LocaleHelper;
 import com.dm.material.dashboard.candybar.helpers.WallpaperHelper;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
-import com.dm.material.dashboard.candybar.utils.LogUtil;
+import com.danimahardhika.android.helpers.core.utils.LogUtil;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 

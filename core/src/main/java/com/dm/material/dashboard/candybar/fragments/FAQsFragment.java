@@ -26,7 +26,7 @@ import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.FAQsAdapter;
 import com.dm.material.dashboard.candybar.items.FAQs;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
-import com.dm.material.dashboard.candybar.utils.LogUtil;
+import com.danimahardhika.android.helpers.core.utils.LogUtil;
 import com.pluscubed.recyclerfastscroll.RecyclerFastScroller;
 
 import java.util.ArrayList;

@@ -31,7 +31,7 @@ import com.dm.material.dashboard.candybar.items.Language;
 import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.items.Setting;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
-import com.dm.material.dashboard.candybar.utils.LogUtil;
+import com.danimahardhika.android.helpers.core.utils.LogUtil;
 
 import java.io.File;
 import java.text.DecimalFormat;

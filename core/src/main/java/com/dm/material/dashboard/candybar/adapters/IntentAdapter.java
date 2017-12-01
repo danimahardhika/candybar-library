@@ -26,7 +26,7 @@ import com.dm.material.dashboard.candybar.items.IntentChooser;
 import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.tasks.IconRequestBuilderTask;
 import com.dm.material.dashboard.candybar.tasks.PremiumRequestBuilderTask;
-import com.dm.material.dashboard.candybar.utils.LogUtil;
+import com.danimahardhika.android.helpers.core.utils.LogUtil;
 
 import java.util.List;
 

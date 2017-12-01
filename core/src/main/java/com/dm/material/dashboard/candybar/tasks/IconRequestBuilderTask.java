@@ -20,7 +20,7 @@ import com.dm.material.dashboard.candybar.fragments.dialog.IntentChooserFragment
 import com.dm.material.dashboard.candybar.helpers.DeviceHelper;
 import com.dm.material.dashboard.candybar.items.Request;
 import com.dm.material.dashboard.candybar.preferences.Preferences;
-import com.dm.material.dashboard.candybar.utils.LogUtil;
+import com.danimahardhika.android.helpers.core.utils.LogUtil;
 import com.dm.material.dashboard.candybar.utils.listeners.RequestListener;
 
 import java.io.File;

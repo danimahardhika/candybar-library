@@ -17,7 +17,7 @@ import com.dm.material.dashboard.candybar.R;
 import com.dm.material.dashboard.candybar.adapters.CreditsAdapter;
 import com.dm.material.dashboard.candybar.helpers.TypefaceHelper;
 import com.dm.material.dashboard.candybar.items.Credit;
-import com.dm.material.dashboard.candybar.utils.LogUtil;
+import com.danimahardhika.android.helpers.core.utils.LogUtil;
 
 import org.xmlpull.v1.XmlPullParser;
 
