@@ -216,17 +216,17 @@ public class RequestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         HeaderViewHolder(View itemView) {
             super(itemView);
-            title = (TextView) itemView.findViewById(R.id.title);
-            content = (TextView) itemView.findViewById(R.id.content);
-            button = (AppCompatButton) itemView.findViewById(R.id.buy);
+            title = itemView.findViewById(R.id.title);
+            content = itemView.findViewById(R.id.content);
+            button = itemView.findViewById(R.id.buy);
 
-            container = (LinearLayout) itemView.findViewById(R.id.premium_request);
-            total = (TextView) itemView.findViewById(R.id.premium_request_total);
-            available = (TextView) itemView.findViewById(R.id.premium_request_available);
-            used = (TextView) itemView.findViewById(R.id.premium_request_used);
-            progress = (ProgressBar) itemView.findViewById(R.id.progress);
+            container = itemView.findViewById(R.id.premium_request);
+            total = itemView.findViewById(R.id.premium_request_total);
+            available = itemView.findViewById(R.id.premium_request_available);
+            used = itemView.findViewById(R.id.premium_request_used);
+            progress = itemView.findViewById(R.id.progress);
 
-            CardView card = (CardView) itemView.findViewById(R.id.card);
+            CardView card = itemView.findViewById(R.id.card);
             if (CandyBarApplication.getConfiguration().getRequestStyle() == CandyBarApplication.Style.PORTRAIT_FLAT_LANDSCAPE_FLAT &&
                     card != null) {
                 if (card.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
@@ -287,14 +287,14 @@ public class RequestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         ContentViewHolder(View itemView) {
             super(itemView);
-            title = (TextView) itemView.findViewById(R.id.name);
-            content = (TextView) itemView.findViewById(R.id.requested);
-            icon = (ImageView) itemView.findViewById(R.id.icon);
-            checkbox = (AppCompatCheckBox) itemView.findViewById(R.id.checkbox);
-            container = (LinearLayout) itemView.findViewById(R.id.container);
+            title = itemView.findViewById(R.id.name);
+            content = itemView.findViewById(R.id.requested);
+            icon = itemView.findViewById(R.id.icon);
+            checkbox = itemView.findViewById(R.id.checkbox);
+            container = itemView.findViewById(R.id.container);
             divider = itemView.findViewById(R.id.divider);
 
-            CardView card = (CardView) itemView.findViewById(R.id.card);
+            CardView card = itemView.findViewById(R.id.card);
             if (CandyBarApplication.getConfiguration().getRequestStyle() == CandyBarApplication.Style.PORTRAIT_FLAT_LANDSCAPE_FLAT &&
                     card != null) {
                 if (card.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {

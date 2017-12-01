@@ -75,7 +75,7 @@ public class ChangelogAdapter extends BaseAdapter {
         private final HtmlTextView changelog;
 
         ViewHolder(View view) {
-            changelog = (HtmlTextView) view.findViewById(R.id.changelog);
+            changelog = view.findViewById(R.id.changelog);
             int color = ColorHelper.getAttributeColor(mContext,
                     R.attr.colorAccent);
             changelog.setCompoundDrawablesWithIntrinsicBounds(

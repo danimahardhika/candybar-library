@@ -92,9 +92,9 @@ public class InAppBillingAdapter extends BaseAdapter {
         private final LinearLayout container;
 
         ViewHolder(View view) {
-            radio = (AppCompatRadioButton) view.findViewById(R.id.radio);
-            name = (TextView) view.findViewById(R.id.name);
-            container = (LinearLayout) view.findViewById(R.id.container);
+            radio = view.findViewById(R.id.radio);
+            name = view.findViewById(R.id.name);
+            container = view.findViewById(R.id.container);
         }
     }
 

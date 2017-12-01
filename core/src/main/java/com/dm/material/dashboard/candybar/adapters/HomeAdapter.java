@@ -284,13 +284,13 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         HeaderViewHolder(View itemView) {
             super(itemView);
-            image = (HeaderView) itemView.findViewById(R.id.header_image);
-            title = (TextView) itemView.findViewById(R.id.title);
-            content = (HtmlTextView) itemView.findViewById(R.id.content);
-            AppCompatButton rate = (AppCompatButton) itemView.findViewById(R.id.rate);
-            ImageView share = (ImageView) itemView.findViewById(R.id.share);
+            image = itemView.findViewById(R.id.header_image);
+            title = itemView.findViewById(R.id.title);
+            content = itemView.findViewById(R.id.content);
+            AppCompatButton rate = itemView.findViewById(R.id.rate);
+            ImageView share = itemView.findViewById(R.id.share);
 
-            CardView card = (CardView) itemView.findViewById(R.id.card);
+            CardView card = itemView.findViewById(R.id.card);
             if (CandyBarApplication.getConfiguration().getHomeGrid() == CandyBarApplication.GridStyle.FLAT) {
                 if (card.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
                     card.setRadius(0f);
@@ -368,11 +368,11 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         ContentViewHolder(View itemView) {
             super(itemView);
-            container = (LinearLayout) itemView.findViewById(R.id.container);
-            autoFitTitle = (AutofitTextView) itemView.findViewById(R.id.title);
-            subtitle = (TextView) itemView.findViewById(R.id.subtitle);
+            container = itemView.findViewById(R.id.container);
+            autoFitTitle = itemView.findViewById(R.id.title);
+            subtitle = itemView.findViewById(R.id.subtitle);
 
-            CardView card = (CardView) itemView.findViewById(R.id.card);
+            CardView card = itemView.findViewById(R.id.card);
             if (CandyBarApplication.getConfiguration().getHomeGrid() == CandyBarApplication.GridStyle.FLAT) {
                 if (card.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
                     card.setRadius(0f);
@@ -436,14 +436,14 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         IconRequestViewHolder(View itemView) {
             super(itemView);
-            title = (TextView) itemView.findViewById(R.id.title);
-            installedApps = (TextView) itemView.findViewById(R.id.installed_apps);
-            missedApps = (TextView) itemView.findViewById(R.id.missed_apps);
-            themedApps = (TextView) itemView.findViewById(R.id.themed_apps);
-            progress = (ProgressBar) itemView.findViewById(R.id.progress);
-            container = (LinearLayout) itemView.findViewById(R.id.container);
+            title = itemView.findViewById(R.id.title);
+            installedApps = itemView.findViewById(R.id.installed_apps);
+            missedApps = itemView.findViewById(R.id.missed_apps);
+            themedApps = itemView.findViewById(R.id.themed_apps);
+            progress = itemView.findViewById(R.id.progress);
+            container = itemView.findViewById(R.id.container);
 
-            CardView card = (CardView) itemView.findViewById(R.id.card);
+            CardView card = itemView.findViewById(R.id.card);
             if (CandyBarApplication.getConfiguration().getHomeGrid() == CandyBarApplication.GridStyle.FLAT) {
                 if (card.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
                     card.setRadius(0f);
@@ -487,10 +487,10 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         WallpapersViewHolder(View itemView) {
             super(itemView);
-            title = (TextView) itemView.findViewById(R.id.title);
-            TextView muzei = (TextView) itemView.findViewById(R.id.muzei);
+            title = itemView.findViewById(R.id.title);
+            TextView muzei = itemView.findViewById(R.id.muzei);
 
-            CardView card = (CardView) itemView.findViewById(R.id.card);
+            CardView card = itemView.findViewById(R.id.card);
             if (CandyBarApplication.getConfiguration().getHomeGrid() == CandyBarApplication.GridStyle.FLAT) {
                 if (card.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
                     card.setRadius(0f);
@@ -541,10 +541,10 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         GooglePlayDevViewHolder(View itemView) {
             super(itemView);
-            container = (LinearLayout) itemView.findViewById(R.id.container);
-            title = (TextView) itemView.findViewById(R.id.title);
+            container = itemView.findViewById(R.id.container);
+            title = itemView.findViewById(R.id.title);
 
-            CardView card = (CardView) itemView.findViewById(R.id.card);
+            CardView card = itemView.findViewById(R.id.card);
             if (CandyBarApplication.getConfiguration().getHomeGrid() == CandyBarApplication.GridStyle.FLAT) {
                 if (card.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
                     card.setRadius(0f);

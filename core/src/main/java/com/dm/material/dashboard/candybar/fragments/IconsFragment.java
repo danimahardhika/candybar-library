@@ -55,8 +55,8 @@ public class IconsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_icons, container, false);
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.icons_grid);
-        mFastScroll = (RecyclerFastScroller) view.findViewById(R.id.fastscroll);
+        mRecyclerView = view.findViewById(R.id.icons_grid);
+        mFastScroll = view.findViewById(R.id.fastscroll);
         return view;
     }
 

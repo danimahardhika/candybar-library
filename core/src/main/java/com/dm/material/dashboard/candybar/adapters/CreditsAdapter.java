@@ -132,10 +132,10 @@ public class CreditsAdapter extends BaseAdapter {
         private final ImageView image;
 
         ViewHolder(View view) {
-            container = (LinearLayout) view.findViewById(R.id.container);
-            title = (TextView) view.findViewById(R.id.title);
-            subtitle = (TextView) view.findViewById(R.id.subtitle);
-            image = (ImageView) view.findViewById(R.id.image);
+            container = view.findViewById(R.id.container);
+            title = view.findViewById(R.id.title);
+            subtitle = view.findViewById(R.id.subtitle);
+            image = view.findViewById(R.id.image);
 
             int color = ColorHelper.getAttributeColor(mContext, android.R.attr.textColorSecondary);
             ViewCompat.setBackground(image, DrawableHelper.getTintedDrawable(

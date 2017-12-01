@@ -168,10 +168,10 @@ public class WallpapersAdapter extends RecyclerView.Adapter<WallpapersAdapter.Vi
                     R.string.wallpaper_grid_preview_style);
             Point ratio = ViewHelper.getWallpaperViewRatio(viewStyle);
 
-            image = (HeaderView) itemView.findViewById(R.id.image);
+            image = itemView.findViewById(R.id.image);
             image.setRatio(ratio.x, ratio.y);
 
-            card = (CardView) itemView.findViewById(R.id.card);
+            card = itemView.findViewById(R.id.card);
             if (CandyBarApplication.getConfiguration().getWallpapersGrid() == CandyBarApplication.GridStyle.FLAT) {
                 if (card.getLayoutParams() instanceof GridLayoutManager.LayoutParams) {
                     card.setRadius(0f);
@@ -197,8 +197,8 @@ public class WallpapersAdapter extends RecyclerView.Adapter<WallpapersAdapter.Vi
             }
 
             if (mIsShowName) {
-                name = (TextView) itemView.findViewById(R.id.name);
-                author = (TextView) itemView.findViewById(R.id.author);
+                name = itemView.findViewById(R.id.name);
+                author = itemView.findViewById(R.id.author);
             }
 
             card.setOnClickListener(this);

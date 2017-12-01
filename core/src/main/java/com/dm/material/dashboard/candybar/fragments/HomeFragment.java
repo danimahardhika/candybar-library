@@ -52,7 +52,7 @@ public class HomeFragment extends Fragment implements HomeListener{
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
+        mRecyclerView = view.findViewById(R.id.recyclerview);
 
         if (!Preferences.get(getActivity()).isToolbarShadowEnabled()) {
             View shadow = view.findViewById(R.id.shadow);

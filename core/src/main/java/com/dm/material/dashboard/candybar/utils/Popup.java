@@ -246,8 +246,8 @@ public class Popup {
             TextView title;
 
             ViewHolder(@NonNull View view) {
-                checkBox = (AppCompatCheckBox) view.findViewById(R.id.checkbox);
-                title = (TextView) view.findViewById(R.id.title);
+                checkBox = view.findViewById(R.id.checkbox);
+                title = view.findViewById(R.id.title);
             }
         }
 

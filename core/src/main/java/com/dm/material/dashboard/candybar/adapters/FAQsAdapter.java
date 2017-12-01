@@ -106,8 +106,8 @@ public class FAQsAdapter extends RecyclerView.Adapter<FAQsAdapter.ViewHolder> {
         ViewHolder(View itemView, int viewType) {
             super(itemView);
             if (viewType == TYPE_CONTENT) {
-                question = (TextView) itemView.findViewById(R.id.question);
-                answer = (TextView) itemView.findViewById(R.id.answer);
+                question = itemView.findViewById(R.id.question);
+                answer = itemView.findViewById(R.id.answer);
                 divider = itemView.findViewById(R.id.divider);
                 holderId = TYPE_CONTENT;
             } else if (viewType == TYPE_FOOTER) {

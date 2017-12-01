@@ -82,7 +82,7 @@ public class AboutSocialAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         SocialViewHolder(View itemView) {
             super(itemView);
-            image = (ImageView) itemView.findViewById(R.id.image);
+            image = itemView.findViewById(R.id.image);
 
             image.setOnClickListener(this);
         }

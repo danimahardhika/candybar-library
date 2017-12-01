@@ -482,7 +482,7 @@ public abstract class CandyBarMainActivity extends AppCompatActivity implements
                 int accent = ColorHelper.getAttributeColor(this, R.attr.colorAccent);
                 LinearLayout container = (LinearLayout) mNavigationView.getMenu().getItem(4).getActionView();
                 if (container != null) {
-                    TextView counter = (TextView) container.findViewById(R.id.counter);
+                    TextView counter = container.findViewById(R.id.counter);
                     if (counter == null) return;
 
                     ViewCompat.setBackground(counter, DrawableHelper.getTintedDrawable(this,
@@ -502,7 +502,7 @@ public abstract class CandyBarMainActivity extends AppCompatActivity implements
 
     @Override
     public void onSearchExpanded(boolean expand) {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         mIsMenuVisible = !expand;
 
         if (expand) {

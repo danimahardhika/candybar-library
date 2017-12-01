@@ -136,14 +136,14 @@ public class LauncherAdapter extends RecyclerView.Adapter<LauncherAdapter.ViewHo
         ViewHolder(View itemView, int viewType) {
             super(itemView);
             if (viewType == TYPE_HEADER) {
-                name = (TextView) itemView.findViewById(R.id.name);
+                name = itemView.findViewById(R.id.name);
                 holderId = TYPE_HEADER;
             } else if (viewType == TYPE_CONTENT) {
-                icon = (ImageView) itemView.findViewById(R.id.icon);
-                name = (TextView) itemView.findViewById(R.id.name);
-                container = (LinearLayout) itemView.findViewById(R.id.container);
+                icon = itemView.findViewById(R.id.icon);
+                name = itemView.findViewById(R.id.name);
+                container = itemView.findViewById(R.id.container);
 
-                CardView card = (CardView) itemView.findViewById(R.id.card);
+                CardView card = itemView.findViewById(R.id.card);
                 if (CandyBarApplication.getConfiguration().getApplyGrid() == CandyBarApplication.GridStyle.FLAT) {
                     if (card.getLayoutParams() instanceof GridLayoutManager.LayoutParams) {
                         card.setRadius(0f);

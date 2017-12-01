@@ -98,9 +98,9 @@ public class IconsAdapter extends RecyclerView.Adapter<IconsAdapter.ViewHolder> 
 
         ViewHolder(View itemView) {
             super(itemView);
-            icon = (ImageView) itemView.findViewById(R.id.icon);
-            name = (TextView) itemView.findViewById(R.id.name);
-            container = (LinearLayout) itemView.findViewById(R.id.container);
+            icon = itemView.findViewById(R.id.icon);
+            name = itemView.findViewById(R.id.name);
+            container = itemView.findViewById(R.id.container);
             container.setOnClickListener(this);
 
             if (!mIsShowIconName) {

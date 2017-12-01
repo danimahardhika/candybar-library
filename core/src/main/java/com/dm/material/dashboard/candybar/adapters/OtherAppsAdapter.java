@@ -114,10 +114,10 @@ public class OtherAppsAdapter extends BaseAdapter{
         private TextView desc;
 
         ViewHolder(View view) {
-            container = (LinearLayout) view.findViewById(R.id.container);
-            image = (ImageView) view.findViewById(R.id.image);
-            title = (TextView) view.findViewById(R.id.title);
-            desc = (TextView) view.findViewById(R.id.desc);
+            container = view.findViewById(R.id.container);
+            image = view.findViewById(R.id.image);
+            title = view.findViewById(R.id.title);
+            desc = view.findViewById(R.id.desc);
         }
     }
 }
