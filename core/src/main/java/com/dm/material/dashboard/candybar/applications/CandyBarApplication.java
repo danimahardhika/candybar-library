@@ -75,12 +75,12 @@ public abstract class CandyBarApplication extends Application implements Applica
         LogUtil.setLoggingTag(getString(R.string.app_name));
         LogUtil.setLoggingEnabled(true);
 
+        mConfiguration = onInit();
+
         if (mConfiguration.mIsCrashReportEnabled) {
             mHandler = Thread.getDefaultUncaughtExceptionHandler();
             Thread.setDefaultUncaughtExceptionHandler(this::handleUncaughtException);
         }
-
-        mConfiguration = onInit();
 
         if (Preferences.get(this).isTimeToSetLanguagePreference()) {
             Preferences.get(this).setLanguagePreference();
