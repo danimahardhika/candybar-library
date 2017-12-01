@@ -65,7 +65,7 @@
 
     <!-- Popup -->
     <dimen name="popup_min_width">70dp</dimen>
-    <dimen name="popup_max_width">280dp</dimen>
+    <dimen name="popup_max_width">190dp</dimen>
 
     <!-- Icon -->
     <dimen name="icon_size_medium">40dp</dimen>
