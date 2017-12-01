@@ -57,7 +57,7 @@ Take a look inside [Wiki Site](https://github.com/danimahardhika/candybar-librar
 * Donation
 * Changelog: show changelog every update
 * Muzei Live Wallpaper: smart art source loader
-* Localization
+* Localization: supports more than 10 languages
 
 **NOTE:** This is just Icon Pack Dashboard, not Icon Pack template or Icon Pack tutorial. You need to add required XML for Icon Pack by yourself.
 
