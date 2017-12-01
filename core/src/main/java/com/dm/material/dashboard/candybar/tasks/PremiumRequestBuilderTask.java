@@ -19,6 +19,7 @@ import com.dm.material.dashboard.candybar.fragments.dialog.IntentChooserFragment
 import com.dm.material.dashboard.candybar.helpers.DeviceHelper;
 import com.dm.material.dashboard.candybar.items.Request;
 import com.danimahardhika.android.helpers.core.utils.LogUtil;
+import com.dm.material.dashboard.candybar.utils.Extras;
 import com.dm.material.dashboard.candybar.utils.listeners.RequestListener;
 
 import java.io.File;
@@ -49,7 +50,7 @@ public class PremiumRequestBuilderTask extends AsyncTask<Void, Void, Boolean> {
     private final WeakReference<Context> mContext;
     private final WeakReference<PremiumRequestBuilderCallback> mCallback;
     private String mEmailBody;
-    private LogUtil.Error mError;
+    private Extras.Error mError;
 
     private PremiumRequestBuilderTask(Context context, PremiumRequestBuilderCallback callback) {
         mContext = new WeakReference<>(context);
@@ -71,12 +72,12 @@ public class PremiumRequestBuilderTask extends AsyncTask<Void, Void, Boolean> {
             try {
                 Thread.sleep(1);
                 if (CandyBarApplication.sRequestProperty == null) {
-                    mError = LogUtil.Error.ICON_REQUEST_PROPERTY_NULL;
+                    mError = Extras.Error.ICON_REQUEST_PROPERTY_NULL;
                     return false;
                 }
 
                 if (CandyBarApplication.sRequestProperty.getComponentName() == null) {
-                    mError = LogUtil.Error.ICON_REQUEST_PROPERTY_COMPONENT_NULL;
+                    mError = Extras.Error.ICON_REQUEST_PROPERTY_COMPONENT_NULL;
                     return false;
                 }
 

@@ -18,6 +18,9 @@ package com.dm.material.dashboard.candybar.utils;
  * limitations under the License.
  */
 
+import android.content.Context;
+import android.widget.Toast;
+
 public abstract class Extras {
 
     public static final String TAG_HOME = "home";
@@ -35,4 +38,36 @@ public abstract class Extras {
     public static final String EXTRA_IMAGE = "image";
     public static final String EXTRA_RESUMED = "resumed";
 
+    public enum Error {
+        APPFILTER_NULL,
+        DATABASE_ERROR,
+        INSTALLED_APPS_NULL,
+        ICON_REQUEST_NULL,
+        ICON_REQUEST_PROPERTY_NULL,
+        ICON_REQUEST_PROPERTY_COMPONENT_NULL;
+
+        public String getMessage() {
+            switch (this) {
+                case APPFILTER_NULL:
+                    return "Error: Unable to read appfilter.xml";
+                case DATABASE_ERROR:
+                    return "Error: Unable to read database";
+                case INSTALLED_APPS_NULL:
+                    return "Error: Unable to collect installed apps";
+                case ICON_REQUEST_NULL:
+                    return "Error: Icon request is null";
+                case ICON_REQUEST_PROPERTY_NULL:
+                    return "Error: Icon request property is null";
+                case ICON_REQUEST_PROPERTY_COMPONENT_NULL:
+                    return "Error: Email client component is null";
+                default:
+                    return "Error: Unknown";
+            }
+        }
+
+        public void showToast(Context context) {
+            if (context == null) return;
+            Toast.makeText(context, getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
 }

@@ -28,7 +28,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.anjlab.android.iab.v3.BillingProcessor;
 import com.anjlab.android.iab.v3.TransactionDetails;
 import com.danimahardhika.android.helpers.animation.AnimationHelper;
 import com.danimahardhika.android.helpers.core.ColorHelper;

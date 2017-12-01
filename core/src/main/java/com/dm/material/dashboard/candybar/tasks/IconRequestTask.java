@@ -18,6 +18,7 @@ import com.dm.material.dashboard.candybar.helpers.LocaleHelper;
 import com.dm.material.dashboard.candybar.helpers.RequestHelper;
 import com.dm.material.dashboard.candybar.items.Request;
 import com.danimahardhika.android.helpers.core.utils.LogUtil;
+import com.dm.material.dashboard.candybar.utils.Extras;
 import com.dm.material.dashboard.candybar.utils.listeners.HomeListener;
 
 import java.lang.ref.WeakReference;
@@ -49,7 +50,7 @@ import java.util.concurrent.Executor;
 public class IconRequestTask extends AsyncTask<Void, Void, Boolean> {
 
     private final WeakReference<Context> mContext;
-    private LogUtil.Error mError;
+    private Extras.Error mError;
 
     private IconRequestTask(Context context) {
         mContext = new WeakReference<>(context);
@@ -73,7 +74,7 @@ public class IconRequestTask extends AsyncTask<Void, Void, Boolean> {
                     List<Request> requests = new ArrayList<>();
                     HashMap<String, String> appFilter = RequestHelper.getAppFilter(mContext.get(), RequestHelper.Key.ACTIVITY);
                     if (appFilter.size() == 0) {
-                        mError = LogUtil.Error.APPFILTER_NULL;
+                        mError = Extras.Error.APPFILTER_NULL;
                         return false;
                     }
 
@@ -84,7 +85,7 @@ public class IconRequestTask extends AsyncTask<Void, Void, Boolean> {
                     List<ResolveInfo> installedApps = packageManager.queryIntentActivities(
                             intent, PackageManager.GET_RESOLVED_FILTER);
                     if (installedApps == null || installedApps.size() == 0) {
-                        mError = LogUtil.Error.INSTALLED_APPS_NULL;
+                        mError = Extras.Error.INSTALLED_APPS_NULL;
                         return false;
                     }
 
@@ -124,7 +125,7 @@ public class IconRequestTask extends AsyncTask<Void, Void, Boolean> {
                 return true;
             } catch (Exception e) {
                 CandyBarMainActivity.sMissedApps = null;
-                mError = LogUtil.Error.DATABASE_ERROR;
+                mError = Extras.Error.DATABASE_ERROR;
                 LogUtil.e(Log.getStackTraceString(e));
                 return false;
             }

@@ -107,7 +107,9 @@ public class WallpaperDownloader {
         DownloadManager downloadManager = (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
 
         try {
-            downloadManager.enqueue(request);
+            if (downloadManager != null) {
+                downloadManager.enqueue(request);
+            }
         } catch (IllegalArgumentException e) {
             LogUtil.e(Log.getStackTraceString(e));
             return;
