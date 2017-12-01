@@ -252,17 +252,6 @@ public class WallpapersAdapter extends RecyclerView.Adapter<WallpapersAdapter.Vi
 
                                 applyPopup.updateItem(i, item);
                                 return;
-                            } else if (item.getType() == PopupItem.Type.LOCKSCREEN) {
-                                WallpaperApplyTask.prepare(mContext)
-                                        .wallpaper(mWallpapers.get(position))
-                                        .to(WallpaperApplyTask.Apply.LOCKSCREEN)
-                                        .start(AsyncTask.THREAD_POOL_EXECUTOR);
-                            } else if (item.getType() == PopupItem.Type.HOMESCREEN) {
-                                WallpaperApplyTask.prepare(mContext)
-                                        .wallpaper(mWallpapers.get(position))
-                                        .to(WallpaperApplyTask.Apply.HOMESCREEN)
-                                        .start(AsyncTask.THREAD_POOL_EXECUTOR);
-
                             } else if (item.getType() == PopupItem.Type.DOWNLOAD) {
                                 if (PermissionHelper.isStorageGranted(mContext)) {
                                     WallpaperDownloader.prepare(mContext)
@@ -271,6 +260,19 @@ public class WallpapersAdapter extends RecyclerView.Adapter<WallpapersAdapter.Vi
                                 } else {
                                     PermissionHelper.requestStorage(mContext);
                                 }
+                            } else {
+                               WallpaperApplyTask task = WallpaperApplyTask.prepare(mContext)
+                                        .wallpaper(mWallpapers.get(position));
+
+                                if (item.getType() == PopupItem.Type.LOCKSCREEN) {
+                                    task.to(WallpaperApplyTask.Apply.LOCKSCREEN);
+                                } else if (item.getType() == PopupItem.Type.HOMESCREEN) {
+                                    task.to(WallpaperApplyTask.Apply.HOMESCREEN);
+                                } else if (item.getType() == PopupItem.Type.HOMESCREEN_LOCKSCREEN) {
+                                    task.to(WallpaperApplyTask.Apply.HOMESCREEN_LOCKSCREEN);
+                                }
+
+                                task.start(AsyncTask.THREAD_POOL_EXECUTOR);
                             }
                             applyPopup.dismiss();
                         })

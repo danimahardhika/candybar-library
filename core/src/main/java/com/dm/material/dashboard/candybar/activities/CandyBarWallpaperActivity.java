@@ -288,30 +288,26 @@ public class CandyBarWallpaperActivity extends AppCompatActivity implements View
 
                             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
                             return;
-                        } else if (item.getType() == PopupItem.Type.LOCKSCREEN) {
+                        } else {
                             RectF rectF = null;
                             if (Preferences.get(this).isCropWallpaper()) {
                                 if (mAttacher != null)
                                     rectF = mAttacher.getDisplayRect();
                             }
 
-                            WallpaperApplyTask.prepare(this)
+                            WallpaperApplyTask task = WallpaperApplyTask.prepare(this)
                                     .wallpaper(mWallpaper)
-                                    .to(WallpaperApplyTask.Apply.LOCKSCREEN)
-                                    .crop(rectF)
-                                    .start(AsyncTask.THREAD_POOL_EXECUTOR);
-                        } else if (item.getType() == PopupItem.Type.HOMESCREEN) {
-                            RectF rectF = null;
-                            if (Preferences.get(this).isCropWallpaper()) {
-                                if (mAttacher != null)
-                                    rectF = mAttacher.getDisplayRect();
+                                    .crop(rectF);
+
+                            if (item.getType() == PopupItem.Type.LOCKSCREEN) {
+                                task.to(WallpaperApplyTask.Apply.LOCKSCREEN);
+                            } else if (item.getType() == PopupItem.Type.HOMESCREEN) {
+                                task.to(WallpaperApplyTask.Apply.HOMESCREEN);
+                            } else if (item.getType() == PopupItem.Type.HOMESCREEN_LOCKSCREEN) {
+                                task.to(WallpaperApplyTask.Apply.HOMESCREEN_LOCKSCREEN);
                             }
 
-                            WallpaperApplyTask.prepare(this)
-                                    .wallpaper(mWallpaper)
-                                    .to(WallpaperApplyTask.Apply.HOMESCREEN)
-                                    .crop(rectF)
-                                    .start(AsyncTask.THREAD_POOL_EXECUTOR);
+                            task.start(AsyncTask.THREAD_POOL_EXECUTOR);
                         }
 
                         p.dismiss();

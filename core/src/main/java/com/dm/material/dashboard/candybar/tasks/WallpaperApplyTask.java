@@ -1,5 +1,6 @@
 package com.dm.material.dashboard.candybar.tasks;
 
+import android.app.Activity;
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -63,6 +64,7 @@ public class WallpaperApplyTask extends AsyncTask<Void, Void, Boolean> implement
 
     private WallpaperApplyTask(Context context) {
         mContext = new WeakReference<>(context);
+        mApply = Apply.HOMESCREEN;
     }
 
     public WallpaperApplyTask to(Apply apply) {
@@ -134,15 +136,28 @@ public class WallpaperApplyTask extends AsyncTask<Void, Void, Boolean> implement
         mWallpaper = wallpaper;
         if (mExecutor == null) mExecutor = SERIAL_EXECUTOR;
         if (mWallpaper.getDimensions() == null) {
-            mDialog.dismiss();
             LogUtil.e("WallpaperApply cancelled, unable to retrieve wallpaper dimensions");
+
+            if (mContext.get() == null) return;
+            if (mContext.get() instanceof Activity) {
+                if (((Activity) mContext.get()).isFinishing())
+                    return;
+            }
+
+            if (mDialog != null && mDialog.isShowing()) {
+                mDialog.dismiss();
+            }
 
             Toast.makeText(mContext.get(), R.string.wallpaper_apply_failed,
                     Toast.LENGTH_LONG).show();
             return;
         }
 
-        start(mExecutor);
+        try {
+            executeOnExecutor(mExecutor);
+        } catch (IllegalStateException e) {
+            LogUtil.e(Log.getStackTraceString(e));
+        }
     }
 
     @Override
@@ -277,6 +292,14 @@ public class WallpaperApplyTask extends AsyncTask<Void, Void, Boolean> implement
                             LogUtil.d(String.format(Locale.getDefault(), "generated bitmap: %d x %d ",
                                     bitmap.getWidth(), bitmap.getHeight()));
 
+                            if (mApply == Apply.HOMESCREEN_LOCKSCREEN) {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                    WallpaperManager.getInstance(mContext.get().getApplicationContext()).setBitmap(
+                                            bitmap, null, true, WallpaperManager.FLAG_LOCK | WallpaperManager.FLAG_SYSTEM);
+                                    return true;
+                                }
+                            }
+
                             if (mApply == Apply.HOMESCREEN) {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                                     WallpaperManager.getInstance(mContext.get().getApplicationContext()).setBitmap(
@@ -371,6 +394,7 @@ public class WallpaperApplyTask extends AsyncTask<Void, Void, Boolean> implement
 
     public enum Apply {
         LOCKSCREEN,
-        HOMESCREEN
+        HOMESCREEN,
+        HOMESCREEN_LOCKSCREEN
     }
 }

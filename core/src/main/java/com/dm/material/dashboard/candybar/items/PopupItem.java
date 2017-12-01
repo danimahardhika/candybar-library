@@ -99,6 +99,7 @@ public class PopupItem {
         WALLPAPER_CROP,
         HOMESCREEN,
         LOCKSCREEN,
+        HOMESCREEN_LOCKSCREEN,
         DOWNLOAD
     }
 
@@ -122,6 +123,12 @@ public class PopupItem {
         items.add(new PopupItem(context.getResources().getString(R.string.menu_apply_homescreen))
                 .setType(Type.HOMESCREEN)
                 .setIcon(R.drawable.ic_toolbar_homescreen));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            items.add(new PopupItem(context.getResources().getString(R.string.menu_apply_homescreen_lockscreen))
+                    .setType(Type.HOMESCREEN_LOCKSCREEN)
+                    .setIcon(R.drawable.ic_toolbar_homescreen_lockscreen));
+        }
 
         if (context.getResources().getBoolean(R.bool.enable_wallpaper_download)) {
             items.add(new PopupItem(context.getResources().getString(R.string.menu_save))

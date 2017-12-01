@@ -32,6 +32,7 @@
     <string name="menu_wallpaper_crop">Crop Wallpaper</string>
     <string name="menu_apply_homescreen">Homescreen</string>
     <string name="menu_apply_lockscreen">Lockscreen</string>
+    <string name="menu_apply_homescreen_lockscreen">Homescreen &amp; Lockscreen</string>
 
     <!-- Dialog -->
     <string name="open">Open</string>
