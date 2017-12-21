@@ -297,7 +297,8 @@ public class RequestHelper {
                 "com.android.vending.billing.InAppBillingService.LOCK",
                 "cc.madkite.freedom",
                 "com.android.vending.billing.InAppBillingService.LACK",
-                "com.android.vending.billing.InAppBillingService.CLON"
+                "com.android.vending.billing.InAppBillingService.CLON",
+                "com.android.vending.billing.InAppBillingService.CRAC"
         };
 
         boolean isPiracyAppInstalled = false;
