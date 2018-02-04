@@ -298,7 +298,8 @@ public class RequestHelper {
                 "cc.madkite.freedom",
                 "com.android.vending.billing.InAppBillingService.LACK",
                 "com.android.vending.billing.InAppBillingService.CLON",
-                "com.android.vending.billing.InAppBillingService.CRAC"
+                "com.android.vending.billing.InAppBillingService.CRAC",
+                "com.android.vending.billing.InAppBillingService.COIN"
         };
 
         boolean isPiracyAppInstalled = false;
